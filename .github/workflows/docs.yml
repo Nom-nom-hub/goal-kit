@@ -24,7 +24,7 @@ jobs:
 
     - name: Install project with docs dependencies
       run: |
-        uv pip install .[docs]
+        uv pip install --system ".[docs]"
 
     - name: Build documentation
       run: |
