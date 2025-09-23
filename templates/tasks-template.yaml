@@ -1,0 +1,11 @@
+# Task Breakdown Template
+
+id: ""
+goal_id: ""
+plan_id: ""
+title: ""
+tasks: []
+created_at: ""
+updated_at: ""
+status: "draft"  # draft, planned, in_progress, completed
+metadata: {}

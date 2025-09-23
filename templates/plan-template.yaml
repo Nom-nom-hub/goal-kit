@@ -1,0 +1,19 @@
+# Implementation Plan Template
+
+id: ""
+goal_id: ""
+spec_id: ""
+title: ""
+description: ""
+technical_approach: ""
+architecture: {}
+integration_points: []
+deployment_strategy: ""
+testing_strategy: ""
+security_considerations: []
+performance_targets: []
+risks: []
+created_at: ""
+updated_at: ""
+status: "draft"  # draft, planned, in_progress, completed
+metadata: {}

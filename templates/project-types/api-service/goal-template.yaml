@@ -1,0 +1,33 @@
+name: API Service Goal
+description: A goal for an API service project
+objectives:
+  - Design and implement RESTful API endpoints
+  - Ensure high performance and scalability
+  - Implement security measures
+success_criteria:
+  - API responds within defined latency requirements
+  - Passes all security scans
+  - Meets uptime SLA requirements
+dependencies:
+  - Database schema
+  - Authentication system
+  - Monitoring tools
+related_goals: []
+priority: medium
+status: draft
+owner: ""
+tags:
+  - backend
+  - api
+  - security
+metadata:
+  domain: api-service
+  technology_stack:
+    - Node.js
+    - Express
+    - MongoDB
+    - Redis
+  api_standards:
+    - REST
+    - JSON
+    - OAuth 2.0

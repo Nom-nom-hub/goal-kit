@@ -1,0 +1,34 @@
+name: Data Science Goal
+description: A goal for a data science project
+objectives:
+  - Analyze and model datasets
+  - Extract meaningful insights
+  - Create predictive models
+success_criteria:
+  - Model accuracy meets defined thresholds
+  - Insights are actionable and valuable
+  - Documentation is complete and clear
+dependencies:
+  - Data sources and access
+  - Computing resources
+  - Subject matter experts
+related_goals: []
+priority: medium
+status: draft
+owner: ""
+tags:
+  - data-science
+  - analytics
+  - machine-learning
+metadata:
+  domain: data-science
+  technology_stack:
+    - Python
+    - Jupyter
+    - Pandas
+    - Scikit-learn
+    - TensorFlow
+  data_sources:
+    - Internal databases
+    - External APIs
+    - CSV files

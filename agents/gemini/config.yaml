@@ -1,0 +1,7 @@
+name: "gemini"
+type: "cli"
+description: "Google's Gemini CLI"
+cli_tool: "gemini"
+directory: ".gemini/commands/"
+format: "toml"
+argument_pattern: "{{args}}"

@@ -1,0 +1,11 @@
+{
+  "id": "m4bf92xjjka37ge6y0zmko",
+  "title": "Enhance Documentation and Help System",
+  "description": "Improve the help system and documentation to match the quality and structure of spec-kit",
+  "dependencies": [],
+  "assignedAgent": "Technical_Writer",
+  "status": "completed",
+  "createdAt": "2025-09-23T06:39:33.487Z",
+  "updatedAt": "2025-09-23T07:16:55.901Z",
+  "result": "Enhanced documentation and help system with comprehensive guides, examples, and improved CLI command descriptions similar to spec-kit"
+}

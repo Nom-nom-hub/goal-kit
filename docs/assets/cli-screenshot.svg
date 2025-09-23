@@ -1,0 +1,33 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="terminalGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <filter id="terminalShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="15" flood-color="black" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Terminal window -->
+  <rect x="50" y="50" width="700" height="400" rx="10" ry="10" fill="url(#terminalGradient)" filter="url(#terminalShadow)"/>
+  
+  <!-- Terminal header -->
+  <rect x="50" y="50" width="700" height="40" rx="10" ry="10" fill="#334155" />
+  <circle cx="70" cy="70" cy="70" r="6" fill="#ef4444"/>
+  <circle cx="90" cy="70" r="6" fill="#f59e0b"/>
+  <circle cx="110" cy="70" r="6" fill="#10b981"/>
+  
+  <!-- Terminal content -->
+  <text x="70" y="120" font-family="monospace" font-size="16" fill="#e2e8f0">$ goal init my-awesome-project</text>
+  <text x="70" y="150" font-family="monospace" font-size="16" fill="#94a3b8">Initializing project structure...</text>
+  <text x="70" y="180" font-family="monospace" font-size="16" fill="#94a3b8">Creating directories...</text>
+  <text x="70" y="210" font-family="monospace" font-size="16" fill="#94a3b8">Creating configuration files...</text>
+  <text x="70" y="240" font-family="monospace" font-size="16" fill="#94a3b8">Initializing git repository...</text>
+  
+  <text x="70" y="280" font-family="monospace" font-size="16" fill="#10b981">[✓] Project initialized successfully!</text>
+  <text x="70" y="310" font-family="monospace" font-size="16" fill="#e2e8f0">cd my-awesome-project</text>
+  <text x="70" y="340" font-family="monospace" font-size="16" fill="#e2e8f0">$ goal create "Implement user authentication"</text>
+  <text x="70" y="370" font-family="monospace" font-size="16" fill="#10b981">[✓] Created goal: auth-system-abc123</text>
+  <text x="70" y="400" font-family="monospace" font-size="16" fill="#e2e8f0">$ goal plan auth-system-abc123</text>
+</svg>

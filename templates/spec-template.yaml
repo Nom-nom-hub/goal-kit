@@ -1,0 +1,17 @@
+# Feature Specification Template
+
+id: ""
+goal_id: ""
+title: ""
+description: ""
+user_stories: []
+acceptance_criteria: []
+functional_requirements: []
+non_functional_requirements: []
+constraints: []
+assumptions: []
+out_of_scope: []
+created_at: ""
+updated_at: ""
+status: "draft"  # draft, reviewed, approved, implemented
+metadata: {}

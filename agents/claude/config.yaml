@@ -1,0 +1,7 @@
+name: "claude"
+type: "cli"
+description: "Anthropic's Claude Code CLI"
+cli_tool: "claude"
+directory: ".claude/commands/"
+format: "md"
+argument_pattern: "$ARGUMENTS"

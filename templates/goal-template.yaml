@@ -1,0 +1,16 @@
+# Goal Specification Template
+
+id: ""
+title: ""
+description: ""
+objectives: []
+success_criteria: []
+dependencies: []
+related_goals: []
+priority: "medium"  # low, medium, high, critical
+status: "draft"  # draft, planned, in_progress, completed, blocked
+created_at: ""
+updated_at: ""
+owner: ""
+tags: []
+metadata: {}

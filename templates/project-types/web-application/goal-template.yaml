@@ -1,0 +1,33 @@
+name: Web Application Goal
+description: A goal for a web application project
+objectives:
+  - Develop a responsive web interface
+  - Implement core application features
+  - Ensure cross-browser compatibility
+success_criteria:
+  - Application loads in under 2 seconds
+  - Passes all cross-browser tests
+  - Meets accessibility standards (WCAG 2.1 AA)
+dependencies:
+  - Design system components
+  - Backend API endpoints
+  - Third-party integrations
+related_goals: []
+priority: medium
+status: draft
+owner: ""
+tags:
+  - frontend
+  - web
+  - ui
+metadata:
+  domain: web-application
+  technology_stack:
+    - React
+    - Node.js
+    - PostgreSQL
+  target_browsers:
+    - Chrome (latest 2 versions)
+    - Firefox (latest 2 versions)
+    - Safari (latest 2 versions)
+    - Edge (latest 2 versions)
