@@ -14,7 +14,7 @@ import heapq
 from collections import deque
 import hashlib
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 # Import existing modules
 from .analytics import PredictiveAnalyticsEngine
