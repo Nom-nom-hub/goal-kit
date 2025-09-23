@@ -1,0 +1,9 @@
+{
+  "id": "ynjjhj0mtqpmnwboszexla",
+  "title": "Fix unused local variables",
+  "description": "Fix unused local variables like 'unexecutable_tasks', 'criteria', 'result_id', and exception variables 'e' in various files\"",
+  "dependencies": [],
+  "status": "pending",
+  "createdAt": "2025-09-23T21:33:22.456Z",
+  "updatedAt": "2025-09-23T21:33:22.456Z"
+}

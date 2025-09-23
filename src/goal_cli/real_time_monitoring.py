@@ -3,11 +3,9 @@ Real-time Quality Monitoring for goal-dev-spec
 Provides continuous monitoring of quality metrics and immediate feedback.
 """
 
-import os
-import yaml
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Callable
+from typing import Dict, List, Callable
 from datetime import datetime, timedelta
 from dataclasses import dataclass, asdict
 import threading
@@ -16,7 +14,7 @@ from collections import defaultdict, deque
 import hashlib
 
 # Import our enhanced quality assurance module
-from .enhanced_quality_assurance import EnhancedQualityAssurance, QualityMetrics, ValidationFinding
+from .enhanced_quality_assurance import EnhancedQualityAssurance, QualityMetrics
 
 
 @dataclass
@@ -80,7 +78,7 @@ class RealTimeQualityMonitor:
             try:
                 with open(config_file, 'r') as f:
                     return json.load(f)
-            except:
+            except json.JSONDecodeError:
                 pass
         
         # Default configuration
@@ -116,7 +114,7 @@ class RealTimeQualityMonitor:
                 with open(thresholds_file, 'r') as f:
                     thresholds_data = json.load(f)
                 return [ThresholdRule(**rule) for rule in thresholds_data]
-            except:
+            except json.JSONDecodeError:
                 pass
         
         # Default thresholds
@@ -141,7 +139,7 @@ class RealTimeQualityMonitor:
             try:
                 with open(hashes_file, 'r') as f:
                     return json.load(f)
-            except:
+            except json.JSONDecodeError:
                 return {}
         return {}
     
@@ -413,7 +411,7 @@ class RealTimeQualityMonitor:
         for callback in self.event_callbacks:
             try:
                 callback(event)
-            except Exception as e:
+            except Exception:
                 # Don't let callback errors stop monitoring
                 pass
         
@@ -427,7 +425,7 @@ class RealTimeQualityMonitor:
         try:
             with open(events_file, 'w') as f:
                 json.dump(list(self.event_history), f, indent=2)
-        except Exception as e:
+        except Exception:
             # Don't let save errors stop monitoring
             pass
     
@@ -538,7 +536,7 @@ class RealTimeQualityMonitor:
                 status_symbol = "✅" if score >= 0.9 else "⚠️" if score >= 0.7 else "❌"
                 report += f"| {name} | {score:.2f} | {status_symbol} |\n"
         
-        report += f"""
+        report += """
 
 ## Recent Events
 
@@ -667,7 +665,7 @@ def monitoring_cli():
             status_info = monitor.get_current_status()
             
             # Display status
-            console.print(Panel(f"[bold]Real-time Quality Monitoring Status[/bold]", expand=False))
+            console.print(Panel("[bold]Real-time Quality Monitoring Status[/bold]", expand=False))
             
             console.print(f"Monitoring Active: {'[green]Yes[/green]' if status_info['is_monitoring'] else '[red]No[/red]'}")
             console.print(f"Artifacts Tracked: {status_info['artifact_count']}")

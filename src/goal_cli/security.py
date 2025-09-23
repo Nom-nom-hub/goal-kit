@@ -3,14 +3,10 @@ Security module for the goal-dev-spec system.
 Provides security scanning, vulnerability detection, and security policy enforcement.
 """
 
-import os
-import yaml
-import json
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict
 from datetime import datetime
-from collections import defaultdict
 
 class SecurityManager:
     """Manages security scanning, vulnerability detection, and policy enforcement."""
@@ -149,7 +145,7 @@ class SecurityManager:
                             if vuln_type not in results["vulnerabilities_by_type"]:
                                 results["vulnerabilities_by_type"][vuln_type] = 0
                             results["vulnerabilities_by_type"][vuln_type] += 1
-                except Exception as e:
+                except Exception:
                     # Skip files that can't be read
                     continue
         
@@ -247,7 +243,7 @@ class SecurityManager:
         policy_results = self.check_all_policies(project_data)
         vulnerability_results = self.scan_project_for_vulnerabilities()
         
-        report = f"# Security Report\n\n"
+        report = "# Security Report\n\n"
         report += f"Generated: {policy_results['timestamp']}\n\n"
         report += f"Project: {policy_results['project']}\n\n"
         

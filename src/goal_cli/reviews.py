@@ -3,13 +3,12 @@ Review process automation module for the goal-dev-spec system.
 Automates review workflows, notifications, and approval tracking.
 """
 
-import os
-import yaml
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 from datetime import datetime
 from enum import Enum
+from collections import defaultdict
 
 class ReviewStatus(Enum):
     PENDING = "pending"
@@ -260,7 +259,7 @@ class ReviewManager:
         """Generate a review report in markdown format."""
         reviews = self.list_reviews()
         
-        report = f"# Review Report\n\n"
+        report = "# Review Report\n\n"
         report += f"Generated: {datetime.now().isoformat()}\n\n"
         report += f"Project: {self.project_path}\n\n"
         

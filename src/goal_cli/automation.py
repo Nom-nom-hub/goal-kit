@@ -4,19 +4,17 @@ Exceeds spec-kit functionality with predictive task scheduling, resource optimiz
 and intelligent workflow management.
 """
 
-import os
-import yaml
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Callable
-from datetime import datetime, timedelta
+from datetime import datetime
 from dataclasses import dataclass, asdict
 import threading
 import time
 import heapq
-from collections import defaultdict, deque
+from collections import deque
 import hashlib
 from enum import Enum
+from typing import Dict, List, Optional
 
 # Import existing modules
 from .analytics import PredictiveAnalyticsEngine
@@ -314,7 +312,6 @@ class IntelligentScheduler:
         
         # Check for tasks that can be executed (no pending dependencies)
         executable_tasks = []
-        unexecutable_tasks = []
         
         # Create a temporary list to store queue items
         temp_queue = []
@@ -418,8 +415,6 @@ class TaskExecutor:
         try:
             # In a real implementation, this would execute the actual command
             # For now, we'll simulate execution
-            import subprocess
-            import shlex
             
             # Simulate task execution
             time.sleep(task.estimated_duration / 1000)  # Convert ms to seconds for simulation
@@ -537,7 +532,7 @@ class AdvancedAutomationFramework:
             try:
                 with open(config_file, 'r') as f:
                     return json.load(f)
-            except:
+            except json.JSONDecodeError:
                 pass
         
         # Default configuration

@@ -3,16 +3,13 @@ Advanced Project Scaffolding for goal-dev-spec
 Exceeds spec-kit functionality with intelligent project structure generation.
 """
 
-import os
-import sys
 import json
 import yaml
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import hashlib
-import shutil
 
 
 @dataclass
@@ -119,7 +116,7 @@ class ProjectScaffolder:
                     if isinstance(req_data.get('result'), str):
                         try:
                             req_data['result'] = json.loads(req_data['result'])
-                        except:
+                        except json.JSONDecodeError:
                             req_data['result'] = None
                     request = ScaffoldingRequest(**req_data)
                     requests[request.id] = request
@@ -795,7 +792,7 @@ dmypy.json
             if isinstance(result.get('result'), str):
                 try:
                     result['result'] = json.loads(result['result'])
-                except:
+                except json.JSONDecodeError:
                     result['result'] = None
             return result
         return None
@@ -809,7 +806,7 @@ dmypy.json
             if isinstance(req_dict.get('result'), str):
                 try:
                     req_dict['result'] = json.loads(req_dict['result'])
-                except:
+                except json.JSONDecodeError:
                     req_dict['result'] = None
             requests.append(req_dict)
         return requests
@@ -962,7 +959,7 @@ def scaffolding_cli():
                     if isinstance(result, str):
                         try:
                             result = json.loads(result)
-                        except:
+                        except json.JSONDecodeError:
                             result = {"output": result}
                     
                     console.print(f"Template Used: {result.get('template_used', 'unknown')}")

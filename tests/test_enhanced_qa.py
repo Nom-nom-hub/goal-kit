@@ -2,8 +2,6 @@
 Test file for enhanced quality assurance modules
 """
 
-import json
-import os
 import shutil
 import tempfile
 import unittest

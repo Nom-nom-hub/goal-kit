@@ -100,7 +100,6 @@ def test_cross_platform_scripting():
         print(f"  - {script['name']} ({script['platform']})")
     
     # Clean up test project and generated files
-    import shutil
     shutil.rmtree(test_project, ignore_errors=True)
     
     # Clean up any generated automation files

@@ -4,13 +4,10 @@ Exceeds spec-kit functionality with advanced cross-platform scripting support.
 """
 
 import os
-import sys
 import subprocess
 import platform
 from pathlib import Path
-from typing import Dict, List, Optional, Union
-import yaml
-import json
+from typing import Dict, List, Union
 
 
 class CrossPlatformScriptManager:
@@ -238,7 +235,7 @@ class CrossPlatformScriptManager:
         else:
             # Create Bash script
             content = "#!/bin/bash\n\n"
-            content += f"# Unified Script Interface (Bash)\n"
+            content += "# Unified Script Interface (Bash)\n"
             content += f"# Script: {name}\n\n"
             
             # Add operation functions
@@ -369,12 +366,12 @@ def cross_platform_cli():
             result = script_manager.execute_script(script_path, arg_list)
             
             if result["success"]:
-                console.print(f"[green]✓[/green] Script executed successfully")
+                console.print("[green]✓[/green] Script executed successfully")
                 if result.get("stdout"):
                     console.print("\n[bold]Output:[/bold]")
                     console.print(result["stdout"])
             else:
-                console.print(f"[red]✗[/red] Script execution failed")
+                console.print("[red]✗[/red] Script execution failed")
                 if result.get("error"):
                     console.print(f"[red]Error:[/red] {result['error']}")
                 if result.get("stderr"):

@@ -99,7 +99,7 @@ def test_project_scaffolding():
                 if isinstance(result, str):
                     try:
                         result = json.loads(result)
-                    except:
+                    except json.JSONDecodeError:
                         result = {"output": result}
                 print(f"    Files created: {len(result.get('files_created', []))}")
                 print(f"    Directories created: {len(result.get('directories_created', []))}")
@@ -129,7 +129,6 @@ def test_project_scaffolding():
                 print(f"  [MISSING] {file_name} missing")
     
     # Clean up test project and generated files
-    import shutil
     shutil.rmtree(test_project, ignore_errors=True)
     
     # Clean up any generated automation files

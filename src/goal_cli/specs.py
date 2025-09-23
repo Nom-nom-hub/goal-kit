@@ -2,11 +2,10 @@
 Specification processing module for the goal-dev-spec system.
 """
 
-import os
 import yaml
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 from datetime import datetime
 from jsonschema import validate, ValidationError
 

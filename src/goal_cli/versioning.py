@@ -3,12 +3,9 @@ Versioning and breaking change management module for the goal-dev-spec system.
 Manages semantic versioning, breaking change detection, and migration paths.
 """
 
-import os
-import yaml
 import json
-import re
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List
 from datetime import datetime
 from packaging import version
 
@@ -43,7 +40,7 @@ class VersionManager:
             try:
                 with open(history_file, 'r') as f:
                     return json.load(f)
-            except:
+            except json.JSONDecodeError:
                 return []
         return []
     
@@ -298,7 +295,7 @@ class VersionManager:
     def generate_changelog(self) -> str:
         """Generate a changelog in markdown format."""
         changelog = "# Changelog\n\n"
-        changelog += f"All notable changes to this project will be documented in this file.\n\n"
+        changelog += "All notable changes to this project will be documented in this file.\n\n"
         
         # Add unreleased section if there are pending changes
         # (In a real implementation, this would check for pending changes)

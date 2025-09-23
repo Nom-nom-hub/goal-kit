@@ -1,0 +1,10 @@
+{
+  "id": "fu9t9nffgdndgvuey2ihr",
+  "title": "Fix bare except clauses",
+  "description": "Fix all 'except: json.JSONDecodeError:' clauses without exception specifications in files: automation.py, cicd.py, compliance.py, dependencies.py, documentation.py, enhanced_quality_assurance.py, performance.py, performance_tools.py, quality_gates.py, real_time_monitoring.py, reviews.py, scaffolding.py, security.py, security_scanner.py, testing_quality.py, versioning.py",
+  "dependencies": [],
+  "assignedAgent": "QA_Engineer",
+  "status": "pending",
+  "createdAt": "2025-09-23T21:32:49.577Z",
+  "updatedAt": "2025-09-23T21:32:49.577Z"
+}

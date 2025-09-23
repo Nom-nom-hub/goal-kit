@@ -3,17 +3,13 @@ Security Scanning and Vulnerability Management for goal-dev-spec
 Exceeds spec-kit functionality with comprehensive security analysis and vulnerability management.
 """
 
-import os
-import sys
 import json
-import yaml
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import hashlib
-import subprocess
 
 
 @dataclass
@@ -95,7 +91,7 @@ class SecurityScanner:
                     if isinstance(req_data.get('result'), str):
                         try:
                             req_data['result'] = json.loads(req_data['result'])
-                        except:
+                        except json.JSONDecodeError:
                             req_data['result'] = None
                     request = SecurityRequest(**req_data)
                     requests[request.id] = request
@@ -686,7 +682,7 @@ class SecurityScanner:
             if isinstance(result.get('result'), str):
                 try:
                     result['result'] = json.loads(result['result'])
-                except:
+                except json.JSONDecodeError:
                     result['result'] = None
             return result
         return None
@@ -700,7 +696,7 @@ class SecurityScanner:
             if isinstance(req_dict.get('result'), str):
                 try:
                     req_dict['result'] = json.loads(req_dict['result'])
-                except:
+                except json.JSONDecodeError:
                     req_dict['result'] = None
             requests.append(req_dict)
         return requests
@@ -744,7 +740,7 @@ class SecurityScanner:
                 try:
                     with open(log_file, 'r') as f:
                         log_data = json.load(f)
-                except:
+                except json.JSONDecodeError:
                     pass
             
             log_data.append(log_entry)
@@ -894,7 +890,7 @@ class SecurityScanner:
             emoji = "🔴" if severity == "critical" else "🟠" if severity == "high" else "🟡" if severity == "medium" else "🟢"
             report += f"| {emoji} {severity.capitalize()} | {count} |\n"
         
-        report += f"""
+        report += """
 ## Recent Security Scans
 
 | ID | Type | Target | Status | Created |
@@ -905,7 +901,7 @@ class SecurityScanner:
             created = datetime.fromisoformat(req.created_at).strftime("%Y-%m-%d %H:%M")
             report += f"| {req.id[:8]} | {req.scan_type} | {req.target} | {req.status} | {created} |\n"
         
-        report += f"""
+        report += """
 ## Recent Scan Results
 
 | Scan ID | Type | Timestamp | Vulnerabilities Found |
@@ -917,7 +913,7 @@ class SecurityScanner:
             vuln_count = scan.get('result', {}).get('summary', {}).get('total', 0)
             report += f"| {scan['request_id'][:8]} | {scan['scan_type']} | {timestamp} | {vuln_count} |\n"
         
-        report += f"""
+        report += """
 ## Open Vulnerabilities (Critical and High)
 
 """
@@ -1053,7 +1049,7 @@ def security_cli():
                     if isinstance(result, str):
                         try:
                             result = json.loads(result)
-                        except:
+                        except json.JSONDecodeError:
                             result = {"output": result}
                     
                     console.print(f"Timestamp: {result.get('timestamp', 'unknown')}")
@@ -1224,7 +1220,7 @@ def security_cli():
             # Check compliance
             compliance_result = security_scanner.enforce_security_policies()
             
-            console.print(Panel(f"[bold]Security Policy Compliance[/bold]", expand=False))
+            console.print(Panel("[bold]Security Policy Compliance[/bold]", expand=False))
             status_indicator = "✅" if compliance_result['compliant'] else "❌"
             console.print(f"Status: {status_indicator} {'Compliant' if compliance_result['compliant'] else 'Non-Compliant'}")
             console.print(f"Policies Evaluated: {compliance_result['policies_evaluated']}")

@@ -3,11 +3,8 @@ Main governance module for the goal-dev-spec system.
 Integrates all governance components into a unified system.
 """
 
-import os
-import yaml
-import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 from datetime import datetime
 
 from .governance import GovernanceManager
@@ -114,10 +111,6 @@ class GovernanceSystem:
         """
         # For now, we'll create mock project data
         # In a real implementation, this would scan actual project files
-        mock_project_data = {
-            "goals": [],
-            "specs": []
-        }
         return self.security_manager.scan_project_for_vulnerabilities()
     
     def check_security_policies(self, project_data: Dict) -> Dict:
@@ -229,7 +222,7 @@ class GovernanceSystem:
         Returns:
             Governance report in markdown format
         """
-        report = f"# Governance Report\n\n"
+        report = "# Governance Report\n\n"
         report += f"Generated: {datetime.now().isoformat()}\n\n"
         report += f"Project: {self.project_path}\n\n"
         

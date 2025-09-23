@@ -3,11 +3,9 @@ Performance monitoring module for the goal-dev-spec system.
 Provides performance standards, monitoring, and optimization recommendations.
 """
 
-import os
-import yaml
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List
 from datetime import datetime
 from collections import defaultdict
 
@@ -81,7 +79,7 @@ class PerformanceMonitor:
             try:
                 with open(metrics_file, 'r') as f:
                     return json.load(f)
-            except:
+            except (FileNotFoundError, json.JSONDecodeError, PermissionError):
                 return defaultdict(list)
         return defaultdict(list)
     
@@ -164,7 +162,7 @@ class PerformanceMonitor:
         
         standard = self.standards[metric_name]
         target = standard["target"]
-        threshold = standard["threshold"]
+        standard["threshold"]
         
         # Only provide recommendations if performance is below target
         if metric_name in ["specification_quality"]:  # Higher is better
@@ -178,7 +176,7 @@ class PerformanceMonitor:
     
     def generate_performance_report(self) -> str:
         """Generate a performance report in markdown format."""
-        report = f"# Performance Report\n\n"
+        report = "# Performance Report\n\n"
         report += f"Generated: {datetime.now().isoformat()}\n\n"
         report += f"Project: {self.project_path}\n\n"
         
@@ -191,7 +189,7 @@ class PerformanceMonitor:
             
             if "error" in stats:
                 report += f"### {standard['name']}\n\n"
-                report += f"Status: ⚠️ No data available\n\n"
+                report += "Status: ⚠️ No data available\n\n"
                 continue
             
             latest_value = stats["latest"]
@@ -199,15 +197,15 @@ class PerformanceMonitor:
             
             report += f"### {standard['name']}\n\n"
             report += f"Latest Value: {latest_value:.2f} {standard['unit']}\n"
-            report += f"Target: {target} {standard['unit']}\n"
-            report += f"Threshold: {threshold} {standard['unit']}\n\n"
+            report += f"Target: {standard['target']} {standard['unit']}\n"
+            report += f"Threshold: {standard['threshold']} {standard['unit']}\n\n"
             
             if assessment["status"] == "excellent":
-                report += f"Status: ✅ EXCELLENT\n\n"
+                report += "Status: ✅ EXCELLENT\n\n"
             elif assessment["status"] == "acceptable":
-                report += f"Status: ⚠️ ACCEPTABLE\n\n"
+                report += "Status: ⚠️ ACCEPTABLE\n\n"
             else:
-                report += f"Status: ❌ POOR\n\n"
+                report += "Status: ❌ POOR\n\n"
             
             # Add recommendations if performance is not excellent
             if assessment["status"] != "excellent":
@@ -219,7 +217,7 @@ class PerformanceMonitor:
             
             # Add historical trend
             if stats["count"] > 1:
-                report += f"Historical Data:\n"
+                report += "Historical Data:\n"
                 report += f"- Average: {stats['average']:.2f} {standard['unit']}\n"
                 report += f"- Min: {stats['min']:.2f} {standard['unit']}\n"
                 report += f"- Max: {stats['max']:.2f} {standard['unit']}\n"
@@ -259,7 +257,7 @@ class PerformanceMonitor:
                         created = datetime.fromisoformat(goal["created_at"])
                         completed = datetime.fromisoformat(goal["updated_at"])
                         completion_times.append((completed - created).days)
-                    except:
+                    except (ValueError, TypeError, AttributeError):
                         pass
             
             if completion_times:

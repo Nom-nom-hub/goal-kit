@@ -6,17 +6,13 @@ Test file for the advanced automation framework
 import os
 import shutil
 import sys
-from datetime import datetime, timedelta
 from pathlib import Path
 
 # Add src to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
 from goal_cli.automation import (
-    AdvancedAutomationFramework, 
-    TaskPriority, 
-    TaskStatus,
-    AutomationTask
+    AdvancedAutomationFramework
 )
 
 
@@ -94,7 +90,6 @@ def test_automation_framework():
     print(f"Report length: {len(report)} characters")
     
     # Clean up test project and generated files
-    import shutil
     shutil.rmtree(test_project, ignore_errors=True)
     
     # Clean up any generated automation files

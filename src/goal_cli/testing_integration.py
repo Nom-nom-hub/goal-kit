@@ -3,14 +3,11 @@ Testing Framework Integration for goal-dev-spec
 Provides seamless integration with popular testing frameworks and automated test generation.
 """
 
-import os
-import yaml
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 from datetime import datetime
 import subprocess
-import sys
 
 
 class TestingFrameworkIntegration:
@@ -752,7 +749,6 @@ def testing_cli():
     """CLI commands for testing framework integration"""
     import typer
     from rich.console import Console
-    from rich.table import Table
     
     app = typer.Typer()
     console = Console()

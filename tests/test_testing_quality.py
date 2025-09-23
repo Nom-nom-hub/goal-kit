@@ -84,7 +84,7 @@ if __name__ == "__main__":
         if isinstance(result, str):
             try:
                 result = json.loads(result)
-            except:
+            except json.JSONDecodeError:
                 result = {"output": result}
         print(f"Gate Passed: {result.get('passed', 'unknown')}")
     
@@ -121,7 +121,7 @@ if __name__ == "__main__":
             if isinstance(result, str):
                 try:
                     result = json.loads(result)
-                except:
+                except json.JSONDecodeError:
                     result = {"output": result}
             print(f"    Success: {result.get('success', 'unknown')}")
     
@@ -134,12 +134,11 @@ if __name__ == "__main__":
             if isinstance(result, str):
                 try:
                     result = json.loads(result)
-                except:
+                except json.JSONDecodeError:
                     result = {"output": result}
             print(f"    Passed: {result.get('passed', 'unknown')}")
     
     # Clean up test project and generated files
-    import shutil
     shutil.rmtree(test_project, ignore_errors=True)
     
     # Clean up any generated automation files

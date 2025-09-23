@@ -4,13 +4,11 @@ Exceeds spec-kit functionality with advanced validation, predictive analytics,
 real-time monitoring, and comprehensive quality assessment.
 """
 
-import os
-import yaml
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
-from datetime import datetime, timedelta
+from typing import Dict, List, Tuple
+from datetime import datetime
 from dataclasses import dataclass, asdict
 from collections import defaultdict
 import hashlib
@@ -125,7 +123,7 @@ class EnhancedQualityAssurance:
             try:
                 with open(metrics_file, 'r') as f:
                     return json.load(f)
-            except:
+            except json.JSONDecodeError:
                 return defaultdict(list)
         return defaultdict(list)
 

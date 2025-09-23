@@ -47,7 +47,6 @@ class TestGovernanceSystem(unittest.TestCase):
             "metadata": {}
         }
         
-        import yaml
         with open(self.test_dir / ".goal" / "templates" / "goal-template.yaml", 'w') as f:
             yaml.dump(goal_template, f)
     

@@ -2,10 +2,9 @@
 AI agent integration module for the goal-dev-spec system.
 """
 
-import os
+from typing import Optional, Dict, List
 import yaml
 from pathlib import Path
-from typing import Dict, List, Optional
 
 class AgentManager:
     """Manages AI agent integrations and configurations."""

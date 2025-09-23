@@ -3,18 +3,13 @@ Performance Optimization Tools for goal-dev-spec
 Exceeds spec-kit functionality with advanced performance analysis and optimization capabilities.
 """
 
-import os
-import sys
 import json
-import yaml
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import hashlib
-import subprocess
 import psutil
-import time
 
 
 @dataclass
@@ -84,7 +79,7 @@ class PerformanceOptimizer:
                     if isinstance(req_data.get('result'), str):
                         try:
                             req_data['result'] = json.loads(req_data['result'])
-                        except:
+                        except json.JSONDecodeError:
                             req_data['result'] = None
                     request = PerformanceRequest(**req_data)
                     requests[request.id] = request
@@ -716,7 +711,7 @@ class PerformanceOptimizer:
             if isinstance(result.get('result'), str):
                 try:
                     result['result'] = json.loads(result['result'])
-                except:
+                except json.JSONDecodeError:
                     result['result'] = None
             return result
         return None
@@ -730,7 +725,7 @@ class PerformanceOptimizer:
             if isinstance(req_dict.get('result'), str):
                 try:
                     req_dict['result'] = json.loads(req_dict['result'])
-                except:
+                except json.JSONDecodeError:
                     req_dict['result'] = None
             requests.append(req_dict)
         return requests
@@ -786,7 +781,7 @@ class PerformanceOptimizer:
             created = datetime.fromisoformat(req.created_at).strftime("%Y-%m-%d %H:%M")
             report += f"| {req.id[:8]} | {req.action} | {req.target} | {req.status} | {created} |\n"
         
-        report += f"""
+        report += """
 ## Recent Performance Metrics
 
 | Metric | Value | Unit | Timestamp |
@@ -797,7 +792,7 @@ class PerformanceOptimizer:
             timestamp = datetime.fromisoformat(metric['timestamp']).strftime("%Y-%m-%d %H:%M")
             report += f"| {metric['name']} | {metric['value']:.2f} | {metric['unit']} | {timestamp} |\n"
         
-        report += f"""
+        report += """
 ## Benchmark Summary
 
 | Benchmark | Last Run | Latest Result |
@@ -829,7 +824,7 @@ class PerformanceOptimizer:
             if isinstance(result, str):
                 try:
                     result = json.loads(result)
-                except:
+                except json.JSONDecodeError:
                     result = {"output": result}
             
             if result.get("recommendations"):
@@ -1011,7 +1006,7 @@ def performance_cli():
                     if isinstance(result, str):
                         try:
                             result = json.loads(result)
-                        except:
+                        except json.JSONDecodeError:
                             result = {"output": result}
                     
                     console.print(f"Timestamp: {result.get('timestamp', 'unknown')}")

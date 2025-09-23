@@ -3,13 +3,9 @@ Compliance checking module for the goal-dev-spec system.
 Provides automated compliance validation against industry standards and regulations.
 """
 
-import os
-import yaml
-import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict
 from datetime import datetime
-import re
 
 class ComplianceChecker:
     """Checks compliance with industry standards, regulations, and organizational policies."""
@@ -496,7 +492,7 @@ class ComplianceChecker:
         """Generate a compliance report in markdown format."""
         results = self.check_all_standards(project_data)
         
-        report = f"# Compliance Report\n\n"
+        report = "# Compliance Report\n\n"
         report += f"Generated: {results['timestamp']}\n\n"
         report += f"Project: {results['project']}\n\n"
         

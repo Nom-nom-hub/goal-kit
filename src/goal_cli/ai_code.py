@@ -3,13 +3,9 @@ AI-Powered Code Generation and Refactoring Tools for goal-dev-spec
 Exceeds spec-kit functionality with intelligent code generation and refactoring capabilities.
 """
 
-import os
-import sys
-import subprocess
 import json
-import re
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import hashlib

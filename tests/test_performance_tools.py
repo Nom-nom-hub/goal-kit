@@ -112,7 +112,7 @@ def test_performance_optimization():
                 if isinstance(result, str):
                     try:
                         result = json.loads(result)
-                    except:
+                    except json.JSONDecodeError:
                         result = {"output": result}
                 if result.get('recommendations'):
                     print(f"    Recommendations: {len(result['recommendations'])}")
@@ -120,7 +120,6 @@ def test_performance_optimization():
                     print(f"    Optimizations: {len(result['optimizations_applied'])}")
     
     # Clean up test project and generated files
-    import shutil
     shutil.rmtree(test_project, ignore_errors=True)
     
     # Clean up any generated automation files

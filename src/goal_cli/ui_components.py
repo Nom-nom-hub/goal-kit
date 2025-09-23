@@ -8,13 +8,10 @@ import sys
 import subprocess
 import shutil
 from pathlib import Path
-from typing import Optional, Dict, List
 
 import typer
-import httpx
 from rich.console import Console
 from rich.panel import Panel
-from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.text import Text
 from rich.live import Live
 from rich.align import Align

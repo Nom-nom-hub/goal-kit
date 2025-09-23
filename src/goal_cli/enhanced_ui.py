@@ -3,15 +3,11 @@ Enhanced UI components for the goal-dev-spec CLI with advanced progress tracking
 """
 
 import time
-import threading
 from datetime import datetime, timedelta
-from typing import Optional, Callable, Dict, List
+from typing import Optional, Dict, List
 from rich.console import Console
-from rich.panel import Panel
-from rich.text import Text
 from rich.tree import Tree
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeRemainingColumn
-from rich.table import Table
 from rich.live import Live
 
 console = Console()

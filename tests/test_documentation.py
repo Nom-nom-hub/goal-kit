@@ -3,7 +3,6 @@
 Test file for the automated documentation generation
 """
 
-import json
 import os
 import shutil
 import sys
@@ -127,7 +126,6 @@ def test_documentation_generation():
             print(f"  - {req_id[:8]}: {status['status']}")
     
     # Clean up test project and generated files
-    import shutil
     shutil.rmtree(test_project, ignore_errors=True)
     
     # Clean up any generated automation files

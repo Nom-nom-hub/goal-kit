@@ -3,13 +3,9 @@ Governance module for the goal-dev-spec system.
 Provides automated compliance checking, quality gates, and governance enforcement.
 """
 
-import os
-import yaml
-import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, Optional
 from datetime import datetime
-from jsonschema import validate, ValidationError
 
 class GovernanceManager:
     """Manages project governance, compliance, and quality assurance."""

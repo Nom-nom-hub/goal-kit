@@ -7,26 +7,21 @@ import os
 import sys
 import subprocess
 from pathlib import Path
-from typing import Optional
 
 import typer
 import yaml
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-from rich.text import Text
-from rich.tree import Tree
-from rich.live import Live
 from rich.align import Align
 
 # Import our modules
 from .goals import GoalManager
 from .specs import SpecManager
 from .ui_components import (
-    show_banner, 
-    BannerGroup, 
-    StepTracker,
-    select_with_arrows,
+    show_banner,
+    BannerGroup,
+    # StepTracker is imported but not used - keeping for potential re-export
     AI_CHOICES,
     SCRIPT_TYPE_CHOICES,
     check_tool,
@@ -70,17 +65,7 @@ def get_project_path() -> Path:
         current_path = current_path.parent
     raise ValueError("Not in a goal-dev-spec project directory. Run 'goal init' first.")
 
-def show_banner():
-    """Display the ASCII art banner."""
-    banner = Text("""
-╔════╗ ╔════╗ ╔════╗ ╔════╗
-║  G ║ ║  O ║ ║  A ║ ║  L ║
-╚════╝ ╚════╝ ╚════╝ ╚════╝
 
-    """, style="bold blue")
-    console.print(banner)
-    console.print(Panel("[bold green]GOAL-DEV[/bold green] - A goal-driven development specification system using YAML",
-                        border_style="blue", padding=(1, 2)))
 
 @app.command()
 def init(

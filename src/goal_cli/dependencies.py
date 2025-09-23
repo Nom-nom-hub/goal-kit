@@ -3,12 +3,9 @@ Intelligent Dependency Management for goal-dev-spec
 Exceeds spec-kit functionality with advanced dependency analysis and management.
 """
 
-import os
-import sys
 import json
-import yaml
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Set
+from typing import Dict, List, Optional
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import hashlib
@@ -107,7 +104,7 @@ class DependencyManager:
                     if isinstance(req_data.get('result'), str):
                         try:
                             req_data['result'] = json.loads(req_data['result'])
-                        except:
+                        except json.JSONDecodeError:
                             req_data['result'] = None
                     request = DependencyRequest(**req_data)
                     requests[request.id] = request
@@ -141,12 +138,12 @@ class DependencyManager:
                     if isinstance(dep_data.get('vulnerabilities'), str):
                         try:
                             dep_data['vulnerabilities'] = json.loads(dep_data['vulnerabilities'])
-                        except:
+                        except json.JSONDecodeError:
                             dep_data['vulnerabilities'] = []
                     if isinstance(dep_data.get('dependencies'), str):
                         try:
                             dep_data['dependencies'] = json.loads(dep_data['dependencies'])
-                        except:
+                        except json.JSONDecodeError:
                             dep_data['dependencies'] = []
                     dependency = DependencyInfo(**dep_data)
                     dependencies[dependency.name] = dependency
@@ -601,7 +598,7 @@ class DependencyManager:
             if isinstance(result.get('result'), str):
                 try:
                     result['result'] = json.loads(result['result'])
-                except:
+                except json.JSONDecodeError:
                     result['result'] = None
             return result
         return None
@@ -615,7 +612,7 @@ class DependencyManager:
             if isinstance(req_dict.get('result'), str):
                 try:
                     req_dict['result'] = json.loads(req_dict['result'])
-                except:
+                except json.JSONDecodeError:
                     req_dict['result'] = None
             requests.append(req_dict)
         return requests
@@ -832,7 +829,7 @@ def dependency_cli():
                     if isinstance(result, str):
                         try:
                             result = json.loads(result)
-                        except:
+                        except json.JSONDecodeError:
                             result = {"output": result}
                     
                     if status['action'] == "analyze":

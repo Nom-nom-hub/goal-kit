@@ -3,6 +3,7 @@ Continuous Integration and Deployment Pipelines for goal-dev-spec
 Exceeds spec-kit functionality with sophisticated CI/CD pipeline management.
 """
 
+import os
 import json
 import yaml
 from pathlib import Path
@@ -132,7 +133,7 @@ class CICDPipelineManager:
                 config_path = f"{provider_info['config_dir']}/{pipeline_type}_pipeline{provider_info['file_extension']}"
             else:
                 config_path = f"{provider_info['config_file']}"
-
+        
         request = PipelineRequest(
             id=request_id,
             pipeline_type=pipeline_type,
@@ -330,22 +331,7 @@ before_script:
   - pip install -e .
 """
         
-        if pipeline_type == "ci" or pipeline_type == "cicd":
-            pipeline += """
-test:
-  stage: test
-  script:
-    - pip install pytest pytest-cov
-    - pytest --cov=. --cov-report=xml
-  coverage: '/TOTAL.*\\s+(\\d+%)$/'
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage.xml
-
-"""
-
+        if pipeline_type == "ci" or pipeline_type == "cicd":\n            pipeline += \"\"\"\ntest:\n  stage: test\n  script:\n    - pip install pytest pytest-cov\n    - pytest --cov=. --cov-report=xml\n  coverage: '/TOTAL.*\\\\s+(\\\\d+%)$/'\n  artifacts:\n    reports:\n      coverage_report:\n        coverage_format: cobertura\n        path: coverage.xml\n\"\"\"\n
         
         if pipeline_type == "cd" or pipeline_type == "cicd":
             pipeline += f"""
@@ -364,12 +350,12 @@ deploy:
         """Generate Jenkins pipeline"""
         project_name = config.get("project_name", "project")
         
-        pipeline = """pipeline {
+        pipeline = """pipeline {{
     agent any
     
-    stages {
-        stage('Setup') {
-            steps {
+    stages {{
+        stage('Setup') {{
+            steps {{
                 sh 'python -V'
                 sh 'pip install -e .'
 """
@@ -379,22 +365,23 @@ deploy:
                 sh 'pip install pytest pytest-cov'
 """
         
-        pipeline += """
-            }
+        pipeline += f"""
+            }}
+        }}
 """
         
         if pipeline_type == "ci" or pipeline_type == "cicd":
-            pipeline += """
-        stage('Test') {
-            steps {
+            pipeline += f"""
+        stage('Test') {{
+            steps {{
                 sh 'pytest --cov=. --cov-report=xml'
-            }
-            post {
-                always {
+            }}
+            post {{
+                always {{
                     publishCoverage adapters: [coberturaAdapter(mergeToOneReport: true, path: 'coverage.xml')]
-                }
-            }
-        }
+                }}
+            }}
+        }}
 """
         
         if pipeline_type == "cd" or pipeline_type == "cicd":
@@ -407,9 +394,9 @@ deploy:
         }}
 """
         
-        pipeline += """
-    }
-}"""
+        pipeline += f"""
+    }}
+}}"""
         
         return pipeline
     
@@ -417,7 +404,7 @@ deploy:
         """Generate CircleCI pipeline"""
         project_name = config.get("project_name", "project")
         
-        pipeline = """version: 2.1
+        pipeline = f"""version: 2.1
 
 orbs:
   python: circleci/python@2.1.1
@@ -433,7 +420,7 @@ jobs:
 """
         
         if pipeline_type == "ci" or pipeline_type == "cicd":
-            pipeline += """
+            pipeline += f"""
       - run:
           name: Run tests
           command: pytest --cov=. --cov-report=xml
@@ -456,7 +443,7 @@ jobs:
             # Add deployment commands here
 """
         
-        pipeline += """
+        pipeline += f"""
 workflows:
   main:
     jobs:
@@ -464,7 +451,7 @@ workflows:
 """
         
         if pipeline_type == "cd" or pipeline_type == "cicd":
-            pipeline += """
+            pipeline += f"""
       - deploy:
           requires:
             - build-and-test
@@ -479,7 +466,7 @@ workflows:
         """Generate Travis CI pipeline"""
         project_name = config.get("project_name", "project")
         
-        pipeline = """language: python
+        pipeline = f"""language: python
 python:
   - "3.8"
   - "3.9"
@@ -490,7 +477,7 @@ install:
 """
         
         if pipeline_type == "ci" or pipeline_type == "cicd":
-            pipeline += """
+            pipeline += f"""
   - pip install pytest pytest-cov
 
 script:
@@ -498,7 +485,8 @@ script:
 """
         
         if pipeline_type == "cd" or pipeline_type == "cicd":
-            pipeline += f"""deploy:
+            pipeline += f"""
+deploy:
   provider: script
   script: echo "Deploying {project_name} to production"
   on:
@@ -511,7 +499,7 @@ script:
         """Generate Azure Pipelines"""
         project_name = config.get("project_name", "project")
         
-        pipeline = """trigger:
+        pipeline = f"""trigger:
 - main
 - develop
 
@@ -531,7 +519,7 @@ steps:
 """
         
         if pipeline_type == "ci" or pipeline_type == "cicd":
-            pipeline += """
+            pipeline += f"""
 - script: |
     pip install pytest pytest-cov
     pytest --cov=. --cov-report=xml
@@ -594,12 +582,12 @@ configuration:
         
         if pipeline_types is None:
             pipeline_types = list(self.supported_pipeline_types.keys())
-
+        
         request_ids = []
-
+        
         # Extract project information
         project_info = self._extract_project_info()
-
+        
         # Generate pipelines for each provider and type combination
         for provider in providers:
             if provider not in self.supported_providers:
@@ -859,7 +847,7 @@ def cicd_cli():
             # Parse providers and types
             provider_list = [p.strip() for p in providers.split(",") if p.strip()] if providers else None
             type_list = [t.strip() for t in types.split(",") if t.strip()] if types else None
-
+            
             # Initialize CI/CD manager
             cicd_manager = CICDPipelineManager(project_path)
             
@@ -896,10 +884,10 @@ def cicd_cli():
             result = cicd_manager.validate_pipeline(config_path)
             
             if result["valid"]:
-                console.print("[green]✓[/green] Pipeline configuration is valid")
+                console.print(f"[green]✓[/green] Pipeline configuration is valid")
                 console.print(f"[dim]{result.get('message', 'No additional information')}[/dim]")
             else:
-                console.print("[red]✗[/red] Pipeline configuration is invalid")
+                console.print(f"[red]✗[/red] Pipeline configuration is invalid")
                 for error in result.get("errors", []):
                     console.print(f"[red]  - {error}[/red]")
             

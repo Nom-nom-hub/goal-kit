@@ -137,7 +137,6 @@ def long_function():
     print(f"Found {len(ref_requests)} refactoring requests")
     
     # Clean up test project and generated files
-    import shutil
     shutil.rmtree(test_project, ignore_errors=True)
     
     # Clean up any generated automation files

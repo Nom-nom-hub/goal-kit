@@ -2,15 +2,17 @@
 Predictive analytics engine for goal-dev-spec
 """
 
-import os
 import yaml
 import json
 from pathlib import Path
 from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 from dataclasses import dataclass
-import random
 import time
+
+import typer
+from rich.console import Console
+from rich.table import Table
 
 @dataclass
 class HistoricalProject:
@@ -281,9 +283,6 @@ class ProgressTracker:
         return self.notifications
 
 # CLI Commands for Analytics
-import typer
-from rich.console import Console
-from rich.table import Table
 
 console = Console()
 

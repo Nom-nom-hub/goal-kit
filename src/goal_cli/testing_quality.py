@@ -3,10 +3,7 @@ Automated Testing and Quality Gates for goal-dev-spec
 Exceeds spec-kit functionality with comprehensive testing automation and quality assurance.
 """
 
-import os
-import sys
 import json
-import yaml
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, asdict
@@ -116,7 +113,7 @@ class TestingAndQualityManager:
                     if isinstance(req_data.get('result'), str):
                         try:
                             req_data['result'] = json.loads(req_data['result'])
-                        except:
+                        except json.JSONDecodeError:
                             req_data['result'] = None
                     request = TestRequest(**req_data)
                     requests[request.id] = request
@@ -151,7 +148,7 @@ class TestingAndQualityManager:
                     if isinstance(gate_data.get('result'), str):
                         try:
                             gate_data['result'] = json.loads(gate_data['result'])
-                        except:
+                        except json.JSONDecodeError:
                             gate_data['result'] = None
                     gate = QualityGate(**gate_data)
                     gates[gate.id] = gate
@@ -444,7 +441,6 @@ class TestingAndQualityManager:
         
         # This would collect actual metrics based on the gate criteria
         # For now, we'll create mock metrics
-        criteria = gate.criteria
         
         if gate.id == "code_coverage":
             metrics["coverage"] = {
@@ -646,7 +642,7 @@ class TestingAndQualityManager:
             if isinstance(result.get('result'), str):
                 try:
                     result['result'] = json.loads(result['result'])
-                except:
+                except json.JSONDecodeError:
                     result['result'] = None
             return result
         return None
@@ -660,7 +656,7 @@ class TestingAndQualityManager:
             if isinstance(req_dict.get('result'), str):
                 try:
                     req_dict['result'] = json.loads(req_dict['result'])
-                except:
+                except json.JSONDecodeError:
                     req_dict['result'] = None
             requests.append(req_dict)
         return requests
@@ -674,7 +670,7 @@ class TestingAndQualityManager:
             if isinstance(result.get('result'), str):
                 try:
                     result['result'] = json.loads(result['result'])
-                except:
+                except json.JSONDecodeError:
                     result['result'] = None
             return result
         return None
@@ -688,7 +684,7 @@ class TestingAndQualityManager:
             if isinstance(gate_dict.get('result'), str):
                 try:
                     gate_dict['result'] = json.loads(gate_dict['result'])
-                except:
+                except json.JSONDecodeError:
                     gate_dict['result'] = None
             gates.append(gate_dict)
         return gates
@@ -722,7 +718,7 @@ class TestingAndQualityManager:
             success_status = "Yes" if test.result and test.result.get("success") else "No" if test.status == "failed" else "Unknown"
             report += f"| {test.id[:8]} | {test.test_type} | {test.framework} | {test.target} | {test.status} | {success_indicator} {success_status} |\n"
         
-        report += f"""
+        report += """
 ## Quality Gates
 
 | Gate | Status | Passed | Failures |
@@ -861,7 +857,7 @@ def testing_cli():
                     if isinstance(result, str):
                         try:
                             result = json.loads(result)
-                        except:
+                        except json.JSONDecodeError:
                             result = {"output": result}
                     
                     console.print(f"Success: {'Yes' if result.get('success') else 'No'}")
@@ -955,7 +951,7 @@ def testing_cli():
             
             if gate_id:
                 # Evaluate specific gate
-                result_id = test_manager.evaluate_quality_gate(gate_id, metrics_dict)
+                test_manager.evaluate_quality_gate(gate_id, metrics_dict)
                 console.print(f"[green]✓[/green] Quality gate {gate_id} evaluation completed")
                 
                 # Show result
@@ -965,7 +961,7 @@ def testing_cli():
                     if isinstance(result, str):
                         try:
                             result = json.loads(result)
-                        except:
+                        except json.JSONDecodeError:
                             result = {"output": result}
                     
                     console.print(f"Gate: {gate_status['name']}")

@@ -3,11 +3,8 @@ Quality gates module for the goal-dev-spec system.
 Provides automated validation and quality assurance checkpoints.
 """
 
-import os
-import yaml
-import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 from datetime import datetime
 from .governance import GovernanceManager
 
@@ -146,7 +143,7 @@ class QualityGateManager:
         """Generate a quality report in markdown format."""
         results = self.validate_all_gates(project_data)
         
-        report = f"# Quality Gates Report\n\n"
+        report = "# Quality Gates Report\n\n"
         report += f"Generated: {results['timestamp']}\n\n"
         report += f"Project: {results['project']}\n\n"
         

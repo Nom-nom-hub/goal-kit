@@ -2,7 +2,6 @@
 Goal management module for the goal-dev-spec system.
 """
 
-import os
 import yaml
 import json
 from pathlib import Path

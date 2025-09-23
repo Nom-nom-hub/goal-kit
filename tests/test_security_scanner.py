@@ -164,13 +164,12 @@ if __name__ == "__main__":
                 if isinstance(result, str):
                     try:
                         result = json.loads(result)
-                    except:
+                    except json.JSONDecodeError:
                         result = {"output": result}
                 summary = result.get('summary', {})
                 print(f"    Vulnerabilities Found: {summary.get('total', 0)}")
     
     # Clean up test project and generated files
-    import shutil
     shutil.rmtree(test_project, ignore_errors=True)
     
     # Clean up any generated automation files

@@ -3,7 +3,6 @@
 Test file for the CI/CD pipeline management
 """
 
-import json
 import os
 import shutil
 import sys
@@ -126,7 +125,6 @@ def test_cicd_pipelines():
             print(f"  - {req_id[:8]}: {status['status']}")
     
     # Clean up test project and generated files
-    import shutil
     shutil.rmtree(test_project, ignore_errors=True)
     
     # Clean up any generated automation files
