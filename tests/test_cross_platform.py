@@ -3,8 +3,9 @@
 Test file for the cross-platform scripting capabilities
 """
 
-import sys
 import os
+import shutil
+import sys
 from pathlib import Path
 
 # Add src to Python path

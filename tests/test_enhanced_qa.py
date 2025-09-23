@@ -2,17 +2,17 @@
 Test file for enhanced quality assurance modules
 """
 
+import json
+import os
+import shutil
+import tempfile
 import unittest
 from pathlib import Path
-import tempfile
-import shutil
-import os
-import json
 
 # Import our modules
 from src.goal_cli.enhanced_quality_assurance import QualityMetrics, ValidationFinding
-from src.goal_cli.testing_integration import TestingFrameworkIntegration
 from src.goal_cli.real_time_monitoring import MonitoringEvent, ThresholdRule
+from src.goal_cli.testing_integration import TestingFrameworkIntegration
 
 
 class TestEnhancedQualityAssuranceDataclasses(unittest.TestCase):

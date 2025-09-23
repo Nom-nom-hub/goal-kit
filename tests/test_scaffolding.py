@@ -3,9 +3,10 @@
 Test file for the advanced project scaffolding
 """
 
-import sys
-import os
 import json
+import os
+import shutil
+import sys
 from pathlib import Path
 
 # Add src to Python path

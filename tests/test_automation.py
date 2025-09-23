@@ -3,8 +3,10 @@
 Test file for the advanced automation framework
 """
 
-import sys
 import os
+import shutil
+import sys
+from datetime import datetime, timedelta
 from pathlib import Path
 
 # Add src to Python path
@@ -16,7 +18,6 @@ from goal_cli.automation import (
     TaskStatus,
     AutomationTask
 )
-from datetime import datetime, timedelta
 
 
 def test_automation_framework():

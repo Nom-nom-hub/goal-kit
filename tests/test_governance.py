@@ -2,18 +2,21 @@
 Test cases for the governance system modules.
 """
 
-import unittest
-import tempfile
 import shutil
+import tempfile
+import unittest
 from pathlib import Path
-from src.goal_cli.governance import GovernanceManager
+
+import yaml
+
 from src.goal_cli.compliance import ComplianceChecker
-from src.goal_cli.quality_gates import QualityGateManager
-from src.goal_cli.security import SecurityManager
-from src.goal_cli.performance import PerformanceMonitor
-from src.goal_cli.reviews import ReviewManager
-from src.goal_cli.versioning import VersionManager
+from src.goal_cli.governance import GovernanceManager
 from src.goal_cli.governance_system import GovernanceSystem
+from src.goal_cli.performance import PerformanceMonitor
+from src.goal_cli.quality_gates import QualityGateManager
+from src.goal_cli.reviews import ReviewManager
+from src.goal_cli.security import SecurityManager
+from src.goal_cli.versioning import VersionManager
 
 class TestGovernanceSystem(unittest.TestCase):
     def setUp(self):

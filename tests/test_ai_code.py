@@ -3,8 +3,9 @@
 Test file for the AI-powered code generation and refactoring tools
 """
 
-import sys
 import os
+import shutil
+import sys
 from pathlib import Path
 
 # Add src to Python path
