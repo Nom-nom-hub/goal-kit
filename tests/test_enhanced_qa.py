@@ -6,6 +6,7 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 
 # Import our modules
 from src.goal_cli.enhanced_quality_assurance import QualityMetrics, ValidationFinding
