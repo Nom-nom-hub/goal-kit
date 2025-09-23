@@ -26,18 +26,19 @@ jobs:
       run: |
         uv python install ${{ matrix.python-version }}
 
-    - name: Install package
+    - name: Create virtual environment and install package
       run: |
-        uv sync --all-extras --dev
+        uv venv
+        source .venv/bin/activate && uv sync --all-extras --dev
 
     - name: Run tests
       run: |
-        uv run pytest tests/ -v
+        source .venv/bin/activate && uv run pytest tests/ -v
 
     - name: Run linter
       run: |
-        uv run ruff check src/
+        source .venv/bin/activate && uv run ruff check src/
 
     - name: Run type checker
       run: |
-        uv run mypy src/
+        source .venv/bin/activate && uv run mypy src/

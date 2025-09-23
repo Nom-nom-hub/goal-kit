@@ -26,15 +26,16 @@ jobs:
       run: |
         uv python install ${{ matrix.python-version }}
 
-    - name: Install package with uv
+    - name: Create virtual environment and install dependencies
       run: |
-        uv sync --all-extras
+        uv venv
+        source .venv/bin/activate && uv sync --all-extras
 
     - name: Run tests with uv
       run: |
-        uv run pytest tests/ -v
+        source .venv/bin/activate && uv run pytest tests/ -v
 
     - name: Test CLI functionality
       run: |
         # Test basic CLI functionality
-        uv run python -c "from goal_cli import main; import sys; sys.argv = ['goal', '--help']; main()" 2>/dev/null | head -10 || echo "CLI help tested"
+        source .venv/bin/activate && uv run python -c "from goal_cli import main; import sys; sys.argv = ['goal', '--help']; main()" 2>/dev/null | head -10 || echo "CLI help tested"

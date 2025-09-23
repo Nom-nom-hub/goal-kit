@@ -26,20 +26,24 @@ jobs:
       run: |
         uv python install ${{ matrix.python-version }}
 
+    - name: Create virtual environment
+      run: |
+        uv venv
+
     - name: Install with uv
       run: |
-        uv pip install -e .
+        source .venv/bin/activate && uv pip install -e .
 
     - name: Verify installation
       run: |
         # Test that the goal command is available
-        python -c "import goal_cli; print('Package imported successfully')"
+        source .venv/bin/activate && python -c "import goal_cli; print('Package imported successfully')"
         
         # Check if the CLI can be run and show help
-        python -c "from goal_cli import main; import sys; sys.argv = ['goal', '--help']; main()" 2>/dev/null || echo "Help command tested"
+        source .venv/bin/activate && python -c "from goal_cli import main; import sys; sys.argv = ['goal', '--help']; main()" 2>/dev/null || echo "Help command tested"
         
         # Test goal command availability
-        which goal || python -m goal_cli --help || echo "CLI tested"
+        source .venv/bin/activate && which goal || echo "CLI tested"
         
     - name: Test basic functionality
       run: |
@@ -47,7 +51,7 @@ jobs:
         mkdir test_project && cd test_project
         
         # Initialize a project
-        python -c "
+        source .venv/bin/activate && python -c "
         import os
         import sys
         from pathlib import Path
