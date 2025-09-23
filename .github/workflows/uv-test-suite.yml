@@ -29,13 +29,13 @@ jobs:
     - name: Create virtual environment and install dependencies
       run: |
         uv venv
-        source .venv/bin/activate && uv sync --all-extras
+        uv sync --all-extras
 
     - name: Run tests with uv
       run: |
-        source .venv/bin/activate && uv run pytest tests/ -v
+        uv run pytest tests/ -v
 
     - name: Test CLI functionality
       run: |
         # Test basic CLI functionality
-        source .venv/bin/activate && uv run python -c "from goal_cli import main; import sys; sys.argv = ['goal', '--help']; main()" 2>/dev/null | head -10 || echo "CLI help tested"
+        uv run python -c "from goal_cli import main; import sys; sys.argv = ['goal', '--help']; main()" 2>/dev/null | head -10 || echo "CLI help tested"

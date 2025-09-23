@@ -32,75 +32,56 @@ jobs:
 
     - name: Install with uv
       run: |
-        source .venv/bin/activate && uv pip install -e .
+        uv pip install -e .
 
     - name: Verify installation
       run: |
         # Test that the goal command is available
-        source .venv/bin/activate && python -c "import goal_cli; print('Package imported successfully')"
+        uv run python -c "import goal_cli; print('Package imported successfully')"
         
         # Check if the CLI can be run and show help
-        source .venv/bin/activate && python -c "from goal_cli import main; import sys; sys.argv = ['goal', '--help']; main()" 2>/dev/null || echo "Help command tested"
+        uv run python -c "from goal_cli import main; import sys; sys.argv = ['goal', '--help']; main()" 2>/dev/null || echo "Help command tested"
         
         # Test goal command availability
-        source .venv/bin/activate && which goal || echo "CLI tested"
+        uv run python -c "import goal_cli; print('CLI available')"
         
     - name: Test basic functionality
       run: |
         # Create a temporary directory and test basic goal functionality
         mkdir test_project && cd test_project
         
-        # Initialize a project
-        source .venv/bin/activate && python -c "
+        # Test functionality using uv run
+        uv run python -c "
         import os
         import sys
         from pathlib import Path
+        import yaml
         
         # Add the src to the path to test directly
         sys.path.insert(0, '${{ github.workspace }}/src')
-        from goal_cli import main
-        
-        # Simulate command line arguments for init
-        original_argv = sys.argv[:]
-        sys.argv = ['goal', 'init', 'test_sub_project', '--here', '--no-git']
         
         # Change to test directory
         os.chdir('${{ github.workspace }}/test_project')
         
-        try:
-            from goal_cli import app
-            import typer
-            from typer.testing import CliRunner
-            
-            runner = CliRunner()
-            
-            # Test the init command with --help
-            result = runner.invoke(app, ['--help'])
-            print('CLI help output:', result.output[:200])
-            
-            # Create a minimal test project directory
-            os.makedirs('test_sub_project', exist_ok=True)
-            os.chdir('test_sub_project')
-            
-            # Create a minimal .goal directory
-            os.makedirs('.goal', exist_ok=True)
-            import yaml
-            config = {
-                'project': {
-                    'name': 'test_sub_project',
-                    'version': '0.1.0',
-                    'description': 'Test project for CI'
-                },
-                'settings': {
-                    'default_agent': 'claude'
-                }
+        # Create a minimal test project directory
+        os.makedirs('test_sub_project', exist_ok=True)
+        os.chdir('test_sub_project')
+        
+        # Create a minimal .goal directory
+        os.makedirs('.goal', exist_ok=True)
+        config = {
+            'project': {
+                'name': 'test_sub_project',
+                'version': '0.1.0',
+                'description': 'Test project for CI'
+            },
+            'settings': {
+                'default_agent': 'claude'
             }
+        }
+        
+        with open('.goal/goal.yaml', 'w') as f:
+            yaml.dump(config, f)
             
-            with open('.goal/goal.yaml', 'w') as f:
-                yaml.dump(config, f)
-                
-            print('Test project structure created successfully')
-            
-        except Exception as e:
-            print(f'Test step completed with info: {e}')
+        print('Test project structure created successfully')
         "

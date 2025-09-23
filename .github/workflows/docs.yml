@@ -28,11 +28,11 @@ jobs:
 
     - name: Install project with docs dependencies
       run: |
-        source .venv/bin/activate && uv pip install ".[docs]"
+        uv pip install ".[docs]"
 
     - name: Build documentation
       run: |
-        source .venv/bin/activate && mkdocs build
+        uv run mkdocs build
 
     - name: Deploy to GitHub Pages
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
