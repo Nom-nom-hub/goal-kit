@@ -17,6 +17,19 @@ dependencies = [
 [project.scripts]
 goal = "goal_cli:main"
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.1.6",
+    "mypy>=1.0",
+    "black>=23.0",
+    "pre-commit>=3.0",
+]
+docs = [
+    "mkdocs>=1.4.0",
+    "mkdocs-material>=9.0",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

@@ -30,12 +30,13 @@ This approach ensures that every line of code serves a clear purpose and contrib
 
 ## ⚡ Get started
 
-### Option 1: Persistent Installation (Recommended)
+### Option 1: Persistent Installation with uv (Recommended)
 
-Install once and use everywhere:
+Install once and use everywhere using uv for faster dependency resolution:
 
 ```bash
-pip install -e .
+# Install using uv
+uv pip install -e .
 ```
 
 Then use the tool directly:
@@ -53,11 +54,20 @@ Run directly without installing:
 python -m goal_cli init <PROJECT_NAME>
 ```
 
+### Option 3: Using uv run (No Installation Required)
+
+Run the latest version without installing using uv:
+
+```bash
+uv run goal init <PROJECT_NAME>
+```
+
 **Benefits of persistent installation:**
 
 - Tool stays installed and available in PATH
 - No need to create shell aliases
 - Cleaner shell configuration
+- Faster execution (no download overhead)
 
 ## Get started
 
@@ -249,10 +259,20 @@ Goal-Dev-Spec guides teams through a structured development process:
 
 Before using Goal-Dev-Spec, ensure you have:
 
-- Python 3.7 or higher
+- Python 3.10 or higher
 - pip package manager
 - Git (optional, but recommended)
 - Your preferred AI agent tool (optional, but recommended)
+
+For faster dependency resolution and better performance, we recommend using [uv](https://github.com/astral-sh/uv):
+
+```bash
+# Install uv
+pip install uv
+
+# Or using pipx
+pipx install uv
+```
 
 For AI agent integration, install the corresponding tool:
 
@@ -264,6 +284,22 @@ For AI agent integration, install the corresponding tool:
 - Auggie CLI: [Installation Guide](https://docs.augmentcode.com/cli/setup-auggie/install-auggie-cli)
 
 ## 📖 Learn more
+
+### GitHub Actions Workflows
+
+Goal-Dev-Spec includes pre-configured GitHub Actions workflows for:
+
+- **CI/CD**: Automated testing across multiple platforms and Python versions
+- **Release**: Automated publishing to PyPI when tags are pushed
+- **Documentation**: Automated documentation deployment to GitHub Pages
+- **uv Installation Testing**: Verifies compatibility with the uv package manager
+
+These workflows are located in `.github/workflows/` and include:
+
+- `ci.yml` - Runs tests on pull requests and pushes to main
+- `release.yml` - Publishes new releases to PyPI
+- `docs.yml` - Builds and deploys documentation
+- `test-uv-install.yml` - Tests installation with uv
 
 ### Project Structure
 
