@@ -29,6 +29,7 @@ setup(
         "pyyaml>=6.0",
         "jsonschema>=4.17.3",
         "platformdirs>=3.5.0",
+        "packaging>=21.0",
     ],
     entry_points={
         "console_scripts": [

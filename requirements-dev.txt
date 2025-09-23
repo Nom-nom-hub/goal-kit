@@ -1,6 +1,5 @@
 # Development dependencies
 pytest>=7.0
-packaging>=21.0
 ruff>=0.1.6
 mypy>=1.0
 black>=23.0
