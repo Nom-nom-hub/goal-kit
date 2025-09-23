@@ -22,13 +22,17 @@ jobs:
       run: |
         uv python install
 
+    - name: Create virtual environment
+      run: |
+        uv venv
+
     - name: Install project with docs dependencies
       run: |
-        uv pip install --system ".[docs]"
+        source .venv/bin/activate && uv pip install ".[docs]"
 
     - name: Build documentation
       run: |
-        mkdocs build
+        source .venv/bin/activate && mkdocs build
 
     - name: Deploy to GitHub Pages
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
