@@ -7,7 +7,7 @@ real-time monitoring, and comprehensive quality assessment.
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 from datetime import datetime
 from dataclasses import dataclass, asdict
 from collections import defaultdict
