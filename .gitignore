@@ -1,1 +1,14 @@
 .goal
+.qwen/
+*.pyc
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.venv/
+uv.lock
+debug_syntax.py
+fixed_function.py
+temp_cicd_syntax_check.py
+temp_content.txt
+temp_function.txt
+*.backup
