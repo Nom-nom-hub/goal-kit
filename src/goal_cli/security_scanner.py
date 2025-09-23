@@ -363,7 +363,7 @@ class SecurityScanner:
         
         return request_id
     
-    def _process_security_request(self, request_id: str, params: Dict = None):
+    def _process_security_request(self, request_id: str, params: Optional[Dict[str, Any]] = None) -> None:
         """Process a security request"""
         if request_id not in self.security_requests:
             return
@@ -410,7 +410,7 @@ class SecurityScanner:
         
         self._save_security_requests()
     
-    def _scan_dependencies(self, target: str) -> Dict:
+    def _scan_dependencies(self, target: str) -> Dict[str, Any]:
         """Scan dependencies for vulnerabilities"""
         scan_result = {
             "timestamp": datetime.now().isoformat(),
@@ -434,7 +434,7 @@ class SecurityScanner:
         
         return scan_result
     
-    def _scan_code(self, target: str) -> Dict:
+    def _scan_code(self, target: str) -> Dict[str, Any]:
         """Scan source code for security issues"""
         scan_result = {
             "timestamp": datetime.now().isoformat(),
@@ -458,7 +458,7 @@ class SecurityScanner:
         
         return scan_result
     
-    def _scan_config(self, target: str) -> Dict:
+    def _scan_config(self, target: str) -> Dict[str, Any]:
         """Scan configuration files for security issues"""
         scan_result = {
             "timestamp": datetime.now().isoformat(),
@@ -482,7 +482,7 @@ class SecurityScanner:
         
         return scan_result
     
-    def _scan_secrets(self, target: str) -> Dict:
+    def _scan_secrets(self, target: str) -> Dict[str, Any]:
         """Scan for secrets in code and configuration"""
         scan_result = {
             "timestamp": datetime.now().isoformat(),
@@ -506,7 +506,7 @@ class SecurityScanner:
         
         return scan_result
     
-    def _scan_container(self, target: str) -> Dict:
+    def _scan_container(self, target: str) -> Dict[str, Any]:
         """Scan container images for vulnerabilities"""
         scan_result = {
             "timestamp": datetime.now().isoformat(),
@@ -530,7 +530,7 @@ class SecurityScanner:
         
         return scan_result
     
-    def _generate_mock_vulnerabilities(self, scan_type: str) -> List[Dict]:
+    def _generate_mock_vulnerabilities(self, scan_type: str) -> List[Dict[str, Any]]:
         """Generate mock vulnerabilities for testing"""
         vulnerabilities = []
         
@@ -622,7 +622,7 @@ class SecurityScanner:
         
         return vulnerabilities
     
-    def _create_vulnerability_summary(self, vulnerabilities: List[Dict]) -> Dict:
+    def _create_vulnerability_summary(self, vulnerabilities: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Create a summary of vulnerabilities"""
         summary = {
             "total": len(vulnerabilities),
@@ -673,7 +673,7 @@ class SecurityScanner:
         # Save vulnerabilities
         self._save_vulnerabilities()
     
-    def get_security_status(self, request_id: str) -> Optional[Dict]:
+    def get_security_status(self, request_id: str) -> Optional[Dict[str, Any]]:
         """Get the status of a security request"""
         if request_id in self.security_requests:
             request = self.security_requests[request_id]
@@ -687,7 +687,7 @@ class SecurityScanner:
             return result
         return None
     
-    def list_security_requests(self) -> List[Dict]:
+    def list_security_requests(self) -> List[Dict[str, Any]]:
         """List all security requests"""
         requests = []
         for req in self.security_requests.values():
@@ -701,7 +701,7 @@ class SecurityScanner:
             requests.append(req_dict)
         return requests
     
-    def list_vulnerabilities(self, severity_filter: str = None, status_filter: str = None) -> List[Dict]:
+    def list_vulnerabilities(self, severity_filter: Optional[str] = None, status_filter: Optional[str] = None) -> List[Dict[str, Any]]:
         """List all vulnerabilities with optional filters"""
         vulnerabilities = []
         for vuln in self.vulnerabilities.values():
@@ -750,14 +750,14 @@ class SecurityScanner:
             return True
         return False
     
-    def get_scan_results(self, request_id: str = None) -> Dict:
+    def get_scan_results(self, request_id: Optional[str] = None) -> Dict[str, Any]:
         """Get scan results"""
         if request_id:
             return self.scan_results.get(request_id, {})
         else:
             return self.scan_results
     
-    def enforce_security_policies(self) -> Dict:
+    def enforce_security_policies(self) -> Dict[str, Any]:
         """Enforce security policies and return compliance status"""
         compliance = {
             "timestamp": datetime.now().isoformat(),
@@ -783,7 +783,7 @@ class SecurityScanner:
         
         return compliance
     
-    def _check_policy_violations(self, policy: Dict) -> List[Dict]:
+    def _check_policy_violations(self, policy: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Check for policy violations"""
         violations = []
         policy_rules = policy.get("rules", [])

@@ -284,7 +284,7 @@ class DependencyManager:
         
         return request_id
     
-    def _process_dependency_request(self, request_id: str, params: Dict = None):
+    def _process_dependency_request(self, request_id: str, params: Optional[Dict[str, Any]] = None) -> None:
         """Process a dependency request"""
         if request_id not in self.dependency_requests:
             return

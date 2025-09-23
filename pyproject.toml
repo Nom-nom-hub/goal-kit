@@ -27,6 +27,8 @@ dev = [
     "mypy>=1.0",
     "black>=23.0",
     "pre-commit>=3.0",
+    "types-psutil>=5.9.0",
+    "types-toml>=0.10.0",
 ]
 docs = [
     "mkdocs>=1.4.0",

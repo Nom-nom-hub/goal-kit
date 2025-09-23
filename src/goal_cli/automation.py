@@ -53,13 +53,13 @@ class AutomationTask:
     scheduled_at: Optional[str] = None
     started_at: Optional[str] = None
     completed_at: Optional[str] = None
-    dependencies: List[str] = None
+    dependencies: Optional[List[str]] = None
     estimated_duration: float = 0.0  # in seconds
-    resource_requirements: Dict = None
+    resource_requirements: Optional[Dict[str, Any]] = None
     retry_count: int = 0
     max_retries: int = 3
-    tags: List[str] = None
-    metadata: Dict = None
+    tags: Optional[List[str]] = None
+    metadata: Optional[Dict[str, Any]] = None
 
 
 @dataclass
@@ -70,7 +70,7 @@ class Resource:
     type: str  # cpu, memory, disk, network, custom
     total_capacity: float
     available_capacity: float
-    utilization_history: List[float] = None
+    utilization_history: Optional[List[float]] = None
     last_updated: str = ""
 
 
@@ -175,7 +175,7 @@ class ResourceAllocator:
         else:
             return False
     
-    def release_resources(self, task: AutomationTask):
+    def release_resources(self, task: AutomationTask) -> None:
         """Release resources after task completion"""
         # Find allocation record
         allocation_record = None
@@ -294,7 +294,7 @@ class IntelligentScheduler:
         task.status = TaskStatus.PENDING
         self._save_state()
     
-    def schedule_task(self, task: AutomationTask, scheduled_time: datetime = None):
+    def schedule_task(self, task: AutomationTask, scheduled_time: Optional[datetime] = None) -> None:
         """Schedule a task for execution"""
         if scheduled_time is None:
             # Schedule immediately
@@ -552,11 +552,11 @@ class AdvancedAutomationFramework:
         
         return default_config
     
-    def create_task(self, name: str, command: str, description: str = "", 
-                   priority: str = "NORMAL", dependencies: List[str] = None,
-                   estimated_duration: float = 0.0, 
-                   resource_requirements: Dict = None,
-                   tags: List[str] = None, metadata: Dict = None) -> str:
+    def create_task(self, name: str, command: str, description: str = "",
+                    priority: str = "NORMAL", dependencies: Optional[List[str]] = None,
+                    estimated_duration: float = 0.0,
+                    resource_requirements: Optional[Dict[str, Any]] = None,
+                    tags: Optional[List[str]] = None, metadata: Optional[Dict[str, Any]] = None) -> str:
         """Create a new automation task"""
         task_id = hashlib.md5(f"{name}_{datetime.now().isoformat()}".encode()).hexdigest()[:16]
         
@@ -586,7 +586,7 @@ class AdvancedAutomationFramework:
         
         return task_id
     
-    def schedule_task(self, task_id: str, scheduled_time: datetime = None) -> bool:
+    def schedule_task(self, task_id: str, scheduled_time: Optional[datetime] = None) -> bool:
         """Schedule a task for execution"""
         # Find task in queue or scheduled tasks
         task = None
@@ -616,7 +616,7 @@ class AdvancedAutomationFramework:
             return True
         return False
     
-    def get_task_status(self, task_id: str) -> Optional[Dict]:
+    def get_task_status(self, task_id: str) -> Optional[Dict[str, Any]]:
         """Get the status of a task"""
         # Check scheduled tasks
         if task_id in self.scheduler.scheduled_tasks:

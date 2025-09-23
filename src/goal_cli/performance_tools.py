@@ -296,7 +296,7 @@ class PerformanceOptimizer:
         
         return request_id
     
-    def _process_perf_request(self, request_id: str, params: Dict = None):
+    def _process_perf_request(self, request_id: str, params: Optional[Dict[str, Any]] = None) -> None:
         """Process a performance request"""
         if request_id not in self.perf_requests:
             return

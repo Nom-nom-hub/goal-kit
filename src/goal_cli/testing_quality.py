@@ -278,7 +278,7 @@ class TestingAndQualityManager:
         
         return request_id
     
-    def _process_test_request(self, request_id: str, params: Dict):
+    def _process_test_request(self, request_id: str, params: Dict[str, Any]) -> None:
         """Process a test request"""
         if request_id not in self.test_requests:
             return
@@ -304,7 +304,7 @@ class TestingAndQualityManager:
         
         self._save_test_requests()
     
-    def _run_framework_tests(self, request: TestRequest, args: List[str]) -> Dict:
+    def _run_framework_tests(self, request: TestRequest, args: List[str]) -> Dict[str, Any]:
         """Run tests using a supported framework"""
         framework_info = self.supported_frameworks[request.framework]
         command = framework_info["command"]
@@ -353,7 +353,7 @@ class TestingAndQualityManager:
                 "execution_time": datetime.now().isoformat()
             }
     
-    def _run_custom_tests(self, request: TestRequest, args: List[str]) -> Dict:
+    def _run_custom_tests(self, request: TestRequest, args: List[str]) -> Dict[str, Any]:
         """Run custom tests"""
         # This would handle custom testing scenarios
         return {
@@ -432,7 +432,7 @@ class TestingAndQualityManager:
         
         return gate_id
     
-    def _collect_metrics(self, gate: QualityGate) -> Dict:
+    def _collect_metrics(self, gate: QualityGate) -> Dict[str, Any]:
         """Collect metrics for quality gate evaluation"""
         metrics = {
             "timestamp": datetime.now().isoformat(),
@@ -484,7 +484,7 @@ class TestingAndQualityManager:
         
         return metrics
     
-    def _evaluate_gate_criteria(self, gate: QualityGate, metrics: Dict) -> Dict:
+    def _evaluate_gate_criteria(self, gate: QualityGate, metrics: Dict[str, Any]) -> Dict[str, Any]:
         """Evaluate quality gate criteria against metrics"""
         criteria = gate.criteria
         result = {
@@ -585,7 +585,7 @@ class TestingAndQualityManager:
         
         return result
     
-    def run_all_quality_gates(self, metrics: Dict = None) -> Dict:
+    def run_all_quality_gates(self, metrics: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Run all quality gates
         
@@ -633,7 +633,7 @@ class TestingAndQualityManager:
         
         return results
     
-    def get_test_status(self, request_id: str) -> Optional[Dict]:
+    def get_test_status(self, request_id: str) -> Optional[Dict[str, Any]]:
         """Get the status of a test request"""
         if request_id in self.test_requests:
             request = self.test_requests[request_id]
@@ -647,7 +647,7 @@ class TestingAndQualityManager:
             return result
         return None
     
-    def list_test_requests(self) -> List[Dict]:
+    def list_test_requests(self) -> List[Dict[str, Any]]:
         """List all test requests"""
         requests = []
         for req in self.test_requests.values():
@@ -661,7 +661,7 @@ class TestingAndQualityManager:
             requests.append(req_dict)
         return requests
     
-    def get_quality_gate_status(self, gate_id: str) -> Optional[Dict]:
+    def get_quality_gate_status(self, gate_id: str) -> Optional[Dict[str, Any]]:
         """Get the status of a quality gate"""
         if gate_id in self.quality_gates:
             gate = self.quality_gates[gate_id]
@@ -675,7 +675,7 @@ class TestingAndQualityManager:
             return result
         return None
     
-    def list_quality_gates(self) -> List[Dict]:
+    def list_quality_gates(self) -> List[Dict[str, Any]]:
         """List all quality gates"""
         gates = []
         for gate in self.quality_gates.values():

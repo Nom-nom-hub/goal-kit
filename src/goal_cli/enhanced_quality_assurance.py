@@ -530,7 +530,7 @@ class EnhancedQualityAssurance:
 
     # Consistency Checking
 
-    def check_cross_artifact_consistency(self, project_data: Dict) -> Dict:
+    def check_cross_artifact_consistency(self, project_data: Dict[str, Any]) -> Dict[str, Any]:
         """Check consistency across related artifacts"""
         findings = []
         relationships = []
@@ -641,7 +641,7 @@ class EnhancedQualityAssurance:
 
     # Predictive Quality Analytics
 
-    def generate_predictive_quality_analytics(self, project_data: Dict) -> Dict:
+    def generate_predictive_quality_analytics(self, project_data: Dict[str, Any]) -> Dict[str, Any]:
         """Generate predictive quality analytics"""
         analytics = {
             "timestamp": datetime.now().isoformat(),
@@ -653,7 +653,7 @@ class EnhancedQualityAssurance:
         
         return analytics
 
-    def _assess_project_risks(self, project_data: Dict) -> Dict:
+    def _assess_project_risks(self, project_data: Dict[str, Any]) -> Dict[str, Any]:
         """Assess project risks using predictive analytics"""
         risks = []
         
@@ -689,7 +689,7 @@ class EnhancedQualityAssurance:
             "risk_score": self._calculate_risk_score(risks)
         }
 
-    def _assess_dependency_risks(self, project_data: Dict) -> List[Dict]:
+    def _assess_dependency_risks(self, project_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Assess dependency-related risks"""
         risks = []
         
@@ -737,7 +737,7 @@ class EnhancedQualityAssurance:
             
         return min(1.0, total_risk / max_risk)
 
-    def _forecast_quality_trends(self, project_data: Dict) -> Dict:
+    def _forecast_quality_trends(self, project_data: Dict[str, Any]) -> Dict[str, Any]:
         """Forecast quality trends based on historical data"""
         # In a real implementation, this would use ML models
         # For now, we'll use a simplified approach based on current metrics
@@ -762,7 +762,7 @@ class EnhancedQualityAssurance:
             "confidence": 0.7 if direction != "insufficient_data" else 0.3
         }
 
-    def _recommend_resources(self, project_data: Dict) -> List[Dict]:
+    def _recommend_resources(self, project_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Recommend resources based on project analysis"""
         recommendations = []
         
@@ -818,7 +818,7 @@ class EnhancedQualityAssurance:
         
         return monitoring_config
 
-    def get_real_time_metrics(self, project_data: Dict) -> Dict:
+    def get_real_time_metrics(self, project_data: Dict[str, Any]) -> Dict[str, Any]:
         """Get current real-time metrics"""
         metrics = self.calculate_comprehensive_quality_score(project_data)
         
@@ -829,7 +829,7 @@ class EnhancedQualityAssurance:
             "alerts": self._generate_real_time_alerts(metrics)
         }
 
-    def _generate_real_time_alerts(self, metrics: Dict) -> List[Dict]:
+    def _generate_real_time_alerts(self, metrics: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Generate real-time alerts based on metrics"""
         alerts = []
         
@@ -861,7 +861,7 @@ class EnhancedQualityAssurance:
 
     # Automated Testing Framework Integration
 
-    def integrate_with_testing_framework(self, framework: str = "pytest") -> Dict:
+    def integrate_with_testing_framework(self, framework: str = "pytest") -> Dict[str, Any]:
         """Integrate with automated testing frameworks"""
         integration_config = {
             "framework": framework,
@@ -884,7 +884,7 @@ class EnhancedQualityAssurance:
         
         return integration_config
 
-    def generate_test_cases_from_spec(self, spec_data: Dict) -> List[Dict]:
+    def generate_test_cases_from_spec(self, spec_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Generate test cases from specification data"""
         test_cases = []
         
@@ -948,7 +948,7 @@ class EnhancedQualityAssurance:
 
     # Code Quality Assessment
 
-    def assess_code_quality(self, code_path: Path = None) -> Dict:
+    def assess_code_quality(self, code_path: Optional[Path] = None) -> Dict[str, Any]:
         """Assess code quality using various metrics"""
         if code_path is None:
             code_path = self.project_path
@@ -980,7 +980,7 @@ class EnhancedQualityAssurance:
 
     # Security Vulnerability Scanning
 
-    def scan_for_security_vulnerabilities(self) -> Dict:
+    def scan_for_security_vulnerabilities(self) -> Dict[str, Any]:
         """Scan for security vulnerabilities"""
         # Use existing security manager
         scan_results = self.security_manager.scan_project_for_vulnerabilities()
@@ -988,7 +988,7 @@ class EnhancedQualityAssurance:
 
     # Performance Benchmarking
 
-    def benchmark_performance(self) -> Dict:
+    def benchmark_performance(self) -> Dict[str, Any]:
         """Benchmark system performance"""
         # Use existing performance monitor
         velocity_metrics = self.performance_monitor.get_velocity_metrics({})
@@ -1034,7 +1034,7 @@ class EnhancedQualityAssurance:
 
     # Compliance Validation
 
-    def validate_compliance(self, standards: List[str] = None) -> Dict:
+    def validate_compliance(self, standards: Optional[List[str]] = None) -> Dict[str, Any]:
         """Validate compliance with specified standards"""
         if standards is None:
             standards = ["gdpr", "iso27001", "soc2"]
