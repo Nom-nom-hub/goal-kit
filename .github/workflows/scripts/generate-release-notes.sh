@@ -4,10 +4,11 @@ set -e
 VERSION=$1
 LATEST_TAG=$2
 
+
 echo "Generating release notes for version $VERSION..."
 
 # Get changes since last tag
-if [ -n "$LATEST_TAG" ]; then
+if [ -n "$LATEST_TAG" ] && git rev-parse "$LATEST_TAG" >/dev/null 2>&1; then
     CHANGES=$(git log --oneline --pretty=format:"- %s" "$LATEST_TAG"..HEAD)
 else
     CHANGES=$(git log --oneline --pretty=format:"- %s" | head -20)
