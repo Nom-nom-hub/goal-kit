@@ -58,7 +58,9 @@ create_template_package() {
     rm -rf "$TEMPLATE_DIR/.qodo"
 
     # Create zip file
-    ZIP_NAME="goal-dev-spec-template-${AI}-${SCRIPT_TYPE}-v${VERSION}.zip"
+    # Remove 'v' prefix from version if present to avoid double 'v'
+    CLEAN_VERSION=${VERSION#v}
+    ZIP_NAME="goal-dev-spec-template-${AI}-${SCRIPT_TYPE}-v${CLEAN_VERSION}.zip"
     cd "$(dirname "$TEMPLATE_DIR")"
     zip -r "../$ZIP_NAME" "$(basename "$TEMPLATE_DIR")"
     cd ..
