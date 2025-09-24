@@ -46,7 +46,7 @@ Choose your preferred installation method:
 Install once and use everywhere:
 
 ```bash
-uv tool install goal-cli --from git+https://github.com/github/goal-dev-kit.git
+uv tool install goal-cli --from git+https://github.com/nom-nom-hub/goal-dev-kit.git
 ```
 
 Then use the tool directly:
