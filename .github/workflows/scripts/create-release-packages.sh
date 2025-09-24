@@ -24,7 +24,6 @@ create_template_package() {
     cp -r .github "$TEMPLATE_DIR/"
     cp -r docs "$TEMPLATE_DIR/"
     cp -r memory "$TEMPLATE_DIR/"
-    cp -r scripts "$TEMPLATE_DIR/"
     cp -r src "$TEMPLATE_DIR/"
     cp -r templates "$TEMPLATE_DIR/"
     cp README.md "$TEMPLATE_DIR/"
