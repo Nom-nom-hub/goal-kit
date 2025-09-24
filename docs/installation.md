@@ -15,7 +15,7 @@
 The easiest way to get started is to initialize a new project:
 
 ```bash
-uvx --from git+https://github.com/Nom-nom-hub/goal-dev-spec.git goal init <PROJECT_NAME>
+uvx --from git+https://github.com/Nom-nom-hub/goal-kit.git goal init <PROJECT_NAME>
 ```
 
 Or initialize in the current directory:

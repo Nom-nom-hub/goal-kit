@@ -54,7 +54,7 @@ create_template_package() {
     rm -rf "$TEMPLATE_DIR/demo-goal-project"
     rm -rf "$TEMPLATE_DIR/spec-kit"
     rm -rf "$TEMPLATE_DIR/.qwen"
-    rm -rf "$TEMPLATE_DIR/.specify"
+    rm -rf "$TEMPLATE_DIR/.goalify"
     rm -rf "$TEMPLATE_DIR/.qodo"
 
     # Create zip file

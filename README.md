@@ -61,7 +61,7 @@ goal check
 Run directly without installing:
 
 ```bash
-uvx --from git+https://github.com/Nom-nom-hub/goal-dev-spec.git goal init <PROJECT_NAME>
+uvx --from git+https://github.com/Nom-nom-hub/goal-kit.git goal init <PROJECT_NAME>
 ```
 
 **Benefits of persistent installation:**
