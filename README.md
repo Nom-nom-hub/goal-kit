@@ -8,7 +8,7 @@
     <strong>An innovative approach to software development that starts with clear goals and outcomes, ensuring every technical decision directly supports meaningful results.</strong>
 </p>
 
-[![Release](https://github.com/nom-nom-hub/goal-dev-spec/actions/workflows/release.yml/badge.svg)](https://github.com/nom-nom-hub/goal-dev-spec/actions/workflows/release.yml)
+[![Release](https://github.com/Nom-nom-hub/goal-kit/actions/workflows/release.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-kit/actions/workflows/release.yml)
 
 ---
 
@@ -535,16 +535,16 @@ rm gcm-linux_amd64.2.6.1.deb
 
 ## 👥 Maintainers
 
-- Your Name ([@nom-nom-hubname](https://github.com/nom-nom-hubname))
+- Teck ([@nom-nom-hubname](https://github.com/nom-nom-hub))
 - Development Team
 
 ## 💬 Support
 
-For support, please open a [GitHub issue](https://github.com/github/goal-dev-kit/issues/new). We welcome bug reports, feature requests, and questions about using Goal-Driven Development.
+For support, please open a [GitHub issue](https://github.com/nom-nom-hub/goal-kit/issues/new). We welcome bug reports, feature requests, and questions about using Goal-Driven Development.
 
 ## 🙏 Acknowledgements
 
-This project builds upon the excellent work of the [Spec Kit](https://github.com/nom-nom-hub/goal-dev-spec) project and extends it with goal-driven development principles.
+This project builds upon the excellent work of the [Spec Kit](https://github.com/Nom-nom-hub/goal-kit) project and extends it with goal-driven development principles.
 
 ## 📄 License
 
