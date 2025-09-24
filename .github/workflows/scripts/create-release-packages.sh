@@ -65,28 +65,63 @@ create_template_package() {
     ZIP_NAME="goal-kit-template-${AI}-${SCRIPT_TYPE}-v${CLEAN_VERSION}.zip"
 
     # Detect OS and use appropriate zip command
+    cd "$(dirname "$TEMPLATE_DIR")"
+    TEMPLATE_BASENAME="$(basename "$TEMPLATE_DIR")"
+
     if command -v zip &> /dev/null; then
         # Linux/macOS with zip command
-        cd "$(dirname "$TEMPLATE_DIR")"
-        zip -r "$ZIP_NAME" "$(basename "$TEMPLATE_DIR")"
-        cd ..
-        mv "$ZIP_NAME" "$RELEASE_DIR/"
+        echo "Using zip command..."
+        if zip -r "$ZIP_NAME" "$TEMPLATE_BASENAME"; then
+            echo "✓ Created $ZIP_NAME with zip"
+        else
+            echo "Error: zip command failed"
+            exit 1
+        fi
     elif command -v 7z &> /dev/null; then
         # Windows with 7-Zip
-        cd "$(dirname "$TEMPLATE_DIR")"
-        7z a "$ZIP_NAME" "$(basename "$TEMPLATE_DIR")"
-        cd ..
-        mv "$ZIP_NAME" "$RELEASE_DIR/"
+        echo "Using 7z command..."
+        if 7z a "$ZIP_NAME" "$TEMPLATE_BASENAME"; then
+            echo "✓ Created $ZIP_NAME with 7z"
+        else
+            echo "Error: 7z command failed"
+            exit 1
+        fi
+    elif command -v tar &> /dev/null && command -v gzip &> /dev/null; then
+        # Fallback: tar + gzip (available on most Linux systems)
+        echo "Using tar + gzip..."
+        TAR_NAME="${ZIP_NAME%.zip}.tar.gz"
+        if tar -czf "$TAR_NAME" "$TEMPLATE_BASENAME"; then
+            echo "✓ Created $TAR_NAME with tar+gzip"
+            # Rename to .zip for consistency
+            mv "$TAR_NAME" "$ZIP_NAME"
+            echo "✓ Renamed to $ZIP_NAME"
+        else
+            echo "Error: tar command failed"
+            exit 1
+        fi
     elif command -v powershell &> /dev/null; then
         # Windows with PowerShell (fallback)
-        cd "$(dirname "$TEMPLATE_DIR")"
-        powershell -Command "Compress-Archive -Path '$(basename "$TEMPLATE_DIR")' -DestinationPath '$ZIP_NAME'"
-        cd ..
-        if [ -f "$ZIP_NAME" ]; then
-            mv "$ZIP_NAME" "$RELEASE_DIR/"
+        echo "Using PowerShell Compress-Archive..."
+        if powershell -Command "Compress-Archive -Path '$TEMPLATE_BASENAME' -DestinationPath '$ZIP_NAME'"; then
+            echo "✓ Created $ZIP_NAME with PowerShell"
+        else
+            echo "Error: PowerShell command failed"
+            exit 1
         fi
     else
-        echo "Error: No zip utility found (zip, 7z, or PowerShell)"
+        echo "Error: No zip utility found (zip, 7z, tar+gzip, or PowerShell)"
+        echo "Available commands:"
+        which zip 7z tar gzip powershell || echo "None found"
+        exit 1
+    fi
+
+    cd ..
+    if [ -f "$ZIP_NAME" ]; then
+        mv "$ZIP_NAME" "$RELEASE_DIR/"
+        echo "✓ Moved $ZIP_NAME to $RELEASE_DIR/"
+    else
+        echo "Error: $ZIP_NAME was not created in $(pwd)"
+        ls -la
         exit 1
     fi
 
