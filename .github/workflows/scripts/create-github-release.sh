@@ -19,32 +19,44 @@ if ! gh auth status &> /dev/null; then
     exit 1
 fi
 
+# Enable nullglob to handle cases where no zip files exist
+shopt -s nullglob
+
+# Create an array of potential release assets
+ASSETS=(release-packages/*.zip)
+
+# If no assets found, clear the array
+if [ "${#ASSETS[@]}" -eq 1 ] && [ ! -f "${ASSETS[0]}" ]; then
+    unset ASSETS
+    ASSETS=()
+fi
+
 # Create the release
-if [ -f \"release_notes.md\" ]; then
-    if [ -d \"release-packages\" ] && [ -n \"$(ls -A release-packages/*.zip 2>/dev/null)\" ]; then
-        gh release create \"$VERSION\" \\
-            --repo \"$REPO\" \\
-            --title \"Goal-Driven Development Kit $VERSION\" \\
-            --notes-file \"release_notes.md\" \\
-            release-packages/*.zip
+if [ -f "release_notes.md" ]; then
+    if [ ${#ASSETS[@]} -gt 0 ]; then
+        gh release create "$VERSION" \
+            --repo "$REPO" \
+            --title "Goal-Driven Development Kit $VERSION" \
+            --notes-file "release_notes.md" \
+            "${ASSETS[@]}"
     else
-        gh release create \"$VERSION\" \\
-            --repo \"$REPO\" \\
-            --title \"Goal-Driven Development Kit $VERSION\" \\
-            --notes-file \"release_notes.md\"
+        gh release create "$VERSION" \
+            --repo "$REPO" \
+            --title "Goal-Driven Development Kit $VERSION" \
+            --notes-file "release_notes.md"
     fi
 else
-    if [ -d \"release-packages\" ] && [ -n \"$(ls -A release-packages/*.zip 2>/dev/null)\" ]; then
-        gh release create \"$VERSION\" \\
-            --repo \"$REPO\" \\
-            --title \"Goal-Driven Development Kit $VERSION\" \\
-            --notes \"Release $VERSION of Goal-Driven Development Kit\" \\
-            release-packages/*.zip
+    if [ ${#ASSETS[@]} -gt 0 ]; then
+        gh release create "$VERSION" \
+            --repo "$REPO" \
+            --title "Goal-Driven Development Kit $VERSION" \
+            --notes "Release $VERSION of Goal-Driven Development Kit" \
+            "${ASSETS[@]}"
     else
-        gh release create \"$VERSION\" \\
-            --repo \"$REPO\" \\
-            --title \"Goal-Driven Development Kit $VERSION\" \\
-            --notes \"Release $VERSION of Goal-Driven Development Kit\"
+        gh release create "$VERSION" \
+            --repo "$REPO" \
+            --title "Goal-Driven Development Kit $VERSION" \
+            --notes "Release $VERSION of Goal-Driven Development Kit"
     fi
 fi
 
