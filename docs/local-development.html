@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Development | Goal Kit</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="bg-blob blob-1"></div>
+        <div class="bg-blob blob-2"></div>
+        <div class="bg-blob blob-3"></div>
+    </div>
+    
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="terminal-buttons">
+                <div class="button red"></div>
+                <div class="button yellow"></div>
+                <div class="button green"></div>
+            </div>
+            <div class="terminal-title">goal-kit — local-development.html</div>
+        </div>
+        
+        <div class="terminal-content">
+            <header>
+                <div class="logo">
+                    <h1><span>🎯</span> Goal Kit</h1>
+                    <p class="tagline">Goal-Driven Development Framework</p>
+                </div>
+                
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="quickstart.html">Quick Start</a></li>
+                        <li><a href="installation.html">Installation</a></li>
+                        <li><a href="strategy-evaluation-process.html">Evaluation</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+            <section class="hero">
+                <div class="hero-content">
+                    <h2>Local Development Guide</h2>
+                    <p>Contributing to and developing with Goal Kit</p>
+                </div>
+            </section>
+
+            <section class="content">
+                <h3>Setting Up Local Development Environment</h3>
+                
+                <p>Goal Kit is an open-source project that welcomes contributions from the community. This guide will help you set up a local development environment to contribute or modify the framework for your own needs.</p>
+                
+                <h4>Cloning the Repository</h4>
+                
+                <p>Start by cloning the Goal Kit repository from GitHub:</p>
+                
+                <div class="code-terminal">
+                    <pre><code>$ git clone https://github.com/Nom-nom-hub/goal-kit.git
+$ cd goal-kit</code></pre>
+                </div>
+                
+                <h4>Dependency Management</h4>
+                
+                <p>Goal Kit uses uv for dependency management. After cloning, set up your development environment:</p>
+                
+                <div class="code-terminal">
+                    <pre><code>$ uv sync</code></pre>
+                </div>
+                
+                <p>This command creates a virtual environment and installs all dependencies including development tools.</p>
+                
+                <h4>Running in Development Mode</h4>
+                
+                <p>You can run Goal Kit commands directly in development mode:</p>
+                
+                <div class="code-terminal">
+                    <pre><code>$ uv run goal init &lt;PROJECT_NAME&gt;</code></pre>
+                </div>
+                
+                <p>Or activate the virtual environment to use Goal Kit commands directly:</p>
+                
+                <div class="code-terminal">
+                    <pre><code>$ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+$ goal init &lt;PROJECT_NAME&gt;</code></pre>
+                </div>
+                
+                <h4>Running Tests</h4>
+                
+                <p>Before submitting changes, ensure all tests pass:</p>
+                
+                <div class="code-terminal">
+                    <pre><code>$ uv run pytest</code></pre>
+                </div>
+                
+                <p>For more detailed test output:</p>
+                
+                <div class="code-terminal">
+                    <pre><code>$ uv run pytest -v</code></pre>
+                </div>
+                
+                <h4>Code Formatting and Linting</h4>
+                
+                <p>Goal Kit uses Ruff for formatting and linting. Format your code before submitting:</p>
+                
+                <div class="code-terminal">
+                    <pre><code>$ uv run ruff format .
+$ uv run ruff check .</code></pre>
+                </div>
+                
+                <h4>Building Documentation</h4>
+                
+                <p>When making changes to documentation, you can serve it locally:</p>
+                
+                <div class="code-terminal">
+                    <pre><code>$ uv run mkdocs serve</code></pre>
+                </div>
+                
+                <h4>Submitting Changes</h4>
+                
+                <p>When you're ready to contribute changes:</p>
+                
+                <ol>
+                    <li>Create a new branch: <code>git checkout -b feature/your-feature-name</code></li>
+                    <li>Make your changes</li>
+                    <li>Ensure all tests pass</li>
+                    <li>Format your code</li>
+                    <li>Commit your changes with clear messages</li>
+                    <li>Push your branch and create a pull request</li>
+                </ol>
+                
+                <h4>Development Workflow</h4>
+                
+                <p>When developing with Goal Kit for your own projects, you can create a local copy of the framework with your customizations:</p>
+                
+                <ol>
+                    <li>Fork the repository on GitHub</li>
+                    <li>Clone your fork locally</li>
+                    <li>Make your modifications</li>
+                    <li>Test your changes with the example commands</li>
+                    <li>Publish your customized version if needed</li>
+                </ol>
+                
+                <h4>Advanced Development</h4>
+                
+                <p>For more advanced development, you can also:</p>
+                
+                <ul>
+                    <li>Extend the CLI with new commands</li>
+                    <li>Add new templates for different project types</li>
+                    <li>Modify the goal evaluation algorithms</li>
+                    <li>Create new output formats</li>
+                </ul>
+                
+                <h4>Next Steps</h4>
+                
+                <p>Now that you have set up your local development environment, check out our <a href="index.html">Home Page</a> to learn more about the framework or our <a href="quickstart.html">Quick Start Guide</a> to begin using the framework.</p>
+            </section>
+
+            <footer>
+                <div class="footer-content">
+                    <p>Built with ❤️ for developers who want to build software that matters.</p>
+                    <p>© 2025 Goal Kit. All rights reserved.</p>
+                    <p>Part of the <strong>Goal-Driven Development</strong> movement.</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+    
+    <div class="matrix-bg"></div>
+    <script src="script.js"></script>
+</body>
+</html>
