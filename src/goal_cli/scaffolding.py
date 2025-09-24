@@ -6,7 +6,7 @@ Exceeds spec-kit functionality with intelligent project structure generation.
 import json
 import yaml
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Union, Any, cast
+from typing import Dict, List, Optional, Union, cast
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import hashlib

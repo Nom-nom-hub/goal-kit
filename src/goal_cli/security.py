@@ -5,7 +5,7 @@ Provides security scanning, vulnerability detection, and security policy enforce
 
 import re
 from pathlib import Path
-from typing import Dict, List, Any, Union
+from typing import Dict, Any
 from datetime import datetime
 
 class SecurityManager:

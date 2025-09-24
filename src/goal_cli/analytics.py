@@ -5,7 +5,7 @@ Predictive analytics engine for goal-dev-spec
 import yaml
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any, cast
+from typing import Dict, List, Optional, cast
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 import time

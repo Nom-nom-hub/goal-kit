@@ -8,7 +8,7 @@ import sys
 import subprocess
 import shutil
 from pathlib import Path
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional
 
 import typer
 from rich.console import Console
