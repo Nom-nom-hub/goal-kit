@@ -2,7 +2,7 @@
 set -e
 
 VERSION=$1
-REPO="Nom-nom-hub/goal-dev-spec"
+REPO="Nom-nom-hub/goal-kit"
 
 echo "Creating GitHub release $VERSION..."
 
