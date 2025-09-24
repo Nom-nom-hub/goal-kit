@@ -5,7 +5,7 @@ Provides continuous monitoring of quality metrics and immediate feedback.
 
 import json
 from pathlib import Path
-from typing import Dict, List, Callable
+from typing import Dict, List, Callable, Optional, Any, Deque
 from datetime import datetime, timedelta
 from dataclasses import dataclass, asdict
 import threading
@@ -58,7 +58,7 @@ class RealTimeQualityMonitor:
         self.thresholds = self._load_thresholds()
         
         # Event history
-        self.event_history = deque(maxlen=1000)  # Keep last 1000 events
+        self.event_history: Deque[Dict] = deque(maxlen=1000)  # Keep last 1000 events
         
         # Monitoring state
         self.is_monitoring = False
@@ -66,7 +66,7 @@ class RealTimeQualityMonitor:
         self.last_metrics = None
         
         # Callbacks for events
-        self.event_callbacks = []
+        self.event_callbacks: List[Callable[[MonitoringEvent], None]] = []
         
         # Artifact tracking
         self.artifact_hashes = self._load_artifact_hashes()
@@ -393,7 +393,7 @@ class RealTimeQualityMonitor:
             # Could block certain operations
             pass
     
-    def _record_event(self, event_type: str, severity: int, description: str, details: Dict, related_artifacts: List[str] = None):
+    def _record_event(self, event_type: str, severity: int, description: str, details: Dict, related_artifacts: Optional[List[str]] = None):
         """Record a monitoring event"""
         event = MonitoringEvent(
             id=hashlib.md5(f"{event_type}_{datetime.now().isoformat()}".encode()).hexdigest()[:16],
@@ -438,7 +438,7 @@ class RealTimeQualityMonitor:
         if callback in self.event_callbacks:
             self.event_callbacks.remove(callback)
     
-    def get_recent_events(self, limit: int = 50, event_type: str = None, min_severity: int = 1) -> List[Dict]:
+    def get_recent_events(self, limit: int = 50, event_type: Optional[str] = None, min_severity: int = 1) -> List[Dict]:
         """Get recent monitoring events"""
         events = list(self.event_history)
         
@@ -474,7 +474,7 @@ class RealTimeQualityMonitor:
         ]
         
         # Extract metrics over time
-        trends = {
+        trends: Dict[str, Any] = {
             "timestamps": [],
             "metrics": defaultdict(list)
         }

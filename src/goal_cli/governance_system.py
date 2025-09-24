@@ -34,7 +34,7 @@ class GovernanceSystem:
         self.governance_dir = project_path / ".goal" / "governance"
         self.governance_dir.mkdir(exist_ok=True)
     
-    def initialize_project_constitution(self, project_name: str = None) -> str:
+    def initialize_project_constitution(self, project_name: Optional[str] = None) -> str:
         """
         Initialize a project constitution from the template.
         
@@ -125,7 +125,7 @@ class GovernanceSystem:
         """
         return self.security_manager.check_all_policies(project_data)
     
-    def record_performance_metric(self, metric_name: str, value: float, context: Dict = None):
+    def record_performance_metric(self, metric_name: str, value: float, context: Optional[Dict] = None):
         """
         Record a performance metric.
         
@@ -183,8 +183,8 @@ class GovernanceSystem:
         """
         return self.review_manager.add_comment(review_id, reviewer, comment, approved)
     
-    def bump_project_version(self, bump_type: str, breaking_changes: List[str] = None, 
-                           new_features: List[str] = None, bug_fixes: List[str] = None) -> str:
+    def bump_project_version(self, bump_type: str, breaking_changes: Optional[List[str]] = None, 
+                           new_features: Optional[List[str]] = None, bug_fixes: Optional[List[str]] = None) -> str:
         """
         Bump the project version.
         
@@ -197,7 +197,12 @@ class GovernanceSystem:
         Returns:
             New version string
         """
-        return self.version_manager.bump_version(bump_type, breaking_changes, new_features, bug_fixes)
+        return self.version_manager.bump_version(
+            bump_type, 
+            breaking_changes or [], 
+            new_features or [], 
+            bug_fixes or []
+        )
     
     def detect_breaking_changes(self, old_spec: Dict, new_spec: Dict) -> List[str]:
         """
@@ -281,7 +286,7 @@ class GovernanceSystem:
         report += "## Review Status\n\n"
         report += f"Total reviews: {len(reviews)}\n"
         # Count reviews by status
-        status_counts = {}
+        status_counts: Dict[str, int] = {}
         for review in reviews:
             status = review["status"]
             status_counts[status] = status_counts.get(status, 0) + 1

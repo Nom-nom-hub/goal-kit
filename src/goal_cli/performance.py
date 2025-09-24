@@ -5,7 +5,7 @@ Provides performance standards, monitoring, and optimization recommendations.
 
 import json
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 from datetime import datetime
 from collections import defaultdict
 
@@ -83,7 +83,7 @@ class PerformanceMonitor:
                 return defaultdict(list)
         return defaultdict(list)
     
-    def record_metric(self, metric_name: str, value: float, context: Dict = None):
+    def record_metric(self, metric_name: str, value: float, context: Optional[Dict] = None):
         """Record a performance metric."""
         if metric_name not in self.standards:
             raise ValueError(f"Unknown metric: {metric_name}")
@@ -230,8 +230,8 @@ class PerformanceMonitor:
         metrics = {
             "goals_completed": 0,
             "goals_in_progress": 0,
-            "avg_completion_time": 0,
-            "completion_rate": 0
+            "avg_completion_time": 0.0,
+            "completion_rate": 0.0
         }
         
         # Calculate completion rate and velocity

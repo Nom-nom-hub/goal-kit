@@ -9,7 +9,7 @@ import subprocess
 from pathlib import Path
 
 import typer
-import yaml
+import yaml  # type: ignore[import-untyped]
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -482,7 +482,7 @@ def init(
                     
             # Ensure scripts are executable (POSIX)
             tracker.start("chmod", "Setting script permissions")
-            ensure_executable_scripts(project_path, tracker=tracker)
+            ensure_executable_scripts(project_path, tracker=tracker)  # type: ignore[arg-type]
             tracker.complete("chmod", "Script permissions set")
                     
             # Git step

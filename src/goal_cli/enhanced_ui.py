@@ -364,7 +364,7 @@ class NotificationManager:
 class ErrorHandler:
     """Handles errors with recovery mechanisms"""
     
-    def __init__(self, tracker: EnhancedStepTracker = None):
+    def __init__(self, tracker: Optional[EnhancedStepTracker] = None):
         self.tracker = tracker
         self.error_count = 0
         self.max_retries = 3
