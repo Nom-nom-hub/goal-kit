@@ -31,7 +31,6 @@ create_template_package() {
 
     # Remove development files
     rm -rf "$TEMPLATE_DIR/.git"
-    rm -rf "$TEMPLATE_DIR/.github/workflows/scripts"
     rm -rf "$TEMPLATE_DIR/demo-goal-project"
     rm -rf "$TEMPLATE_DIR/spec-kit"
     rm -rf "$TEMPLATE_DIR/.qwen"
