@@ -49,79 +49,120 @@ create_template_package() {
         cp LICENSE "$TEMPLATE_DIR/" 2>/dev/null || true
     fi
 
-    # Remove development files
-    rm -rf "$TEMPLATE_DIR/.git"
-    rm -rf "$TEMPLATE_DIR/demo-goal-project"
-    rm -rf "$TEMPLATE_DIR/spec-kit"
-    rm -rf "$TEMPLATE_DIR/.qwen"
-    rm -rf "$TEMPLATE_DIR/.goalify"
-    rm -rf "$TEMPLATE_DIR/.qodo"
-    rm -rf "$TEMPLATE_DIR/release-packages"
-    rm -rf "$TEMPLATE_DIR/.github/workflows/scripts"
-
     # Create zip file
     # Remove 'v' prefix from version if present to avoid double 'v'
     CLEAN_VERSION=${VERSION#v}
     ZIP_NAME="goal-kit-template-${AI}-${SCRIPT_TYPE}-v${CLEAN_VERSION}.zip"
 
     # Detect OS and use appropriate zip command
-    cd "$(dirname "$TEMPLATE_DIR")"
+    # Get the full path to the template directory
+    TEMPLATE_FULL_PATH="$(pwd)/$TEMPLATE_DIR"
     TEMPLATE_BASENAME="$(basename "$TEMPLATE_DIR")"
+    SCRIPT_WORK_DIR="$(pwd)"
 
+    echo "Template directory: $TEMPLATE_FULL_PATH"
+    echo "Template basename: $TEMPLATE_BASENAME"
+    echo "Working directory: $SCRIPT_WORK_DIR"
+    echo "Release directory: $RELEASE_DIR"
+
+    # Change to the template's parent directory for compression
+    TEMPLATE_PARENT_DIR="$(dirname "$TEMPLATE_FULL_PATH")"
+    echo "Template parent directory: $TEMPLATE_PARENT_DIR"
+
+    cd "$TEMPLATE_PARENT_DIR"
+
+    # Try different compression methods
     if command -v zip &> /dev/null; then
         # Linux/macOS with zip command
         echo "Using zip command..."
-        if zip -r "$ZIP_NAME" "$TEMPLATE_BASENAME"; then
-            echo "✓ Created $ZIP_NAME with zip"
+        ZIP_FULL_PATH="$SCRIPT_WORK_DIR/$ZIP_NAME"
+        echo "Zip will be created at: $ZIP_FULL_PATH"
+        if zip -r "$ZIP_FULL_PATH" "$TEMPLATE_BASENAME"; then
+            echo "✓ Created $ZIP_FULL_PATH with zip"
         else
-            echo "Error: zip command failed"
+            echo "Error: zip command failed with exit code $?"
+            cd "$SCRIPT_WORK_DIR"
             exit 1
         fi
     elif command -v 7z &> /dev/null; then
         # Windows with 7-Zip
         echo "Using 7z command..."
-        if 7z a "$ZIP_NAME" "$TEMPLATE_BASENAME"; then
-            echo "✓ Created $ZIP_NAME with 7z"
+        ZIP_FULL_PATH="$SCRIPT_WORK_DIR/$ZIP_NAME"
+        echo "Zip will be created at: $ZIP_FULL_PATH"
+        if 7z a "$ZIP_FULL_PATH" "$TEMPLATE_BASENAME"; then
+            echo "✓ Created $ZIP_FULL_PATH with 7z"
         else
-            echo "Error: 7z command failed"
+            echo "Error: 7z command failed with exit code $?"
+            cd "$SCRIPT_WORK_DIR"
             exit 1
         fi
     elif command -v tar &> /dev/null && command -v gzip &> /dev/null; then
-        # Fallback: tar + gzip (available on most Linux systems)
+        # Fallback: tar + gzip (Linux standard - always available)
         echo "Using tar + gzip..."
-        TAR_NAME="${ZIP_NAME%.zip}.tar.gz"
-        if tar -czf "$TAR_NAME" "$TEMPLATE_BASENAME"; then
-            echo "✓ Created $TAR_NAME with tar+gzip"
+        TAR_FULL_PATH="$SCRIPT_WORK_DIR/${ZIP_NAME%.zip}.tar.gz"
+        echo "Tar will be created at: $TAR_FULL_PATH"
+        if tar -czf "$TAR_FULL_PATH" "$TEMPLATE_BASENAME"; then
+            echo "✓ Created $TAR_FULL_PATH with tar+gzip"
             # Rename to .zip for consistency
-            mv "$TAR_NAME" "$ZIP_NAME"
-            echo "✓ Renamed to $ZIP_NAME"
+            ZIP_FULL_PATH="$SCRIPT_WORK_DIR/$ZIP_NAME"
+            if mv "$TAR_FULL_PATH" "$ZIP_FULL_PATH"; then
+                echo "✓ Renamed to $ZIP_FULL_PATH"
+            else
+                echo "Error: Failed to rename $TAR_FULL_PATH to $ZIP_FULL_PATH"
+                cd "$SCRIPT_WORK_DIR"
+                exit 1
+            fi
         else
-            echo "Error: tar command failed"
+            echo "Error: tar command failed with exit code $?"
+            cd "$SCRIPT_WORK_DIR"
             exit 1
         fi
     elif command -v powershell &> /dev/null; then
         # Windows with PowerShell (fallback)
         echo "Using PowerShell Compress-Archive..."
-        if powershell -Command "Compress-Archive -Path '$TEMPLATE_BASENAME' -DestinationPath '$ZIP_NAME'"; then
-            echo "✓ Created $ZIP_NAME with PowerShell"
+        ZIP_FULL_PATH="$SCRIPT_WORK_DIR/$ZIP_NAME"
+        echo "Zip will be created at: $ZIP_FULL_PATH"
+        if powershell -Command "Compress-Archive -Path '$TEMPLATE_BASENAME' -DestinationPath '$ZIP_FULL_PATH'"; then
+            echo "✓ Created $ZIP_FULL_PATH with PowerShell"
         else
-            echo "Error: PowerShell command failed"
+            echo "Error: PowerShell command failed with exit code $?"
+            cd "$SCRIPT_WORK_DIR"
             exit 1
         fi
     else
         echo "Error: No zip utility found (zip, 7z, tar+gzip, or PowerShell)"
+        echo "Current directory: $(pwd)"
+        echo "Template directory: $TEMPLATE_FULL_PATH"
         echo "Available commands:"
         which zip 7z tar gzip powershell || echo "None found"
+        echo "Directory listing:"
+        ls -la "$(dirname "$TEMPLATE_FULL_PATH")"
+        cd "$SCRIPT_WORK_DIR"
         exit 1
     fi
 
-    cd ..
-    if [ -f "$ZIP_NAME" ]; then
-        mv "$ZIP_NAME" "$RELEASE_DIR/"
-        echo "✓ Moved $ZIP_NAME to $RELEASE_DIR/"
+    # Return to script working directory and verify file was created
+    cd "$SCRIPT_WORK_DIR"
+    ZIP_FULL_PATH="$SCRIPT_WORK_DIR/$ZIP_NAME"
+    if [ -f "$ZIP_FULL_PATH" ]; then
+        echo "✓ Zip file exists at: $ZIP_FULL_PATH"
+        if mv "$ZIP_FULL_PATH" "$RELEASE_DIR/"; then
+            echo "✓ Moved $ZIP_NAME to $RELEASE_DIR/"
+        else
+            echo "Error: Failed to move $ZIP_FULL_PATH to $RELEASE_DIR/"
+            ls -la "$RELEASE_DIR/"
+            exit 1
+        fi
     else
-        echo "Error: $ZIP_NAME was not created in $(pwd)"
+        echo "Error: $ZIP_NAME was not created"
+        echo "Expected location: $ZIP_FULL_PATH"
+        echo "Current directory: $(pwd)"
+        echo "Directory listing:"
         ls -la
+        echo "Parent directory listing:"
+        ls -la "$(dirname "$TEMPLATE_FULL_PATH")"
+        echo "Template directory contents:"
+        ls -la "$TEMPLATE_FULL_PATH"
         exit 1
     fi
 
