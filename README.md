@@ -261,6 +261,16 @@ goal init my-project --ai claude --github-token ghp_your_token_here
 goal check
 ```
 
+### Check Command Details
+
+The `check` command validates your development environment by:
+
+- Verifying Git installation and version
+- Checking for AI agent tools (Claude, Copilot, Cursor, Qwen, Windsurf, etc.)
+- Confirming Python version compatibility
+- Validating OS information
+- Ensuring `uv` package manager is available
+
 ### Available Slash Commands
 
 After running `goal init`, your AI coding agent will have access to these slash commands for goal-driven development:
