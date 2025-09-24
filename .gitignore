@@ -5,6 +5,7 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .venv/
+test_env/
 uv.lock
 debug_syntax.py
 fixed_function.py
