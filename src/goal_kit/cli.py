@@ -127,18 +127,38 @@ def check():
     import subprocess
     import platform
     
-    print("[INFO] Checking system requirements and installed tools...")
-    print()
+    # Track missing tools
+    missing_tools = []
+    
+    click.echo("[INFO] Checking system requirements and installed tools...")
+    click.echo()
+    
+    # Helper function to check a tool
+    def check_tool(name, cmd, version_flags=['--version']):
+        """Helper function to check if a tool is installed."""
+        try:
+            result = subprocess.run([cmd] + version_flags, capture_output=True, text=True, timeout=5)
+            if result.returncode == 0:
+                click.echo(f"[OK] {name}: {result.stdout.strip()}")
+                return True
+            else:
+                # Try alternative version flag
+                if '-V' not in version_flags:
+                    alt_result = subprocess.run([cmd, '-V'], capture_output=True, text=True, timeout=5)
+                    if alt_result.returncode == 0:
+                        click.echo(f"[OK] {name}: {alt_result.stdout.strip()}")
+                        return True
+                
+                click.echo(f"[ERROR] {name}: Not found")
+                missing_tools.append(name)
+                return False
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            click.echo(f"[ERROR] {name}: Not found")
+            missing_tools.append(name)
+            return False
     
     # Check Git
-    try:
-        result = subprocess.run(['git', '--version'], capture_output=True, text=True, timeout=5)
-        if result.returncode == 0:
-            print(f"[OK] Git: {result.stdout.strip()}")
-        else:
-            print("[ERROR] Git: Not found")
-    except (subprocess.TimeoutExpired, FileNotFoundError):
-        print("[ERROR] Git: Not found")
+    check_tool("Git", "git")
     
     # Check common AI agent tools
     ai_agents = [
@@ -153,40 +173,25 @@ def check():
         ('CodeWhisperer', 'codewhisperer')
     ]
     
-    print("\n[INFO] Checking AI agent tools:")
+    click.echo("\n[INFO] Checking AI agent tools:")
     for name, cmd in ai_agents:
-        try:
-            result = subprocess.run([cmd, '--version'], capture_output=True, text=True, timeout=5)
-            if result.returncode == 0:
-                print(f"[OK] {name}: {result.stdout.strip()}")
-            else:
-                # Some tools might use different version commands
-                result = subprocess.run([cmd, '-V'], capture_output=True, text=True, timeout=5)
-                if result.returncode == 0:
-                    print(f"[OK] {name}: {result.stdout.strip()}")
-                else:
-                    print(f"[ERROR] {name}: Not found")
-        except (subprocess.TimeoutExpired, FileNotFoundError):
-            print(f"[ERROR] {name}: Not found")
+        check_tool(name, cmd)
     
     # Check Python version
-    import sys
-    print(f"\n[INFO] Python: {sys.version}")
+    click.echo(f"\n[INFO] Python: {sys.version}")
     
-    # Check OS information
-    print(f"[INFO] OS: {platform.system()} {platform.release()}")
+    # Check OS information with architecture
+    click.echo(f"[INFO] OS: {platform.system()} {platform.release()} ({platform.machine()}, version: {platform.version()})")
     
     # Check uv (since it's required for installation)
-    try:
-        result = subprocess.run(['uv', '--version'], capture_output=True, text=True, timeout=5)
-        if result.returncode == 0:
-            print(f"[OK] uv: {result.stdout.strip()}")
-        else:
-            print("[ERROR] uv: Not found (required for installation)")
-    except (subprocess.TimeoutExpired, FileNotFoundError):
-        print("[ERROR] uv: Not found (required for installation)")
+    check_tool("uv", "uv")
     
-    print("\n[SUCCESS] System check completed!")
+    # Show final status
+    if missing_tools:
+        click.echo("\n[WARNING] System check completed with errors.")
+        click.echo(f"Missing required tools: {', '.join(missing_tools)}")
+    else:
+        click.echo("\n[SUCCESS] System check completed!")
 
 
 if __name__ == '__main__':
