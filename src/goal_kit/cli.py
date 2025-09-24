@@ -30,21 +30,21 @@ def main():
               help='Initialize project in the current directory')
 @click.option('--force', is_flag=True,
               help='Force overwrite when using --here in non-empty directory')
-def init(project_name, dir, ai, script, ignore_agent_tools, no_git, here, force):
+def init(project_name, directory, ai, script, ignore_agent_tools, no_git, here, force):
     """Initialize a new goal-driven project with AI agent support.
 
     --dir and --here cannot be used together.
     If --here is specified, the project will be initialized in the current directory.
     If --dir is specified, the project will be initialized in the given directory.
     """
-    if here and dir != '.':
+    if here and directory != '.':
         click.echo("Error: --here and --dir cannot be used together. Please specify only one.", err=True)
         sys.exit(1)
     if here:
-        dir = os.getcwd()
-    
+        directory = os.getcwd()
+
     # Determine target directory
-    target_dir = Path(dir)
+    target_dir = Path(directory)
     if project_name:
         target_dir = target_dir / project_name
     else:
@@ -66,12 +66,13 @@ def init(project_name, dir, ai, script, ignore_agent_tools, no_git, here, force)
         def is_valid_git_repo(path):
             try:
                 result = subprocess.run(
-                    ['git', 'status'],
+                    ['git', 'rev-parse', '--is-inside-work-tree'],
                     cwd=path,
                     check=True,
-                    capture_output=True
+                    capture_output=True,
+                    text=True
                 )
-                return result.returncode == 0
+                return result.stdout.strip() == "true"
             except subprocess.CalledProcessError:
                 return False
             except FileNotFoundError:
@@ -940,11 +941,12 @@ When user runs `/implement`, execute the implementation plan following TDD appro
 def create_toml_command(commands_dir, name, description, content):
     """Helper function to create a TOML command file."""
     cmd_file = commands_dir / f'{name}.toml'
+    # Use triple quotes for TOML multiline string to avoid unwanted escape characters
     toml_content = f"""name = "{name}"
 description = "{description}"
 
 [prompt]
-text = {repr(content)}
+text = \"\"\"{content}\"\"\"
 """
     with open(cmd_file, 'w', encoding='utf-8') as f:
         f.write(toml_content)
@@ -969,27 +971,6 @@ def goals():
         # Extract the first line as the goal title
         title = content.split('\n')[0].replace('# ', '').strip()
         click.echo(f"  - {title} ({goal_file.name})")
-
-
-@main.command()
-def clarify():
-    """Clarify and validate project goals."""
-    goals_dir = Path('.') / '.goals'
-    if not goals_dir.exists():
-        click.echo("No .goals directory found. Run 'goal init' first.")
-        return
-    
-    goal_files = list(goals_dir.glob('*.goal.md'))
-    if not goal_files:
-        click.echo("No goals defined yet. Use 'goal goals' to define goals first.")
-        return
-    
-    click.echo("Clarification process started...")
-    click.echo("Reviewing existing goals for clarity and completeness:")
-    for goal_file in goal_files:
-        content = goal_file.read_text(encoding='utf-8')
-        click.echo(f"\nAnalyzing: {goal_file.name}")
-        click.echo(content)
 
 
 @main.command()
@@ -1400,7 +1381,7 @@ def implement():
     plan_files = list(plans_dir.glob('*.plan.md')) if plans_dir.exists() else []
     task_files = list(tasks_dir.glob('*.task.md')) if tasks_dir.exists() else []
     
-    click.echo(f"Ready to implement:")
+    click.echo("Ready to implement:")
     click.echo(f"  - {len(goal_files)} goal(s)")
     click.echo(f"  - {len(plan_files)} plan(s)")
     click.echo(f"  - {len(task_files)} task(s)")
