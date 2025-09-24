@@ -19,7 +19,7 @@ fi
 create_template_package() {
     local AI=$1
     local SCRIPT_TYPE=$2
-    local TEMPLATE_DIR="goal-dev-spec-template-${AI}-${SCRIPT_TYPE}-${VERSION}"
+    local TEMPLATE_DIR="goal-kit-template-${AI}-${SCRIPT_TYPE}-${VERSION}"
 
     echo "Creating template package for ${AI} with ${SCRIPT_TYPE} scripts..."
 
@@ -56,11 +56,13 @@ create_template_package() {
     rm -rf "$TEMPLATE_DIR/.qwen"
     rm -rf "$TEMPLATE_DIR/.goalify"
     rm -rf "$TEMPLATE_DIR/.qodo"
+    rm -rf "$TEMPLATE_DIR/release-packages"
+    rm -rf "$TEMPLATE_DIR/.github/workflows/scripts"
 
     # Create zip file
     # Remove 'v' prefix from version if present to avoid double 'v'
     CLEAN_VERSION=${VERSION#v}
-    ZIP_NAME="goal-dev-spec-template-${AI}-${SCRIPT_TYPE}-v${CLEAN_VERSION}.zip"
+    ZIP_NAME="goal-kit-template-${AI}-${SCRIPT_TYPE}-v${CLEAN_VERSION}.zip"
 
     # Detect OS and use appropriate zip command
     if command -v zip &> /dev/null; then
