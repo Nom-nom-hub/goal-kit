@@ -16,49 +16,89 @@ def main():
 @click.argument('project_name', required=False)
 @click.option('--dir', default='.', help='Directory to initialize the project in')
 @click.option('--ai', type=click.Choice([
-    'claude', 'gemini', 'copilot', 'cursor', 'qwen', 'opencode', 
-    'codex', 'windsurf', 'kilocode', 'auggie', 'roo', 'deepseek', 
+    'claude', 'gemini', 'copilot', 'cursor', 'qwen', 'opencode',
+    'codex', 'windsurf', 'kilocode', 'auggie', 'roo', 'deepseek',
     'tabnine', 'grok', 'codewhisperer'
 ]), help='AI assistant to use for goal-driven development')
-@click.option('--script', type=click.Choice(['sh', 'ps']), default='sh', 
+@click.option('--script', type=click.Choice(['sh', 'ps']), default='sh',
               help='Script variant to use: sh (bash/zsh) or ps (PowerShell)')
-@click.option('--ignore-agent-tools', is_flag=True, 
+@click.option('--ignore-agent-tools', is_flag=True,
               help='Skip checks for AI agent tools')
-@click.option('--no-git', is_flag=True, 
+@click.option('--no-git', is_flag=True,
               help='Skip git repository initialization')
-@click.option('--here', is_flag=True, 
+@click.option('--here', is_flag=True,
               help='Initialize project in the current directory')
-@click.option('--force', is_flag=True, 
+@click.option('--force', is_flag=True,
               help='Force overwrite when using --here in non-empty directory')
 def init(project_name, dir, ai, script, ignore_agent_tools, no_git, here, force):
-    """Initialize a new goal-driven project with AI agent support."""
+    """Initialize a new goal-driven project with AI agent support.
+
+    --dir and --here cannot be used together.
+    If --here is specified, the project will be initialized in the current directory.
+    If --dir is specified, the project will be initialized in the given directory.
+    """
+    if here and dir != '.':
+        click.echo("Error: --here and --dir cannot be used together. Please specify only one.", err=True)
+        sys.exit(1)
+    if here:
+        dir = os.getcwd()
+    
     # Determine target directory
     target_dir = Path(dir)
-    if here:
-        target_dir = Path.cwd() if dir == '.' else Path(dir)
-        if not force and any(target_dir.iterdir()):  # Check if directory is not empty
-            if not force and not click.confirm(f"Directory {target_dir} is not empty. Initialize here anyway?"):
-                return
-    elif project_name:
+    if project_name:
         target_dir = target_dir / project_name
     else:
-        if not project_name and not here:
+        if not here:
             click.echo("Error: Please provide a project name or use --here flag")
             return
+    
+    if not force and any(target_dir.iterdir()) and (not click.confirm(f"Directory {target_dir} is not empty. Initialize here anyway?")):
+        return
     
     target_dir.mkdir(parents=True, exist_ok=True)
     
     # Initialize git if not --no-git
     if not no_git:
         git_dir = target_dir / '.git'
+        import subprocess
+        import os
+
+        def is_valid_git_repo(path):
+            try:
+                result = subprocess.run(
+                    ['git', 'status'],
+                    cwd=path,
+                    check=True,
+                    capture_output=True
+                )
+                return result.returncode == 0
+            except subprocess.CalledProcessError:
+                return False
+            except FileNotFoundError:
+                return False
+
         if not git_dir.exists():
             try:
-                import subprocess
                 subprocess.run(['git', 'init'], cwd=target_dir, check=True, capture_output=True)
                 subprocess.run(['git', 'checkout', '-b', 'main'], cwd=target_dir, check=True, capture_output=True)
                 click.echo("  [SUCCESS] Git repository initialized")
             except (subprocess.CalledProcessError, FileNotFoundError):
                 click.echo("  [WARNING] Git not available or failed to initialize")
+        else:
+            # .git exists, check if it's a valid repo
+            if not is_valid_git_repo(target_dir):
+                click.echo("  [WARNING] Existing .git directory is not a valid git repository. Re-initializing...")
+                try:
+                    # Remove the invalid .git directory
+                    import shutil
+                    shutil.rmtree(git_dir)
+                    subprocess.run(['git', 'init'], cwd=target_dir, check=True, capture_output=True)
+                    subprocess.run(['git', 'checkout', '-b', 'main'], cwd=target_dir, check=True, capture_output=True)
+                    click.echo("  [SUCCESS] Git repository re-initialized")
+                except Exception as e:
+                    click.echo(f"  [ERROR] Failed to re-initialize git repository: {e}")
+            else:
+                click.echo("  [INFO] Valid git repository already exists")
     
     # Create comprehensive goal-driven project structure
     (target_dir / '.goals').mkdir(exist_ok=True)
@@ -174,7 +214,10 @@ In your AI coding environment, you can use slash commands like:
     
     # Create AI agent configuration if specified
     if ai:
-        create_agent_config(target_dir, ai, script)
+        try:
+            create_agent_config(target_dir, ai, script)
+        except Exception as e:
+            click.echo(f"Error creating AI agent configuration: {e}", err=True)
     
     click.echo(f"Initialized goal-driven project in {target_dir}")
     click.echo("Project structure created:")
@@ -192,7 +235,11 @@ In your AI coding environment, you can use slash commands like:
 def create_agent_config(project_dir, ai_agent, script_type):
     """Create agent-specific configuration files for goal-driven development."""
     agent_dir = project_dir / f".{ai_agent}"
-    agent_dir.mkdir(exist_ok=True)
+    if agent_dir.exists():
+        if not agent_dir.is_dir():
+            raise RuntimeError(f"Cannot create agent config directory: {agent_dir} exists and is not a directory.")
+    else:
+        agent_dir.mkdir(exist_ok=True)
     
     if ai_agent in ['claude', 'cursor', 'opencode', 'windsurf', 'kilocode', 'auggie', 'roo']:
         # Create markdown-based command files for these agents
@@ -904,43 +951,6 @@ text = {repr(content)}
 
 
 @main.command()
-def constitution():
-    """Create or update project constitution and principles."""
-    memory_dir = Path('.') / 'memory'
-    if not memory_dir.exists():
-        click.echo("Memory directory not found. Run 'goal init' first.")
-        return
-    
-    constitution_file = memory_dir / 'constitution.md'
-    if constitution_file.exists():
-        click.echo("Project constitution found:")
-        click.echo(constitution_file.read_text(encoding='utf-8'))
-    else:
-        # Create a new constitution file
-        constitution_file.write_text("""# Project Constitution
-
-## Core Principles
-- Focus on outcomes rather than specifications
-- Ensure every technical decision supports meaningful results
-- Maintain stakeholder alignment throughout development
-- Embrace iterative validation and course correction
-
-## Quality Standards
-- Code quality and documentation excellence
-- Comprehensive testing strategy
-- Performance and security considerations
-- Maintainability and scalability
-
-## Decision-Making Framework
-- Prioritize goal achievement over technical perfection
-- Consider long-term maintainability
-- Balance innovation with stability
-- Align with stakeholder needs and expectations
-""", encoding='utf-8')
-        click.echo(f"Created new constitution file at {constitution_file}")
-
-
-@main.command()
 def goals():
     """List and manage project goals."""
     goals_dir = Path('.') / '.goals'
@@ -1108,22 +1118,22 @@ def implement():
     """Execute the implementation."""
     click.echo("Implementation started...")
     click.echo("This command would help execute your implementation plan.")
-    
+
     # Check project structure
     goals_dir = Path('.') / '.goals'
     plans_dir = Path('.') / '.plans'
     tasks_dir = Path('.') / '.tasks'
-    
+
     if not all(d.exists() for d in [goals_dir, plans_dir, tasks_dir]):
         click.echo("Project not fully set up. Ensure you have goals, plans, and tasks defined.")
         return
-    
+
     # List what needs to be implemented
     goal_files = list(goals_dir.glob('*.goal.md')) if goals_dir.exists() else []
     plan_files = list(plans_dir.glob('*.plan.md')) if plans_dir.exists() else []
     task_files = list(tasks_dir.glob('*.task.md')) if tasks_dir.exists() else []
-    
-    click.echo(f"Ready to implement:")
+
+    click.echo("Ready to implement:")
     click.echo(f"  - {len(goal_files)} goal(s)")
     click.echo(f"  - {len(plan_files)} plan(s)")
     click.echo(f"  - {len(task_files)} task(s)")
