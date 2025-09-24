@@ -21,17 +21,31 @@ fi
 
 # Create the release
 if [ -f \"release_notes.md\" ]; then
-    gh release create \"$VERSION\" \\
-        --repo \"$REPO\" \\
-        --title \"Goal-Driven Development Kit $VERSION\" \\
-        --notes-file \"release_notes.md\" \\
-        release-packages/*.zip
+    if [ -d \"release-packages\" ] && [ -n \"$(ls -A release-packages/*.zip 2>/dev/null)\" ]; then
+        gh release create \"$VERSION\" \\
+            --repo \"$REPO\" \\
+            --title \"Goal-Driven Development Kit $VERSION\" \\
+            --notes-file \"release_notes.md\" \\
+            release-packages/*.zip
+    else
+        gh release create \"$VERSION\" \\
+            --repo \"$REPO\" \\
+            --title \"Goal-Driven Development Kit $VERSION\" \\
+            --notes-file \"release_notes.md\"
+    fi
 else
-    gh release create \"$VERSION\" \\
-        --repo \"$REPO\" \\
-        --title \"Goal-Driven Development Kit $VERSION\" \\
-        --notes \"Release $VERSION of Goal-Driven Development Kit\" \\
-        release-packages/*.zip
+    if [ -d \"release-packages\" ] && [ -n \"$(ls -A release-packages/*.zip 2>/dev/null)\" ]; then
+        gh release create \"$VERSION\" \\
+            --repo \"$REPO\" \\
+            --title \"Goal-Driven Development Kit $VERSION\" \\
+            --notes \"Release $VERSION of Goal-Driven Development Kit\" \\
+            release-packages/*.zip
+    else
+        gh release create \"$VERSION\" \\
+            --repo \"$REPO\" \\
+            --title \"Goal-Driven Development Kit $VERSION\" \\
+            --notes \"Release $VERSION of Goal-Driven Development Kit\"
+    fi
 fi
 
 echo "Release $VERSION created successfully!"
