@@ -1,9 +1,0 @@
-{
-  "id": "b4am1i66i38diopzl37fa",
-  "title": "Fix remaining f-strings without placeholders in cicd.py",
-  "description": "Continue fixing all f-strings without placeholders in src/goal_cli/cicd.py",
-  "dependencies": [],
-  "status": "pending",
-  "createdAt": "2025-09-23T21:32:21.847Z",
-  "updatedAt": "2025-09-23T21:32:21.847Z"
-}

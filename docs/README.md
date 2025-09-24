@@ -1,210 +1,52 @@
-# Goal-Dev-Spec Documentation
+# Goal-Driven Development Kit Documentation
 
-## Overview
+This directory contains the documentation for the Goal-Driven Development Kit.
 
-Goal-Dev-Spec is a goal-driven development specification system that uses YAML files for structured specifications. It provides a systematic approach to defining goals, creating specifications, planning implementations, and tracking progress.
+## Documentation Structure
 
-## Key Concepts
+- **[Home](index.md)** - Overview of Goal-Driven Development methodology and core concepts
+- **[Installation Guide](installation.md)** - How to install and set up the Goal CLI
+- **[Quick Start Guide](quickstart.md)** - Fast track to building with goal-driven development
+- **[Local Development](local-development.md)** - Contributing and developing the toolkit locally
 
-### Goals
-Goals represent high-level objectives that you want to achieve. Each goal has:
-- A unique ID
-- A descriptive title
-- A detailed description
-- Objectives to achieve
-- Success criteria
-- Dependencies on other goals
-- Priority and status tracking
+## Building Documentation
 
-### Specifications
-Specifications define the detailed requirements for implementing a goal. Each specification includes:
-- User stories
-- Acceptance criteria
-- Functional and non-functional requirements
-- Constraints and assumptions
+This documentation is built using [DocFX](https://dotnet.github.io/docfx/) and can be deployed to GitHub Pages.
 
-### Plans
-Plans outline the technical approach for implementing a specification:
-- Technical approach
-- Architecture design
-- Integration points
-- Deployment strategy
+### Prerequisites
 
-### Tasks
-Tasks break down plans into actionable items:
-- Individual task definitions
-- Dependencies between tasks
-- Estimated durations
-- Assignees
+- [.NET SDK](https://dotnet.microsoft.com/download) (version 8.x)
+- [DocFX Tool](https://www.nuget.org/packages/docfx.console)
 
-## Installation
+### Building Locally
 
 ```bash
-pip install goal-dev-spec
+# Install DocFX
+dotnet tool install -g docfx
+
+# Build documentation
+cd docs
+docfx docfx.json
+
+# Preview locally (optional)
+docfx serve _site
 ```
 
-## Quick Start
+### GitHub Pages Deployment
 
-1. Initialize a new project:
-   ```bash
-   goal init my-project
-   cd my-project
-   ```
+Documentation is automatically built and deployed to GitHub Pages when changes are pushed to the `main` branch in the `docs/` directory.
 
-2. Create your first goal:
-   ```bash
-   goal create "Implement user authentication system"
-   ```
+## Contributing to Documentation
 
-3. List all goals:
-   ```bash
-   goal list
-   ```
+1. Edit the Markdown files in this directory
+2. Update `toc.yml` if adding new sections
+3. Test the build locally with `docfx` before pushing
+4. Ensure all links work and formatting is correct
 
-4. Show details of a specific goal:
-   ```bash
-   goal show <goal-id>
-   ```
+## Documentation Guidelines
 
-## Commands
-
-### `goal init`
-Initialize a new goal-dev-spec project.
-
-```bash
-goal init <project-name> [--force]
-```
-
-Options:
-- `--force`: Force creation even if directory exists
-
-### `goal create`
-Create a new goal specification.
-
-```bash
-goal create "<goal-description>"
-```
-
-### `goal plan`
-Create an implementation plan for a goal.
-
-```bash
-goal plan <goal-id>
-```
-
-### `goal tasks`
-Generate task breakdown for implementation.
-
-```bash
-goal tasks <plan-id>
-```
-
-### `goal list`
-List all goals in the project.
-
-```bash
-goal list
-```
-
-### `goal show`
-Show details of a specific goal.
-
-```bash
-goal show <goal-id>
-```
-
-### `goal track`
-Track progress of goals and tasks.
-
-```bash
-goal track
-```
-
-## Project Structure
-
-```
-my-project/
-├── goal.yaml              # Project configuration
-├── .goal/                 # All goal-dev-spec files in one place
-│   ├── goals/             # Goal specifications
-│   │   ├── goals.yaml     # Goals index
-│   │   └── <goal-id>/     # Individual goal directory
-│   │       └── goal.yaml  # Goal specification
-│   ├── specs/             # Feature specifications
-│   │   └── <spec-id>/     # Individual spec directory
-│   │       └── spec.yaml  # Feature specification
-│   ├── plans/             # Implementation plans
-│   ├── tasks/             # Task breakdowns
-│   ├── templates/         # YAML templates
-│   └── agents/            # AI agent configurations
-│       ├── claude/        # Claude configurations
-│       └── gemini/        # Gemini configurations
-├── scripts/               # Helper scripts
-│   ├── bash/              # Bash scripts
-│   └── powershell/        # PowerShell scripts
-```
-
-## YAML Templates
-
-### Goal Template
-```yaml
-id: ""
-title: ""
-description: ""
-objectives: []
-success_criteria: []
-dependencies: []
-related_goals: []
-priority: "medium"  # low, medium, high, critical
-status: "draft"  # draft, planned, in_progress, completed, blocked
-created_at: ""
-updated_at: ""
-owner: ""
-tags: []
-metadata: {}
-```
-
-### Specification Template
-```yaml
-id: ""
-goal_id: ""
-title: ""
-description: ""
-user_stories: []
-acceptance_criteria: []
-functional_requirements: []
-non_functional_requirements: []
-constraints: []
-assumptions: []
-out_of_scope: []
-created_at: ""
-updated_at: ""
-status: "draft"  # draft, reviewed, approved, implemented
-metadata: {}
-```
-
-## Integration with AI Agents
-
-Goal-Dev-Spec supports integration with various AI agents:
-- Claude Code
-- Gemini CLI
-- Qwen Code
-- And more
-
-Agent configurations are stored in the `agents/` directory, with each agent having its own subdirectory containing configuration files and command templates.
-
-## Best Practices
-
-1. **Start with clear goals**: Define specific, measurable goals with clear success criteria.
-
-2. **Break down complex goals**: Use dependencies to create a hierarchy of related goals.
-
-3. **Detailed specifications**: Create comprehensive specifications before implementation.
-
-4. **Regular tracking**: Use the tracking features to monitor progress and identify blockers.
-
-5. **Leverage AI agents**: Use AI agents to help generate and refine specifications.
-
-## Contributing
-
-We welcome contributions to Goal-Dev-Spec! Please see our contributing guidelines for more information.
+- Use clear, concise language
+- Include practical examples
+- Provide step-by-step instructions
+- Link to related sections where appropriate
+- Test all code examples and commands

@@ -1,79 +1,88 @@
-# Goal Specification: [GOAL TITLE]
+# Project Goals: [PROJECT NAME]
 
-**Goal ID**: `[GOAL-ID]`  
-**Created**: [DATE]  
-**Status**: Draft  
-**Priority**: Medium  
-**Owner**: [OWNER]
+**Project**: `[PROJECT_NAME]`
+**Created**: [DATE]
+**Status**: Draft
+**Input**: User goals: "$ARGUMENTS"
 
 ## Execution Flow (main)
 ```
-1. Parse goal description
-   → Extract key objectives and success criteria
-2. Identify dependencies and related goals
-   → Mark with [NEEDS CLARIFICATION: specific dependency question]
-3. Define measurable success criteria
-   → Each criterion must be testable
-   → Mark ambiguous criteria
-4. Fill Objectives & Success Criteria section
-   → If no clear objectives: ERROR "Cannot determine goal objectives"
-5. Identify Key Stakeholders
-6. Run Review Checklist
-   → If any [NEEDS CLARIFICATION]: WARN "Goal has uncertainties"
-7. Return: SUCCESS (goal ready for specification)
+1. Parse user goals from Input
+   → If empty: ERROR "No goals provided"
+2. Extract key objectives and outcomes from goals
+   → Identify: primary goals, success metrics, constraints
+3. For each unclear aspect:
+   → Mark with [NEEDS CLARIFICATION: specific question]
+4. Fill Goal Breakdown & Success Metrics section
+   → If no clear objectives: ERROR "Cannot determine success criteria"
+5. Generate Success Criteria and Validation
+   → Each criterion must be measurable
+   → Mark ambiguous requirements
+6. Identify Key Stakeholders and Impact Areas
+7. Run Review Checklist
+   → If any [NEEDS CLARIFICATION]: WARN "Goals have uncertainties"
+   → If implementation details found: ERROR "Remove tech details"
+8. Return: SUCCESS (goals ready for strategizing)
 ```
 
 ---
 
-## ⚡ Quick Guidelines
-- ✅ Focus on WHAT needs to be achieved and WHY
-- ❌ Avoid implementation details (no tech stack, specific solutions)
-- 👥 Written for project stakeholders, not just developers
+## 🎯 Quick Guidelines
+- ✅ Focus on WHAT outcomes we want to achieve and WHY
+- ❌ Avoid HOW to implement (no tech stack, APIs, code structure)
+- 👥 Written for stakeholders, not developers
+- 📊 Define measurable success criteria
 
 ### Section Requirements
-- **Mandatory sections**: Must be completed for every goal
-- **Optional sections**: Include only when relevant to the goal
+- **Mandatory sections**: Must be completed for every project
+- **Optional sections**: Include only when relevant to the goals
 - When a section doesn't apply, remove it entirely (don't leave as "N/A")
 
 ### For AI Generation
-When creating this goal from a user prompt:
+When creating goals from user input:
 1. **Mark all ambiguities**: Use [NEEDS CLARIFICATION: specific question] for any assumption you'd need to make
-2. **Don't guess**: If the prompt doesn't specify something (e.g., "improve user experience" without specifics), mark it
-3. **Think like a project manager**: Every vague objective should fail the "measurable and unambiguous" checklist item
+2. **Don't guess**: If the goals don't specify something (e.g., "user base size" without scale), mark it
+3. **Think like a product manager**: Every vague goal should fail the "measurable success criteria" checklist item
 4. **Common underspecified areas**:
-   - Success metrics and KPIs
-   - Timeline and milestones
-   - Resource requirements
-   - Risk factors
-   - Stakeholder expectations
+   - Target user segments and scale
+   - Success metrics and measurement methods
+   - Timeframes and milestones
+   - Resource constraints
+   - Business impact and ROI expectations
 
 ---
 
-## Objectives & Success Criteria *(mandatory)*
+## Goal Breakdown & Success Metrics *(mandatory)*
 
-### Primary Goal
-[Describe the main objective in plain language]
+### Primary Project Objectives
+[Describe the main outcomes and value proposition in plain language]
 
-### Success Criteria
-1. **Measurable Outcome**: [Specific, measurable result]
-2. **Business Impact**: [Value delivered to stakeholders]
-3. **Quality Standards**: [Acceptance thresholds]
+### Key Performance Indicators (KPIs)
+1. **KPI-001**: [Measurable metric, e.g., "User engagement rate of 70%"]
+2. **KPI-002**: [Measurable metric, e.g., "Task completion time reduced by 50%"]
+3. **KPI-003**: [Measurable metric, e.g., "Error rate below 1%"]
 
-### Key Stakeholders
-- **[Stakeholder 1]**: [Role and interest in the goal]
-- **[Stakeholder 2]**: [Role and interest in the goal]
+### Success Criteria *(must be measurable)*
+1. **Given** [baseline state], **When** [goal achieved], **Then** [measurable outcome]
+2. **Given** [baseline state], **When** [goal achieved], **Then** [measurable outcome]
 
----
+### Edge Cases & Constraints
+- What happens when [boundary condition]?
+- How does the solution handle [constraint scenario]?
 
-## Dependencies & Constraints *(mandatory)*
+## Stakeholder Analysis *(mandatory)*
 
-### Dependencies
-- **[Dependency 1]**: [What this goal depends on]
-- **[Dependency 2]**: [What this goal depends on]
+### Primary Stakeholders
+- **[Stakeholder Type]**: [Their goals, needs, and how this project serves them]
 
-### Constraints
-- **[Constraint 1]**: [Limitation or restriction]
-- **[Constraint 2]**: [Limitation or restriction]
+### Impact Assessment
+- **Business Impact**: [How does this achieve business objectives?]
+- **User Impact**: [How does this improve user experience?]
+- **Technical Impact**: [What technical debt or improvements result?]
+
+### Success Validation *(include if validation methods are specific)*
+- **[Validation Method]**: [How to verify the goal is met, e.g., "A/B testing with 1000 users"]
+- **[Validation Method]**: [How to verify the goal is met, e.g., "Performance benchmarking against current system"]
 
 ---
 
@@ -81,26 +90,28 @@ When creating this goal from a user prompt:
 *GATE: Automated checks run during main() execution*
 
 ### Content Quality
-- [ ] No implementation details (specific technologies, code solutions)
+- [ ] No implementation details (languages, frameworks, APIs)
 - [ ] Focused on outcomes and business value
-- [ ] Written for non-technical stakeholders
+- [ ] Written for business stakeholders
 - [ ] All mandatory sections completed
 
 ### Goal Completeness
 - [ ] No [NEEDS CLARIFICATION] markers remain
-- [ ] Success criteria are measurable and unambiguous
+- [ ] Goals are achievable with clear success criteria
+- [ ] Success criteria are measurable and testable
 - [ ] Scope is clearly bounded
-- [ ] Dependencies and constraints identified
+- [ ] Dependencies and assumptions identified
+- [ ] Stakeholders and impact areas defined
 
 ---
 
 ## Execution Status
 *Updated by main() during processing*
 
-- [ ] Goal description parsed
+- [ ] User goals parsed
 - [ ] Key objectives extracted
 - [ ] Ambiguities marked
-- [ ] Success criteria defined
+- [ ] Success metrics defined
 - [ ] Stakeholders identified
 - [ ] Review checklist passed
 

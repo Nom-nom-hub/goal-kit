@@ -1,8 +1,0 @@
-# Development dependencies
-pytest>=7.0
-ruff>=0.1.6
-mypy>=1.0
-black>=23.0
-pre-commit>=3.0
-mkdocs>=1.4.0
-mkdocs-material>=9.0

@@ -1,9 +1,0 @@
-{
-  "id": "nq8avprpr88y9sg6fi64lr",
-  "title": "Fix undefined names in reviews.py",
-  "description": "Fix the undefined 'defaultdict' name in src/goal_cli/reviews.py",
-  "dependencies": [],
-  "status": "pending",
-  "createdAt": "2025-09-23T21:32:55.091Z",
-  "updatedAt": "2025-09-23T21:32:55.091Z"
-}

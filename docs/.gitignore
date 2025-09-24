@@ -1,0 +1,7 @@
+# Build outputs
+_site/
+obj/
+*.tmp
+
+# DocFX cache
+.cache/
