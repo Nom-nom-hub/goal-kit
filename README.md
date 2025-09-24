@@ -1,4 +1,5 @@
 <div align="center">
+    <img src="./media/goal-kit.png.png" alt="Goal-Kit Logo" width="200" height="200"/>
     <h1>🎯 Goal-Driven Development Kit</h1>
     <h3><em>Build software that achieves meaningful outcomes.</em></h3>
 </div>
