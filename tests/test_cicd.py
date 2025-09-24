@@ -9,10 +9,14 @@ import sys
 from pathlib import Path
 from typing import Any
 
-# Add src to Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
-
-from goal_cli.cicd import CICDPipelineManager
+# Import the module directly (package will be available via PYTHONPATH in CI)
+try:
+    from goal_cli.cicd import CICDPipelineManager
+except ImportError:
+    # Fallback for local testing
+    import sys
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+    from goal_cli.cicd import CICDPipelineManager
 
 
 def test_cicd_pipelines():

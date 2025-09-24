@@ -34,8 +34,11 @@ jobs:
 
     - name: Run tests
       run: |
-        uv run pytest tests/ -v
+        # Run tests in isolated mode to avoid circular imports
+        uv run pytest tests/ -v --tb=short --disable-warnings
       timeout-minutes: 15
+      env:
+        PYTHONPATH: ${{ github.workspace }}/src
 
     - name: Run linter
       run: |

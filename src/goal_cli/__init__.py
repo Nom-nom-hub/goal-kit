@@ -27,22 +27,9 @@ from .ui_components import (
     check_tool,
     ensure_executable_scripts
 )
-from .analytics import PredictiveAnalyticsEngine, integrate_analytics_with_main_cli
+from .analytics import PredictiveAnalyticsEngine
 from .enhanced_ui import EnhancedStepTracker, ProgressDisplayManager, NotificationManager, ErrorHandler
 from .governance_system import GovernanceSystem
-from .enhanced_quality_assurance import integrate_quality_assurance_with_main_cli
-from .testing_integration import integrate_testing_with_main_cli
-from .real_time_monitoring import integrate_monitoring_with_main_cli
-from .automation import integrate_automation_with_main_cli
-from .cross_platform import integrate_cross_platform_with_main_cli
-from .ai_code import integrate_ai_code_with_main_cli
-from .documentation import integrate_docs_with_main_cli
-from .cicd import integrate_cicd_with_main_cli
-from .dependencies import integrate_deps_with_main_cli
-from .scaffolding import integrate_scaffold_with_main_cli
-from .testing_quality import integrate_testing_with_main_cli as integrate_testing_quality_with_main_cli
-from .performance_tools import integrate_performance_with_main_cli
-from .security_scanner import integrate_security_with_main_cli  # type: ignore[attr-defined]
 
 # Initialize Rich console
 console = Console()
@@ -1098,49 +1085,39 @@ def callback(
         console.print()
 
 def main():
-    # Integrate analytics commands
+    # Import integration functions locally to avoid circular imports during testing
+    from .analytics import integrate_analytics_with_main_cli
+    from .enhanced_quality_assurance import integrate_quality_assurance_with_main_cli
+    from .testing_integration import integrate_testing_with_main_cli
+    from .real_time_monitoring import integrate_monitoring_with_main_cli
+    from .automation import integrate_automation_with_main_cli
+    from .cross_platform import integrate_cross_platform_with_main_cli
+    from .ai_code import integrate_ai_code_with_main_cli
+    from .documentation import integrate_docs_with_main_cli
+    from .cicd import integrate_cicd_with_main_cli
+    from .dependencies import integrate_deps_with_main_cli
+    from .scaffolding import integrate_scaffold_with_main_cli
+    from .testing_quality import integrate_testing_with_main_cli as integrate_testing_quality_with_main_cli
+    from .performance_tools import integrate_performance_with_main_cli
+    from .security_scanner import integrate_security_with_main_cli  # type: ignore[attr-defined]
+
+    # Integrate commands
     global app
     app = integrate_analytics_with_main_cli(app)
-    
-    # Integrate quality assurance commands
     app = integrate_quality_assurance_with_main_cli(app)
-    
-    # Integrate testing commands
     app = integrate_testing_with_main_cli(app)
-    
-    # Integrate monitoring commands
     app = integrate_monitoring_with_main_cli(app)
-    
-    # Integrate automation commands
     app = integrate_automation_with_main_cli(app)
-    
-    # Integrate cross-platform scripting commands
     app = integrate_cross_platform_with_main_cli(app)
-    
-    # Integrate AI code generation commands
     app = integrate_ai_code_with_main_cli(app)
-    
-    # Integrate documentation generation commands
     app = integrate_docs_with_main_cli(app)
-    
-    # Integrate CI/CD pipeline commands
     app = integrate_cicd_with_main_cli(app)
-    
-    # Integrate dependency management commands
     app = integrate_deps_with_main_cli(app)
-    
-    # Integrate project scaffolding commands
     app = integrate_scaffold_with_main_cli(app)
-    
-    # Integrate testing and quality gates commands
     app = integrate_testing_quality_with_main_cli(app)
-    
-    # Integrate performance optimization commands
     app = integrate_performance_with_main_cli(app)
-    
-    # Integrate security scanning commands
     app = integrate_security_with_main_cli(app)
-    
+
     app()
 
 if __name__ == "__main__":
