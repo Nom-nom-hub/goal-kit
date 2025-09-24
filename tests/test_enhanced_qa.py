@@ -11,7 +11,7 @@ from typing import Any
 # Import our modules
 from src.goal_cli.enhanced_quality_assurance import QualityMetrics, ValidationFinding
 from src.goal_cli.real_time_monitoring import MonitoringEvent, ThresholdRule
-from src.goal_cli.testing_integration import TestingFrameworkIntegration
+from src.goal_cli.testing_integration import TestingIntegration
 
 
 class TestEnhancedQualityAssuranceDataclasses(unittest.TestCase):
@@ -57,7 +57,7 @@ class TestTestingFrameworkIntegration(unittest.TestCase):
         self.test_dir = Path(tempfile.mkdtemp())
         # Create the required .goal directory structure
         (self.test_dir / ".goal").mkdir()
-        self.testing = TestingFrameworkIntegration(self.test_dir)
+        self.testing = TestingIntegration(self.test_dir)
     
     def tearDown(self):
         """Tear down test fixtures"""
@@ -65,7 +65,7 @@ class TestTestingFrameworkIntegration(unittest.TestCase):
     
     def test_initialization(self):
         """Test that TestingFrameworkIntegration initializes correctly"""
-        self.assertIsInstance(self.testing, TestingFrameworkIntegration)
+        self.assertIsInstance(self.testing, TestingIntegration)
         self.assertTrue((self.test_dir / ".goal" / "testing").exists())
     
     def test_supported_frameworks(self):

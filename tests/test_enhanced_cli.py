@@ -13,35 +13,37 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 def test_enhanced_cli():
     """Test the enhanced CLI functionality"""
     print("Testing enhanced goal-dev-spec CLI...")
-    
+
     # Test imports
     try:
         from goal_cli import EnhancedStepTracker, PredictiveAnalyticsEngine
         print("[PASS] EnhancedStepTracker imported successfully")
         print("[PASS] PredictiveAnalyticsEngine imported successfully")
+        assert True, "Imports successful"
     except ImportError as e:
         print(f"[FAIL] Import error: {e}")
-        return False
-    
+        assert False, f"Import error: {e}"
+
     # Test EnhancedStepTracker
     try:
         tracker = EnhancedStepTracker("Test Process", total_steps=3)
         tracker.add("step1", "First step")
         tracker.add("step2", "Second step")
         tracker.add("step3", "Third step")
-        
+
         tracker.start("step1", "Processing...")
         tracker.complete("step1", "Done")
-        
+
         tracker.start("step2", "Processing...")
         tracker.complete("step2", "Done")
-        
+
         progress = tracker.get_progress_percentage()
         print(f"[PASS] EnhancedStepTracker progress: {progress:.1f}%")
+        assert progress >= 0, "Progress should be >= 0"
     except Exception as e:
         print(f"[FAIL] EnhancedStepTracker error: {e}")
-        return False
-    
+        assert False, f"EnhancedStepTracker error: {e}"
+
     # Test PredictiveAnalyticsEngine
     try:
         # Create a temporary project path for testing
@@ -49,9 +51,9 @@ def test_enhanced_cli():
         # Create the analytics directory if it doesn't exist
         analytics_path = test_path / ".goal" / "analytics"
         analytics_path.mkdir(parents=True, exist_ok=True)
-        
+
         engine = PredictiveAnalyticsEngine(test_path)
-        
+
         # Test with sample goal data
         goal_data = {
             "title": "Test Goal",
@@ -60,22 +62,25 @@ def test_enhanced_cli():
             "success_criteria": ["99.9% uptime", "Password strength validation"],
             "dependencies": ["database-setup"]
         }
-        
+
         complexity = engine.analyze_goal_complexity(goal_data)
         print(f"[PASS] PredictiveAnalyticsEngine complexity analysis: {complexity['total_score']}/10")
-        
+        assert complexity['total_score'] >= 0, "Complexity score should be >= 0"
+
         estimated_time = engine.estimate_completion_time(goal_data)
         print(f"[PASS] PredictiveAnalyticsEngine time estimation: {estimated_time} days")
-        
+        assert estimated_time >= 0, "Time estimation should be >= 0"
+
         risks = engine.identify_risk_factors(goal_data)
         print(f"[PASS] PredictiveAnalyticsEngine risk factors: {risks}")
-        
+        assert isinstance(risks, list), "Risk factors should be a list"
+
     except Exception as e:
         print(f"[FAIL] PredictiveAnalyticsEngine error: {e}")
-        return False
-    
+        assert False, f"PredictiveAnalyticsEngine error: {e}"
+
     print("All tests passed!")
-    return True
+    assert True, "All tests completed successfully"
 
 if __name__ == "__main__":
     success = test_enhanced_cli()

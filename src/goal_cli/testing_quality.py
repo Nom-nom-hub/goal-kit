@@ -38,7 +38,7 @@ class QualityGate:
     error: Optional[str] = None
 
 
-class TestingAndQualityManager:
+class TestingQualityManager:
     """Automated testing and quality gates management system"""
     
     def __init__(self, project_path: Path):

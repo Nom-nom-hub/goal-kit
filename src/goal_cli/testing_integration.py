@@ -10,7 +10,7 @@ from datetime import datetime
 import subprocess
 
 
-class TestingFrameworkIntegration:
+class TestingIntegration:
     """Integrates goal-dev-spec with testing frameworks"""
     
     def __init__(self, project_path: Path):
@@ -768,7 +768,7 @@ def testing_cli():
                 return
             
             # Initialize testing integration
-            testing_integration = TestingFrameworkIntegration(project_path)
+            testing_integration = TestingIntegration(project_path)
             
             # Set up framework
             result = testing_integration.setup_testing_framework(framework)
@@ -798,7 +798,7 @@ def testing_cli():
                 return
             
             # Initialize testing integration
-            testing_integration = TestingFrameworkIntegration(project_path)
+            testing_integration = TestingIntegration(project_path)
             
             # Detect framework
             framework = testing_integration.detect_testing_framework()
@@ -827,7 +827,7 @@ def testing_cli():
                 return
             
             # Initialize testing integration
-            testing_integration = TestingFrameworkIntegration(project_path)
+            testing_integration = TestingIntegration(project_path)
             
             # Run tests
             result = testing_integration.run_tests(pattern=pattern)

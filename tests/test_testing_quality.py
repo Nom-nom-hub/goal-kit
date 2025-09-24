@@ -13,7 +13,7 @@ from typing import Any
 # Add src to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-from goal_cli.testing_quality import TestingAndQualityManager
+from goal_cli.testing_quality import TestingQualityManager
 
 
 def test_testing_and_quality():
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 ''')
     
     # Initialize testing and quality manager
-    test_manager = TestingAndQualityManager(test_project)
+    test_manager = TestingQualityManager(test_project)
     
     # Test 1: List quality gates
     print("\n1. Listing quality gates...")
