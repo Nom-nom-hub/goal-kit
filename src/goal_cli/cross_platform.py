@@ -7,7 +7,7 @@ import os
 import subprocess
 import platform
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Optional
 
 
 class CrossPlatformScriptManager:
@@ -44,8 +44,8 @@ class CrossPlatformScriptManager:
         # Default interpreter for current platform
         self.default_interpreter = self.script_interpreters.get(self.platform, "/bin/bash")
     
-    def create_script(self, name: str, content: str, platform: str = None, 
-                     interpreter: str = None) -> str:
+    def create_script(self, name: str, content: str, platform: Optional[str] = None,
+                      interpreter: Optional[str] = None) -> str:
         """
         Create a cross-platform script
         
@@ -99,10 +99,10 @@ class CrossPlatformScriptManager:
         
         return created_scripts
     
-    def execute_script(self, script_path: Union[str, Path], 
-                      arguments: List[str] = None,
-                      capture_output: bool = True,
-                      timeout: int = 300) -> Dict:
+    def execute_script(self, script_path: Union[str, Path],
+                       arguments: Optional[List[str]] = None,
+                       capture_output: bool = True,
+                       timeout: int = 300) -> Dict:
         """
         Execute a script in a cross-platform manner
         
@@ -187,6 +187,15 @@ class CrossPlatformScriptManager:
     
     def _is_command_available(self, command: str) -> bool:
         """Check if a command is available in the system"""
+        try:
+            subprocess.run(
+                ["which" if not self.is_windows else "where", command],
+                capture_output=True,
+                check=True
+            )
+            return True
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            return False
         try:
             subprocess.run(
                 ["which" if not self.is_windows else "where", command],
@@ -289,6 +298,13 @@ class CrossPlatformScriptManager:
     
     def _detect_script_platform(self, extension: str) -> str:
         """Detect platform based on script extension"""
+        extension_map = {
+            ".ps1": "windows",
+            ".sh": "unix",  # Could be linux or darwin
+            ".bat": "windows",
+            ".cmd": "windows"
+        }
+        return extension_map.get(extension, "unknown")
         extension_map = {
             ".ps1": "windows",
             ".sh": "unix",  # Could be linux or darwin

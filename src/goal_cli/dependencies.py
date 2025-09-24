@@ -5,8 +5,8 @@ Exceeds spec-kit functionality with advanced dependency analysis and management.
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, asdict
+from typing import Dict, List, Optional, Any, cast
+from dataclasses import dataclass, asdict, field
 from datetime import datetime
 import hashlib
 
@@ -30,8 +30,8 @@ class DependencyInfo:
     version: str
     source: str  # pip, npm, gem, etc.
     license: str = "unknown"
-    vulnerabilities: List[str] = None
-    dependencies: List[str] = None
+    vulnerabilities: List[str] = field(default_factory=list)
+    dependencies: List[str] = field(default_factory=list)
     usage: str = "unknown"  # direct, transitive
     status: str = "active"  # active, deprecated, vulnerable
 
@@ -318,7 +318,7 @@ class DependencyManager:
     
     def _analyze_dependencies(self, target: str) -> Dict:
         """Analyze project dependencies"""
-        analysis = {
+        analysis: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "target": target,
             "managers_detected": [],
@@ -337,18 +337,18 @@ class DependencyManager:
         for manager_name, manager_info in managers.items():
             deps = self._extract_dependencies(manager_name, manager_info)
             all_dependencies[manager_name] = deps
-            analysis["dependencies_found"] += len(deps)
+            analysis["dependencies_found"] = cast(int, analysis["dependencies_found"]) + len(deps)
             
             # Separate direct and transitive dependencies
             for dep_name, dep_info in deps.items():
                 if dep_info.usage == "direct":
-                    analysis["direct_dependencies"].append({
+                    cast(List, analysis["direct_dependencies"]).append({
                         "name": dep_name,
                         "version": dep_info.version,
                         "manager": manager_name
                     })
                 else:
-                    analysis["transitive_dependencies"].append({
+                    cast(List, analysis["transitive_dependencies"]).append({
                         "name": dep_name,
                         "version": dep_info.version,
                         "manager": manager_name
@@ -386,13 +386,13 @@ class DependencyManager:
         for dep_name, dep_info in current_deps.items():
             if strategy == "safe":
                 # Only update if it's a minor version bump
-                update_info["updates_skipped"].append({
+                cast(List, update_info["updates_skipped"]).append({
                     "name": dep_name,
                     "reason": "Safe strategy - no update performed"
                 })
             elif strategy == "latest":
                 # Update to latest version (simulated)
-                update_info["updates_performed"].append({
+                cast(List, update_info["updates_performed"]).append({
                     "name": dep_name,
                     "from_version": dep_info.version,
                     "to_version": f"{dep_info.version}.1",  # Simulate minor update
@@ -400,7 +400,7 @@ class DependencyManager:
                 })
             elif strategy == "pin":
                 # Pin to current versions
-                update_info["updates_skipped"].append({
+                cast(List, update_info["updates_skipped"]).append({
                     "name": dep_name,
                     "reason": "Pin strategy - keeping current version"
                 })
@@ -429,8 +429,8 @@ class DependencyManager:
         
         # Simulate resolution
         for conflict in version_conflicts:
-            resolution_info["conflicts_resolved"] += 1
-            resolution_info["resolution_details"].append({
+            resolution_info["conflicts_resolved"] = cast(int, resolution_info["conflicts_resolved"]) + 1
+            cast(List, resolution_info["resolution_details"]).append({
                 "conflict": conflict,
                 "resolution": "Selected compatible version",
                 "status": "resolved"
@@ -470,9 +470,9 @@ class DependencyManager:
                     "description": f"Known vulnerability in {dep_name} {dep_info.version}",
                     "recommendation": "Update to latest version"
                 }
-                audit_info["vulnerabilities"].append(vuln)
-                audit_info["vulnerabilities_found"] += 1
-                audit_info["medium_severity"] += 1
+                cast(List, audit_info["vulnerabilities"]).append(vuln)
+                audit_info["vulnerabilities_found"] = cast(int, audit_info["vulnerabilities_found"]) + 1
+                audit_info["medium_severity"] = cast(int, audit_info["medium_severity"]) + 1
         
         return audit_info
     

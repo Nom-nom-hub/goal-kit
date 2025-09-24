@@ -5,7 +5,7 @@ Provides security scanning, vulnerability detection, and security policy enforce
 
 import re
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Any, Union
 from datetime import datetime
 
 class SecurityManager:
@@ -89,7 +89,7 @@ class SecurityManager:
             ]
         }
     
-    def scan_for_vulnerabilities(self, content: str, file_path: str = "") -> Dict:
+    def scan_for_vulnerabilities(self, content: str, file_path: str = "") -> Dict[str, Any]:
         """Scan content for common vulnerabilities."""
         findings = []
         
@@ -112,9 +112,9 @@ class SecurityManager:
             "findings": findings
         }
     
-    def scan_project_for_vulnerabilities(self) -> Dict:
+    def scan_project_for_vulnerabilities(self) -> Dict[str, Any]:
         """Scan the entire project for vulnerabilities."""
-        results = {
+        results: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "project": str(self.project_path),
             "files_scanned": 0,
@@ -220,9 +220,9 @@ class SecurityManager:
             "recommendations": recommendations
         }
     
-    def check_all_policies(self, project_data: Dict) -> Dict:
+    def check_all_policies(self, project_data: Dict) -> Dict[str, Any]:
         """Check compliance with all security policies."""
-        results = {
+        results: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "project": str(self.project_path),
             "policies": {},

@@ -5,7 +5,7 @@ Manages semantic versioning, breaking change detection, and migration paths.
 
 import json
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 from datetime import datetime
 from packaging import version
 
@@ -58,8 +58,8 @@ class VersionManager:
         with open(history_file, 'w') as f:
             json.dump(self.version_history, f, indent=2)
     
-    def bump_version(self, bump_type: str, breaking_changes: List[str] = None, 
-                     new_features: List[str] = None, bug_fixes: List[str] = None) -> str:
+    def bump_version(self, bump_type: str, breaking_changes: Optional[List[str]] = None,
+                     new_features: Optional[List[str]] = None, bug_fixes: Optional[List[str]] = None) -> str:
         """
         Bump the project version based on semantic versioning.
         
@@ -94,7 +94,7 @@ class VersionManager:
             "breaking_changes": breaking_changes or [],
             "new_features": new_features or [],
             "bug_fixes": bug_fixes or [],
-            "changelog": self._generate_changelog_entry(breaking_changes, new_features, bug_fixes)
+            "changelog": self._generate_changelog_entry(breaking_changes or [], new_features or [], bug_fixes or [])
         }
         
         # Update current version

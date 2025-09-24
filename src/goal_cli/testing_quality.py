@@ -6,7 +6,7 @@ Exceeds spec-kit functionality with comprehensive testing automation and quality
 import json
 from pathlib import Path
 from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, field, asdict
 from datetime import datetime
 import hashlib
 import subprocess
@@ -21,7 +21,7 @@ class TestRequest:
     framework: str  # pytest, unittest, jest, mocha, custom
     created_at: str
     status: str = "pending"
-    result: Optional[Dict] = None
+    result: Optional[Dict] = field(default_factory=dict)
     error: Optional[str] = None
 
 
@@ -31,10 +31,10 @@ class QualityGate:
     id: str
     name: str
     description: str
-    criteria: Dict[str, Any]  # criteria for passing the gate
     created_at: str
+    criteria: Dict[str, Any] = field(default_factory=dict)  # criteria for passing the gate
     status: str = "pending"
-    result: Optional[Dict] = None
+    result: Optional[Dict] = field(default_factory=dict)
     error: Optional[str] = None
 
 
@@ -236,8 +236,8 @@ class TestingAndQualityManager:
         
         self._save_quality_gates()
     
-    def run_tests(self, test_type: str, target: str = "project", 
-                 framework: str = "pytest", args: List[str] = None) -> str:
+    def run_tests(self, test_type: str, target: str = "project",
+                  framework: str = "pytest", args: Optional[List[str]] = None) -> str:
         """
         Run tests of a specific type
         
@@ -310,7 +310,7 @@ class TestingAndQualityManager:
         command = framework_info["command"]
         
         # Add default arguments
-        full_args = framework_info["default_args"] + args
+        full_args = list(framework_info["default_args"]) + args
         
         # Add target-specific arguments
         if request.target != "project":
@@ -363,8 +363,8 @@ class TestingAndQualityManager:
             "execution_time": datetime.now().isoformat()
         }
     
-    def create_quality_gate(self, name: str, description: str, 
-                          criteria: Dict, gate_id: str = None) -> str:
+    def create_quality_gate(self, name: str, description: str,
+                          criteria: Dict[str, Any], gate_id: Optional[str] = None) -> str:
         """
         Create a new quality gate
         
@@ -394,7 +394,7 @@ class TestingAndQualityManager:
         
         return gate_id
     
-    def evaluate_quality_gate(self, gate_id: str, metrics: Dict = None) -> str:
+    def evaluate_quality_gate(self, gate_id: str, metrics: Optional[Dict[str, Any]] = None) -> str:
         """
         Evaluate a quality gate against provided metrics
         
@@ -434,14 +434,14 @@ class TestingAndQualityManager:
     
     def _collect_metrics(self, gate: QualityGate) -> Dict[str, Any]:
         """Collect metrics for quality gate evaluation"""
-        metrics = {
+        metrics: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "collected_by": "automated_system"
         }
-        
+
         # This would collect actual metrics based on the gate criteria
         # For now, we'll create mock metrics
-        
+
         if gate.id == "code_coverage":
             metrics["coverage"] = {
                 "lines": 85,  # Mock value
@@ -487,7 +487,7 @@ class TestingAndQualityManager:
     def _evaluate_gate_criteria(self, gate: QualityGate, metrics: Dict[str, Any]) -> Dict[str, Any]:
         """Evaluate quality gate criteria against metrics"""
         criteria = gate.criteria
-        result = {
+        result: Dict[str, Any] = {
             "gate_id": gate.id,
             "gate_name": gate.name,
             "evaluated_at": datetime.now().isoformat(),
@@ -588,14 +588,14 @@ class TestingAndQualityManager:
     def run_all_quality_gates(self, metrics: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Run all quality gates
-        
+
         Args:
             metrics: Metrics to evaluate against (if None, will collect automatically)
-            
+
         Returns:
             Summary of all gate evaluations
         """
-        results = {
+        results: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "total_gates": len(self.quality_gates),
             "passed_gates": 0,

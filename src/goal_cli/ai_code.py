@@ -5,7 +5,7 @@ Exceeds spec-kit functionality with intelligent code generation and refactoring 
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import hashlib
@@ -122,8 +122,8 @@ class AICodeGenerator:
         with open(self.refactoring_requests_file, 'w') as f:
             json.dump(data, f, indent=2)
     
-    def generate_code(self, prompt: str, language: str = "python", 
-                     framework: str = "flask", output_path: str = None) -> str:
+    def generate_code(self, prompt: str, language: str = "python",
+                      framework: str = "flask", output_path: Optional[str] = None) -> str:
         """
         Generate code based on a prompt using AI
         
@@ -456,11 +456,11 @@ export default GeneratedComponent;
         documented_lines = []
         
         for line in lines:
-            documented_lines.append(line)
             # Add mock docstrings to functions
             if line.strip().startswith('def ') and '(' in line and ':' in line:
                 func_name = line.split('def ')[1].split('(')[0]
-                documented_lines.insert(-1, f'    """Mock documentation for {func_name}"""')
+                documented_lines.append(f'    """Mock documentation for {func_name}"""')
+            documented_lines.append(line)
         
         return '\n'.join(documented_lines)
     
@@ -504,7 +504,7 @@ export default GeneratedComponent;
         """List all code refactoring requests"""
         return [asdict(req) for req in self.refactoring_requests.values()]
     
-    def analyze_code_quality(self, file_path: str) -> Dict:
+    def analyze_code_quality(self, file_path: str) -> Dict[str, Any]:
         """Analyze code quality and suggest improvements"""
         file_path_obj = self.project_path / file_path
         if not file_path_obj.exists():
@@ -515,7 +515,7 @@ export default GeneratedComponent;
             code = f.read()
         
         # Perform basic analysis
-        analysis = {
+        analysis: Dict[str, Any] = {
             "file": file_path,
             "lines_of_code": len(code.split('\n')),
             "file_size": len(code),
@@ -710,7 +710,10 @@ def ai_code_cli():
                 table.add_column("Created", style="dim")
                 
                 for req in gen_requests:
-                    created = datetime.fromisoformat(req['created_at']).strftime("%Y-%m-%d %H:%M")
+                    try:
+                        created = datetime.fromisoformat(req['created_at']).strftime("%Y-%m-%d %H:%M")
+                    except ValueError:
+                        created = "Invalid date"
                     table.add_row(
                         req['id'][:8],
                         req['prompt'][:30] + "..." if len(req['prompt']) > 30 else req['prompt'],
@@ -734,7 +737,10 @@ def ai_code_cli():
                 table.add_column("Created", style="dim")
                 
                 for req in ref_requests:
-                    created = datetime.fromisoformat(req['created_at']).strftime("%Y-%m-%d %H:%M")
+                    try:
+                        created = datetime.fromisoformat(req['created_at']).strftime("%Y-%m-%d %H:%M")
+                    except ValueError:
+                        created = "Invalid date"
                     table.add_row(
                         req['id'][:8],
                         req['file_path'][:20] + "..." if len(req['file_path']) > 20 else req['file_path'],

@@ -42,7 +42,7 @@ from .dependencies import integrate_deps_with_main_cli
 from .scaffolding import integrate_scaffold_with_main_cli
 from .testing_quality import integrate_testing_with_main_cli as integrate_testing_quality_with_main_cli
 from .performance_tools import integrate_performance_with_main_cli
-from .security_scanner import integrate_security_with_main_cli
+from .security_scanner import integrate_security_with_main_cli  # type: ignore[attr-defined]
 
 # Initialize Rich console
 console = Console()

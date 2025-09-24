@@ -8,6 +8,7 @@ import sys
 import subprocess
 import shutil
 from pathlib import Path
+from typing import List, Dict, Optional, Any
 
 import typer
 from rich.console import Console
@@ -77,7 +78,7 @@ class StepTracker:
     """
     def __init__(self, title: str):
         self.title = title
-        self.steps = []  # list of dicts: {key, label, status, detail}
+        self.steps: List[Dict[str, str]] = []  # list of dicts: {key, label, status, detail}
         self.status_order = {"pending": 0, "running": 1, "done": 2, "error": 3, "skipped": 4}
         self._refresh_cb = None  # callable to trigger UI refresh
 
@@ -227,7 +228,7 @@ def get_key():
         # Fallback in case of any error
         return 'enter'
 
-def select_with_arrows(options: dict, prompt_text: str = "Select an option", default_key: str = None) -> str:
+def select_with_arrows(options: dict, prompt_text: str = "Select an option", default_key: Optional[str] = None) -> str:
     """
     Interactive selection using arrow keys with Rich Live display.
     
@@ -366,7 +367,7 @@ def select_with_arrows(options: dict, prompt_text: str = "Select an option", def
     return selected_key
 
 
-def get_user_input(prompt: str, default: str = None, validator=None) -> str:
+def get_user_input(prompt: str, default: Optional[str] = None, validator=None) -> str:
     """
     Get user input with optional validation and default value.
     
@@ -450,7 +451,7 @@ def check_tool(tool: str) -> bool:
     else:
         return False
 
-def is_git_repo(path: Path = None) -> bool:
+def is_git_repo(path: Optional[Path] = None) -> bool:
     """Check if the specified path is inside a git repository."""
     if path is None:
         path = Path.cwd()
@@ -471,10 +472,11 @@ def is_git_repo(path: Path = None) -> bool:
         return False
 
 
-def _github_token(cli_token: str | None = None) -> str | None:
+def _github_token(cli_token: Optional[str] = None) -> Optional[str]:
     """Return sanitized GitHub token (cli arg takes precedence) or None."""
     import os
-    return ((cli_token or os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN") or "").strip()) or None
+    token = (cli_token or os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN") or "").strip()
+    return token if token else None
 
 
 def _github_auth_headers(cli_token: str | None = None) -> dict:
@@ -528,5 +530,5 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
             console.print(f"[cyan]Updated execute permissions on {updated} script(s) recursively[/cyan]")
         if failures:
             console.print("[yellow]Some scripts could not be updated:[/yellow]")
-            for f in failures:
-                console.print(f"  - {f}")
+            for failure in failures:
+                console.print(f"  - {failure}")

@@ -6,7 +6,7 @@ Exceeds spec-kit functionality with intelligent project structure generation.
 import json
 import yaml
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Sequence, Union, Any, cast
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import hashlib
@@ -449,8 +449,8 @@ export default App;
 }
 ''')
     
-    def scaffold_project(self, template: str, project_name: str, 
-                        output_path: str = None, template_vars: Dict = None) -> str:
+    def scaffold_project(self, template: str, project_name: str,
+                        output_path: Optional[str] = None, template_vars: Optional[Dict] = None) -> str:
         """
         Scaffold a new project from a template
         
@@ -525,10 +525,10 @@ export default App;
         
         self._save_scaffolding_requests()
     
-    def _copy_template(self, template_dir: Path, project_dir: Path, 
+    def _copy_template(self, template_dir: Path, project_dir: Path,
                       request: ScaffoldingRequest, template_vars: Dict) -> Dict:
         """Copy template files to project directory"""
-        result = {
+        result: Dict[str, Union[List[str], str]] = {
             "files_created": [],
             "directories_created": [],
             "template_used": request.template
@@ -572,7 +572,7 @@ export default App;
                 with open(dest_path, 'w', encoding='utf-8') as f:
                     f.write(content)
                 
-                result["files_created"].append(str(relative_path))
+                cast(List[str], result["files_created"]).append(str(relative_path))
             elif item.is_dir():
                 # Calculate relative path
                 relative_path = item.relative_to(template_dir)
@@ -581,14 +581,14 @@ export default App;
                 dest_path = project_dir / relative_path
                 if not dest_path.exists():
                     dest_path.mkdir(exist_ok=True, parents=True)
-                    result["directories_created"].append(str(relative_path))
+                    cast(List[str], result["directories_created"]).append(str(relative_path))
         
         return result
     
-    def _create_basic_structure(self, project_dir: Path, 
+    def _create_basic_structure(self, project_dir: Path,
                                request: ScaffoldingRequest, template_vars: Dict) -> Dict:
         """Create a basic project structure"""
-        result = {
+        result: Dict[str, Union[List[str], str]] = {
             "files_created": [],
             "directories_created": [],
             "template_used": "basic"
@@ -612,7 +612,7 @@ export default App;
         for dir_name in dirs_to_create:
             dir_path = project_dir / dir_name
             dir_path.mkdir(exist_ok=True)
-            result["directories_created"].append(dir_name)
+            cast(List[str], result["directories_created"]).append(dir_name)
         
         # Create basic files
         files_to_create = {
@@ -779,7 +779,7 @@ dmypy.json
             full_path.parent.mkdir(exist_ok=True, parents=True)
             with open(full_path, 'w', encoding='utf-8') as f:
                 f.write(content)
-            result["files_created"].append(file_path)
+            cast(List[str], result["files_created"]).append(file_path)
         
         return result
     
@@ -815,7 +815,7 @@ dmypy.json
         """List all available templates"""
         return self.supported_templates
     
-    def generate_project_from_spec(self, spec_file: str, output_path: str = None) -> str:
+    def generate_project_from_spec(self, spec_file: str, output_path: Optional[str] = None) -> str:
         """
         Generate a project structure based on a specification file
         

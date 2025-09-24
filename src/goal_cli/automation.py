@@ -14,7 +14,7 @@ import heapq
 from collections import deque
 import hashlib
 from enum import Enum
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Tuple
 
 # Import existing modules
 from .analytics import PredictiveAnalyticsEngine
@@ -95,7 +95,7 @@ class ResourceAllocator:
         self.resources = self._initialize_resources()
         
         # Resource allocation history
-        self.allocation_history = deque(maxlen=1000)
+        self.allocation_history: deque[Dict[str, Any]] = deque(maxlen=1000)
         
     def _initialize_resources(self) -> Dict[str, Resource]:
         """Initialize system resources"""
@@ -222,13 +222,13 @@ class IntelligentScheduler:
         self.performance_monitor = PerformanceMonitor(project_path)
         
         # Task queue (priority queue)
-        self.task_queue = []
-        
+        self.task_queue: List[Tuple[int, str, AutomationTask]] = []
+
         # Scheduled tasks
-        self.scheduled_tasks = {}
-        
+        self.scheduled_tasks: Dict[str, AutomationTask] = {}
+
         # Task execution history
-        self.execution_history = deque(maxlen=1000)
+        self.execution_history: deque[Dict[str, Any]] = deque(maxlen=1000)
         
         # Load saved state
         self._load_state()
@@ -393,11 +393,11 @@ class TaskExecutor:
         self.scheduler = IntelligentScheduler(project_path)
         
         # Execution threads
-        self.executor_threads = []
+        self.executor_threads: List[threading.Thread] = []
         self.max_concurrent_tasks = 4
-        
+
         # Task results
-        self.task_results = {}
+        self.task_results: Dict[str, Dict[str, Any]] = {}
         
     def execute_task(self, task: AutomationTask) -> Dict:
         """Execute a single task"""
@@ -443,8 +443,10 @@ class TaskExecutor:
             task.status = TaskStatus.COMPLETED
         elif result["status"] == "failed":
             task.status = TaskStatus.FAILED
+        elif result["status"] == "retrying":
+            task.status = TaskStatus.PENDING
         else:
-            task.status = TaskStatus(task.status)
+            task.status = TaskStatus.FAILED  # Default fallback
         
         # Record result
         self.task_results[task.id] = result
@@ -460,9 +462,9 @@ class TaskExecutor:
             "started_at": task.started_at,
             "completed_at": task.completed_at,
             "duration": (
-                datetime.fromisoformat(task.completed_at) - 
+                datetime.fromisoformat(task.completed_at) -
                 datetime.fromisoformat(task.started_at)
-            ).total_seconds() if task.completed_at and task.started_at else 0,
+            ).total_seconds() if task.completed_at and task.started_at and task.started_at != task.completed_at else 0,
             "output": result["output"][:1000],  # Limit output size
             "error": result["error"]
         }

@@ -2,7 +2,7 @@
 AI agent integration module for the goal-dev-spec system.
 """
 
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Union
 import yaml
 from pathlib import Path
 
@@ -20,7 +20,7 @@ class AgentManager:
             return None
         
         with open(config_file, 'r') as f:
-            return yaml.load(f, Loader=yaml.FullLoader)
+            return yaml.safe_load(f)
     
     def list_available_agents(self) -> List[str]:
         """List all available agents."""
@@ -38,13 +38,13 @@ class AgentManager:
         """Create an agent command file."""
         agent_dir = self.agents_path / agent_name
         agent_dir.mkdir(exist_ok=True)
-        
+
         # Create command file based on agent type
         config = self.get_agent_config(agent_name)
         if not config:
             # Default to YAML format
             command_file = agent_dir / f"{command_name}.yaml"
-            command_data = {
+            command_data: Union[Dict[str, str], str] = {
                 "command": command_name,
                 "description": f"Command for {command_name}",
                 "prompt": prompt
@@ -53,29 +53,32 @@ class AgentManager:
             format_type = config.get("format", "yaml")
             if format_type == "yaml":
                 command_file = agent_dir / f"{command_name}.yaml"
-                command_data = {
+                command_data_yaml: Dict[str, str] = {
                     "command": command_name,
                     "description": f"Command for {command_name}",
                     "prompt": prompt
                 }
+                command_data = command_data_yaml
             elif format_type == "toml":
                 command_file = agent_dir / f"{command_name}.toml"
                 # TOML format would be different
-                command_data = f"""
+                command_data_toml: str = f"""
 description = "Command for {command_name}"
 
 prompt = '''
 {prompt}
 '''
 """
+                command_data = command_data_toml
             else:  # markdown
                 command_file = agent_dir / f"{command_name}.md"
-                command_data = f"""---
+                command_data_md: str = f"""---
 description: "Command for {command_name}"
 ---
 
 {prompt}
 """
+                command_data = command_data_md
         
         # Write command file
         if isinstance(command_data, dict):

@@ -5,7 +5,7 @@ Exceeds spec-kit functionality with intelligent documentation generation and man
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import hashlib
@@ -285,8 +285,8 @@ class DocumentationGenerator:
 {contact}
 """)
     
-    def generate_documentation(self, source_path: str, doc_type: str, 
-                             output_path: str = None, template_vars: Dict = None) -> str:
+    def generate_documentation(self, source_path: str, doc_type: str,
+                              output_path: Optional[str] = None, template_vars: Optional[Dict] = None) -> str:
         """
         Generate documentation based on source files
         
@@ -627,11 +627,11 @@ In a real implementation, this would contain detailed information
 extracted from the source files at {source_path}.
 """
     
-    def _extract_source_info(self, source_path: str) -> Dict:
+    def _extract_source_info(self, source_path: str) -> Dict[str, Any]:
         """Extract information from source files"""
         source_path_obj = self.project_path / source_path
-        info = {}
-        
+        info: Dict[str, Any] = {}
+
         if source_path_obj.exists():
             if source_path_obj.is_file():
                 # Single file
@@ -641,13 +641,13 @@ extracted from the source files at {source_path}.
                 # Directory
                 info["source_directory"] = source_path
                 # Count files by type
-                file_counts = {}
+                file_counts: Dict[str, int] = {}
                 for file_path in source_path_obj.rglob("*"):
                     if file_path.is_file():
                         ext = file_path.suffix
                         file_counts[ext] = file_counts.get(ext, 0) + 1
                 info["file_types"] = file_counts
-        
+
         return info
     
     def _generate_endpoints_section(self, source_path: str) -> str:
@@ -771,7 +771,7 @@ The system exposes a RESTful API for external integrations.
         """List all documentation requests"""
         return [asdict(req) for req in self.doc_requests.values()]
     
-    def generate_project_docs(self, project_info: Dict = None) -> List[str]:
+    def generate_project_docs(self, project_info: Optional[Dict] = None) -> List[str]:
         """
         Generate comprehensive documentation for the entire project
         

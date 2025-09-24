@@ -5,7 +5,7 @@ Automates review workflows, notifications, and approval tracking.
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, DefaultDict
 from datetime import datetime
 from enum import Enum
 from collections import defaultdict
@@ -264,8 +264,8 @@ class ReviewManager:
         report += f"Project: {self.project_path}\n\n"
         
         # Summary statistics
-        status_counts = defaultdict(int)
-        type_counts = defaultdict(int)
+        status_counts: DefaultDict[str, int] = defaultdict(int)
+        type_counts: DefaultDict[str, int] = defaultdict(int)
         
         for review in reviews:
             status_counts[review["status"]] += 1

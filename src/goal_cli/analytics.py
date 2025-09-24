@@ -5,7 +5,7 @@ Predictive analytics engine for goal-dev-spec
 import yaml
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any, cast
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 import time
@@ -67,11 +67,27 @@ class PredictiveAnalyticsEngine:
             ]
             with open(self.historical_data_file, 'w') as f:
                 json.dump(sample_data, f)
-            return [HistoricalProject(**item) for item in sample_data]
+            return [
+                HistoricalProject(
+                    project_id=cast(str, item["project_id"]),
+                    completion_time=cast(int, item["completion_time"]),
+                    complexity_score=cast(float, item["complexity_score"]),
+                    revision_count=cast(int, item["revision_count"]),
+                    keywords=cast(List[str], item["keywords"])
+                ) for item in sample_data
+            ]
         
         with open(self.historical_data_file, 'r') as f:
             data = json.load(f)
-        return [HistoricalProject(**item) for item in data]
+        return [
+            HistoricalProject(
+                project_id=cast(str, item["project_id"]),
+                completion_time=cast(int, item["completion_time"]),
+                complexity_score=cast(float, item["complexity_score"]),
+                revision_count=cast(int, item["revision_count"]),
+                keywords=cast(List[str], item["keywords"])
+            ) for item in data
+        ]
     
     def _train_models(self):
         """Train predictive models (simplified for prototype)"""
@@ -90,12 +106,13 @@ class PredictiveAnalyticsEngine:
         security_keywords = ['security', 'authentication', 'authorization', 'encryption', 'compliance']
         integration_keywords = ['integration', 'api', 'third-party', 'external']
         complexity_keywords = ['real-time', 'scalable', 'performance', 'concurrent']
-        
+
         # Count keywords
         text_to_analyze = f"{description} {' '.join(objectives)} {' '.join(success_criteria)}"
-        security_score = sum(1 for keyword in security_keywords if keyword in text_to_analyze.lower())
-        integration_score = sum(1 for keyword in integration_keywords if keyword in text_to_analyze.lower())
-        complexity_score = sum(1 for keyword in complexity_keywords if keyword in text_to_analyze.lower())
+        text_lower = text_to_analyze.lower()
+        security_score = sum(1 for keyword in security_keywords if keyword in text_lower)
+        integration_score = sum(1 for keyword in integration_keywords if keyword in text_lower)
+        complexity_score = sum(1 for keyword in complexity_keywords if keyword in text_lower)
         
         # Dependency complexity
         dependency_score = len(dependencies) * 0.5
@@ -158,7 +175,7 @@ class PredictiveAnalyticsEngine:
             risks.append("performance_optimization")
         
         # Compliance risks
-        if any(keyword in description for keyword in ['compliance', 'regulation', 'gdpr', 'hippa']):
+        if any(keyword in description for keyword in ['compliance', 'regulation', 'gdpr', 'hipaa']):
             risks.append("regulatory_compliance")
         
         return risks
@@ -227,9 +244,9 @@ class ProgressTracker:
         self.total_steps = total_steps
         self.current_step = 0
         self.start_time = time.time()
-        self.step_times = []  # Track time for each step
+        self.step_times: List[float] = []  # Track time for each step
         self.estimated_completion_time = None
-        self.notifications = []
+        self.notifications: List[Dict[str, str]] = []
         
     def start_step(self, step_name: str):
         """Start a new step"""
@@ -266,7 +283,7 @@ class ProgressTracker:
     
     def get_eta(self) -> Optional[datetime]:
         """Get estimated time of arrival"""
-        if self.estimated_completion_time is not None:
+        if self.estimated_completion_time is not None and self.estimated_completion_time > 0:
             return datetime.now() + timedelta(seconds=self.estimated_completion_time)
         return None
     

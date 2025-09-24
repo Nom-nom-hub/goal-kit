@@ -100,8 +100,8 @@ class CICDPipelineManager:
         with open(self.pipeline_requests_file, 'w') as f:
             json.dump(data, f, indent=2)
     
-    def create_pipeline(self, pipeline_type: str, provider: str, 
-                       config_path: str = None, pipeline_config: Dict = None) -> str:
+    def create_pipeline(self, pipeline_type: str, provider: str,
+                        config_path: Optional[str] = None, pipeline_config: Optional[Dict] = None) -> str:
         """
         Create a CI/CD pipeline configuration
         
@@ -577,8 +577,8 @@ configuration:
         """List all pipeline requests"""
         return [asdict(req) for req in self.pipeline_requests.values()]
     
-    def generate_standard_pipelines(self, providers: List[str] = None, 
-                                  pipeline_types: List[str] = None) -> List[str]:
+    def generate_standard_pipelines(self, providers: Optional[List[str]] = None,
+                                   pipeline_types: Optional[List[str]] = None) -> List[str]:
         """
         Generate standard CI/CD pipelines for common providers
         
@@ -659,7 +659,8 @@ configuration:
                     info["name"] = project_info.get("name", info["name"])
                     info["description"] = project_info.get("description", info["description"])
                     info["version"] = project_info.get("version", info["version"])
-            except Exception:
+            except (ImportError, Exception):
+                # toml module not available or file parsing failed
                 pass
         
         return info
@@ -841,8 +842,8 @@ def cicd_cli():
     
     @app.command()
     def standard(
-        providers: str = typer.Option("", help="Comma-separated list of providers (github,gitlab,jenkins,circleci,travis,azure)"),
-        types: str = typer.Option("", help="Comma-separated list of types (ci,cd,cicd)")
+        providers: Optional[str] = typer.Option("", help="Comma-separated list of providers (github,gitlab,jenkins,circleci,travis,azure)"),
+        types: Optional[str] = typer.Option("", help="Comma-separated list of types (ci,cd,cicd)")
     ):
         """Generate standard CI/CD pipelines for common providers"""
         try:

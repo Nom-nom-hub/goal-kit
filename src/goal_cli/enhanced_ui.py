@@ -4,7 +4,7 @@ Enhanced UI components for the goal-dev-spec CLI with advanced progress tracking
 
 import time
 from datetime import datetime, timedelta
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Any
 from rich.console import Console
 from rich.tree import Tree
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeRemainingColumn
@@ -19,11 +19,11 @@ class EnhancedStepTracker:
         self.title = title
         self.total_steps = total_steps
         self.current_step = 0
-        self.steps = []  # list of dicts: {key, label, status, detail, start_time, end_time}
+        self.steps: List[Dict[str, Any]] = []  # list of dicts: {key, label, status, detail, start_time, end_time}
         self.start_time = time.time()
-        self.step_times = []  # Track time for each step
+        self.step_times: List[float] = []  # Track time for each step
         self.estimated_completion_time = None
-        self.notifications = []
+        self.notifications: List[Dict[str, Any]] = []
         self._refresh_cb = None
         self.status_order = {"pending": 0, "running": 1, "done": 2, "error": 3, "skipped": 4}
         self.live_display = None
@@ -281,8 +281,8 @@ class EnhancedProgressBar:
         self.total = total
         self.current = 0
         self.start_time = time.time()
-        self.step_times = []
-        self.estimated_completion_time = None
+        self.step_times: List[float] = []
+        self.estimated_completion_time: Optional[float] = None
         self.progress = Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
@@ -354,7 +354,7 @@ class NotificationManager:
         
         console.print(f"[{color}]{icon} {message}[/{color}]")
         
-    def get_notifications(self, level: str = None) -> List[Dict]:
+    def get_notifications(self, level: Optional[str] = None) -> List[Dict]:
         """Get notifications, optionally filtered by level"""
         if level:
             return [n for n in self.notifications if n['level'] == level]
@@ -369,7 +369,7 @@ class ErrorHandler:
         self.error_count = 0
         self.max_retries = 3
         
-    def handle_error(self, error: Exception, step_key: str = None, retry_count: int = 0):
+    def handle_error(self, error: Exception, step_key: Optional[str] = None, retry_count: int = 0):
         """Handle an error with potential recovery"""
         self.error_count += 1
         

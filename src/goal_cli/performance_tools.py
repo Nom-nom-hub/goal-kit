@@ -32,7 +32,7 @@ class PerformanceMetric:
     value: float
     unit: str
     timestamp: str
-    context: Dict[str, Any] = None
+    context: Optional[Dict[str, Any]] = None
 
 
 class PerformanceOptimizer:
@@ -330,9 +330,9 @@ class PerformanceOptimizer:
         
         self._save_perf_requests()
     
-    def _analyze_performance(self, target: str) -> Dict:
+    def _analyze_performance(self, target: str) -> Dict[str, Any]:
         """Analyze performance of a target"""
-        analysis = {
+        analysis: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "target": target,
             "system_metrics": {},
@@ -354,9 +354,9 @@ class PerformanceOptimizer:
         
         return analysis
     
-    def _optimize_performance(self, target: str, strategy: str) -> Dict:
+    def _optimize_performance(self, target: str, strategy: str) -> Dict[str, Any]:
         """Optimize performance of a target"""
-        optimization = {
+        optimization: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "target": target,
             "strategy": strategy,
@@ -378,15 +378,15 @@ class PerformanceOptimizer:
         
         # Calculate improvements
         optimization["improvements"] = self._calculate_improvements(
-            optimization["before_metrics"],
-            optimization["after_metrics"]
+            dict(optimization["before_metrics"]),
+            dict(optimization["after_metrics"])
         )
         
         return optimization
     
-    def _run_benchmark(self, target: str, benchmark_type: str) -> Dict:
+    def _run_benchmark(self, target: str, benchmark_type: str) -> Dict[str, Any]:
         """Run a benchmark on a target"""
-        benchmark = {
+        benchmark: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "target": target,
             "benchmark_type": benchmark_type,
@@ -407,7 +407,8 @@ class PerformanceOptimizer:
             benchmark["results"] = self._benchmark_generic(target)
         
         # Compare with baseline
-        benchmark["baseline_comparison"] = self._compare_with_baseline(benchmark_type, benchmark["results"])
+        benchmark_results: Dict[str, Any] = benchmark["results"]
+        benchmark["baseline_comparison"] = self._compare_with_baseline(benchmark_type, benchmark_results)
         
         # Store benchmark results
         self.benchmarks[benchmark_type] = {
@@ -418,9 +419,9 @@ class PerformanceOptimizer:
         
         return benchmark
     
-    def _profile_performance(self, target: str, profiler: str) -> Dict:
+    def _profile_performance(self, target: str, profiler: str) -> Dict[str, Any]:
         """Profile performance of a target"""
-        profiling = {
+        profiling: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "target": target,
             "profiler": profiler,
@@ -435,7 +436,8 @@ class PerformanceOptimizer:
             profiling["profile_data"] = self._profile_generic(target)
         
         # Identify hotspots
-        profiling["hotspots"] = self._identify_hotspots(profiling["profile_data"])
+        profile_data: Dict[str, Any] = profiling["profile_data"]
+        profiling["hotspots"] = self._identify_hotspots(profile_data)
         
         return profiling
     
@@ -642,17 +644,17 @@ class PerformanceOptimizer:
             "compared_to_baseline": "+15%"
         }
     
-    def _compare_with_baseline(self, benchmark_type: str, results: Dict) -> Dict:
+    def _compare_with_baseline(self, benchmark_type: str, results: Dict[str, Any]) -> Dict[str, Any]:
         """Compare benchmark results with baseline"""
         comparison = {
             "baseline_available": False,
             "improvement": "unknown"
         }
-        
+
         if benchmark_type in self.benchmarks:
             baseline = self.benchmarks[benchmark_type]
             comparison["baseline_available"] = True
-            
+
             # Calculate improvement (simplified)
             if "score" in results:
                 baseline_score = baseline.get("baseline", 0)
@@ -660,7 +662,7 @@ class PerformanceOptimizer:
                 if baseline_score != 0:
                     improvement = ((current_score - baseline_score) / baseline_score) * 100
                     comparison["improvement"] = f"{improvement:+.1f}%"
-        
+
         return comparison
     
     def _profile_with_cprofile(self, target: str) -> Dict:
@@ -683,7 +685,7 @@ class PerformanceOptimizer:
             "profile_data": "Profile data placeholder"
         }
     
-    def _identify_hotspots(self, profile_data: Dict) -> List[Dict]:
+    def _identify_hotspots(self, profile_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Identify performance hotspots"""
         # This would analyze profile data to identify hotspots
         # For now, we'll return mock hotspots

@@ -79,7 +79,7 @@ class GoalManager:
         # Add to goals index
         try:
             with open(goals_index, 'r') as f:
-                index = yaml.load(f, Loader=yaml.FullLoader)
+                index = yaml.safe_load(f)
             
             if index is None:
                 index = {"goals": []}
@@ -110,7 +110,7 @@ class GoalManager:
         
         try:
             with open(goal_file, 'r') as f:
-                return yaml.load(f, Loader=yaml.FullLoader)
+                return yaml.safe_load(f)
         except Exception as e:
             raise ValueError(f"Failed to read goal specification: {e}")
     
@@ -122,7 +122,7 @@ class GoalManager:
         
         try:
             with open(goals_index, 'r') as f:
-                index = yaml.load(f, Loader=yaml.FullLoader)
+                index = yaml.safe_load(f)
             
             if index is None:
                 return []

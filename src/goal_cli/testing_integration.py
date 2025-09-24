@@ -5,7 +5,7 @@ Provides seamless integration with popular testing frameworks and automated test
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 from datetime import datetime
 import subprocess
 
@@ -19,7 +19,7 @@ class TestingFrameworkIntegration:
         self.testing_path.mkdir(exist_ok=True)
         
         # Supported frameworks
-        self.supported_frameworks = {
+        self.supported_frameworks: Dict[str, Dict[str, Any]] = {
             "pytest": {
                 "config_file": "pytest.ini",
                 "test_dir": "tests",
@@ -192,7 +192,7 @@ test-suite-pattern = Test*
         else:
             return {"created": False, "file": str(config_file), "reason": "already exists"}
     
-    def generate_tests_from_spec(self, spec_data: Dict, framework: str = None) -> Dict:
+    def generate_tests_from_spec(self, spec_data: Dict, framework: Optional[str] = None) -> Dict:
         """Generate test cases from specification data"""
         if framework is None:
             framework = self.detect_testing_framework() or "pytest"
@@ -206,7 +206,7 @@ test-suite-pattern = Test*
         
         # Use framework-specific generator
         generator = self.supported_frameworks[framework]["generator"]
-        test_files = generator(spec_data, framework)
+        test_files = generator(spec_data, framework)  # type: ignore[misc]
         
         return {
             "success": True,
@@ -432,7 +432,7 @@ describe('{spec_id}', function() {{
         
         return test_files
     
-    def run_tests(self, framework: str = None, pattern: str = None) -> Dict:
+    def run_tests(self, framework: Optional[str] = None, pattern: Optional[str] = None) -> Dict:
         """Run tests using the configured framework"""
         if framework is None:
             framework = self.detect_testing_framework() or "pytest"
@@ -446,14 +446,14 @@ describe('{spec_id}', function() {{
         
         command = self.supported_frameworks[framework]["command"]
         if pattern:
-            command += f" {pattern}"
+            command += f" {pattern}"  # type: ignore[operator]
         
         try:
             # Run the test command
             result = subprocess.run(
                 command,
                 shell=True,
-                cwd=self.project_path,
+                cwd=str(self.project_path),
                 capture_output=True,
                 text=True,
                 timeout=300  # 5 minute timeout
@@ -482,7 +482,7 @@ describe('{spec_id}', function() {{
                 "timestamp": datetime.now().isoformat()
             }
     
-    def generate_coverage_report(self, framework: str = None) -> Dict:
+    def generate_coverage_report(self, framework: Optional[str] = None) -> Dict:
         """Generate test coverage report"""
         if framework is None:
             framework = self.detect_testing_framework() or "pytest"

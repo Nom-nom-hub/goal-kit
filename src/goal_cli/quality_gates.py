@@ -4,7 +4,7 @@ Provides automated validation and quality assurance checkpoints.
 """
 
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 from datetime import datetime
 from .governance import GovernanceManager
 
@@ -16,8 +16,8 @@ class QualityGate:
         self.description = description
         self.checks = checks
         self.passed = False
-        self.results = {}
-        self.timestamp = None
+        self.results: Dict[str, Any] = {}
+        self.timestamp: Optional[str] = None
 
 class QualityGateManager:
     """Manages quality gates and validation processes."""
@@ -90,7 +90,7 @@ class QualityGateManager:
     
     def validate_all_gates(self, project_data: Dict) -> Dict:
         """Validate all quality gates for a project."""
-        results = {
+        results: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "project": str(self.project_path),
             "gates": {},

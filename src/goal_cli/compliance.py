@@ -4,7 +4,7 @@ Provides automated compliance validation against industry standards and regulati
 """
 
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Any
 from datetime import datetime
 
 class ComplianceChecker:
@@ -135,15 +135,15 @@ class ComplianceChecker:
         
         return results
     
-    def check_all_standards(self, project_data: Dict) -> Dict:
+    def check_all_standards(self, project_data: Dict) -> Dict[str, Any]:
         """Check compliance with all applicable standards."""
-        results = {
+        results: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "project": str(self.project_path),
             "standards": {}
         }
-        
-        overall_compliant = True
+
+        overall_compliant: bool = True
         
         for standard in self.standards:
             standard_result = self.check_compliance_standard(standard, project_data)

@@ -95,7 +95,7 @@ class SpecManager:
         
         try:
             with open(spec_file, 'r') as f:
-                return yaml.load(f, Loader=yaml.FullLoader)
+                return yaml.safe_load(f)
         except Exception as e:
             raise ValueError(f"Failed to read specification: {e}")
     

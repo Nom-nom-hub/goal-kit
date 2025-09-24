@@ -4,7 +4,7 @@ Provides automated compliance checking, quality gates, and governance enforcemen
 """
 
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, List, Any
 from datetime import datetime
 
 class GovernanceManager:
@@ -152,7 +152,7 @@ class GovernanceManager:
     def validate_spec(self, spec_data: Dict) -> Dict:
         """Validate a specification against governance rules."""
         violations = []
-        warnings = []
+        warnings: List[str] = []
         
         # Check required fields
         for field in self.rules["required_fields"]["spec"]:
@@ -250,7 +250,7 @@ class GovernanceManager:
     
     def enforce_quality_gate(self, stage: str, artifact_type: str, artifact_data: Dict) -> Dict:
         """Enforce quality gates for a specific stage."""
-        gate_results = {
+        gate_results: Dict[str, Any] = {
             "passed": True,
             "violations": [],
             "warnings": [],
@@ -270,25 +270,29 @@ class GovernanceManager:
         # Add validation results
         if not validation_result["valid"]:
             gate_results["passed"] = False
-            gate_results["violations"].extend(validation_result["violations"])
-        
+            violations_list: List[str] = gate_results["violations"]
+            violations_list.extend(validation_result["violations"])
+
         if validation_result["warnings"]:
-            gate_results["warnings"].extend(validation_result["warnings"])
+            warnings_list: List[str] = gate_results["warnings"]
+            warnings_list.extend(validation_result["warnings"])
         
         # Check compliance
         compliance_result = self.check_compliance(artifact_type, artifact_data)
         if not compliance_result["compliant"]:
             gate_results["passed"] = False
-            gate_results["violations"].extend(compliance_result["violations"])
-        
+            violations_list = gate_results["violations"]
+            violations_list.extend(compliance_result["violations"])
+
         if compliance_result["warnings"]:
-            gate_results["warnings"].extend(compliance_result["warnings"])
+            warnings_list = gate_results["warnings"]
+            warnings_list.extend(compliance_result["warnings"])
         
         return gate_results
     
-    def generate_governance_report(self) -> Dict:
+    def generate_governance_report(self) -> Dict[str, Any]:
         """Generate a governance compliance report."""
-        report = {
+        report: Dict[str, Any] = {
             "generated_at": datetime.now().isoformat(),
             "project_path": str(self.project_path),
             "constitution": self.constitution,
@@ -300,8 +304,10 @@ class GovernanceManager:
         
         # Check if constitution exists
         if not self.constitution:
-            report["violations"].append("Project constitution not found")
-            report["recommendations"].append("Create a project constitution using the constitution template")
+            violations_list: List[str] = report["violations"]
+            violations_list.append("Project constitution not found")
+            recommendations_list: List[str] = report["recommendations"]
+            recommendations_list.append("Create a project constitution using the constitution template")
         
         # In a full implementation, we would check all artifacts for compliance
         # For now, we'll just provide the framework
