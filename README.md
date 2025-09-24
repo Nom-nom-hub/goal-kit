@@ -1,5 +1,4 @@
 <div align="center">
-    <img src="./media/logo_small.webp"/>
     <h1>🎯 Goal-Driven Development Kit</h1>
     <h3><em>Build software that achieves meaningful outcomes.</em></h3>
 </div>
@@ -8,7 +7,40 @@
     <strong>An innovative approach to software development that starts with clear goals and outcomes, ensuring every technical decision directly supports meaningful results.</strong>
 </p>
 
-[![Release](https://github.com/Nom-nom-hub/goal-kit/actions/workflows/release.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-kit/actions/workflows/release.yml)
+<p align="center">
+    <!-- General Badges -->
+    <a href="https://github.com/Nom-nom-hub/goal-kit/releases">
+        <img src="https://img.shields.io/github/v/release/Nom-nom-hub/goal-kit?style=for-the-badge&logo=github" alt="GitHub Release">
+    </a>
+    <a href="https://github.com/Nom-nom-hub/goal-kit/actions/workflows/release.yml">
+        <img src="https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/goal-kit/release.yml?style=for-the-badge&logo=github" alt="Release">
+    </a>
+    <a href="https://github.com/Nom-nom-hub/goal-kit/blob/main/LICENSE">
+        <img src="https://img.shields.io/github/license/Nom-nom-hub/goal-kit?style=for-the-badge&logo=opensourceinitiative" alt="License">
+    </a>
+    <br>
+    <!-- Python & Development Badges -->
+    <a href="https://python.org">
+        <img src="https://img.shields.io/badge/Made%20with-Python-1f425f.svg?style=for-the-badge&logo=python" alt="Python">
+    </a>
+    <a href="https://github.com/Nom-nom-hub/goal-kit/blob/main/pyproject.toml">
+        <img src="https://img.shields.io/badge/uv-Managed-blue.svg?style=for-the-badge&logo=python" alt="uv Managed">
+    </a>
+    <a href="https://github.com/astral-sh/ruff">
+        <img src="https://img.shields.io/badge/Linted%20with-Ruff-396e9f.svg?style=for-the-badge&logo=astral" alt="Linted with Ruff">
+    </a>
+    <br>
+    <!-- Popularity Badges -->
+    <a href="https://github.com/Nom-nom-hub/goal-kit/stargazers">
+        <img src="https://img.shields.io/github/stars/Nom-nom-hub/goal-kit?style=for-the-badge&logo=github" alt="GitHub Stars">
+    </a>
+    <a href="https://github.com/Nom-nom-hub/goal-kit/network/members">
+        <img src="https://img.shields.io/github/forks/Nom-nom-hub/goal-kit?style=for-the-badge&logo=github" alt="GitHub Forks">
+    </a>
+    <a href="https://github.com/Nom-nom-hub/goal-kit/issues">
+        <img src="https://img.shields.io/github/issues/Nom-nom-hub/goal-kit?style=for-the-badge&logo=github" alt="GitHub Issues">
+    </a>
+</p>
 
 ---
 
@@ -129,31 +161,35 @@ Use **`/implement`** to execute all tasks and build your feature according to th
 
 For detailed step-by-step instructions, see our [comprehensive guide](./goal-driven.md).
 
-## 📽️ Video Overview
-
-Want to see Goal-Driven Development in action? Watch our [video overview](https://www.youtube.com/watch?v=a9eR1xsfvHg&pp=0gcJCckJAYcqIYzv)!
-
-[![Goal-Driven Development video header](./media/spec-kit-video-header.jpg)](https://www.youtube.com/watch?v=a9eR1xsfvHg&pp=0gcJCckJAYcqIYzv)
-
 ## 🤖 Supported AI Agents
 
-| Agent                                                     | Support | Notes                                             |
-|-----------------------------------------------------------|---------|---------------------------------------------------|
-| [Claude Code](https://www.anthropic.com/claude-code)      | ✅ |                                                   |
-| [GitHub Copilot](https://code.visualstudio.com/)          | ✅ |                                                   |
-| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | ✅ |                                                   |
-| [Cursor](https://cursor.sh/)                              | ✅ |                                                   |
-| [Qwen Code](https://github.com/QwenLM/qwen-code)          | ✅ |                                                   |
-| [opencode](https://opencode.ai/)                          | ✅ |                                                   |
-| [Windsurf](https://windsurf.com/)                         | ✅ |                                                   |
-| [Kilo Code](https://github.com/Kilo-Org/kilocode)         | ✅ |                                                   |
-| [Auggie CLI](https://docs.augmentcode.com/cli/overview)   | ✅ |                                                   |
-| [Roo Code](https://roocode.com/)                          | ✅ |                                                   |
-| [DeepSeek Coder](https://github.com/deepseek-ai/DeepSeek-Coder) | ✅ |                                                   |
-| [Tabnine AI](https://www.tabnine.com/)                    | ✅ |                                                   |
-| [Grok xAI](https://github.com/xai-org/grok)              | ✅ |                                                   |
-| [CodeWhisperer](https://aws.amazon.com/codewhisperer)     | ✅ |                                                   |
-| [Codex CLI](https://github.com/openai/codex)              | ⚠️ | Codex [does not support](https://github.com/openai/codex/issues/2890) custom arguments for slash commands.  |
+<div align="center">
+
+| AI Agent | Compatibility | Features |
+|:--------:|:-------------:|:---------|
+| [Claude Code](https://www.anthropic.com/claude-code) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | ⚡ Advanced support for all Goal-Driven Development commands |
+| [GitHub Copilot](https://code.visualstudio.com/) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | 🔧 Works with Copilot Chat and Copilot CLI |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | 🆕 Compatible with latest Gemini features |
+| [Cursor](https://cursor.sh/) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | 🧠 Enhanced integration with Cursor's AI capabilities |
+| [Qwen Code](https://github.com/QwenLM/qwen-code) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | 🚀 Native support for Qwen's advanced coding features |
+| [opencode](https://opencode.ai/) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | 📋 Optimized for opencode's development workflows |
+| [Windsurf](https://windsurf.com/) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | 💨 Seamless integration with Windsurf's AI tools |
+| [Kilo Code](https://github.com/Kilo-Org/kilocode) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | 🎯 Full compatibility with Kilo Code development |
+| [Auggie CLI](https://docs.augmentcode.com/cli/overview) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | 🛠️ Enhanced support for Auggie's unique features |
+| [Roo Code](https://roocode.com/) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | 🏗️ Optimized Roo Code workflows |
+| [DeepSeek Coder](https://github.com/deepseek-ai/DeepSeek-Coder) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | 🧮 Advanced coding capabilities support |
+| [Tabnine AI](https://www.tabnine.com/) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | ⚙️ Full IDE integration support |
+| [Grok xAI](https://github.com/xai-org/grok) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | 🧠 Advanced reasoning capabilities |
+| [CodeWhisperer](https://aws.amazon.com/codewhisperer) | <div style="color:#28a745; font-weight:bold;">✅ Full</div> | ☁️ Full AWS ecosystem integration |
+| [Codex CLI](https://github.com/openai/codex) | <div style="color:#ffc107; font-weight:bold;">⚠️ Limited</div> | 🚧 Codex [does not support](https://github.com/openai/codex/issues/2890) custom arguments for slash commands |
+
+</div>
+
+> [!TIP]
+> 🔍 **Full Support**: All Goal-Driven Development features work seamlessly
+> 
+> > [!WARNING]
+> > ⚠️ **Limited Support**: Some advanced features may require manual workarounds
 
 ## 🔧 Goal CLI Reference
 
@@ -209,7 +245,7 @@ goal init my-project --ai grok
 goal init --here --ai copilot
 
 # Force merge into current (non-empty) directory without confirmation
-goal init --here --force --ai copilot
+goal init --here --force --ai claude
 
 # Skip git initialization
 goal init my-project --ai gemini --no-git
@@ -535,8 +571,7 @@ rm gcm-linux_amd64.2.6.1.deb
 
 ## 👥 Maintainers
 
-- Teck ([@nom-nom-hubname](https://github.com/nom-nom-hub))
-- Development Team
+- Teck ([@nom-nom-hub](https://github.com/nom-nom-hub))
 
 ## 💬 Support
 
@@ -544,7 +579,7 @@ For support, please open a [GitHub issue](https://github.com/nom-nom-hub/goal-ki
 
 ## 🙏 Acknowledgements
 
-This project builds upon the excellent work of the [Spec Kit](https://github.com/Nom-nom-hub/goal-kit) project and extends it with goal-driven development principles.
+This project builds upon the excellent work of the [Spec Kit](https://github.com/github/spec-kit) project and extends it with outcome-focused development principles. Goal-Kit is inspired by the innovative approach of Spec Kit and adapts it to focus on goal-oriented development rather than specification-driven workflows.
 
 ## 📄 License
 
