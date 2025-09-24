@@ -11,16 +11,42 @@
 # ]
 # ///
 """
-Goal CLI - Setup tool for Goal-Driven Development projects
+Goal CLI - Complete Goal-Driven Development Toolkit
+
+A comprehensive CLI for goal-driven software development workflow:
+- Define project goals and objectives
+- Clarify and validate goals
+- Create implementation strategies
+- Generate technical plans
+- Create actionable tasks
+- Establish project constitution
+- Analyze project alignment
+- Execute implementation
+
+Core Commands:
+    goal goals        Define project objectives
+    goal clarify      Clarify and validate goals
+    goal strategize   Develop implementation strategies
+    goal plan         Create technical implementation plans
+    goal tasks        Generate actionable tasks
+    goal constitution Establish project principles
+    goal analyze      Validate alignment & surface inconsistencies
+    goal implement    Execute implementation
+    goal init         Initialize new project (legacy)
+    goal check        Check available tools
 
 Usage:
-    uvx goal-cli.py init <project-name>
-    uvx goal-cli.py init --here
+    uvx goal-cli.py goals --project my-app
+    uvx goal-cli.py strategize --goals goals.md
+    uvx goal-cli.py plan --strategy strategy.md
+    uvx goal-cli.py tasks --plan plan.md
+    uvx goal-cli.py implement --tasks tasks.md
 
 Or install globally:
     uv tool install --from goal-cli.py goal-cli
-    goal init <project-name>
-    goal init --here
+    goal goals --project my-app
+    goal strategize --goals goals.md
+    goal implement --tasks tasks.md
 """
 
 import os
@@ -302,7 +328,7 @@ class BannerGroup(TyperGroup):
 
 app = typer.Typer(
     name="goal",
-    help="Setup tool for Goal-Driven Development projects",
+    help="Goal-Driven Development Toolkit - Complete workflow from goals to implementation",
     add_completion=False,
     invoke_without_command=True,
     cls=BannerGroup,
@@ -1074,6 +1100,713 @@ For more information, see: [cyan]https://github.com/openai/codex/issues/2890[/cy
         warning_panel = Panel(warning_text, title="Slash Commands in Codex", border_style="yellow", padding=(1,2))
         console.print()
         console.print(warning_panel)
+
+@app.command()
+def goals(
+    project_name: str = typer.Option(None, "--project", help="Project name to set goals for"),
+    output: str = typer.Option(None, "--output", help="Output file path for goals"),
+    interactive: bool = typer.Option(True, "--interactive/--no-interactive", help="Run in interactive mode")
+):
+    """Define project goals and objectives."""
+    show_banner()
+
+    if not project_name:
+        project_name = Path.cwd().name
+
+    console.print(f"[cyan]Setting goals for project:[/cyan] [bold]{project_name}[/bold]")
+    console.print()
+
+    if interactive:
+        console.print("[bold]What are the main objectives for this project?[/bold]")
+        console.print("Enter your project goals (press Enter twice to finish):")
+        console.print()
+
+        goals_lines = []
+        while True:
+            try:
+                line = input("> ").strip()
+                if not line:
+                    break
+                goals_lines.append(line)
+            except (KeyboardInterrupt, EOFError):
+                break
+
+        goals_content = "\n".join(goals_lines)
+    else:
+        # Read from stdin or use default
+        try:
+            goals_content = sys.stdin.read().strip()
+        except:
+            goals_content = f"Define clear objectives for {project_name}"
+
+    if not goals_content:
+        console.print("[yellow]No goals provided. Skipping.[/yellow]")
+        return
+
+    # Save goals
+    if output:
+        output_path = Path(output)
+    else:
+        # Create goals directory and file
+        goals_dir = Path.cwd() / "goals"
+        goals_dir.mkdir(exist_ok=True)
+        output_path = goals_dir / f"{project_name.lower().replace(' ', '_')}_goals.md"
+
+    with open(output_path, 'w') as f:
+        f.write(f"# Goals for {project_name}\n\n")
+        f.write(goals_content)
+        f.write(f"\n\n*Established: {Path.cwd()}*\n")
+
+    console.print(f"[green]✓[/green] Goals saved to: [cyan]{output_path}[/cyan]")
+
+
+@app.command()
+def clarify(
+    goals_file: str = typer.Option(None, "--goals", help="Path to goals file to clarify"),
+    output: str = typer.Option(None, "--output", help="Output file for clarified goals")
+):
+    """Clarify and validate project goals."""
+    show_banner()
+
+    if not goals_file:
+        # Look for goals files in current directory
+        goals_files = list(Path.cwd().glob("*goals*.md"))
+        if not goals_files:
+            console.print("[red]No goals file found.[/red]")
+            console.print("Please specify a goals file with --goals or create one with 'goal goals'")
+            return
+        goals_file = str(goals_files[0])
+
+    goals_path = Path(goals_file)
+    if not goals_path.exists():
+        console.print(f"[red]Goals file not found:[/red] {goals_file}")
+        return
+
+    with open(goals_path, 'r') as f:
+        goals_content = f.read()
+
+    console.print("[cyan]Current goals:[/cyan]")
+    console.print(Panel(goals_content, border_style="cyan"))
+    console.print()
+
+    console.print("[bold]Clarification Questions:[/bold]")
+    questions = [
+        "Are these goals specific and measurable?",
+        "Are these goals achievable with available resources?",
+        "Are these goals relevant to the project's purpose?",
+        "Are these goals time-bound with clear deadlines?",
+        "Do these goals align with stakeholder expectations?"
+    ]
+
+    for i, question in enumerate(questions, 1):
+        console.print(f"{i}. {question}")
+        response = input(f"   [dim](y/n/na):[/dim] ").lower().strip()
+        if response in ['n', 'no']:
+            console.print(f"   [yellow]⚠️  Consider revising this aspect[/yellow]")
+
+    # Save clarified goals
+    if output:
+        output_path = Path(output)
+    else:
+        output_path = goals_path.with_suffix('_clarified.md')
+
+    with open(output_path, 'w') as f:
+        f.write(f"# Clarified Goals\n\n*Based on: {goals_path.name}*\n\n")
+        f.write(goals_content)
+        f.write(f"\n\n## Clarification Notes\n\n*Clarified on: {Path.cwd()}*\n")
+
+    console.print(f"[green]✓[/green] Clarified goals saved to: [cyan]{output_path}[/cyan]")
+
+
+@app.command()
+def strategize(
+    goals_file: str = typer.Option(None, "--goals", help="Path to goals file to strategize for"),
+    strategy_type: str = typer.Option("technical", "--type", help="Strategy type: technical, business, hybrid"),
+    output: str = typer.Option(None, "--output", help="Output file for strategy")
+):
+    """Develop implementation strategies for project goals."""
+    show_banner()
+
+    if not goals_file:
+        # Look for goals files in current directory
+        goals_files = list(Path.cwd().glob("*goals*.md"))
+        if not goals_files:
+            console.print("[red]No goals file found.[/red]")
+            console.print("Please specify a goals file with --goals or create one with 'goal goals'")
+            return
+        goals_file = str(goals_files[0])
+
+    goals_path = Path(goals_file)
+    if not goals_path.exists():
+        console.print(f"[red]Goals file not found:[/red] {goals_file}")
+        return
+
+    with open(goals_path, 'r') as f:
+        goals_content = f.read()
+
+    console.print(f"[cyan]Strategizing for goals:[/cyan] [bold]{goals_path.name}[/bold]")
+    console.print()
+
+    # Strategy templates based on type
+    strategy_templates = {
+        "technical": [
+            "1. Technology Stack Selection",
+            "2. Architecture Patterns",
+            "3. Development Phases",
+            "4. Testing Strategy",
+            "5. Deployment Approach",
+            "6. Performance Requirements",
+            "7. Security Considerations",
+            "8. Scalability Planning"
+        ],
+        "business": [
+            "1. Market Analysis",
+            "2. Competitive Positioning",
+            "3. Revenue Model",
+            "4. Go-to-Market Strategy",
+            "5. Customer Acquisition",
+            "6. Partnership Opportunities",
+            "7. Risk Assessment",
+            "8. Success Metrics"
+        ],
+        "hybrid": [
+            "1. Business Objectives",
+            "2. Technical Requirements",
+            "3. Development Roadmap",
+            "4. Resource Planning",
+            "5. Risk Management",
+            "6. Success Criteria",
+            "7. Timeline Milestones",
+            "8. Stakeholder Alignment"
+        ]
+    }
+
+    template = strategy_templates.get(strategy_type, strategy_templates["technical"])
+
+    console.print(f"[bold]{strategy_type.upper()} STRATEGY FRAMEWORK:[/bold]")
+    console.print()
+
+    strategy_content = f"# {strategy_type.upper()} Strategy\n\n*Based on: {goals_path.name}*\n\n"
+
+    for item in template:
+        console.print(f"• {item}")
+        response = input(f"   [dim]Details/notes (press Enter to skip):[/dim] ").strip()
+        if response:
+            strategy_content += f"## {item}\n\n{response}\n\n"
+
+    # Save strategy
+    if output:
+        output_path = Path(output)
+    else:
+        strategy_dir = Path.cwd() / "strategies"
+        strategy_dir.mkdir(exist_ok=True)
+        base_name = goals_path.stem.replace('_goals', '').replace('goals', '')
+        output_path = strategy_dir / f"{base_name}_{strategy_type}_strategy.md"
+
+    with open(output_path, 'w') as f:
+        f.write(strategy_content)
+
+    console.print(f"[green]✓[/green] Strategy saved to: [cyan]{output_path}[/cyan]")
+
+
+@app.command()
+def plan(
+    strategy_file: str = typer.Option(None, "--strategy", help="Path to strategy file to create plan for"),
+    detail_level: str = typer.Option("standard", "--detail", help="Detail level: basic, standard, detailed"),
+    output: str = typer.Option(None, "--output", help="Output file for plan")
+):
+    """Create technical implementation plans from strategy."""
+    show_banner()
+
+    if not strategy_file:
+        # Look for strategy files in current directory
+        strategy_files = list(Path.cwd().glob("*strategy*.md"))
+        if not strategy_files:
+            console.print("[red]No strategy file found.[/red]")
+            console.print("Please specify a strategy file with --strategy or create one with 'goal strategize'")
+            return
+        strategy_file = str(strategy_files[0])
+
+    strategy_path = Path(strategy_file)
+    if not strategy_path.exists():
+        console.print(f"[red]Strategy file not found:[/red] {strategy_file}")
+        return
+
+    with open(strategy_path, 'r') as f:
+        strategy_content = f.read()
+
+    console.print(f"[cyan]Creating implementation plan for:[/cyan] [bold]{strategy_path.name}[/bold]")
+    console.print()
+
+    # Detail level configurations
+    detail_configs = {
+        "basic": {
+            "phases": ["Planning", "Development", "Testing", "Deployment"],
+            "include_timeline": False,
+            "include_resources": False,
+            "include_risks": False
+        },
+        "standard": {
+            "phases": ["Requirements Analysis", "Design", "Implementation", "Testing", "Deployment", "Maintenance"],
+            "include_timeline": True,
+            "include_resources": True,
+            "include_risks": True
+        },
+        "detailed": {
+            "phases": ["Requirements Analysis", "System Design", "Component Design", "Implementation", "Unit Testing", "Integration Testing", "System Testing", "UAT", "Deployment", "Operations"],
+            "include_timeline": True,
+            "include_resources": True,
+            "include_risks": True
+        }
+    }
+
+    config = detail_configs.get(detail_level, detail_configs["standard"])
+
+    plan_content = f"# Implementation Plan - {detail_level.upper()}\n\n*Based on: {strategy_path.name}*\n\n"
+
+    for i, phase in enumerate(config["phases"], 1):
+        plan_content += f"## {i}. {phase}\n\n"
+        plan_content += f"### Objectives\n\n*Define objectives for {phase.lower()} phase*\n\n"
+
+        if config["include_resources"]:
+            plan_content += f"### Resources\n\n*Identify required resources*\n\n"
+
+        if config["include_timeline"]:
+            plan_content += f"### Timeline\n\n*Estimated duration and milestones*\n\n"
+
+        if config["include_risks"]:
+            plan_content += f"### Risks & Mitigations\n\n*Identify potential risks and mitigation strategies*\n\n"
+
+        plan_content += f"### Deliverables\n\n*List expected deliverables*\n\n"
+
+        # Interactive input for each phase
+        console.print(f"[bold]{phase} Phase:[/bold]")
+        objectives = input("   Objectives: ").strip()
+        if objectives:
+            plan_content = plan_content.replace(f"*Define objectives for {phase.lower()} phase*", objectives)
+
+        if config["include_resources"]:
+            resources = input("   Resources: ").strip()
+            if resources:
+                plan_content = plan_content.replace("*Identify required resources*", resources)
+
+        console.print()
+
+    # Save plan
+    if output:
+        output_path = Path(output)
+    else:
+        plans_dir = Path.cwd() / "plans"
+        plans_dir.mkdir(exist_ok=True)
+        base_name = strategy_path.stem.replace('_strategy', '').replace('strategy', '')
+        output_path = plans_dir / f"{base_name}_implementation_plan.md"
+
+    with open(output_path, 'w') as f:
+        f.write(plan_content)
+
+    console.print(f"[green]✓[/green] Implementation plan saved to: [cyan]{output_path}[/cyan]")
+
+
+@app.command()
+def tasks(
+    plan_file: str = typer.Option(None, "--plan", help="Path to plan file to generate tasks from"),
+    output: str = typer.Option(None, "--output", help="Output file for tasks"),
+    format: str = typer.Option("markdown", "--format", help="Output format: markdown, json, csv")
+):
+    """Generate actionable tasks from implementation plan."""
+    show_banner()
+
+    if not plan_file:
+        # Look for plan files in current directory
+        plan_files = list(Path.cwd().glob("*plan*.md"))
+        if not plan_files:
+            console.print("[red]No plan file found.[/red]")
+            console.print("Please specify a plan file with --plan or create one with 'goal plan'")
+            return
+        plan_file = str(plan_files[0])
+
+    plan_path = Path(plan_file)
+    if not plan_path.exists():
+        console.print(f"[red]Plan file not found:[/red] {plan_file}")
+        return
+
+    with open(plan_path, 'r') as f:
+        plan_content = f.read()
+
+    console.print(f"[cyan]Generating tasks from plan:[/cyan] [bold]{plan_path.name}[/bold]")
+    console.print()
+
+    # Extract phases from plan
+    import re
+    phase_matches = re.findall(r'## \d+\. ([^\n]+)', plan_content)
+    phases = [phase.strip() for phase in phase_matches]
+
+    if not phases:
+        console.print("[yellow]No phases found in plan. Creating default task structure.[/yellow]")
+        phases = ["Planning", "Development", "Testing", "Deployment"]
+
+    tasks_content = f"# Actionable Tasks\n\n*Generated from: {plan_path.name}*\n\n"
+
+    task_id = 1
+    for phase in phases:
+        tasks_content += f"## {phase}\n\n"
+
+        # Generate default tasks for each phase
+        default_tasks = {
+            "Planning": ["Requirements gathering", "Design review", "Resource allocation", "Timeline planning"],
+            "Development": ["Environment setup", "Core implementation", "Feature development", "Code review"],
+            "Testing": ["Unit tests", "Integration tests", "User acceptance testing", "Performance testing"],
+            "Deployment": ["Production deployment", "Monitoring setup", "Documentation update", "Handover"]
+        }
+
+        phase_tasks = default_tasks.get(phase, [f"Complete {phase.lower()} activities"])
+
+        for task in phase_tasks:
+            tasks_content += f"- [ ] **Task {task_id}:** {task}\n"
+            task_id += 1
+
+        tasks_content += "\n"
+
+    # Save tasks
+    if output:
+        output_path = Path(output)
+    else:
+        tasks_dir = Path.cwd() / "tasks"
+        tasks_dir.mkdir(exist_ok=True)
+        base_name = plan_path.stem.replace('_plan', '').replace('plan', '')
+        output_path = tasks_dir / f"{base_name}_tasks.md"
+
+    with open(output_path, 'w') as f:
+        f.write(tasks_content)
+
+    console.print(f"[green]✓[/green] Tasks generated and saved to: [cyan]{output_path}[/cyan]")
+    console.print(f"[cyan]Generated {task_id-1} tasks across {len(phases)} phases[/cyan]")
+
+
+@app.command()
+def constitution(
+    project_name: str = typer.Option(None, "--project", help="Project name for constitution"),
+    principles: str = typer.Option(None, "--principles", help="Core principles (comma-separated)"),
+    output: str = typer.Option(None, "--output", help="Output file for constitution")
+):
+    """Establish project principles and constitution."""
+    show_banner()
+
+    if not project_name:
+        project_name = Path.cwd().name
+
+    console.print(f"[cyan]Creating constitution for:[/cyan] [bold]{project_name}[/bold]")
+    console.print()
+
+    if not principles:
+        console.print("[bold]Enter core principles for this project (press Enter twice to finish):[/bold]")
+        principles_list = []
+        while True:
+            try:
+                principle = input("> ").strip()
+                if not principle:
+                    break
+                principles_list.append(principle)
+            except (KeyboardInterrupt, EOFError):
+                break
+        principles = ", ".join(principles_list) if principles_list else "Quality, Collaboration, Innovation"
+
+    # Constitution template
+    constitution_content = f"""# {project_name} Project Constitution
+
+## Core Principles
+{principles}
+
+## Code of Conduct
+
+### Quality Standards
+- Write clean, maintainable, and well-documented code
+- Follow established coding standards and best practices
+- Conduct thorough testing before deployment
+- Document changes and decisions appropriately
+
+### Collaboration Guidelines
+- Communicate openly and respectfully with team members
+- Provide constructive feedback and support
+- Share knowledge and learn from others
+- Respect diverse perspectives and approaches
+
+### Innovation Practices
+- Embrace continuous learning and improvement
+- Experiment with new technologies and approaches
+- Learn from both successes and failures
+- Stay curious and open to new ideas
+
+## Decision Making Framework
+
+When making technical decisions, consider:
+1. **Alignment with goals** - Does this support our project objectives?
+2. **Long-term impact** - Will this create technical debt or future problems?
+3. **Team consensus** - Have we discussed this with relevant stakeholders?
+4. **Maintainability** - Can future developers understand and maintain this?
+
+## Success Metrics
+
+- **Quality**: Code review approval rate, test coverage, bug reports
+- **Velocity**: Sprint completion rate, feature delivery time
+- **Collaboration**: Team satisfaction, knowledge sharing
+- **Innovation**: Learning activities, technology adoption
+
+---
+
+*This constitution establishes the foundational principles and practices for the {project_name} project. All team members are expected to understand and follow these guidelines.*
+
+*Established: {Path.cwd()}*
+"""
+
+    # Save constitution
+    if output:
+        output_path = Path(output)
+    else:
+        constitution_dir = Path.cwd() / "docs"
+        constitution_dir.mkdir(exist_ok=True)
+        output_path = constitution_dir / f"{project_name.lower().replace(' ', '_')}_constitution.md"
+
+    with open(output_path, 'w') as f:
+        f.write(constitution_content)
+
+    console.print(f"[green]✓[/green] Project constitution saved to: [cyan]{output_path}[/cyan]")
+
+
+@app.command()
+def analyze(
+    project_path: str = typer.Option(".", "--path", help="Path to project to analyze"),
+    include_goals: bool = typer.Option(True, "--include-goals", help="Analyze goal alignment"),
+    include_technical: bool = typer.Option(True, "--include-technical", help="Analyze technical consistency"),
+    output: str = typer.Option(None, "--output", help="Output file for analysis")
+):
+    """Validate alignment and surface inconsistencies in project structure."""
+    show_banner()
+
+    project_path_obj = Path(project_path).resolve()
+    if not project_path_obj.exists():
+        console.print(f"[red]Project path not found:[/red] {project_path}")
+        return
+
+    console.print(f"[cyan]Analyzing project:[/cyan] [bold]{project_path_obj}[/bold]")
+    console.print()
+
+    analysis_results = []
+    inconsistencies = []
+
+    # Check project structure
+    required_dirs = ["src", "docs", "tests"]
+    required_files = ["README.md", "pyproject.toml", "requirements.txt"]
+
+    analysis_results.append("## Project Structure Analysis")
+
+    for dir_name in required_dirs:
+        dir_path = project_path_obj / dir_name
+        if dir_path.exists():
+            analysis_results.append(f"✓ {dir_name}/ directory exists")
+        else:
+            inconsistencies.append(f"Missing {dir_name}/ directory")
+            analysis_results.append(f"✗ {dir_name}/ directory missing")
+
+    for file_name in required_files:
+        file_path = project_path_obj / file_name
+        if file_path.exists():
+            analysis_results.append(f"✓ {file_name} exists")
+        else:
+            analysis_results.append(f"⚠ {file_name} missing (optional)")
+
+    # Check for goal-driven development artifacts
+    if include_goals:
+        analysis_results.append("\n## Goal-Driven Development Analysis")
+
+        goals_files = list(project_path_obj.glob("*goals*.md"))
+        if goals_files:
+            analysis_results.append(f"✓ Goals documentation found ({len(goals_files)} files)")
+        else:
+            inconsistencies.append("No goals documentation found")
+            analysis_results.append("✗ No goals documentation found")
+
+        strategy_files = list(project_path_obj.glob("*strategy*.md"))
+        if strategy_files:
+            analysis_results.append(f"✓ Strategy documentation found ({len(strategy_files)} files)")
+        else:
+            inconsistencies.append("No strategy documentation found")
+            analysis_results.append("✗ No strategy documentation found")
+
+        plan_files = list(project_path_obj.glob("*plan*.md"))
+        if plan_files:
+            analysis_results.append(f"✓ Implementation plans found ({len(plan_files)} files)")
+        else:
+            inconsistencies.append("No implementation plans found")
+            analysis_results.append("✗ No implementation plans found")
+
+    # Technical consistency checks
+    if include_technical:
+        analysis_results.append("\n## Technical Consistency Analysis")
+
+        # Check for Python-specific files
+        pyproject_file = project_path_obj / "pyproject.toml"
+        setup_file = project_path_obj / "setup.py"
+
+        if pyproject_file.exists():
+            analysis_results.append("✓ Using modern pyproject.toml configuration")
+        elif setup_file.exists():
+            analysis_results.append("⚠ Using legacy setup.py (consider migrating to pyproject.toml)")
+        else:
+            analysis_results.append("✗ No Python package configuration found")
+
+        # Check for dependency management
+        requirements_files = list(project_path_obj.glob("requirements*.txt"))
+        if requirements_files:
+            analysis_results.append(f"✓ Dependency management via requirements files ({len(requirements_files)} files)")
+        else:
+            analysis_results.append("⚠ No requirements files found")
+
+    # Summary
+    analysis_results.append(f"\n## Summary")
+    analysis_results.append(f"Project location: {project_path_obj}")
+    analysis_results.append(f"Analysis date: {Path.cwd()}")
+
+    if inconsistencies:
+        analysis_results.append(f"\n### Issues Found ({len(inconsistencies)})")
+        for issue in inconsistencies:
+            analysis_results.append(f"- {issue}")
+
+        analysis_results.append("\n### Recommendations")
+        analysis_results.append("- Address the identified inconsistencies")
+        analysis_results.append("- Ensure all goal-driven development artifacts are in place")
+        analysis_results.append("- Review technical debt and configuration")
+
+    analysis_content = "\n".join(analysis_results)
+
+    # Save analysis
+    if output:
+        output_path = Path(output)
+    else:
+        analysis_dir = project_path_obj / "analysis"
+        analysis_dir.mkdir(exist_ok=True)
+        output_path = analysis_dir / f"project_analysis_{project_path_obj.name}.md"
+
+    with open(output_path, 'w') as f:
+        f.write(analysis_content)
+
+    console.print(f"[green]✓[/green] Project analysis saved to: [cyan]{output_path}[/cyan]")
+
+    if inconsistencies:
+        console.print(f"[yellow]⚠ Found {len(inconsistencies)} inconsistencies that should be addressed[/yellow]")
+
+
+@app.command()
+def implement(
+    tasks_file: str = typer.Option(None, "--tasks", help="Path to tasks file to implement"),
+    phase: str = typer.Option(None, "--phase", help="Specific phase to implement"),
+    interactive: bool = typer.Option(True, "--interactive/--no-interactive", help="Run in interactive mode"),
+    output: str = typer.Option(None, "--output", help="Output file for implementation log")
+):
+    """Execute implementation tasks and track progress."""
+    show_banner()
+
+    if not tasks_file:
+        # Look for tasks files in current directory
+        tasks_files = list(Path.cwd().glob("*tasks*.md"))
+        if not tasks_files:
+            console.print("[red]No tasks file found.[/red]")
+            console.print("Please specify a tasks file with --tasks or create one with 'goal tasks'")
+            return
+        tasks_file = str(tasks_files[0])
+
+    tasks_path = Path(tasks_file)
+    if not tasks_path.exists():
+        console.print(f"[red]Tasks file not found:[/red] {tasks_file}")
+        return
+
+    with open(tasks_path, 'r') as f:
+        tasks_content = f.read()
+
+    console.print(f"[cyan]Implementing tasks from:[/cyan] [bold]{tasks_path.name}[/bold]")
+    console.print()
+
+    # Parse tasks from markdown
+    import re
+    task_matches = re.findall(r'- \[([ x])\] \*\*Task (\d+):\*\* (.+)', tasks_content)
+    tasks = [(task_id, description, completed == 'x') for completed, task_id, description in task_matches]
+
+    if not tasks:
+        console.print("[yellow]No tasks found in the file. Creating sample implementation log.[/yellow]")
+        tasks = [("1", "Setup development environment", False), ("2", "Implement core functionality", False)]
+
+    # Filter by phase if specified
+    if phase:
+        phase_lower = phase.lower()
+        filtered_tasks = []
+        for task_id, description, completed in tasks:
+            if phase_lower in description.lower():
+                filtered_tasks.append((task_id, description, completed))
+        tasks = filtered_tasks
+        if not tasks:
+            console.print(f"[yellow]No tasks found for phase '{phase}'. Implementing all tasks.[/yellow]")
+
+    implementation_log = f"# Implementation Log\n\n*Based on: {tasks_path.name}*\n\n"
+
+    completed_count = 0
+    total_tasks = len(tasks)
+
+    for i, (task_id, description, is_completed) in enumerate(tasks, 1):
+        status_symbol = "✓" if is_completed else "○"
+        status_color = "green" if is_completed else "yellow"
+
+        console.print(f"[{status_color}]{status_symbol}[/{status_color}] Task {task_id}: {description}")
+
+        if not is_completed:
+            if interactive:
+                action = input(f"   [dim]Action (complete/skip/notes):[/dim] ").lower().strip()
+
+                if action in ['c', 'complete', 'done', 'y', 'yes']:
+                    implementation_log += f"## Task {task_id}: {description}\n\n"
+                    implementation_log += f"**Status:** Completed\n"
+                    implementation_log += f"**Notes:** Implementation completed successfully\n\n"
+                    completed_count += 1
+                elif action in ['n', 'notes']:
+                    notes = input("   Notes: ").strip()
+                    implementation_log += f"## Task {task_id}: {description}\n\n"
+                    implementation_log += f"**Status:** In Progress\n"
+                    implementation_log += f"**Notes:** {notes}\n\n"
+                else:
+                    implementation_log += f"## Task {task_id}: {description}\n\n"
+                    implementation_log += f"**Status:** Skipped\n"
+                    implementation_log += f"**Reason:** User skipped during implementation\n\n"
+            else:
+                implementation_log += f"## Task {task_id}: {description}\n\n"
+                implementation_log += f"**Status:** Pending\n"
+                implementation_log += f"**Notes:** Non-interactive mode - manual completion required\n\n"
+        else:
+            implementation_log += f"## Task {task_id}: {description}\n\n"
+            implementation_log += f"**Status:** Already Completed\n"
+            implementation_log += f"**Notes:** Task was already marked as complete\n\n"
+            completed_count += 1
+
+    # Add summary
+    implementation_log += f"## Implementation Summary\n\n"
+    implementation_log += f"- Total tasks: {total_tasks}\n"
+    implementation_log += f"- Completed: {completed_count}\n"
+    implementation_log += f"- Completion rate: {(completed_count/total_tasks)*100:.1f}%\n"
+    implementation_log += f"- Date: {Path.cwd()}\n"
+
+    # Save implementation log
+    if output:
+        output_path = Path(output)
+    else:
+        logs_dir = Path.cwd() / "implementation"
+        logs_dir.mkdir(exist_ok=True)
+        base_name = tasks_path.stem.replace('_tasks', '').replace('tasks', '')
+        output_path = logs_dir / f"{base_name}_implementation_log.md"
+
+    with open(output_path, 'w') as f:
+        f.write(implementation_log)
+
+    console.print(f"\n[green]✓[/green] Implementation log saved to: [cyan]{output_path}[/cyan]")
+    console.print(f"[cyan]Completed {completed_count}/{total_tasks} tasks[/cyan]")
+
 
 @app.command()
 def check():
