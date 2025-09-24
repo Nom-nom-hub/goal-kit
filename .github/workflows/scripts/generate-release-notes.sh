@@ -16,7 +16,7 @@ fi
 
 # Create release notes
 cat > release_notes.md << EOF
-# Goal-Driven Development Kit v${VERSION}
+# Goal-Driven Development Kit ${VERSION}
 
 ## 🎯 What's New
 
@@ -26,26 +26,26 @@ This release introduces **Goal-Driven Development**, a revolutionary approach to
 
 - **Goal-First Development**: Define objectives before technical implementation
 - **Strategy Evaluation**: Multiple implementation approaches considered
-- **Enhanced CLI**: New \`goal\` command with goal-driven workflow
+- **Enhanced CLI**: New `goal` command with goal-driven workflow
 - **Professional Documentation**: Complete guides and examples
 - **CI/CD Ready**: Automated releases and documentation deployment
 
 ### New Workflow
 
-\`\`\`bash
+```bash
 /goals        # Define project objectives
 /clarify      # Clarify and validate goals
 /strategize   # Develop implementation strategies
 /plan         # Create technical implementation plans
 /tasks        # Generate actionable tasks
 /implement    # Execute implementation
-\`\`\`
+```
 
 ## 🚀 Installation
 
-\`\`\`bash
+```bash
 uvx --from git+https://github.com/Nom-nom-hub/goal-kit.git goal init <PROJECT_NAME>
-\`\`\`
+```
 
 ## 📝 Changes
 

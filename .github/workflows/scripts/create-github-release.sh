@@ -20,17 +20,17 @@ if ! gh auth status &> /dev/null; then
 fi
 
 # Create the release
-if [ -f "release_notes.md" ]; then
-    gh release create "$VERSION" \
-        --repo "$REPO" \
-        --title "Goal-Driven Development Kit v$VERSION" \
-        --notes-file "release_notes.md" \
+if [ -f \"release_notes.md\" ]; then
+    gh release create \"$VERSION\" \\
+        --repo \"$REPO\" \\
+        --title \"Goal-Driven Development Kit $VERSION\" \\
+        --notes-file \"release_notes.md\" \\
         release-packages/*.zip
 else
-    gh release create "$VERSION" \
-        --repo "$REPO" \
-        --title "Goal-Driven Development Kit v$VERSION" \
-        --notes "Release $VERSION of Goal-Driven Development Kit" \
+    gh release create \"$VERSION\" \\
+        --repo \"$REPO\" \\
+        --title \"Goal-Driven Development Kit $VERSION\" \\
+        --notes \"Release $VERSION of Goal-Driven Development Kit\" \\
         release-packages/*.zip
 fi
 
