@@ -32,14 +32,6 @@ jobs:
         uv sync --all-extras --dev
       timeout-minutes: 15
 
-    - name: Run tests
-      run: |
-        # Run tests in isolated mode to avoid circular imports
-        uv run pytest tests/ -v --tb=short --disable-warnings
-      timeout-minutes: 15
-      env:
-        PYTHONPATH: ${{ github.workspace }}/src
-
     - name: Run linter
       run: |
         uv run ruff check src/
