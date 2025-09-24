@@ -23,20 +23,24 @@ jobs:
         enable-cache: true
 
     - name: Set up Python ${{ matrix.python-version }}
-      run: |
-        uv python install ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
 
     - name: Create virtual environment and install package
       run: |
         uv venv
-        uv sync --all-extras --dev
+        ${{ matrix.os == 'windows-latest' && '.venv\Scripts\activate' || 'source .venv/bin/activate' }}
+        uv pip install -e ".[dev]"
       timeout-minutes: 15
 
     - name: Run linter
       run: |
+        ${{ matrix.os == 'windows-latest' && '.venv\Scripts\activate &&' || 'source .venv/bin/activate &&' }}
         uv run ruff check src/
 
     - name: Run type checker
       run: |
+        ${{ matrix.os == 'windows-latest' && '.venv\Scripts\activate &&' || 'source .venv/bin/activate &&' }}
         uv run mypy src/
       timeout-minutes: 10
