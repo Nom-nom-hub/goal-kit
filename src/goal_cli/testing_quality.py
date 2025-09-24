@@ -814,7 +814,7 @@ def testing_cli():
             additional_args = [arg.strip() for arg in args.split(",") if arg.strip()] if args else []
             
             # Initialize testing manager
-            test_manager = TestingAndQualityManager(project_path)
+            test_manager = TestingQualityManager(project_path)
             
             # Run tests
             request_id = test_manager.run_tests(type, target, framework, additional_args)
@@ -840,7 +840,7 @@ def testing_cli():
                 return
             
             # Initialize testing manager
-            test_manager = TestingAndQualityManager(project_path)
+            test_manager = TestingQualityManager(project_path)
             
             # Check status
             status = test_manager.get_test_status(request_id)
@@ -887,7 +887,7 @@ def testing_cli():
                 return
             
             # Initialize testing manager
-            test_manager = TestingAndQualityManager(project_path)
+            test_manager = TestingQualityManager(project_path)
             
             # List requests
             requests = test_manager.list_test_requests()
@@ -947,7 +947,7 @@ def testing_cli():
                     return
             
             # Initialize testing manager
-            test_manager = TestingAndQualityManager(project_path)
+            test_manager = TestingQualityManager(project_path)
             
             if gate_id:
                 # Evaluate specific gate
@@ -1003,7 +1003,7 @@ def testing_cli():
                 return
             
             # Initialize testing manager
-            test_manager = TestingAndQualityManager(project_path)
+            test_manager = TestingQualityManager(project_path)
             
             # List gates
             gates = test_manager.list_quality_gates()
@@ -1047,7 +1047,7 @@ def testing_cli():
                 return
             
             # Initialize testing manager
-            test_manager = TestingAndQualityManager(project_path)
+            test_manager = TestingQualityManager(project_path)
             
             # Generate report
             report_content = test_manager.generate_test_report()
