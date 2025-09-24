@@ -1,4 +1,4 @@
-# Build and deploy DocFX documentation to GitHub Pages
+# Build and deploy static documentation to GitHub Pages
 name: Deploy Documentation to Pages
 
 on:
@@ -24,44 +24,24 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Build job
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Fetch all history for git info
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.x'
-
-      - name: Setup DocFX
-        run: dotnet tool install -g docfx
-
-      - name: Build with DocFX
-        run: |
-          cd docs
-          docfx docfx.json
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'docs/_site'
-
-  # Deploy job
+  # Single deploy job since we're just deploying static content
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static assets as artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs/'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
