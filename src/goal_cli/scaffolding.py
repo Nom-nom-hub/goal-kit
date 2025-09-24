@@ -10,6 +10,7 @@ from typing import Dict, List, Optional, Union, cast
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import hashlib
+import re
 
 
 @dataclass
@@ -27,11 +28,11 @@ class ScaffoldingRequest:
 
 class ProjectScaffolder:
     """Advanced project scaffolding system"""
-    
+
     def __init__(self, project_path: Path):
         self.project_path = project_path
         self.scaffold_path = project_path / ".goal" / "scaffolding"
-        self.scaffold_path.mkdir(exist_ok=True)
+        self.scaffold_path.mkdir(exist_ok=True, parents=True)
         
         # Scaffolding requests storage
         self.scaffolding_requests_file = self.scaffold_path / "scaffolding_requests.json"
@@ -102,6 +103,28 @@ class ProjectScaffolder:
                 "language": "go"
             }
         }
+
+    def _sanitize_path(self, path: str) -> str:
+        """Sanitize a path by removing or replacing invalid characters"""
+        if not path:
+            return path
+
+        # Remove control characters except tab, newline, carriage return
+        sanitized = ''.join(c for c in path if ord(c) >= 32 or c in '\t\n\r')
+
+        # Log if sanitization occurred
+        if sanitized != path:
+            print(f"DEBUG: Sanitized path from {repr(path)} to {repr(sanitized)}")
+
+        return sanitized
+
+    def _validate_path(self, path: str) -> bool:
+        """Validate if a path contains only valid characters"""
+        invalid_chars = [c for c in path if ord(c) < 32 and c not in '\t\n\r']
+        if invalid_chars:
+            print(f"ERROR: Path contains invalid characters: {repr(invalid_chars)} in {repr(path)}")
+            return False
+        return True
     
     def _load_scaffolding_requests(self) -> Dict[str, ScaffoldingRequest]:
         """Load scaffolding requests from file"""
@@ -112,12 +135,28 @@ class ProjectScaffolder:
                 requests = {}
                 for req_data in data:
                     req_data['status'] = req_data.get('status', 'pending')
+
+                    # Log output_path for debugging
+                    output_path = req_data.get('output_path', '')
+                    print(f"DEBUG: Loading request with output_path: {repr(output_path)}")
+                    if '\x07' in output_path:
+                        print(f"ERROR: Found bell character in output_path: {output_path!r}")
+                        # Sanitize the output_path by removing invalid characters
+                        req_data['output_path'] = ''.join(c for c in output_path if ord(c) >= 32 or c in '\t\n\r')
+
                     # Convert result back to dict if it's a string
                     if isinstance(req_data.get('result'), str):
-                        try:
-                            req_data['result'] = json.loads(req_data['result'])
-                        except json.JSONDecodeError:
+                        result_str = req_data['result']
+                        print(f"DEBUG: Parsing result JSON: {repr(result_str[:100])}")
+                        if '\x07' in result_str:
+                            print(f"ERROR: Found bell character in result JSON")
                             req_data['result'] = None
+                        else:
+                            try:
+                                req_data['result'] = json.loads(result_str)
+                            except json.JSONDecodeError:
+                                req_data['result'] = None
+
                     request = ScaffoldingRequest(**req_data)
                     requests[request.id] = request
                 return requests
@@ -495,15 +534,31 @@ export default App;
         """Process a scaffolding request"""
         if request_id not in self.scaffolding_requests:
             return
-        
+
         request = self.scaffolding_requests[request_id]
         request.status = "processing"
         self._save_scaffolding_requests()
-        
+
         try:
-            # Create project directory
-            project_dir = self.project_path / request.output_path
-            project_dir.mkdir(exist_ok=True, parents=True)
+            # Sanitize and validate output_path
+            output_path = self._sanitize_path(request.output_path)
+            print(f"DEBUG: Processing request with output_path: {repr(output_path)}")
+
+            # Validate the path
+            if not self._validate_path(output_path):
+                raise ValueError(f"Invalid characters found in path: {output_path!r}")
+
+            # Create project directory with sanitized path
+            project_dir = self.project_path / output_path
+            print(f"DEBUG: Creating directory: {project_dir}")
+
+            # Additional validation before creating directory
+            try:
+                project_dir.mkdir(exist_ok=True, parents=True)
+                print(f"DEBUG: Successfully created directory: {project_dir}")
+            except OSError as e:
+                print(f"ERROR: Failed to create directory {project_dir}: {e}")
+                raise
             
             # Get template directory
             template_dir = self.templates_path / request.template
@@ -550,11 +605,13 @@ export default App;
         # Copy all files and directories from template
         for item in template_dir.rglob("*"):
             if item.is_file():
-                # Calculate relative path
+                # Calculate relative path and sanitize it
                 relative_path = item.relative_to(template_dir)
-                
-                # Create destination path
-                dest_path = project_dir / relative_path
+                relative_path_str = str(relative_path)
+                sanitized_relative_path = self._sanitize_path(relative_path_str)
+
+                # Create destination path with sanitized relative path
+                dest_path = project_dir / sanitized_relative_path
                 
                 # Create parent directories if they don't exist
                 dest_path.parent.mkdir(exist_ok=True, parents=True)
@@ -574,14 +631,21 @@ export default App;
                 
                 cast(List[str], result["files_created"]).append(str(relative_path))
             elif item.is_dir():
-                # Calculate relative path
+                # Calculate relative path and sanitize it
                 relative_path = item.relative_to(template_dir)
-                
-                # Create destination directory
-                dest_path = project_dir / relative_path
+                relative_path_str = str(relative_path)
+                sanitized_relative_path = self._sanitize_path(relative_path_str)
+
+                # Create destination directory with sanitized path
+                dest_path = project_dir / sanitized_relative_path
                 if not dest_path.exists():
-                    dest_path.mkdir(exist_ok=True, parents=True)
-                    cast(List[str], result["directories_created"]).append(str(relative_path))
+                    try:
+                        dest_path.mkdir(exist_ok=True, parents=True)
+                        print(f"DEBUG: Created directory: {dest_path}")
+                        cast(List[str], result["directories_created"]).append(sanitized_relative_path)
+                    except OSError as e:
+                        print(f"ERROR: Failed to create directory {dest_path}: {e}")
+                        raise
         
         return result
     
