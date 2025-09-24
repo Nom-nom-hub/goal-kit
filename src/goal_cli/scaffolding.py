@@ -10,7 +10,6 @@ from typing import Dict, List, Optional, Union, cast
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import hashlib
-import re
 
 
 @dataclass
@@ -149,7 +148,7 @@ class ProjectScaffolder:
                         result_str = req_data['result']
                         print(f"DEBUG: Parsing result JSON: {repr(result_str[:100])}")
                         if '\x07' in result_str:
-                            print(f"ERROR: Found bell character in result JSON")
+                            print("ERROR: Found bell character in result JSON")
                             req_data['result'] = None
                         else:
                             try:
