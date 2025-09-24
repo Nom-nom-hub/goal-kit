@@ -9,6 +9,12 @@ echo "Creating release packages for version $VERSION..."
 # Create release directory
 mkdir -p "$RELEASE_DIR"
 
+# Ensure source .github directory exists before starting
+if [ ! -d ".github" ]; then
+    echo "Error: .github directory not found in source"
+    exit 1
+fi
+
 # Function to create template package for an AI agent
 create_template_package() {
     local AI=$1
@@ -20,14 +26,28 @@ create_template_package() {
     # Create template directory structure
     mkdir -p "$TEMPLATE_DIR"
 
-    # Copy core files
-    cp -r .github "$TEMPLATE_DIR/"
-    cp -r docs "$TEMPLATE_DIR/"
-    cp -r memory "$TEMPLATE_DIR/"
-    cp -r src "$TEMPLATE_DIR/"
-    cp -r templates "$TEMPLATE_DIR/"
-    cp README.md "$TEMPLATE_DIR/"
-    cp LICENSE "$TEMPLATE_DIR/" 2>/dev/null || true
+    # Copy core files - preserve source structure
+    if [ -d ".github" ]; then
+        cp -r .github "$TEMPLATE_DIR/"
+    fi
+    if [ -d "docs" ]; then
+        cp -r docs "$TEMPLATE_DIR/"
+    fi
+    if [ -d "memory" ]; then
+        cp -r memory "$TEMPLATE_DIR/"
+    fi
+    if [ -d "src" ]; then
+        cp -r src "$TEMPLATE_DIR/"
+    fi
+    if [ -d "templates" ]; then
+        cp -r templates "$TEMPLATE_DIR/"
+    fi
+    if [ -f "README.md" ]; then
+        cp README.md "$TEMPLATE_DIR/"
+    fi
+    if [ -f "LICENSE" ]; then
+        cp LICENSE "$TEMPLATE_DIR/" 2>/dev/null || true
+    fi
 
     # Remove development files
     rm -rf "$TEMPLATE_DIR/.git"
