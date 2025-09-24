@@ -1,7 +1,7 @@
 [project]
-name = "goal-kit"
-version = "0.1.0"
-description = "Goal-Driven Development Framework - A revolutionary approach to software development that focuses on outcomes rather than specifications."
+name = "goalify-cli"
+version = "0.0.6"
+description = "Goalify CLI - Goal-Driven Development Framework with AI Integration. A revolutionary approach to software development that focuses on outcomes rather than specifications."
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
@@ -38,7 +38,7 @@ docs = [
 ]
 
 [project.scripts]
-goal = "goal_kit.cli:main"
+goalify = "goal_kit.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/Nom-nom-hub/goal-kit"

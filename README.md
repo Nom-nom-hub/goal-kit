@@ -45,10 +45,26 @@
 
 ---
 
+## Quick Start with AI Coding Assistants
+
+New to Goal Kit? Here's how to get started immediately with AI coding assistants:
+
+1. **Install prerequisites**: Python 3.11+, uv package manager, Git
+2. **Install Goal CLI**: `uv tool install goal-cli --from git+https://github.com/nom-nom-hub/goal-dev-kit.git`
+3. **Initialize project**: `goal init my-project`
+4. **Navigate to project**: `cd my-project`
+5. **Open the project in your AI coding environment** (Qwen Code, Claude, Cursor, etc.)
+6. **Start defining goals in the AI assistant** with `/goals`, `/strategize`, `/plan`, `/tasks`, and `/implement` commands
+
+For a complete step-by-step walkthrough, see our [detailed usage guide](./USAGE.md). Skip ahead to the [Get Started](#-get-started) section for a complete walkthrough, or jump to [Supported AI Agents](#-supported-ai-agents) for other options.
+
+---
+
 ## Table of Contents
 
 - [🤔 What is Goal-Driven Development?](#-what-is-goal-driven-development)
 - [⚡ Get started](#-get-started)
+- [📖 Usage Guide](USAGE.md)
 - [📽️ Video Overview](#️-video-overview)
 - [🤖 Supported AI Agents](#-supported-ai-agents)
 - [🔧 Goal CLI Reference](#-goal-cli-reference)
@@ -70,7 +86,16 @@ Goal-Driven Development **flips the traditional approach** by starting with desi
 
 ## ⚡ Get started
 
-### 1. Install Goal CLI
+### Step 1: Install Prerequisites
+
+Before using Goal Kit, ensure you have these prerequisites installed:
+
+- **Python 3.11+**: [Download Python](https://www.python.org/downloads/)
+- **uv package manager**: `pip install uv` or see [uv installation guide](https://docs.astral.sh/uv/)
+- **Git**: [Download Git](https://git-scm.com/downloads)
+- **Qwen CLI or other AI agent** (see supported agents below)
+
+### Step 2: Install Goal CLI
 
 Choose your preferred installation method:
 
@@ -104,7 +129,36 @@ uvx --from git+https://github.com/Nom-nom-hub/goal-kit.git goal init <PROJECT_NA
 - Better tool management with `uv tool list`, `uv tool upgrade`, `uv tool uninstall`
 - Cleaner shell configuration
 
-### 2. Establish project principles
+### Step 3: Initialize Your Project
+
+Run the initialization command:
+
+```bash
+# For a new project directory
+goal init my-project
+
+# Or initialize in current directory
+goal init my-project --dir .
+```
+
+This creates the project structure with basic templates and configuration files for goal-driven development.
+
+### Step 4: Set Up Your AI Agent Environment
+
+For AI coding assistants like Qwen Code, Claude, Cursor, etc.:
+
+1. Make sure you have an AI coding assistant installed and available (Qwen Code, Claude, Cursor, etc.)
+2. **Important**: The slash commands work inside AI coding assistants, not regular terminals
+3. Open your AI coding environment (Qwen Code workspace, Cursor, Claude Desktop, etc.)
+4. Navigate to and open your project directory in the AI coding environment
+5. The special slash commands will be available: `/constitution`, `/goals`, `/strategize`, `/plan`, `/tasks`, `/analyze`, `/implement`
+
+> [!TIP]  
+> The initialization creates basic project structure with `.goals`, `.strategies`, and `.plans` directories. The AI assistant interprets slash commands and creates appropriate files in these directories based on templates and methodology.
+
+### Step 5: Start the Goal-Driven Development Process
+
+#### A. Establish project principles
 
 Use the **`/constitution`** command to create your project's governing principles and development guidelines that will guide all subsequent development.
 
@@ -112,7 +166,7 @@ Use the **`/constitution`** command to create your project's governing principle
 /constitution Create principles focused on goal achievement, outcome measurement, stakeholder alignment, and iterative validation
 ```
 
-### 3. Define your goals
+#### B. Define your goals
 
 Use the **`/goals`** command to describe what outcomes you want to achieve. Focus on the **what** and **why**, not the technical implementation.
 
@@ -120,7 +174,7 @@ Use the **`/goals`** command to describe what outcomes you want to achieve. Focu
 /goals Build a team productivity platform that helps remote teams collaborate effectively, track project progress, and maintain work-life balance through smart scheduling and workload management
 ```
 
-### 4. Clarify and validate goals
+#### C. Clarify and validate goals
 
 Use the **`/clarify`** command to resolve any ambiguities and ensure goals are achievable.
 
@@ -128,7 +182,7 @@ Use the **`/clarify`** command to resolve any ambiguities and ensure goals are a
 /clarify
 ```
 
-### 5. Develop implementation strategy
+#### D. Develop implementation strategy
 
 Use the **`/strategize`** command to evaluate different approaches for achieving your goals.
 
@@ -136,7 +190,7 @@ Use the **`/strategize`** command to evaluate different approaches for achieving
 /strategize We want to use modern web technologies with real-time collaboration features, focusing on user experience and scalability for growing teams
 ```
 
-### 6. Create technical implementation plan
+#### E. Create technical implementation plan
 
 Use the **`/plan`** command to provide detailed technical specifications based on your chosen strategy.
 
@@ -144,7 +198,7 @@ Use the **`/plan`** command to provide detailed technical specifications based o
 /plan The application uses React with TypeScript frontend, Node.js backend with WebSocket support, PostgreSQL database, and Docker for deployment
 ```
 
-### 7. Break down into tasks
+#### F. Break down into tasks
 
 Use **`/tasks`** to create an actionable task list from your implementation plan.
 
@@ -152,13 +206,35 @@ Use **`/tasks`** to create an actionable task list from your implementation plan
 /tasks
 ```
 
-### 8. Execute implementation
+#### G. Analyze consistency (Recommended)
 
-Use **`/implement`** to execute all tasks and build your feature according to the plan.
+Before implementation, run **`/analyze`** to check for consistency across all artifacts:
+
+```bash
+/analyze
+```
+
+#### H. Execute implementation
+
+Use **`/implement`** command to execute all tasks and build your feature according to the plan.
 
 ```bash
 /implement
 ```
+
+### Complete Example Flow
+
+Here's what a complete session looks like with Qwen CLI:
+
+1. **Terminal**: `goal init my-project --ai qwen`
+2. **Qwen CLI**: `/constitution Set up principles for a user-focused development approach`
+3. **Qwen CLI**: `/goals Create a todo app that helps users organize tasks with categories`
+4. **Qwen CLI**: `/clarify`
+5. **Qwen CLI**: `/strategize Compare React vs Vue for frontend, Node vs Python for backend`
+6. **Qwen CLI**: `/plan Use React frontend with Node.js backend and SQLite database`
+7. **Qwen CLI**: `/tasks`
+8. **Qwen CLI**: `/analyze`
+9. **Qwen CLI**: `/implement`
 
 For detailed step-by-step instructions, see our [comprehensive guide](./goal-driven.md).
 
@@ -562,6 +638,23 @@ Once the implementation is complete, test the application and resolve any runtim
 ---
 
 ## 🔍 Troubleshooting
+
+### Common Issues
+
+#### Slash commands not working
+If slash commands (`/constitution`, `/goals`, etc.) don't work in your terminal, this is expected! These commands only work in AI coding assistants like Qwen Code, Claude, Cursor, etc., not in regular command line terminals.
+
+1. **In regular terminal**: Use `goal init my-project` to set up the project
+2. **In AI coding assistant**: Use the slash commands like `/goals`, `/strategize`, etc.
+
+#### AI agent not recognizing commands
+1. Make sure you ran `goal init my-project` in the terminal first
+2. Open the project directory in your AI coding environment (Qwen Code, Claude, Cursor, etc.)
+3. Ensure the AI assistant is active in your project context
+
+#### Understanding the workflow
+- **Terminal**: Use for `goal init`, `goal check`, and other CLI commands
+- **AI Coding Assistant**: Use for slash commands like `/goals`, `/strategize`, etc. based on the project context provided by the CLI
 
 ### Git Credential Manager on Linux
 
