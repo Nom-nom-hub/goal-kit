@@ -38,4 +38,4 @@ jobs:
     - name: Test CLI functionality
       run: |
         # Test basic CLI functionality
-        uv run python -c "from goal_cli import main; import sys; sys.argv = ['goal', '--help']; main()" 2>/dev/null | head -10 || echo "CLI help tested"
+        uv run python -c "from goal_cli import main; import sys; sys.argv = ['goal', '--help']; main()" || echo "CLI help tested"
