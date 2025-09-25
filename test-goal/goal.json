@@ -1,0 +1,13 @@
+{
+  "name": "test-goal",
+  "description": "Build a web application with user authentication",
+  "created_at": "2025-09-25T14:14:11.920292",
+  "status": "defined",
+  "progress": 0,
+  "milestones": [],
+  "achievements": [],
+  "metadata": {},
+  "priority": "medium",
+  "category": "general",
+  "defined_at": "2025-09-25T14:16:10.847532"
+}

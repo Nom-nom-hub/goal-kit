@@ -1,60 +1,220 @@
-name: Create Release
+name: 🚀 Release Goal-Kit Templates
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'memory/**'
-      - 'scripts/**'
-      - 'templates/**'
-      - 'src/**'
-      - '.github/workflows/**'
+  release:
+    types: [published]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g., 0.0.2)"
+        required: true
+        type: string
+      release_type:
+        description: "Release type"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+env:
+  # AI Agents to support (matching Spec-Kit structure)
+  AI_AGENTS: '["cursor", "claude", "qwen", "roo", "copilot", "auggie", "gemini", "windsurf", "codex", "kilocode", "opencode"]'
+  # Platforms to support
+  PLATFORMS: '["sh", "ps"]'
 
 jobs:
-  release:
+  package-and-release:
+    name: 📦 Package and Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
+      actions: read
+      packages: write
+
     steps:
-      - name: Checkout repository
+      - name: 🛒 Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get latest tag
-        id: get_tag
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 🔧 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install Dependencies
         run: |
-          chmod +x .github/workflows/scripts/get-next-version.sh
-          .github/workflows/scripts/get-next-version.sh
-      - name: Check if release already exists
-        id: check_release
+          sudo apt-get update
+          sudo apt-get install -y jq zip unzip curl wget
+          npm install -g json2toml
+
+      - name: 📝 Generate Version
+        id: version
         run: |
-          chmod +x .github/workflows/scripts/check-release-exists.sh
-          .github/workflows/scripts/check-release-exists.sh ${{ steps.get_tag.outputs.new_version }}
+          if [[ -n "${{ github.event.inputs.version }}" ]]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "tag=v${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            # Get latest tag
+            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+            LATEST_VERSION=${LATEST_TAG#v}
+
+            # Increment version based on release type
+            IFS='.' read -r major minor patch <<< "$LATEST_VERSION"
+            case "${{ github.event.inputs.release_type }}" in
+              major) NEW_VERSION="$((major + 1)).0.0" ;;
+              minor) NEW_VERSION="$major.$((minor + 1)).0" ;;
+              patch) NEW_VERSION="$major.$minor.$((patch + 1))" ;;
+              *) NEW_VERSION="$major.$minor.$((patch + 1))" ;;
+            esac
+
+            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+            echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+          fi
+
+          echo "📋 Release Version: ${{ steps.version.outputs.version }}"
+          echo "🏷️  Release Tag: ${{ steps.version.outputs.tag }}"
+
+      - name: 🏷️ Create Release Tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a ${{ steps.version.outputs.tag }} -m "Release ${{ steps.version.outputs.version }}"
+          git push origin ${{ steps.version.outputs.tag }}
+
+      - name: 📦 Package Templates
+        run: |
+          echo "🚀 Starting Goal-Kit packaging process..."
+          echo "📋 Version: ${{ steps.version.outputs.version }}"
+          echo "🏷️  Tag: ${{ steps.version.outputs.tag }}"
+
+          # Create release directory
+          mkdir -p releases
+
+          # Make packaging script executable
+          chmod +x goal-kit/package-releases.sh
+
+          # Run packaging script
+          cd goal-kit
+          ./package-releases.sh ${{ steps.version.outputs.version }}
+
+          # List generated files
+          echo "📦 Generated release files:"
+          ls -la ../releases/
+
+      - name: 🔐 Generate Checksums
+        run: |
+          echo "🔐 Generating checksums for release files..."
+          cd releases
+
+          for file in *.zip; do
+            if [ -f "$file" ]; then
+              sha256sum "$file" > "$file.sha256"
+              echo "✅ Generated checksum for: $file"
+            fi
+          done
+
+          echo "📋 Checksums generated:"
+          ls -la *.sha256
+
+      - name: 📋 Validate Packages
+        run: |
+          echo "🔍 Validating package structure..."
+          cd releases
+
+          # Check that we have packages for all agents and platforms
+          EXPECTED_PACKAGES=$(echo $AI_AGENTS $PLATFORMS | jq -r '. as $agents | . as $platforms | [$agents, $platforms] | combinations(2) | map("goal-kit-template-\(.[0])-\(.[1])-v${{ steps.version.outputs.version }}.zip") | .[]')
+
+          for package in $EXPECTED_PACKAGES; do
+            if [ -f "$package" ]; then
+              echo "✅ Found: $package"
+            else
+              echo "❌ Missing: $package"
+              exit 1
+            fi
+          done
+
+          echo "✅ All packages validated successfully!"
+          echo "📊 Total packages: $(ls *.zip | wc -l)"
+
+      - name: 📝 Update Release Notes
+        run: |
+          echo "📝 Updating release notes with current version..."
+          cd releases
+
+          # Update version in release notes
+          sed -i "s/version: '[0-9]\+\.[0-9]\+\.[0-9]\+'/version: '${{ steps.version.outputs.version }}'/g" RELEASE_NOTES.md
+          sed -i "s/# Goal-Kit Templates - [0-9]\+\.[0-9]\+\.[0-9]\+/# Goal-Kit Templates - ${{ steps.version.outputs.version }}/g" RELEASE_NOTES.md
+          sed -i "s/v[0-9]\+\.[0-9]\+\.[0-9]\+/v${{ steps.version.outputs.version }}/g" RELEASE_NOTES.md
+
+          echo "✅ Release notes updated"
+
+      - name: 📤 Upload Release Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: "Goal-Kit Templates v${{ steps.version.outputs.version }}"
+          body_path: releases/RELEASE_NOTES.md
+          files: |
+            releases/*.zip
+            releases/*.sha256
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.version, 'alpha') || contains(steps.version.outputs.version, 'beta') || contains(steps.version.outputs.version, 'rc') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create release package variants
-        if: steps.check_release.outputs.exists == 'false'
+
+      - name: 📊 Generate Release Summary
         run: |
-          chmod +x .github/workflows/scripts/create-release-packages.sh
-          .github/workflows/scripts/create-release-packages.sh ${{ steps.get_tag.outputs.new_version }}
-      - name: Generate release notes
-        if: steps.check_release.outputs.exists == 'false'
-        id: release_notes
-        run: |
-          chmod +x .github/workflows/scripts/generate-release-notes.sh
-          .github/workflows/scripts/generate-release-notes.sh ${{ steps.get_tag.outputs.new_version }} ${{ steps.get_tag.outputs.latest_tag }}
-      - name: Create GitHub Release
-        if: steps.check_release.outputs.exists == 'false'
-        run: |
-          chmod +x .github/workflows/scripts/create-github-release.sh
-          .github/workflows/scripts/create-github-release.sh ${{ steps.get_tag.outputs.new_version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Update version in pyproject.toml (for release artifacts only)
-        if: steps.check_release.outputs.exists == 'false'
-        run: |
-          chmod +x .github/workflows/scripts/update-version.sh
-          .github/workflows/scripts/update-version.sh ${{ steps.get_tag.outputs.new_version }}
+          echo "🎉 Goal-Kit Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📋 Release Information" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag:** ${{ steps.version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release Type:** ${{ github.event.inputs.release_type || 'patch' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "## 📦 Generated Packages" >> $GITHUB_STEP_SUMMARY
+          cd releases
+          echo "| Package | Size | SHA256 |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|------|--------|" >> $GITHUB_STEP_SUMMARY
+          for file in *.zip; do
+            if [ -f "$file" ]; then
+              size=$(ls -lh "$file" | awk '{print $5}')
+              checksum=$(cat "$file.sha256" | awk '{print $1}')
+              echo "| \`$file\` | $size | \`$checksum\` |" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "## 🤖 AI Agent Support" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Cursor** - Full support" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Claude** - Full support" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Qwen** - Full support" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Roo** - Full support" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Copilot** - Full support" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Auggie** - Full support" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Gemini** - Full support" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Windsurf** - Full support" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Codex** - Full support" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Kilocode** - Full support" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Opencode** - Full support" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "## 📋 Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. 📢 Announce the release in AI agent communities" >> $GITHUB_STEP_SUMMARY
+          echo "2. 🔄 Update documentation links" >> $GITHUB_STEP_SUMMARY
+          echo "3. 📊 Monitor download statistics" >> $GITHUB_STEP_SUMMARY
+          echo "4. 🐛 Collect feedback and bug reports" >> $GITHUB_STEP_SUMMARY
+          echo "5. 🎯 Plan next release features" >> $GITHUB_STEP_SUMMARY
+
+          echo "## 🎯 Release Status: ✅ SUCCESS" >> $GITHUB_STEP_SUMMARY

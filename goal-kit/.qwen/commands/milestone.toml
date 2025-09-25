@@ -1,0 +1,14 @@
+
+description = "Create and manage goal milestones with dependencies, resource allocation, and progress tracking."
+
+prompt = """
+---
+description: Create and manage goal milestones with dependencies, resource allocation, and progress tracking.
+---
+
+The user input to you can be provided directly by the agent or as a command argument - you **MUST** consider it before proceeding with the prompt (if not empty).
+
+User input:
+
+$ARGUMENTS
+

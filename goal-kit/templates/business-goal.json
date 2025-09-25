@@ -1,0 +1,146 @@
+{
+  "name": "",
+  "description": "",
+  "priority": "high",
+  "category": "business",
+  "deadline": null,
+  "status": "defined",
+  "created_at": "",
+  "defined_at": "",
+  "progress": 0,
+  "milestones": [
+    {
+      "id": 1,
+      "name": "Market Analysis and Planning",
+      "description": "Conduct market research and develop strategic business plan",
+      "status": "pending",
+      "created_at": "",
+      "achievements": [
+        "Complete market analysis and competitive assessment",
+        "Define target market and customer segments",
+        "Develop business model and value proposition",
+        "Create financial projections and budget"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Foundation and Setup",
+      "description": "Establish legal, operational, and team foundations",
+      "status": "pending",
+      "created_at": "",
+      "achievements": [
+        "Set up legal entity and business registration",
+        "Establish operational processes and systems",
+        "Build core team and define roles",
+        "Secure initial funding or investment"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Product/Service Development",
+      "description": "Develop and prepare products or services for market",
+      "status": "pending",
+      "created_at": "",
+      "achievements": [
+        "Develop minimum viable product/service",
+        "Test product with early customers",
+        "Refine offering based on feedback",
+        "Prepare for full market launch"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Market Entry and Growth",
+      "description": "Launch operations and drive customer acquisition",
+      "status": "pending",
+      "created_at": "",
+      "achievements": [
+        "Execute go-to-market strategy",
+        "Acquire initial customer base",
+        "Establish sales and marketing channels",
+        "Achieve revenue targets and growth metrics"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Scaling and Optimization",
+      "description": "Scale operations and optimize for sustainable growth",
+      "status": "pending",
+      "created_at": "",
+      "achievements": [
+        "Expand team and operational capacity",
+        "Optimize processes and systems",
+        "Enter new markets or segments",
+        "Achieve profitability and positive cash flow"
+      ]
+    }
+  ],
+  "achievements": [],
+  "metadata": {
+    "template": "business-goal",
+    "version": "1.0",
+    "business_type": "",
+    "industry": "",
+    "founding_year": null,
+    "business_stage": "startup",
+    "funding_stage": "bootstrap"
+  },
+  "financial_metrics": {
+    "revenue_targets": {
+      "monthly_recurring_revenue": 0,
+      "annual_recurring_revenue": 0,
+      "average_deal_size": 0,
+      "customer_lifetime_value": 0
+    },
+    "cost_structure": {
+      "fixed_costs": 0,
+      "variable_costs": 0,
+      "cost_of_goods_sold": 0,
+      "operating_expenses": 0
+    },
+    "funding_requirements": {
+      "initial_investment": 0,
+      "runway_months": 0,
+      "break_even_point": 0
+    }
+  },
+  "market_analysis": {
+    "target_market_size": 0,
+    "serviceable_market": 0,
+    "market_share_goal": 0,
+    "competitive_landscape": [],
+    "customer_segments": []
+  },
+  "operational_metrics": {
+    "key_performance_indicators": [
+      "Customer Acquisition Cost (CAC)",
+      "Customer Lifetime Value (CLV)",
+      "Monthly Recurring Revenue (MRR)",
+      "Churn Rate",
+      "Gross Margin"
+    ],
+    "growth_targets": {
+      "customer_growth_rate": 0,
+      "revenue_growth_rate": 0,
+      "market_expansion_rate": 0
+    }
+  },
+  "team_structure": {
+    "founding_team": [],
+    "key_roles": [
+      "CEO/Founder",
+      "CTO/Technical Lead",
+      "CMO/Marketing Lead",
+      "CFO/Financial Lead",
+      "COO/Operations Lead"
+    ],
+    "hiring_plan": []
+  },
+  "risk_factors": {
+    "market_risks": [],
+    "financial_risks": [],
+    "operational_risks": [],
+    "competitive_risks": [],
+    "regulatory_risks": []
+  }
+}
