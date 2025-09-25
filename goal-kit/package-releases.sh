@@ -116,15 +116,35 @@ EOF
     log_success "Created package: $package_name.zip"
 }
 
+# Check if agent command exists
+agent_command_exists() {
+    local agent="$1"
+    # These are AI agents/services, not CLI tools that need to be installed
+    # Package for all of them regardless of local installation
+    return 0
+}
+
 # Package all agents
 package_all_releases() {
     log_info "Creating Goal-Kit releases v$VERSION..."
+    local packaged_count=0
     for agent in "${AI_AGENTS[@]}"; do
-        log_info "Processing $agent..."
-        package_agent_platform "$agent" "sh"
-        package_agent_platform "$agent" "ps"
+        if agent_command_exists "$agent"; then
+            log_info "Processing $agent..."
+            package_agent_platform "$agent" "sh"
+            package_agent_platform "$agent" "ps"
+            ((packaged_count++))
+        else
+            log_warning "Skipping $agent (command not found)"
+        fi
     done
-    log_success "All releases created successfully!"
+
+    if [ $packaged_count -eq 0 ]; then
+        log_error "No agents were packaged. Please install required AI agent tools."
+        exit 1
+    fi
+
+    log_success "Packaged $packaged_count agents successfully!"
 }
 
 # Main
