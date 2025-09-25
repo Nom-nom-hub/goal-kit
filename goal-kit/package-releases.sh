@@ -83,11 +83,11 @@ Write-Host "✅ PowerShell scripts ready" -ForegroundColor Green
 EOF
     fi
 
-    # Create and use local .genreleases directory for build artifacts like spec-kit
-    mkdir -p ".genreleases"
+    # Create and use release directory like spec-kit
+    mkdir -p "$RELEASE_DIR"
     
     # Zip package directly like spec-kit does - zip command should be available in GitHub Actions
-    ( cd "$package_dir" && zip -r "../.genreleases/goal-kit-template-${agent}-${platform}-v${VERSION}.zip" . )
+    ( cd "$package_dir" && zip -r "../releases/goal-kit-template-${agent}-${platform}-v${VERSION}.zip" . )
 
     # SHA256 checksum
     sha256sum "$package_file" | cut -d' ' -f1 > "$package_file.sha256"
