@@ -29,7 +29,8 @@ AI_AGENTS=("cursor" "claude" "qwen" "roo" "copilot" "auggie" "gemini" "windsurf"
 create_release_structure() {
     log_info "Creating release structure..."
     mkdir -p "$RELEASE_DIR"
-    mkdir -p "/tmp/goal-kit-release"
+    # Use a local temporary directory like spec-kit (in project-relative location)
+    mkdir -p ".tmp-goal-kit-release"
     log_success "Release structure created"
 }
 
@@ -41,7 +42,7 @@ package_agent_platform() {
     log_info "Packaging Goal-Kit for $agent ($platform)..."
 
     local package_name="goal-kit-template-${agent}-${platform}-v${VERSION}"
-    local package_dir="/tmp/goal-kit-release/$package_name"
+    local package_dir=".tmp-goal-kit-release/$package_name"
     local package_file="$RELEASE_DIR/$package_name.zip"
 
     mkdir -p "$package_dir"
