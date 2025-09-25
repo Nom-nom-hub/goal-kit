@@ -23,9 +23,9 @@ log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
 log_error()   { echo -e "${RED}[ERROR]${NC} $1"; }
 
-# AI Agents to support (array must always be valid Bash syntax)
+# AI Agents to support (labels only, not commands!)
 AI_AGENTS=(
-   # "cursor"
+    "cursor"
     "claude"
     "qwen"
     "roo"
@@ -87,7 +87,7 @@ EOF
         cat > "$package_dir/setup.sh" << 'EOF'
 #!/bin/bash
 echo "Goal-Kit setup for Bash environment"
-chmod +x scripts/bash/*.sh
+chmod +x scripts/bash/*.sh 2>/dev/null || true
 echo "✅ Bash scripts configured"
 EOF
         chmod +x "$package_dir/setup.sh"
@@ -110,17 +110,17 @@ EOF
         fi
     fi
 
-    local checksum=$(sha256sum "$package_file" | cut -d' ' -f1)
+    local checksum
+    checksum=$(sha256sum "$package_file" | cut -d' ' -f1)
     echo "$checksum" > "$package_file.sha256"
 
     log_success "Created package: $package_name.zip"
 }
 
-# Check if agent command exists
+# Check if agent should be packaged (always true now)
 agent_command_exists() {
     local agent="$1"
-    # These are AI agents/services, not CLI tools that need to be installed
-    # Package for all of them regardless of local installation
+    # These are logical agent labels, not binaries. Always return success.
     return 0
 }
 
@@ -129,18 +129,14 @@ package_all_releases() {
     log_info "Creating Goal-Kit releases v$VERSION..."
     local packaged_count=0
     for agent in "${AI_AGENTS[@]}"; do
-        if agent_command_exists "$agent"; then
-            log_info "Processing $agent..."
-            package_agent_platform "$agent" "sh"
-            package_agent_platform "$agent" "ps"
-            ((packaged_count++))
-        else
-            log_warning "Skipping $agent (command not found)"
-        fi
+        log_info "Processing $agent..."
+        package_agent_platform "$agent" "sh"
+        package_agent_platform "$agent" "ps"
+        ((packaged_count++))
     done
 
     if [ $packaged_count -eq 0 ]; then
-        log_error "No agents were packaged. Please install required AI agent tools."
+        log_error "No agents were packaged."
         exit 1
     fi
 
