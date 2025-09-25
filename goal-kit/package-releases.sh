@@ -23,11 +23,7 @@ log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
 log_error()   { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # AI Agents to support
-AI_AGENTS=(
-    "cursor" "claude" "qwen" "roo"
-    "copilot" "auggie" "gemini"
-    "windsurf" "codex" "kilocode" "opencode"
-)
+AI_AGENTS=("cursor" "claude" "qwen" "roo" "copilot" "auggie" "gemini" "windsurf" "codex" "kilocode" "opencode")
 
 # Create release directory
 create_release_structure() {
