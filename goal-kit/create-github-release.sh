@@ -12,7 +12,7 @@ fi
 
 VERSION="$1"
 
-# Remove 'v' prefix from version for release title
+# Remove 'v' prefix from version for release titles
 VERSION_NO_V=${VERSION#v}
 
 gh release create "$VERSION" \
