@@ -89,6 +89,9 @@ EOF
     # Determine the full path to the target zip file
     TARGET_ZIP_PATH="$(cd "$(dirname "$RELEASE_DIR")" && pwd)/$(basename "$RELEASE_DIR")/goal-kit-template-${agent}-${platform}-v${VERSION}.zip"
     
+    # Update package_file to point to the correct location for checksum generation
+    package_file="$TARGET_ZIP_PATH"
+    
     # Zip the package directory to the target location
     zip -r "$TARGET_ZIP_PATH" -j "$package_dir"/*
 
