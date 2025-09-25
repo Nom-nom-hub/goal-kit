@@ -83,11 +83,14 @@ Write-Host "✅ PowerShell scripts ready" -ForegroundColor Green
 EOF
     fi
 
-    # Create and use release directory like spec-kit
+    # Create the release directory
     mkdir -p "$RELEASE_DIR"
     
-    # Zip package: go to package dir and create zip in the release directory using absolute path
-    ( cd "$package_dir" && zip -r "$RELEASE_DIR/goal-kit-template-${agent}-${platform}-v${VERSION}.zip" . )
+    # Determine the full path to the target zip file
+    TARGET_ZIP_PATH="$(cd "$(dirname "$RELEASE_DIR")" && pwd)/$(basename "$RELEASE_DIR")/goal-kit-template-${agent}-${platform}-v${VERSION}.zip"
+    
+    # Zip the package directory to the target location
+    zip -r "$TARGET_ZIP_PATH" -j "$package_dir"/*
 
     # SHA256 checksum
     sha256sum "$package_file" | cut -d' ' -f1 > "$package_file.sha256"
