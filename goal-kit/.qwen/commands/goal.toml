@@ -1,0 +1,25 @@
+description = "Create comprehensive goal definitions with structured planning, milestones, and success criteria."
+
+prompt = """
+---
+description: Create comprehensive goal definitions with structured planning, milestones, and success criteria.
+---
+
+The user input to you can be provided directly by the agent or as a command argument - you **MUST** consider it before proceeding with the prompt (if not empty).
+
+User input:
+
+$ARGUMENTS
+
+The text the user typed after `/goal` in the triggering message **is** the goal description. Assume you always have it available in this conversation even if `{{args}}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
+
+Given that goal description, do this:
+
+1. Run the script `goal-kit/scripts/bash/create-goal.sh "{{args}}"` from repo root and parse its output for goal creation status. All file paths must be relative to repo root.
+   **IMPORTANT** You must only ever run this script once. The output is provided in the terminal - always refer to it to get the actual content you're looking for.
+2. Load `goal-kit/.goalify/templates/goal-definition.md` to understand the required goal definition structure.
+3. Write the comprehensive goal definition using the template structure, replacing placeholders with concrete details derived from the goal description (arguments) while preserving section order and headings.
+4. Report completion with goal file path, creation status, and next steps.
+
+Note: The script creates the goal directory structure, initializes git repository, and generates the initial goal.json file before writing the detailed goal definition.
+"""

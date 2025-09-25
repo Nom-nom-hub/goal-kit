@@ -1,0 +1,68 @@
+{
+  "name": "",
+  "description": "",
+  "priority": "high",
+  "category": "software",
+  "deadline": null,
+  "status": "defined",
+  "created_at": "",
+  "defined_at": "",
+  "progress": 0,
+  "milestones": [
+    {
+      "id": 1,
+      "name": "Project Planning",
+      "description": "Define requirements, architecture, and technical specifications",
+      "status": "pending",
+      "created_at": "",
+      "achievements": []
+    },
+    {
+      "id": 2,
+      "name": "Development Setup",
+      "description": "Set up development environment, dependencies, and project structure",
+      "status": "pending",
+      "created_at": "",
+      "achievements": []
+    },
+    {
+      "id": 3,
+      "name": "Core Development",
+      "description": "Implement main features and functionality",
+      "status": "pending",
+      "created_at": "",
+      "achievements": []
+    },
+    {
+      "id": 4,
+      "name": "Testing and QA",
+      "description": "Write tests, perform quality assurance, and bug fixes",
+      "status": "pending",
+      "created_at": "",
+      "achievements": []
+    },
+    {
+      "id": 5,
+      "name": "Documentation",
+      "description": "Create user guides, API documentation, and deployment instructions",
+      "status": "pending",
+      "created_at": "",
+      "achievements": []
+    },
+    {
+      "id": 6,
+      "name": "Deployment and Launch",
+      "description": "Deploy to production environment and release",
+      "status": "pending",
+      "created_at": "",
+      "achievements": []
+    }
+  ],
+  "achievements": [],
+  "metadata": {
+    "template": "software-project",
+    "version": "1.0",
+    "tech_stack": [],
+    "platform": "multi-platform"
+  }
+}

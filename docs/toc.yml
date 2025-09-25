@@ -1,8 +1,0 @@
-- name: Home
-  href: index.md
-- name: Installation Guide
-  href: installation.md
-- name: Quick Start Guide
-  href: quickstart.md
-- name: Local Development
-  href: local-development.md
