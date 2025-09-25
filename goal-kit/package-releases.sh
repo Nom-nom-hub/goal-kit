@@ -83,17 +83,18 @@ Write-Host "✅ PowerShell scripts ready" -ForegroundColor Green
 EOF
     fi
 
-    # Create the release directory
+    # Ensure the release directory exists
     mkdir -p "$RELEASE_DIR"
     
-    # Determine the full path to the target zip file
-    TARGET_ZIP_PATH="$(cd "$(dirname "$RELEASE_DIR")" && pwd)/$(basename "$RELEASE_DIR")/goal-kit-template-${agent}-${platform}-v${VERSION}.zip"
+    # Calculate absolute path to ensure zip command can find the destination
+    ABSOLUTE_RELEASE_PATH="$(cd "$(dirname "$RELEASE_DIR")" && pwd)/$(basename "$(dirname "$RELEASE_DIR")")/$(basename "$RELEASE_DIR")"
+    mkdir -p "$ABSOLUTE_RELEASE_PATH"
     
     # Update package_file to point to the correct location for checksum generation
-    package_file="$TARGET_ZIP_PATH"
+    package_file="$ABSOLUTE_RELEASE_PATH/goal-kit-template-${agent}-${platform}-v${VERSION}.zip"
     
-    # Zip the package directory to the target location
-    zip -r "$TARGET_ZIP_PATH" -j "$package_dir"/*
+    # Zip directly from package_dir to target file (like spec-kit but with proper paths)
+    (cd "$package_dir" && zip -r "$package_file" .)
 
     # SHA256 checksum
     sha256sum "$package_file" | cut -d' ' -f1 > "$package_file.sha256"
