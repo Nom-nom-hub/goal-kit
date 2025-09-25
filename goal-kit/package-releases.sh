@@ -181,7 +181,20 @@ EOF
 
     # Create package
     cd "/tmp/goal-kit-release"
-    zip -r "$package_file" "$package_name" > /dev/null
+
+    # Use PowerShell on Windows, fallback to zip on Unix
+    if [ "$OS" = "Windows_NT" ] || [ -n "$WINDIR" ]; then
+        # Windows - use PowerShell
+        powershell.exe -Command "Compress-Archive -Path '$package_name' -DestinationPath '$package_file' -Force" 2>/dev/null || true
+    else
+        # Unix/Linux/macOS - use zip
+        if command -v zip >/dev/null 2>&1; then
+            zip -r "$package_file" "$package_name" > /dev/null
+        else
+            log_error "zip command not found. Please install zip or use a different compression method."
+            exit 1
+        fi
+    fi
 
     # Generate checksum
     local checksum=$(sha256sum "$package_file" | cut -d' ' -f1)
