@@ -1,63 +1,61 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# create-github-release.sh
-# Create a GitHub release with all Goal-Kit template zip files
-# Usage: create-github-release.sh <version>
-
-if [[ $# -ne 1 ]]; then
-  echo "Usage: $0 <version>" >&2
-  exit 1
-fi
-
-VERSION="$1"
-
-# Remove 'v' prefix from version for release title
-VERSION_NO_V=${VERSION#v}
-
-# Directory where release zips are stored
+VERSION="0.0.1"
 RELEASE_DIR="../releases"
+GOAL_KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# AI Agents
 AI_AGENTS=(
-    "cursor"
-    "claude"
-    "qwen"
-    "roo"
-    "copilot"
-    "auggie"
-    "gemini"
-    "windsurf"
-    "codex"
-    "kilocode"
-    "opencode"
+    "cursor" "claude" "qwen" "roo" "copilot"
+    "auggie" "gemini" "windsurf" "codex"
+    "kilocode" "opencode"
 )
 
-# Platforms
 PLATFORMS=("sh" "ps")
 
-# Build the list of files to upload
-FILES=()
+mkdir -p "$RELEASE_DIR"
+mkdir -p "/tmp/goal-kit-release"
+
 for agent in "${AI_AGENTS[@]}"; do
     for platform in "${PLATFORMS[@]}"; do
-        file="$RELEASE_DIR/goal-kit-template-${agent}-${platform}-v${VERSION}.zip"
-        if [[ -f "$file" ]]; then
-            FILES+=("$file")
+        PACKAGE_NAME="goal-kit-template-${agent}-${platform}-v${VERSION}"
+        PACKAGE_DIR="/tmp/goal-kit-release/$PACKAGE_NAME"
+        PACKAGE_FILE="$RELEASE_DIR/$PACKAGE_NAME.zip"
+
+        mkdir -p "$PACKAGE_DIR"
+
+        # Copy templates
+        cp -r "$GOAL_KIT_DIR/templates" "$PACKAGE_DIR/" 2>/dev/null || true
+        cp -r "$GOAL_KIT_DIR/.goalify" "$PACKAGE_DIR/" 2>/dev/null || true
+        cp -r "$GOAL_KIT_DIR/.qwen" "$PACKAGE_DIR/" 2>/dev/null || true
+
+        # Copy scripts
+        if [ "$platform" = "sh" ]; then
+            mkdir -p "$PACKAGE_DIR/scripts/bash"
+            cp "$GOAL_KIT_DIR/scripts/bash/"*.sh "$PACKAGE_DIR/scripts/bash/" 2>/dev/null || true
         else
-            echo "⚠️  Warning: Release file not found: $file"
+            mkdir -p "$PACKAGE_DIR/scripts/powershell"
+            cp "$GOAL_KIT_DIR/scripts/powershell/"*.ps1 "$PACKAGE_DIR/scripts/powershell/" 2>/dev/null || true
         fi
+
+        cp "$GOAL_KIT_DIR/scripts/"*.sh "$PACKAGE_DIR/" 2>/dev/null || true
+
+        # Create simple README
+        echo "# Goal-Kit Template for $agent ($platform)" > "$PACKAGE_DIR/README.md"
+        echo "Version: $VERSION" >> "$PACKAGE_DIR/README.md"
+
+        # Zip package
+        cd "/tmp/goal-kit-release"
+        if command -v zip >/dev/null 2>&1; then
+            zip -r "$PACKAGE_FILE" "$PACKAGE_NAME" >/dev/null
+        else
+            echo "❌ zip command not found" >&2
+            exit 1
+        fi
+
+        echo "✅ Created $PACKAGE_FILE"
+        rm -rf "$PACKAGE_DIR"
     done
 done
 
-if [[ ${#FILES[@]} -eq 0 ]]; then
-    echo "❌ No release files found to upload. Exiting."
-    exit 1
-fi
-
-# Create GitHub release
-gh release create "$VERSION" \
-  "${FILES[@]}" \
-  --title "Goal-Kit Templates - $VERSION_NO_V" \
-  --notes-file release_notes.md
-
-echo "✅ GitHub release $VERSION created successfully!"
+echo "🎉 All packages created in $RELEASE_DIR"
