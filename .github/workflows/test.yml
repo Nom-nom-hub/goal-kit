@@ -2,14 +2,14 @@ name: 🧪 Automated Testing
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   workflow_dispatch:
 
 env:
-  NODE_VERSION: '20'
-  PYTHON_VERSION: '3.11'
+  NODE_VERSION: "20"
+  PYTHON_VERSION: "3.11"
 
 jobs:
   test-templates:
@@ -20,141 +20,141 @@ jobs:
         goal-type: [personal, business, learning, software, research]
 
     steps:
-    - name: 🛒 Checkout Repository
-      uses: actions/checkout@v4
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: 🔧 Setup Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq curl wget
-        npm install -g jsonlint
+      - name: 🔧 Setup Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl wget
+          npm install -g jsonlint
 
-    - name: 🧪 Test Goal Template Structure
-      run: |
-        echo "🧪 Testing goal template structure for ${{ matrix.goal-type }}..."
+      - name: 🧪 Test Goal Template Structure
+        run: |
+          echo "🧪 Testing goal template structure for ${{ matrix.goal-type }}..."
 
-        # Find the appropriate template
-        template_file="goal-kit/templates/${{ matrix.goal-type }}-goal.json"
-        if [ ! -f "$template_file" ]; then
-          echo "❌ Template file not found: $template_file"
-          exit 1
-        fi
-
-        echo "✅ Found template: $template_file"
-
-        # Validate JSON structure
-        if ! jq empty "$template_file" 2>/dev/null; then
-          echo "❌ Invalid JSON in $template_file"
-          exit 1
-        fi
-
-        echo "✅ Valid JSON structure"
-
-        # Check required fields
-        required_fields=("name" "description" "priority" "category" "status" "milestones")
-        for field in "${required_fields[@]}"; do
-          if ! jq -e ".${field}" "$template_file" >/dev/null 2>&1; then
-            echo "❌ Missing required field: $field"
-            exit 1
-          fi
-          echo "✅ Required field present: $field"
-        done
-
-        echo "✅ All required fields present"
-
-    - name: 🧪 Test Template Content
-      run: |
-        echo "🧪 Testing template content..."
-
-        template_file="goal-kit/templates/${{ matrix.goal-type }}-goal.json"
-        template_content=$(cat "$template_file")
-
-        # Check for milestones
-        milestones_count=$(echo "$template_content" | jq '.milestones | length')
-        if [ "$milestones_count" -eq 0 ]; then
-          echo "❌ No milestones defined in template"
-          exit 1
-        fi
-        echo "✅ Found $milestones_count milestones"
-
-        # Check milestone structure
-        for ((i=0; i<milestones_count; i++)); do
-          milestone=$(echo "$template_content" | jq ".milestones[$i]")
-
-          # Check required milestone fields
-          if ! echo "$milestone" | jq -e '.name' >/dev/null 2>&1; then
-            echo "❌ Milestone $i missing name"
+          # Find the appropriate template
+          template_file="goal-kit/templates/${{ matrix.goal-type }}-goal.json"
+          if [ ! -f "$template_file" ]; then
+            echo "❌ Template file not found: $template_file"
             exit 1
           fi
 
-          if ! echo "$milestone" | jq -e '.description' >/dev/null 2>&1; then
-            echo "❌ Milestone $i missing description"
+          echo "✅ Found template: $template_file"
+
+          # Validate JSON structure
+          if ! jq empty "$template_file" 2>/dev/null; then
+            echo "❌ Invalid JSON in $template_file"
             exit 1
           fi
 
-          if ! echo "$milestone" | jq -e '.status' >/dev/null 2>&1; then
-            echo "❌ Milestone $i missing status"
+          echo "✅ Valid JSON structure"
+
+          # Check required fields
+          required_fields=("name" "description" "priority" "category" "status" "milestones")
+          for field in "${required_fields[@]}"; do
+            if ! jq -e ".${field}" "$template_file" >/dev/null 2>&1; then
+              echo "❌ Missing required field: $field"
+              exit 1
+            fi
+            echo "✅ Required field present: $field"
+          done
+
+          echo "✅ All required fields present"
+
+      - name: 🧪 Test Template Content
+        run: |
+          echo "🧪 Testing template content..."
+
+          template_file="goal-kit/templates/${{ matrix.goal-type }}-goal.json"
+          template_content=$(cat "$template_file")
+
+          # Check for milestones
+          milestones_count=$(echo "$template_content" | jq '.milestones | length')
+          if [ "$milestones_count" -eq 0 ]; then
+            echo "❌ No milestones defined in template"
             exit 1
           fi
+          echo "✅ Found $milestones_count milestones"
 
-          echo "✅ Milestone $i has valid structure"
-        done
+          # Check milestone structure
+          for ((i=0; i<milestones_count; i++)); do
+            milestone=$(echo "$template_content" | jq ".milestones[$i]")
 
-        echo "✅ All milestones have valid structure"
+            # Check required milestone fields
+            if ! echo "$milestone" | jq -e '.name' >/dev/null 2>&1; then
+              echo "❌ Milestone $i missing name"
+              exit 1
+            fi
 
-    - name: 📊 Generate Template Report
-      run: |
-        echo "📊 Generating template test report..."
+            if ! echo "$milestone" | jq -e '.description' >/dev/null 2>&1; then
+              echo "❌ Milestone $i missing description"
+              exit 1
+            fi
 
-        cat > template-test-report.md << EOF
-        # Template Test Report
+            if ! echo "$milestone" | jq -e '.status' >/dev/null 2>&1; then
+              echo "❌ Milestone $i missing status"
+              exit 1
+            fi
 
-        ## 📋 Test Results for ${{ matrix.goal-type }} Goal Template
+            echo "✅ Milestone $i has valid structure"
+          done
 
-        **Test Date:** $(date -u)
+          echo "✅ All milestones have valid structure"
 
-        ### ✅ Validation Results
+      - name: 📊 Generate Template Report
+        run: |
+          echo "📊 Generating template test report..."
 
-        EOF
+          cat > template-test-report.md << EOF
+          # Template Test Report
 
-        template_file="goal-kit/templates/${{ matrix.goal-type }}-goal.json"
-        template_content=$(cat "$template_file")
+          ## 📋 Test Results for ${{ matrix.goal-type }} Goal Template
 
-        # Extract template metadata
-        echo "#### Template Information" >> template-test-report.md
-        echo "- **Goal Type:** ${{ matrix.goal-type }}" >> template-test-report.md
-        echo "- **Template Version:** $(echo "$template_content" | jq -r '.metadata.version // "N/A"')" >> template-test-report.md
-        echo "- **Template Type:** $(echo "$template_content" | jq -r '.metadata.template // "N/A"')" >> template-test-report.md
+          **Test Date:** $(date -u)
 
-        # Count milestones
-        milestones_count=$(echo "$template_content" | jq '.milestones | length')
-        echo "- **Milestones:** $milestones_count" >> template-test-report.md
+          ### ✅ Validation Results
 
-        # Check for achievements
-        achievements_count=$(echo "$template_content" | jq '.achievements | length')
-        echo "- **Achievements:** $achievements_count" >> template-test-report.md
+          EOF
 
-        echo "" >> template-test-report.md
-        echo "#### Milestone Details" >> template-test-report.md
-        echo "| # | Name | Status | Dependencies |" >> template-test-report.md
-        echo "|---|------|--------|--------------|" >> template-test-report.md
+          template_file="goal-kit/templates/${{ matrix.goal-type }}-goal.json"
+          template_content=$(cat "$template_file")
 
-        for ((i=0; i<milestones_count; i++)); do
-          milestone=$(echo "$template_content" | jq ".milestones[$i]")
-          name=$(echo "$milestone" | jq -r '.name')
-          status=$(echo "$milestone" | jq -r '.status')
-          deps=$(echo "$milestone" | jq '.depends_on // [] | length')
+          # Extract template metadata
+          echo "#### Template Information" >> template-test-report.md
+          echo "- **Goal Type:** ${{ matrix.goal-type }}" >> template-test-report.md
+          echo "- **Template Version:** $(echo "$template_content" | jq -r '.metadata.version // "N/A"')" >> template-test-report.md
+          echo "- **Template Type:** $(echo "$template_content" | jq -r '.metadata.template // "N/A"')" >> template-test-report.md
 
-          echo "| $i | $name | $status | $deps |" >> template-test-report.md
-        done
+          # Count milestones
+          milestones_count=$(echo "$template_content" | jq '.milestones | length')
+          echo "- **Milestones:** $milestones_count" >> template-test-report.md
 
-        echo "" >> template-test-report.md
-        echo "## 🧪 Test Status: ✅ SUCCESS" >> template-test-report.md
-        echo "" >> template-test-report.md
-        echo "---" >> template-test-report.md
-        echo "*Report generated: $(date -u)*" >> template-test-report.md
+          # Check for achievements
+          achievements_count=$(echo "$template_content" | jq '.achievements | length')
+          echo "- **Achievements:** $achievements_count" >> template-test-report.md
 
-        echo "✅ Template test report generated"
+          echo "" >> template-test-report.md
+          echo "#### Milestone Details" >> template-test-report.md
+          echo "| # | Name | Status | Dependencies |" >> template-test-report.md
+          echo "|---|------|--------|--------------|" >> template-test-report.md
+
+          for ((i=0; i<milestones_count; i++)); do
+            milestone=$(echo "$template_content" | jq ".milestones[$i]")
+            name=$(echo "$milestone" | jq -r '.name')
+            status=$(echo "$milestone" | jq -r '.status')
+            deps=$(echo "$milestone" | jq '.depends_on // [] | length')
+
+            echo "| $i | $name | $status | $deps |" >> template-test-report.md
+          done
+
+          echo "" >> template-test-report.md
+          echo "## 🧪 Test Status: ✅ SUCCESS" >> template-test-report.md
+          echo "" >> template-test-report.md
+          echo "---" >> template-test-report.md
+          echo "*Report generated: $(date -u)*" >> template-test-report.md
+
+          echo "✅ Template test report generated"
 
   test-scripts:
     name: 🧪 Test Scripts
@@ -165,160 +165,160 @@ jobs:
         script-type: [bash, powershell]
 
     steps:
-    - name: 🛒 Checkout Repository
-      uses: actions/checkout@v4
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: 🧪 Test Bash Scripts (Linux)
-      if: matrix.os == 'ubuntu-latest' && matrix.script-type == 'bash'
-      run: |
-        echo "🧪 Testing Bash scripts on Linux..."
+      - name: 🧪 Test Bash Scripts (Linux)
+        if: matrix.os == 'ubuntu-latest' && matrix.script-type == 'bash'
+        run: |
+          echo "🧪 Testing Bash scripts on Linux..."
 
-        # Test script syntax
-        find goal-kit/scripts/bash -name "*.sh" -exec bash -n {} \; -exec echo "✅ Valid syntax: {}" \;
+          # Test script syntax
+          find goal-kit/scripts/bash -name "*.sh" -exec bash -n {} \; -exec echo "✅ Valid syntax: {}" \;
 
-        # Test script execution (basic smoke test)
-        for script in goal-kit/scripts/bash/*.sh; do
-          if [ -x "$script" ]; then
-            echo "🔍 Testing execution of: $(basename "$script")"
+          # Test script execution (basic smoke test)
+          for script in goal-kit/scripts/bash/*.sh; do
+            if [ -x "$script" ]; then
+              echo "🔍 Testing execution of: $(basename "$script")"
 
-            # Test with --help flag if available
-            if $script --help >/dev/null 2>&1; then
-              echo "✅ Script supports help: $(basename "$script")"
-            else
-              echo "⚠️  No help flag: $(basename "$script")"
+              # Test with --help flag if available
+              if $script --help >/dev/null 2>&1; then
+                echo "✅ Script supports help: $(basename "$script")"
+              else
+                echo "⚠️  No help flag: $(basename "$script")"
+              fi
             fi
-          fi
-        done
+          done
 
-        echo "✅ Bash script testing completed"
+          echo "✅ Bash script testing completed"
 
-    - name: 🧪 Test PowerShell Scripts (Windows)
-      if: matrix.os == 'windows-latest' && matrix.script-type == 'powershell'
-      run: |
-        Write-Host "🧪 Testing PowerShell scripts on Windows..." -ForegroundColor Green
+      - name: 🧪 Test PowerShell Scripts (Windows)
+        if: matrix.os == 'windows-latest' && matrix.script-type == 'powershell'
+        run: |
+          Write-Host "🧪 Testing PowerShell scripts on Windows..." -ForegroundColor Green
 
-        # Test script syntax
-        Get-ChildItem "goal-kit/scripts/powershell/*.ps1" | ForEach-Object {
-          Write-Host "🔍 Testing syntax: $($_.Name)" -ForegroundColor Blue
-          try {
-            [System.Management.Automation.PSParser]::Tokenize((Get-Content $_.FullName -Raw), [ref]$null) | Out-Null
-            Write-Host "✅ Valid syntax: $($_.Name)" -ForegroundColor Green
-          } catch {
-            Write-Error "❌ Invalid PowerShell syntax: $($_.Name) - $($_.Exception.Message)"
-            exit 1
+          # Test script syntax
+          Get-ChildItem "goal-kit/scripts/powershell/*.ps1" | ForEach-Object {
+            Write-Host "🔍 Testing syntax: $($_.Name)" -ForegroundColor Blue
+            try {
+              [System.Management.Automation.PSParser]::Tokenize((Get-Content $_.FullName -Raw), [ref]$null) | Out-Null
+              Write-Host "✅ Valid syntax: $($_.Name)" -ForegroundColor Green
+            } catch {
+              Write-Error "❌ Invalid PowerShell syntax: $($_.Name) - $($_.Exception.Message)"
+              exit 1
+            }
           }
-        }
 
-        Write-Host "✅ PowerShell script testing completed" -ForegroundColor Green
+          Write-Host "✅ PowerShell script testing completed" -ForegroundColor Green
 
   test-packaging:
     name: 🧪 Test Packaging
     runs-on: ubuntu-latest
 
     steps:
-    - name: 🛒 Checkout Repository
-      uses: actions/checkout@v4
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: 🔧 Setup Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq zip unzip curl wget
-        chmod +x goal-kit/package-releases.sh
+      - name: 🔧 Setup Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq zip unzip curl wget
+          chmod +x goal-kit/package-releases.sh
 
-    - name: 🧪 Test Packaging Script
-      run: |
-        echo "🧪 Testing packaging functionality..."
+      - name: 🧪 Test Packaging Script
+        run: |
+          echo "🧪 Testing packaging functionality..."
 
-        # Create temporary directories
-        mkdir -p /tmp/test-input /tmp/test-output
+          # Create temporary directories
+          mkdir -p /tmp/test-input /tmp/test-output
 
-        # Modify script to only package one agent for testing
-        sed -i 's/AI_AGENTS=.*/AI_AGENTS=("cursor")/' goal-kit/package-releases.sh
+          # Modify script to only package one agent for testing
+          sed -i 's/AI_AGENTS=.*/AI_AGENTS=("cursor")/' goal-kit/package-releases.sh
 
-        cd goal-kit
-        ./package-releases.sh 0.0.1-test
+          cd goal-kit
+          ./package-releases.sh 0.0.1-test
 
-        # Verify packages were created
-        if [ -f "../releases/goal-kit-template-cursor-sh-v0.0.1-test.zip" ]; then
-          echo "✅ Bash package created successfully"
-        else
-          echo "❌ Bash package creation failed"
-          exit 1
-        fi
+          # Verify packages were created
+          if [ -f "../releases/goal-kit-template-cursor-sh-v0.0.1-test.zip" ]; then
+            echo "✅ Bash package created successfully"
+          else
+            echo "❌ Bash package creation failed"
+            exit 1
+          fi
 
-        if [ -f "../releases/goal-kit-template-cursor-ps-v0.0.1-test.zip" ]; then
-          echo "✅ PowerShell package created successfully"
-        else
-          echo "❌ PowerShell package creation failed"
-          exit 1
-        fi
+          if [ -f "../releases/goal-kit-template-cursor-ps-v0.0.1-test.zip" ]; then
+            echo "✅ PowerShell package created successfully"
+          else
+            echo "❌ PowerShell package creation failed"
+            exit 1
+          fi
 
-        # Test package integrity
-        unzip -t ../releases/goal-kit-template-cursor-sh-v0.0.1-test.zip >/dev/null 2>&1
-        if [ $? -eq 0 ]; then
-          echo "✅ Package integrity test passed"
-        else
-          echo "❌ Package integrity test failed"
-          exit 1
-        fi
+          # Test package integrity
+          unzip -t ../releases/goal-kit-template-cursor-sh-v0.0.1-test.zip >/dev/null 2>&1
+          if [ $? -eq 0 ]; then
+            echo "✅ Package integrity test passed"
+          else
+            echo "❌ Package integrity test failed"
+            exit 1
+          fi
 
-        echo "✅ Packaging tests completed successfully"
+          echo "✅ Packaging tests completed successfully"
 
-    - name: 🧹 Cleanup Test Files
-      run: |
-        rm -rf /tmp/test-*
-        rm -f releases/*.zip releases/*.sha256
+      - name: 🧹 Cleanup Test Files
+        run: |
+          rm -rf /tmp/test-*
+          rm -f releases/*.zip releases/*.sha256
 
   integration-test:
     name: 🔗 Integration Test
     runs-on: ubuntu-latest
 
     steps:
-    - name: 🛒 Checkout Repository
-      uses: actions/checkout@v4
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: 🔧 Setup Environment
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq curl wget
-        npm install -g jsonlint
+      - name: 🔧 Setup Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl wget
+          npm install -g jsonlint
 
-    - name: 🧪 Integration Test
-      run: |
-        echo "🔗 Running integration tests..."
+      - name: 🧪 Integration Test
+        run: |
+          echo "🔗 Running integration tests..."
 
-        # Test that all components work together
-        echo "1. Testing JSON validation..."
-        find goal-kit/templates -name "*.json" -exec jq empty {} \; || exit 1
+          # Test that all components work together
+          echo "1. Testing JSON validation..."
+          find goal-kit/templates -name "*.json" -exec jq empty {} \; || exit 1
 
-        echo "2. Testing TOML validation..."
-        find goal-kit/.qwen -name "*.toml" -exec node -e "
-          const fs = require('fs');
-          const toml = require('toml');
-          try {
-            toml.parse(fs.readFileSync('$file', 'utf8'));
-            console.log('✅ Valid TOML:', '$file');
-          } catch (e) {
-            console.error('❌ Invalid TOML:', '$file', e.message);
-            process.exit(1);
-          }
-        " \; || exit 1
-
-        echo "3. Testing script compatibility..."
-        find goal-kit/scripts/bash -name "*.sh" -exec bash -n {} \; || exit 1
-
-        echo "4. Testing template structure..."
-        for template in goal-kit/templates/*.json; do
-          if [ -f "$template" ]; then
-            # Check for required fields
-            jq -e '.name, .description, .priority, .category, .status' "$template" >/dev/null || {
-              echo "❌ Missing required fields in $template"
-              exit 1
+          echo "2. Testing TOML validation..."
+          find goal-kit/.qwen -name "*.toml" -exec node -e "
+            const fs = require('fs');
+            const toml = require('toml');
+            try {
+              toml.parse(fs.readFileSync('$file', 'utf8'));
+              console.log('✅ Valid TOML:', '$file');
+            } catch (e) {
+              console.error('❌ Invalid TOML:', '$file', e.message);
+              process.exit(1);
             }
-          fi
-        done
+          " \; || exit 1
 
-        echo "✅ All integration tests passed"
+          echo "3. Testing script compatibility..."
+          find goal-kit/scripts/bash -name "*.sh" -exec bash -n {} \; || exit 1
+
+          echo "4. Testing template structure..."
+          for template in goal-kit/templates/*.json; do
+            if [ -f "$template" ]; then
+              # Check for required fields
+              jq -e '.name, .description, .priority, .category, .status' "$template" >/dev/null || {
+                echo "❌ Missing required fields in $template"
+                exit 1
+              }
+            fi
+          done
+
+          echo "✅ All integration tests passed"
 
   summary:
     name: 📋 Test Summary
@@ -327,43 +327,43 @@ jobs:
     if: always()
 
     steps:
-    - name: 📊 Generate Test Summary
-      run: |
-        echo "🧪 Automated Testing Summary" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "## 📋 Test Results" >> $GITHUB_STEP_SUMMARY
+      - name: 📊 Generate Test Summary
+        run: |
+          echo "🧪 Automated Testing Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📋 Test Results" >> $GITHUB_STEP_SUMMARY
 
-        # Check job statuses
-        if [ "${{ needs.test-templates.result }}" == "success" ]; then
-          echo "- ✅ **Template Tests:** All goal templates validated" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "- ❌ **Template Tests:** Issues found" >> $GITHUB_STEP_SUMMARY
-        fi
+          # Check job statuses
+          if [ "${{ needs.test-templates.result }}" == "success" ]; then
+            echo "- ✅ **Template Tests:** All goal templates validated" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ❌ **Template Tests:** Issues found" >> $GITHUB_STEP_SUMMARY
+          fi
 
-        if [ "${{ needs.test-scripts.result }}" == "success" ]; then
-          echo "- ✅ **Script Tests:** All scripts have valid syntax" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "- ❌ **Script Tests:** Issues found" >> $GITHUB_STEP_SUMMARY
-        fi
+          if [ "${{ needs.test-scripts.result }}" == "success" ]; then
+            echo "- ✅ **Script Tests:** All scripts have valid syntax" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ❌ **Script Tests:** Issues found" >> $GITHUB_STEP_SUMMARY
+          fi
 
-        if [ "${{ needs.test-packaging.result }}" == "success" ]; then
-          echo "- ✅ **Packaging Tests:** Packaging process works correctly" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "- ❌ **Packaging Tests:** Issues found" >> $GITHUB_STEP_SUMMARY
-        fi
+          if [ "${{ needs.test-packaging.result }}" == "success" ]; then
+            echo "- ✅ **Packaging Tests:** Packaging process works correctly" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ❌ **Packaging Tests:** Issues found" >> $GITHUB_STEP_SUMMARY
+          fi
 
-        if [ "${{ needs.integration-test.result }}" == "success" ]; then
-          echo "- ✅ **Integration Tests:** All components work together" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "- ❌ **Integration Tests:** Issues found" >> $GITHUB_STEP_SUMMARY
-        fi
+          if [ "${{ needs.integration-test.result }}" == "success" ]; then
+            echo "- ✅ **Integration Tests:** All components work together" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ❌ **Integration Tests:** Issues found" >> $GITHUB_STEP_SUMMARY
+          fi
 
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "## 🧪 Overall Test Status: $(if [ 'success' == 'success' ]; then echo '✅ ALL TESTS PASSED'; else echo '⚠️  ISSUES FOUND'; fi)" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 🧪 Overall Test Status: $(if [ 'success' == 'success' ]; then echo '✅ ALL TESTS PASSED'; else echo '⚠️  ISSUES FOUND'; fi)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
 
-        echo "## 🎯 Next Steps" >> $GITHUB_STEP_SUMMARY
-        echo "1. 🔍 Review any test failures" >> $GITHUB_STEP_SUMMARY
-        echo "2. 🐛 Fix identified issues" >> $GITHUB_STEP_SUMMARY
-        echo "3. 🔄 Re-run tests to verify fixes" >> $GITHUB_STEP_SUMMARY
-        echo "4. 🚀 Ready for release!" >> $GITHUB_STEP_SUMMARY
+          echo "## 🎯 Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. 🔍 Review any test failures" >> $GITHUB_STEP_SUMMARY
+          echo "2. 🐛 Fix identified issues" >> $GITHUB_STEP_SUMMARY
+          echo "3. 🔄 Re-run tests to verify fixes" >> $GITHUB_STEP_SUMMARY
+          echo "4. 🚀 Ready for release!" >> $GITHUB_STEP_SUMMARY

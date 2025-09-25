@@ -11,6 +11,7 @@ required_tools: ["file_system", "json_parser", "markdown_generator"]
 # Goal Definition Command Template
 
 ## Command Overview
+
 **Command:** `goal define`
 **Purpose:** Create comprehensive goal definitions with structured planning
 **Input:** Goal parameters and requirements
@@ -19,11 +20,13 @@ required_tools: ["file_system", "json_parser", "markdown_generator"]
 ## Command Usage
 
 ### Basic Syntax
+
 ```bash
 goal define "Goal Title" --category [category] --priority [priority] --deadline [date]
 ```
 
 ### Advanced Syntax
+
 ```bash
 goal define "Learn Python Data Science" \
   --category learning \
@@ -37,10 +40,12 @@ goal define "Learn Python Data Science" \
 ## Command Parameters
 
 ### Required Parameters
+
 - **title** (string): Clear, specific goal title
 - **category** (string): Goal category [personal/business/learning/software/research]
 
 ### Optional Parameters
+
 - **priority** (string): Priority level [low/medium/high/critical] (default: medium)
 - **deadline** (date): Target completion date (YYYY-MM-DD format)
 - **description** (string): Detailed goal description
@@ -49,6 +54,7 @@ goal define "Learn Python Data Science" \
 - **success_metrics** (array): Specific, measurable success criteria
 
 ### Advanced Parameters
+
 - **budget** (number): Budget allocation for the goal
 - **team_size** (number): Number of people working on the goal
 - **dependencies** (array): Other goals or projects this depends on
@@ -57,6 +63,7 @@ goal define "Learn Python Data Science" \
 ## Command Examples
 
 ### Example 1: Simple Personal Goal
+
 ```bash
 goal define "Run a Marathon" \
   --category personal \
@@ -67,6 +74,7 @@ goal define "Run a Marathon" \
 ```
 
 ### Example 2: Software Project Goal
+
 ```bash
 goal define "Build E-commerce Platform" \
   --category software \
@@ -80,6 +88,7 @@ goal define "Build E-commerce Platform" \
 ```
 
 ### Example 3: Learning Goal
+
 ```bash
 goal define "AWS Solutions Architect Certification" \
   --category learning \
@@ -92,6 +101,7 @@ goal define "AWS Solutions Architect Certification" \
 ```
 
 ### Example 4: Business Goal
+
 ```bash
 goal define "Launch SaaS Product" \
   --category business \
@@ -106,24 +116,28 @@ goal define "Launch SaaS Product" \
 ## Command Workflow
 
 ### Phase 1: Goal Analysis
+
 1. Parse and validate input parameters
 2. Apply appropriate goal template
 3. Generate goal structure and metadata
 4. Create unique goal identifier
 
 ### Phase 2: Milestone Generation
+
 1. Analyze goal complexity and scope
 2. Generate appropriate milestones based on template
 3. Set realistic timelines and dependencies
 4. Define success criteria for each milestone
 
 ### Phase 3: Resource Planning
+
 1. Estimate resource requirements
 2. Identify skill gaps and training needs
 3. Plan budget allocation
 4. Define stakeholder communication plan
 
 ### Phase 4: Documentation
+
 1. Generate comprehensive goal documentation
 2. Create progress tracking framework
 3. Set up monitoring and reporting systems
@@ -132,6 +146,7 @@ goal define "Launch SaaS Product" \
 ## Template Integration
 
 ### Available Templates
+
 - **standard**: General purpose goal template
 - **software-project**: Software development focused
 - **learning-goal**: Education and skill development
@@ -140,15 +155,16 @@ goal define "Launch SaaS Product" \
 - **research-goal**: Research and academic projects
 
 ### Template Selection Logic
+
 ```javascript
 function selectTemplate(category, complexity) {
   const templateMap = {
-    'software': 'software-project',
-    'learning': 'learning-goal',
-    'business': 'business-goal',
-    'personal': 'personal-goal',
-    'research': 'research-goal',
-    'default': 'standard'
+    software: "software-project",
+    learning: "learning-goal",
+    business: "business-goal",
+    personal: "personal-goal",
+    research: "research-goal",
+    default: "standard",
   };
 
   return templateMap[category] || templateMap.default;
@@ -158,6 +174,7 @@ function selectTemplate(category, complexity) {
 ## Output Formats
 
 ### JSON Output (Default)
+
 ```json
 {
   "goal": {
@@ -181,21 +198,26 @@ function selectTemplate(category, complexity) {
 ```
 
 ### Markdown Output
+
 ```markdown
 # Goal: Learn Python Data Science
 
 ## Overview
+
 - **Priority:** High
 - **Category:** Learning
 - **Deadline:** 2024-12-31
 - **Status:** Defined
 
 ## Milestones
+
 ### Milestone 1: Foundation
+
 - Duration: 4 weeks
 - Tasks: [task list]
 
 ### Milestone 2: Skill Development
+
 - Duration: 8 weeks
 - Tasks: [task list]
 ```
@@ -203,12 +225,14 @@ function selectTemplate(category, complexity) {
 ## Error Handling
 
 ### Validation Errors
+
 - **Missing required parameters:** Clear error message with required fields
 - **Invalid date format:** Provide expected format and examples
 - **Invalid category:** List available categories
 - **Duplicate goal ID:** Suggest alternative or auto-generate
 
 ### Execution Errors
+
 - **File system errors:** Check permissions and disk space
 - **Template errors:** Fallback to standard template
 - **Dependency errors:** List missing dependencies and installation instructions
@@ -216,16 +240,19 @@ function selectTemplate(category, complexity) {
 ## Integration Points
 
 ### Version Control Integration
+
 - Auto-commit goal files to Git repository
 - Track changes and updates over time
 - Branch management for different goal scenarios
 
 ### Project Management Integration
+
 - Export to project management tools (Trello, Asana, Jira)
 - Sync milestones and tasks
 - Update progress across platforms
 
 ### Calendar Integration
+
 - Add deadlines to calendar applications
 - Set up milestone reminders
 - Schedule review meetings
@@ -233,18 +260,21 @@ function selectTemplate(category, complexity) {
 ## Best Practices
 
 ### Goal Definition
+
 - Use SMART criteria (Specific, Measurable, Achievable, Relevant, Time-bound)
 - Keep titles clear and descriptive
 - Include quantifiable success metrics
 - Set realistic but challenging deadlines
 
 ### Milestone Planning
+
 - Break large goals into manageable milestones
 - Ensure milestones have clear completion criteria
 - Include buffer time for unexpected delays
 - Regular milestone reviews and adjustments
 
 ### Resource Planning
+
 - Estimate time and budget realistically
 - Identify required skills and resources early
 - Plan for contingencies and risk mitigation
@@ -253,18 +283,21 @@ function selectTemplate(category, complexity) {
 ## Troubleshooting
 
 ### Common Issues
+
 1. **Goal too vague:** Use the clarify command to refine goal definition
 2. **Unrealistic timeline:** Use the estimate command to get realistic time estimates
 3. **Missing dependencies:** Use the dependency command to map and resolve dependencies
 4. **Progress tracking issues:** Use the metrics command to set up proper tracking
 
 ### Getting Help
+
 - `goal help define` - Show detailed help for define command
 - `goal examples define` - Show usage examples
 - `goal templates list` - List available templates
 - `goal validate [goal-file]` - Validate goal definition
 
 ## Related Commands
+
 - `goal milestone` - Create and manage milestones
 - `goal progress` - Track and update progress
 - `goal achieve` - Mark achievements and completion
@@ -272,6 +305,7 @@ function selectTemplate(category, complexity) {
 - `goal template` - Manage goal templates
 
 ## Changelog
+
 - **v1.0 (2024-01):** Initial goal definition command
 - **v1.1 (planned):** Enhanced template system and validation
 - **v1.2 (planned):** Integration with external project management tools

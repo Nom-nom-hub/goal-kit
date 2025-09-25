@@ -6,13 +6,13 @@ This directory contains automated workflows for the Goal-Kit project, providing 
 
 ### 🔄 Automated Workflows
 
-| Workflow | Trigger | Description |
-|----------|---------|-------------|
-| **🚀 Release** | `release` published or manual | Creates release packages and publishes to GitHub Releases |
-| **🔍 CI** | Push/PR to main/develop | Validates templates, scripts, and overall quality |
-| **🔄 Dependencies** | Weekly schedule or manual | Updates dependencies and checks for security issues |
-| **📚 Documentation** | Push to main (docs changes) | Deploys documentation to GitHub Pages |
-| **🧪 Testing** | Push/PR to main/develop | Comprehensive automated testing suite |
+| Workflow             | Trigger                       | Description                                               |
+| -------------------- | ----------------------------- | --------------------------------------------------------- |
+| **🚀 Release**       | `release` published or manual | Creates release packages and publishes to GitHub Releases |
+| **🔍 CI**            | Push/PR to main/develop       | Validates templates, scripts, and overall quality         |
+| **🔄 Dependencies**  | Weekly schedule or manual     | Updates dependencies and checks for security issues       |
+| **📚 Documentation** | Push to main (docs changes)   | Deploys documentation to GitHub Pages                     |
+| **🧪 Testing**       | Push/PR to main/develop       | Comprehensive automated testing suite                     |
 
 ---
 
@@ -47,11 +47,13 @@ goal-kit-template-[AGENT]-[PLATFORM]-v[VERSION].zip
 ```
 
 **Examples:**
+
 - `goal-kit-template-cursor-sh-v0.0.1.zip` (Cursor + Bash)
 - `goal-kit-template-claude-ps-v0.0.1.zip` (Claude + PowerShell)
 - `goal-kit-template-qwen-sh-v0.0.1.zip` (Qwen + Bash)
 
 ### Supported AI Agents
+
 - ✅ **Cursor** - Full support
 - ✅ **Claude** - Full support
 - ✅ **Qwen** - Full support
@@ -73,24 +75,28 @@ goal-kit-template-[AGENT]-[PLATFORM]-v[VERSION].zip
 The CI workflow runs on every push and PR:
 
 #### ✅ Template Validation
+
 - JSON structure validation
 - Required fields verification
 - Milestone structure checking
 - Template integrity tests
 
 #### ✅ Script Validation
+
 - Bash script syntax checking
 - PowerShell script validation
 - Cross-platform compatibility
 - Dependency analysis
 
 #### ✅ AI Integration Testing
+
 - TOML command file validation
 - AI-friendly template structure
 - Agent-specific configuration
 - Integration compatibility
 
 #### 🔒 Security Scanning
+
 - Secret detection
 - Dependency vulnerability checks
 - Package integrity validation
@@ -99,6 +105,7 @@ The CI workflow runs on every push and PR:
 ### Quality Gates
 
 All CI checks must pass before:
+
 - ✅ Merging to main branch
 - ✅ Creating releases
 - ✅ Deploying documentation
@@ -154,6 +161,7 @@ Documentation deploys automatically when:
 ### Access Documentation
 
 After deployment, access at:
+
 ```
 https://[username].github.io/goal-dev-spec/
 ```
@@ -165,24 +173,28 @@ https://[username].github.io/goal-dev-spec/
 ### Test Categories
 
 #### 📝 Template Testing
+
 - JSON schema validation
 - Required field verification
 - Milestone structure testing
 - Cross-template compatibility
 
 #### 🔧 Script Testing
+
 - Syntax validation
 - Execution testing
 - Error handling
 - Cross-platform compatibility
 
 #### 📦 Packaging Testing
+
 - Package creation validation
 - Integrity checking
 - Checksum verification
 - Multi-agent support
 
 #### 🔗 Integration Testing
+
 - End-to-end workflow testing
 - Component interaction validation
 - Configuration compatibility
@@ -191,6 +203,7 @@ https://[username].github.io/goal-dev-spec/
 ### Test Execution
 
 Tests run automatically on:
+
 - ✅ **Push to main/develop** - Full test suite
 - ✅ **Pull requests** - Comprehensive validation
 - ✅ **Manual trigger** - On-demand testing
@@ -202,6 +215,7 @@ Tests run automatically on:
 ### GitHub Actions Dashboard
 
 Monitor all workflows at:
+
 ```
 https://github.com/[username]/goal-dev-spec/actions
 ```
@@ -212,21 +226,26 @@ Add these badges to your README:
 
 ```markdown
 <!-- Release Status -->
+
 ![Release](https://github.com/[username]/goal-dev-spec/actions/workflows/release.yml/badge.svg)
 
 <!-- CI Status -->
+
 ![CI](https://github.com/[username]/goal-dev-spec/actions/workflows/ci.yml/badge.svg)
 
 <!-- Tests -->
+
 ![Tests](https://github.com/[username]/goal-dev-spec/actions/workflows/test.yml/badge.svg)
 
 <!-- Documentation -->
+
 ![Docs](https://github.com/[username]/goal-dev-spec/actions/workflows/docs.yml/badge.svg)
 ```
 
 ### Workflow Notifications
 
 Configure notifications for:
+
 - ✅ **Release Success/Failure**
 - ✅ **CI Failures**
 - ✅ **Security Alerts**
@@ -242,10 +261,10 @@ Key environment variables used:
 
 ```yaml
 env:
-  NODE_VERSION: '20'           # Node.js version for tooling
-  PYTHON_VERSION: '3.11'       # Python version for scripts
-  AI_AGENTS: '["cursor", "claude", "qwen", "roo", ...]'  # Supported agents
-  PLATFORMS: '["sh", "ps"]'    # Supported platforms
+  NODE_VERSION: "20" # Node.js version for tooling
+  PYTHON_VERSION: "3.11" # Python version for scripts
+  AI_AGENTS: '["cursor", "claude", "qwen", "roo", ...]' # Supported agents
+  PLATFORMS: '["sh", "ps"]' # Supported platforms
 ```
 
 ### Secrets Required
@@ -271,16 +290,19 @@ To modify workflows:
 ### Common Issues
 
 #### Release Failures
+
 - **Check version format** - Must be semantic (e.g., `0.0.1`)
 - **Verify permissions** - Ensure GITHUB_TOKEN has write access
 - **Check file sizes** - Large packages may timeout
 
 #### CI Failures
+
 - **Validate templates** - Run `jq` validation locally
 - **Check scripts** - Test with `bash -n` and PowerShell syntax check
 - **Review dependencies** - Ensure all tools are installed
 
 #### Documentation Issues
+
 - **Check file paths** - Verify all referenced files exist
 - **Validate Markdown** - Run markdownlint locally
 - **Test deployment** - Use manual workflow dispatch

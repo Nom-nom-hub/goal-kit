@@ -11,6 +11,7 @@ required_tools: ["file_system", "json_parser", "dependency_resolver"]
 # Milestone Planning Command Template
 
 ## Command Overview
+
 **Command:** `goal milestone`
 **Purpose:** Create, update, and manage goal milestones with dependencies
 **Input:** Goal file and milestone specifications
@@ -19,11 +20,13 @@ required_tools: ["file_system", "json_parser", "dependency_resolver"]
 ## Command Usage
 
 ### Basic Syntax
+
 ```bash
 goal milestone [goal-file] add "Milestone Name" --duration [weeks] --description "Description"
 ```
 
 ### Advanced Syntax
+
 ```bash
 goal milestone my-goal.json add "Core Development" \
   --duration 4 \
@@ -37,26 +40,31 @@ goal milestone my-goal.json add "Core Development" \
 ## Command Types
 
 ### Add Milestone
+
 ```bash
 goal milestone [goal-file] add [milestone-name] [options]
 ```
 
 ### Update Milestone
+
 ```bash
 goal milestone [goal-file] update [milestone-id] [options]
 ```
 
 ### Delete Milestone
+
 ```bash
 goal milestone [goal-file] delete [milestone-id]
 ```
 
 ### List Milestones
+
 ```bash
 goal milestone [goal-file] list
 ```
 
 ### Milestone Status
+
 ```bash
 goal milestone [goal-file] status [milestone-id]
 ```
@@ -64,16 +72,19 @@ goal milestone [goal-file] status [milestone-id]
 ## Command Parameters
 
 ### Required Parameters
+
 - **goal-file** (string): Path to the goal JSON file
 - **action** (string): Action to perform [add/update/delete/list/status]
 
 ### Milestone Definition Parameters
+
 - **name** (string): Milestone name/title
 - **description** (string): Detailed description of the milestone
 - **duration** (number): Estimated duration in weeks
 - **depends-on** (string): Comma-separated list of milestone IDs this depends on
 
 ### Optional Parameters
+
 - **priority** (string): Priority level [low/medium/high/critical]
 - **status** (string): Current status [not_started/in_progress/review/completed]
 - **start_date** (date): Milestone start date (YYYY-MM-DD)
@@ -86,6 +97,7 @@ goal milestone [goal-file] status [milestone-id]
 ## Command Examples
 
 ### Example 1: Add Basic Milestone
+
 ```bash
 goal milestone "web-app-goal.json" add "Project Setup" \
   --duration 2 \
@@ -94,6 +106,7 @@ goal milestone "web-app-goal.json" add "Project Setup" \
 ```
 
 ### Example 2: Add Milestone with Dependencies
+
 ```bash
 goal milestone "web-app-goal.json" add "Authentication System" \
   --duration 3 \
@@ -104,6 +117,7 @@ goal milestone "web-app-goal.json" add "Authentication System" \
 ```
 
 ### Example 3: Complex Milestone Chain
+
 ```bash
 # Foundation milestone
 goal milestone "ai-project.json" add "Data Pipeline Setup" \
@@ -129,6 +143,7 @@ goal milestone "ai-project.json" add "API Development" \
 ```
 
 ### Example 4: Update Milestone Status
+
 ```bash
 goal milestone "web-app-goal.json" update 2 \
   --status in_progress \
@@ -136,6 +151,7 @@ goal milestone "web-app-goal.json" update 2 \
 ```
 
 ### Example 5: Milestone Planning Session
+
 ```bash
 # Create comprehensive milestone structure
 goal milestone "startup-goal.json" add "Market Research" \
@@ -161,6 +177,7 @@ goal milestone "startup-goal.json" add "Launch Preparation" \
 ## Milestone Planning Strategies
 
 ### Sequential Milestones
+
 ```javascript
 // Example: Waterfall approach
 const sequentialMilestones = [
@@ -168,22 +185,24 @@ const sequentialMilestones = [
   { name: "Design", duration: 4, dependsOn: ["1"] },
   { name: "Development", duration: 8, dependsOn: ["2"] },
   { name: "Testing", duration: 3, dependsOn: ["3"] },
-  { name: "Deployment", duration: 1, dependsOn: ["4"] }
+  { name: "Deployment", duration: 1, dependsOn: ["4"] },
 ];
 ```
 
 ### Parallel Milestones
+
 ```javascript
 // Example: Agile approach with parallel streams
 const parallelMilestones = [
   { name: "Backend Development", duration: 6, dependsOn: [] },
   { name: "Frontend Development", duration: 6, dependsOn: [] },
   { name: "Database Design", duration: 4, dependsOn: [] },
-  { name: "API Integration", duration: 3, dependsOn: ["1", "2", "3"] }
+  { name: "API Integration", duration: 3, dependsOn: ["1", "2", "3"] },
 ];
 ```
 
 ### Hybrid Approach
+
 ```javascript
 // Example: Combination of sequential and parallel
 const hybridMilestones = [
@@ -192,22 +211,24 @@ const hybridMilestones = [
     name: "Core Development",
     duration: 6,
     dependsOn: ["1"],
-    parallelTasks: ["backend", "frontend", "database"]
+    parallelTasks: ["backend", "frontend", "database"],
   },
   { name: "Integration", duration: 3, dependsOn: ["2"] },
-  { name: "Launch", duration: 2, dependsOn: ["3"] }
+  { name: "Launch", duration: 2, dependsOn: ["3"] },
 ];
 ```
 
 ## Dependency Management
 
 ### Dependency Types
+
 - **Hard Dependencies:** Must be completed before starting
 - **Soft Dependencies:** Can start with partial completion
 - **Resource Dependencies:** Requires specific resources
 - **External Dependencies:** Outside the current goal scope
 
 ### Dependency Resolution
+
 ```javascript
 function resolveDependencies(milestones) {
   const dependencyGraph = buildDependencyGraph(milestones);
@@ -218,6 +239,7 @@ function resolveDependencies(milestones) {
 ```
 
 ### Circular Dependency Detection
+
 ```javascript
 function detectCircularDependencies(milestones) {
   const graph = buildDependencyGraph(milestones);
@@ -226,7 +248,9 @@ function detectCircularDependencies(milestones) {
 
   for (const milestone of milestones) {
     if (hasCircularDependency(milestone, graph, visited, recursionStack)) {
-      throw new Error(`Circular dependency detected involving ${milestone.name}`);
+      throw new Error(
+        `Circular dependency detected involving ${milestone.name}`,
+      );
     }
   }
 }
@@ -235,6 +259,7 @@ function detectCircularDependencies(milestones) {
 ## Resource Planning
 
 ### Resource Allocation
+
 ```javascript
 const resourcePlan = {
   milestones: [
@@ -243,16 +268,17 @@ const resourcePlan = {
       resources: {
         "Software Engineer": { quantity: 3, allocation: "100%" },
         "UI/UX Designer": { quantity: 1, allocation: "50%" },
-        "DevOps Engineer": { quantity: 1, allocation: "25%" }
-      }
-    }
+        "DevOps Engineer": { quantity: 1, allocation: "25%" },
+      },
+    },
   ],
   totalFTE: 4.75,
-  budgetAllocation: 150000
+  budgetAllocation: 150000,
 };
 ```
 
 ### Resource Conflict Resolution
+
 ```javascript
 function resolveResourceConflicts(milestones) {
   const resourceUsage = calculateResourceUsage(milestones);
@@ -261,7 +287,7 @@ function resolveResourceConflicts(milestones) {
     "Adjust timelines",
     "Add resources",
     "Reduce scope",
-    "Outsource tasks"
+    "Outsource tasks",
   ];
   return { conflicts, resolutionStrategies };
 }
@@ -270,14 +296,16 @@ function resolveResourceConflicts(milestones) {
 ## Risk Assessment
 
 ### Milestone Risk Analysis
-| Risk Category | Probability | Impact | Mitigation |
-|---------------|------------|--------|------------|
-| Technical Complexity | High | High | Prototype early |
-| Resource Availability | Medium | High | Backup resources |
-| Dependency Delays | Medium | Medium | Buffer time |
-| Scope Creep | High | Medium | Strict change control |
+
+| Risk Category         | Probability | Impact | Mitigation            |
+| --------------------- | ----------- | ------ | --------------------- |
+| Technical Complexity  | High        | High   | Prototype early       |
+| Resource Availability | Medium      | High   | Backup resources      |
+| Dependency Delays     | Medium      | Medium | Buffer time           |
+| Scope Creep           | High        | Medium | Strict change control |
 
 ### Risk Mitigation Strategies
+
 - **Buffer Time:** Add 10-20% buffer to milestone durations
 - **Parallel Paths:** Create alternative approaches
 - **Early Validation:** Test assumptions early
@@ -286,6 +314,7 @@ function resolveResourceConflicts(milestones) {
 ## Quality Gates
 
 ### Milestone Exit Criteria
+
 ```javascript
 const exitCriteria = {
   milestone: "Core Development",
@@ -294,18 +323,19 @@ const exitCriteria = {
     "Unit tests passing (80% coverage)",
     "Code review completed",
     "Performance benchmarks met",
-    "Documentation updated"
+    "Documentation updated",
   ],
   validationMethods: [
     "Automated testing",
     "Code review",
     "Stakeholder demo",
-    "Performance testing"
-  ]
+    "Performance testing",
+  ],
 };
 ```
 
 ### Quality Metrics
+
 - **Completion Quality:** Meets all acceptance criteria
 - **Timeliness:** Delivered within planned timeframe
 - **Budget Adherence:** Within allocated budget
@@ -314,6 +344,7 @@ const exitCriteria = {
 ## Progress Tracking
 
 ### Milestone Progress Indicators
+
 ```javascript
 const progressIndicators = {
   milestone: "Development Phase",
@@ -323,16 +354,20 @@ const progressIndicators = {
   blockedTasks: 2,
   progressPercentage: 72,
   estimatedCompletion: "2024-02-15",
-  velocity: 4.5 // tasks per week
+  velocity: 4.5, // tasks per week
 };
 ```
 
 ### Progress Calculation
+
 ```javascript
 function calculateProgress(milestone) {
-  const totalWeight = milestone.tasks.reduce((sum, task) => sum + task.weight, 0);
+  const totalWeight = milestone.tasks.reduce(
+    (sum, task) => sum + task.weight,
+    0,
+  );
   const completedWeight = milestone.tasks
-    .filter(task => task.status === 'completed')
+    .filter((task) => task.status === "completed")
     .reduce((sum, task) => sum + task.weight, 0);
 
   return (completedWeight / totalWeight) * 100;
@@ -342,16 +377,19 @@ function calculateProgress(milestone) {
 ## Integration Points
 
 ### Version Control Integration
+
 - Track milestone changes in Git
 - Milestone branches for parallel work
 - Automatic milestone updates on commits
 
 ### Project Management Integration
+
 - Sync milestones with project management tools
 - Automated progress updates
 - Resource allocation tracking
 
 ### Calendar Integration
+
 - Milestone deadline reminders
 - Review meeting scheduling
 - Resource booking notifications
@@ -359,18 +397,21 @@ function calculateProgress(milestone) {
 ## Best Practices
 
 ### Milestone Design
+
 - **Clear Scope:** Each milestone should have well-defined boundaries
 - **Measurable Outcomes:** Specific deliverables and success criteria
 - **Realistic Duration:** Based on team capacity and complexity
 - **Balanced Workload:** Distribute work evenly across milestones
 
 ### Dependency Management
+
 - **Minimal Dependencies:** Reduce unnecessary dependencies
 - **Clear Relationships:** Explicit predecessor/successor relationships
 - **Critical Path Focus:** Monitor milestones on critical path
 - **Buffer Management:** Include buffers for high-risk dependencies
 
 ### Resource Planning
+
 - **Capacity Planning:** Match resources to milestone requirements
 - **Skill Alignment:** Ensure team skills match milestone needs
 - **Contingency Planning:** Backup resources for critical milestones
@@ -379,18 +420,21 @@ function calculateProgress(milestone) {
 ## Troubleshooting
 
 ### Common Issues
+
 1. **Milestone too large:** Break into smaller, manageable pieces
 2. **Unclear dependencies:** Map and validate all dependencies
 3. **Resource conflicts:** Rebalance resource allocation
 4. **Scope creep:** Implement strict change control
 
 ### Performance Optimization
+
 - **Critical Path Analysis:** Focus on bottleneck milestones
 - **Parallel Processing:** Identify parallelizable work
 - **Resource Leveling:** Optimize resource utilization
 - **Risk Mitigation:** Proactive risk management
 
 ## Related Commands
+
 - `goal define` - Create new goals with milestones
 - `goal progress` - Track milestone progress
 - `goal achieve` - Mark milestone completion
@@ -398,6 +442,7 @@ function calculateProgress(milestone) {
 - `goal resource` - Manage resource allocation
 
 ## Command Reference
+
 - `goal milestone --help` - Show detailed help
 - `goal milestone examples` - Show usage examples
 - `goal milestone templates` - List milestone templates

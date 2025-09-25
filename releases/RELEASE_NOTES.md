@@ -10,18 +10,21 @@ This is the initial release of Goal-Kit, a comprehensive goal management templat
 ## What's New
 
 ### 🎯 Core Features
+
 - **Goal Definition Templates** - Comprehensive goal planning with SMART criteria
 - **Milestone Planning** - Detailed milestone breakdown with dependencies
 - **Achievement Execution** - TDD-style task execution with progress tracking
 - **Progress Reporting** - Multi-format reporting (JSON, Markdown, HTML, PDF)
 
 ### 🤖 AI Agent Support
+
 - **AI-Friendly Templates** - Structured templates optimized for AI agents
 - **Multiple Agent Support** - Templates for Cursor, Claude, Qwen, Roo, and more
 - **Cross-Platform Scripts** - Both Bash and PowerShell support
 - **TOML Command Files** - Following Spec-Kit patterns for AI integration
 
 ### 📊 Goal Categories
+
 - **Personal Goals** - Individual achievement and development
 - **Business Goals** - Organizational and entrepreneurial objectives
 - **Learning Goals** - Education and skill development tracking
@@ -31,6 +34,7 @@ This is the initial release of Goal-Kit, a comprehensive goal management templat
 ## Installation
 
 ### Using Goal-Kit CLI
+
 ```bash
 # For Bash/Linux/macOS
 curl -L https://github.com/your-repo/goal-kit/releases/download/v0.0.1/goal-kit-template-cursor-sh-v0.0.1.zip -o goal-kit.zip
@@ -42,6 +46,7 @@ Expand-Archive goal-kit.zip
 ```
 
 ### Manual Installation
+
 1. Download the appropriate package for your AI agent and platform
 2. Extract to your project directory
 3. Run the setup script (setup.sh or setup.ps1)
@@ -50,6 +55,7 @@ Expand-Archive goal-kit.zip
 ## Files
 
 ### Template Packages
+
 - **goal-kit-template-cursor-sh-v0.0.1.zip** - Cursor Bash/Linux/macOS
 - **goal-kit-template-cursor-ps-v0.0.1.zip** - Cursor PowerShell/Windows
 - **goal-kit-template-claude-sh-v0.0.1.zip** - Claude Bash/Linux/macOS
@@ -59,9 +65,10 @@ Expand-Archive goal-kit.zip
 - **goal-kit-template-roo-sh-v0.0.1.zip** - Roo Bash/Linux/macOS
 - **goal-kit-template-roo-ps-v0.0.1.zip** - Roo PowerShell/Windows
 
-*And more for other AI agents...*
+_And more for other AI agents..._
 
 ### Package Contents
+
 - `templates/` - Core goal templates
 - `.goalify/templates/` - AI-friendly structured templates
 - `.qwen/commands/` - AI agent command definitions
@@ -73,6 +80,7 @@ Expand-Archive goal-kit.zip
 ## Features
 
 ### Goal Management
+
 - ✅ Comprehensive goal definition templates
 - ✅ Milestone planning and tracking
 - ✅ Achievement execution with TDD-style workflows
@@ -80,6 +88,7 @@ Expand-Archive goal-kit.zip
 - ✅ Multi-format reporting
 
 ### AI Integration
+
 - ✅ Structured templates for AI agents
 - ✅ TOML command definitions
 - ✅ Execution flow diagrams
@@ -87,6 +96,7 @@ Expand-Archive goal-kit.zip
 - ✅ Review checklists
 
 ### Automation
+
 - ✅ Cross-platform scripts (Bash + PowerShell)
 - ✅ Git integration for version control
 - ✅ Progress reporting automation
@@ -96,6 +106,7 @@ Expand-Archive goal-kit.zip
 ## Compatibility
 
 ### AI Agents
+
 - ✅ **Cursor** - Full support
 - ✅ **Claude** - Full support
 - ✅ **Qwen** - Full support
@@ -109,11 +120,13 @@ Expand-Archive goal-kit.zip
 - ✅ **Opencode** - Full support
 
 ### Platforms
+
 - ✅ **Linux** (Bash scripts)
 - ✅ **macOS** (Bash scripts)
 - ✅ **Windows** (PowerShell scripts)
 
 ### Tools
+
 - ✅ Git (version control)
 - ✅ jq (JSON processing)
 - ✅ Standard shell tools
@@ -121,6 +134,7 @@ Expand-Archive goal-kit.zip
 ## Getting Started
 
 ### 1. Create Your First Goal
+
 ```bash
 # Create a new goal
 ./create-goal.sh "Learn Python Data Science" --category learning --priority high
@@ -130,6 +144,7 @@ Expand-Archive goal-kit.zip
 ```
 
 ### 2. Update Progress
+
 ```bash
 # Update goal progress
 ./update-progress.sh ./my-goal --progress 50 --status on_track
@@ -139,6 +154,7 @@ Expand-Archive goal-kit.zip
 ```
 
 ### 3. Track Achievements
+
 ```bash
 # Mark milestones complete
 ./achieve.sh ./my-goal M1 --status completed --progress 100
@@ -176,6 +192,7 @@ goal-kit-template-[AGENT]-[PLATFORM]-v0.0.1/
 ## Release Structure
 
 Following the Spec-Kit pattern, releases are organized as:
+
 - `goal-kit-template-[AGENT]-[PLATFORM]-v[VERSION].zip`
 - Where AGENT is the AI agent (cursor, claude, qwen, roo, etc.)
 - PLATFORM is the shell (sh for Bash, ps for PowerShell)
@@ -186,11 +203,13 @@ This structure allows users to download the exact package for their AI agent and
 ## Support
 
 ### Documentation
+
 - [Goal-Kit Documentation](https://github.com/your-repo/goal-kit)
 - [Template Guide](https://github.com/your-repo/goal-kit/docs/templates)
 - [Script Reference](https://github.com/your-repo/goal-kit/docs/scripts)
 
 ### Community
+
 - [GitHub Issues](https://github.com/your-repo/goal-kit/issues)
 - [Discussions](https://github.com/your-repo/goal-kit/discussions)
 - [Contributing](https://github.com/your-repo/goal-kit/blob/main/CONTRIBUTING.md)
@@ -198,6 +217,7 @@ This structure allows users to download the exact package for their AI agent and
 ## Changelog
 
 ### v0.0.1 (Initial Release)
+
 - 🎉 **Initial release** of Goal-Kit template system
 - ✅ Comprehensive goal management templates
 - ✅ AI agent integration following Spec-Kit patterns
@@ -221,4 +241,4 @@ Licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 **Goal-Kit v0.0.1** - Comprehensive Goal Management for AI Agents 🎯
 
-*This release follows the same structure as Spec-Kit v0.0.53, providing goal management capabilities with AI agent integration.*
+_This release follows the same structure as Spec-Kit v0.0.53, providing goal management capabilities with AI agent integration._

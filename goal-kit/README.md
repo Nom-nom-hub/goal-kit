@@ -99,41 +99,51 @@ goal-kit complete
 ## Commands
 
 ### `goal-kit init`
+
 Initialize a new goal project directory structure.
 
 **Options:**
+
 - `--here`: Initialize in current directory
 - `--force`: Force overwrite when using `--here`
 
 ### `goal-kit define`
+
 Define a goal with natural language description.
 
 **Options:**
+
 - `--priority`: Set priority (low, medium, high, critical)
 - `--deadline`: Set deadline (YYYY-MM-DD format)
 - `--category`: Set category for organization
 
 ### `goal-kit milestone`
+
 Manage goal milestones.
 
 **Options:**
+
 - `--add`: Add a new milestone interactively
 - `--list`: List all milestones
 - `--name`: Milestone name
 - `--desc`: Milestone description
 
 ### `goal-kit achieve`
+
 Track goal achievements.
 
 **Options:**
+
 - `--add`: Add a new achievement interactively
 - `--milestone`: Milestone ID to add achievement to
 - `--desc`: Achievement description
 
 ### `goal-kit progress`
+
 Show goal progress dashboard with metrics and insights.
 
 ### `goal-kit complete`
+
 Mark goal as completed and generate completion report.
 
 ## Project Structure
@@ -216,4 +226,4 @@ This project follows the same license as spec-kit.
 
 ---
 
-*Goal-Kit - Because every great achievement starts with a clear goal and a structured plan.*
+_Goal-Kit - Because every great achievement starts with a clear goal and a structured plan._
