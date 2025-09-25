@@ -25,7 +25,7 @@ log_error()   { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # AI Agents to support (array must always be valid Bash syntax)
 AI_AGENTS=(
-    "cursor"
+   # "cursor"
     "claude"
     "qwen"
     "roo"
