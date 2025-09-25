@@ -86,8 +86,8 @@ EOF
     # Create and use release directory like spec-kit
     mkdir -p "$RELEASE_DIR"
     
-    # Zip package directly like spec-kit does - zip command should be available in GitHub Actions
-    ( cd "$package_dir" && zip -r "../releases/goal-kit-template-${agent}-${platform}-v${VERSION}.zip" . )
+    # Zip package: go to package dir and create zip in the release directory using absolute path
+    ( cd "$package_dir" && zip -r "$RELEASE_DIR/goal-kit-template-${agent}-${platform}-v${VERSION}.zip" . )
 
     # SHA256 checksum
     sha256sum "$package_file" | cut -d' ' -f1 > "$package_file.sha256"
