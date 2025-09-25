@@ -83,14 +83,11 @@ Write-Host "✅ PowerShell scripts ready" -ForegroundColor Green
 EOF
     fi
 
-    # Zip package
-    cd "/tmp/goal-kit-release"
-    if command -v zip >/dev/null 2>&1; then
-        zip -r "$package_file" "$package_name" >/dev/null
-    else
-        log_error "zip command not found"
-        exit 1
-    fi
+    # Create and use local .genreleases directory for build artifacts like spec-kit
+    mkdir -p ".genreleases"
+    
+    # Zip package directly like spec-kit does - zip command should be available in GitHub Actions
+    ( cd "$package_dir" && zip -r "../.genreleases/goal-kit-template-${agent}-${platform}-v${VERSION}.zip" . )
 
     # SHA256 checksum
     sha256sum "$package_file" | cut -d' ' -f1 > "$package_file.sha256"
