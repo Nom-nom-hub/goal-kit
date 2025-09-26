@@ -97,9 +97,14 @@ EOF
     # Zip from the absolute package directory to the absolute release file location
     cd "$ABSOLUTE_PACKAGE_DIR" && zip -r "$ABSOLUTE_RELEASE_FILE" .
 
-    # SHA256 checksum - use absolute path to ensure file can be found
-    ABSOLUTE_PACKAGE_FILE="$(cd "$(dirname "$package_file")" && pwd)/$(basename "$package_file")"
-    sha256sum "$ABSOLUTE_PACKAGE_FILE" | cut -d' ' -f1 > "$ABSOLUTE_PACKAGE_FILE.sha256"
+    # SHA256 checksum - use the already calculated absolute path
+    # The package_file variable should already be the correct absolute path
+    if [ -f "$package_file" ]; then
+        sha256sum "$package_file" | cut -d' ' -f1 > "$package_file.sha256"
+    else
+        log_error "Package file not found for checksum: $package_file"
+        exit 1
+    fi
     log_success "Created package: $package_name.zip"
 }
 
