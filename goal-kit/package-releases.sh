@@ -29,7 +29,6 @@ AI_AGENTS=("cursor")
 create_release_structure() {
     log_info "Creating release structure..."
     mkdir -p "$RELEASE_DIR"
-    # Use a local temporary directory like spec-kit (in project-relative location)
     mkdir -p ".tmp-goal-kit-release"
     log_success "Release structure created"
 }
@@ -86,26 +85,18 @@ EOF
 
     # Ensure the release directory exists
     mkdir -p "$RELEASE_DIR"
-    
-    # Update package_file to point to the correct location for checksum generation
-    package_file="$RELEASE_DIR/goal-kit-template-${agent}-${platform}-v${VERSION}.zip"
-    
-    # Use absolute path for zip command to avoid directory context issues
-    ABSOLUTE_PACKAGE_DIR="$(cd "$package_dir" && pwd)"
-    ABSOLUTE_RELEASE_FILE="$(cd "$RELEASE_DIR" && pwd)/goal-kit-template-${agent}-${platform}-v${VERSION}.zip"
-    
-    # Zip from the absolute package directory to the absolute release file location
-    cd "$ABSOLUTE_PACKAGE_DIR" && zip -r "$ABSOLUTE_RELEASE_FILE" .
 
-    # SHA256 checksum - use the already calculated absolute path
-    # The package_file variable should already be the correct absolute path
+    # Zip the contents of package_dir into the release directory (from project root context)
+    (cd "$package_dir" && zip -r "$package_file" .)
+
+    # SHA256 checksum
     if [ -f "$package_file" ]; then
         sha256sum "$package_file" | cut -d' ' -f1 > "$package_file.sha256"
     else
         log_error "Package file not found for checksum: $package_file"
         exit 1
     fi
-    log_success "Created package: $package_name.zip"
+    log_success "Created package: $(basename "$package_file")"
 }
 
 # Package all agents
