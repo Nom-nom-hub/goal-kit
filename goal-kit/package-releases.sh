@@ -6,7 +6,7 @@ set -euo pipefail
 
 # Configuration
 VERSION="${1:-0.0.1}"
-RELEASE_DIR="releases"           # <-- changed here!
+RELEASE_DIR="releases"
 GOAL_KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Colors
@@ -28,8 +28,8 @@ AI_AGENTS=("cursor")
 # Create release directory
 create_release_structure() {
     log_info "Creating release structure..."
-    mkdir -p "$RELEASE_DIR"
-    mkdir -p ".tmp-goal-kit-release"
+    mkdir -p "$GOAL_KIT_DIR/$RELEASE_DIR"
+    mkdir -p "$GOAL_KIT_DIR/.tmp-goal-kit-release"
     log_success "Release structure created"
 }
 
@@ -41,7 +41,7 @@ package_agent_platform() {
     log_info "Packaging Goal-Kit for $agent ($platform)..."
 
     local package_name="goal-kit-template-${agent}-${platform}-v${VERSION}"
-    local package_dir=".tmp-goal-kit-release/$package_name"
+    local package_dir="$GOAL_KIT_DIR/.tmp-goal-kit-release/$package_name"
     local package_file="$RELEASE_DIR/$package_name.zip"
 
     mkdir -p "$package_dir"
@@ -83,17 +83,17 @@ Write-Host "✅ PowerShell scripts ready" -ForegroundColor Green
 EOF
     fi
 
-    # Ensure the release directory exists (relative to the output zip file)
-    mkdir -p "$(dirname "$package_file")"
+    # Ensure the release directory exists (absolute path)
+    mkdir -p "$GOAL_KIT_DIR/$RELEASE_DIR"
 
-    # Zip the contents of package_dir into the release directory
-    (cd "$package_dir" && zip -r "$package_file" .)
+    # Zip the contents of package_dir into the release directory (absolute path)
+    (cd "$package_dir" && zip -r "$GOAL_KIT_DIR/$package_file" .)
 
     # SHA256 checksum
-    if [ -f "$package_file" ]; then
-        sha256sum "$package_file" | cut -d' ' -f1 > "$package_file.sha256"
+    if [ -f "$GOAL_KIT_DIR/$package_file" ]; then
+        sha256sum "$GOAL_KIT_DIR/$package_file" | cut -d' ' -f1 > "$GOAL_KIT_DIR/$package_file.sha256"
     else
-        log_error "Package file not found for checksum: $package_file"
+        log_error "Package file not found for checksum: $GOAL_KIT_DIR/$package_file"
         exit 1
     fi
     log_success "Created package: $(basename "$package_file")"
