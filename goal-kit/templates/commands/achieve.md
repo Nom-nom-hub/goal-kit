@@ -1,24 +1,32 @@
 ---
-description: Execute and complete specific goal tasks with verification and documentation.
+description: Achieve and close out a goal or milestone
 scripts:
-  sh: scripts/bash/update-progress.sh --complete "{ARGS}"
-  ps: scripts/powershell/update-progress.ps1 -Complete "{ARGS}"
+  sh: generate-report.sh --achieve
+  ps: generate-report.ps1 -Achieve
 ---
 
-The user input to you can be provided directly by the agent or as a command argument - you **MUST** consider it before proceeding with the prompt (if not empty).
+## Achievement Command
 
-User input:
+Mark a goal or milestone as achieved and generate completion reports:
 
-{ARGS}
+**Command**: `{SCRIPT} {ARGS}`
 
-The text the user typed after `/achieve` in the triggering message **is** the achievement description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
+### Parameters
+- `target_id`: ID of the goal or milestone to mark as achieved
+- `results`: Summary of results achieved
+- `metrics`: Quantifiable metrics that show success
+- `lessons_learned`: Key lessons learned during the process
+- `next_actions`: Recommended next actions based on results
 
-Given that achievement description, do this:
+### Usage
+This command will mark the specified goal or milestone as completed and generate:
 
-1. Run the script `{SCRIPT}` from repo root and parse its output for ACHIEVEMENT_STATUS and VERIFICATION_FILE. All file paths must be relative to repo root.
-   **IMPORTANT** You must only ever run this script once. The output is provided in the terminal - always refer to it to get the actual content you're looking for.
-2. Load `templates/achievement-execution.md` to understand the required achievement tracking structure.
-3. Document the achievement in VERIFICATION_FILE using the template structure, replacing placeholders with concrete details derived from the achievement description (arguments) while preserving section order and headings.
-4. Report completion with achievement file path, verification status, and next steps.
+1. Achievement documentation
+2. Success metrics and analysis
+3. Lessons learned and recommendations
+4. Next steps and follow-up items
 
-Note: The script verifies task completion and updates achievement tracking before documenting the detailed achievement.
+### Output
+The goal/milestone status will be updated to 'completed' and comprehensive achievement documentation will be generated, including reports for stakeholders.
+
+**Agent Type**: __AGENT__

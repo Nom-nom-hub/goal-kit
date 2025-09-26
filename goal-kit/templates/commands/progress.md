@@ -1,24 +1,32 @@
 ---
-description: Track and report on goal progress with metrics, achievements, and next steps.
+description: Track and update progress on goals and milestones
 scripts:
-  sh: scripts/bash/generate-report.sh --json "{ARGS}"
-  ps: scripts/powershell/generate-report.ps1 -Json "{ARGS}"
+  sh: update-progress.sh
+  ps: update-progress.ps1
 ---
 
-The user input to you can be provided directly by the agent or as a command argument - you **MUST** consider it before proceeding with the prompt (if not empty).
+## Progress Tracking Command
 
-User input:
+Update and track progress on goals and milestones with the following capabilities:
 
-{ARGS}
+**Command**: `{SCRIPT} {ARGS}`
 
-The text the user typed after `/progress` in the triggering message **is** the progress query. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
+### Parameters
+- `target_id`: ID of the goal or milestone to update
+- `status`: Current status (not_started, in_progress, completed, blocked)
+- `progress`: Percentage progress (0-100)
+- `notes`: Additional notes about progress or blockers
+- `next_steps`: Planned next steps
 
-Given that progress query, do this:
+### Usage
+This command will update the progress tracking information for the specified goal or milestone. It allows for:
 
-1. Run the script `{SCRIPT}` from repo root and parse its JSON output for PROGRESS_DATA and REPORT_FILE. All file paths must be absolute.
-  **IMPORTANT** You must only ever run this script once. The JSON is provided in the terminal as output - always refer to it to get the actual content you're looking for.
-2. Load `templates/progress-report.md` to understand required sections.
-3. Generate a progress report to REPORT_FILE using the template structure, replacing placeholders with concrete details derived from the progress query (arguments) while preserving section order and headings.
-4. Report completion with report file path, progress metrics, and next steps.
+1. Status updates with timestamps
+2. Progress percentage tracking
+3. Notes about challenges or achievements
+4. Planning for next steps
 
-Note: The script aggregates progress data and generates detailed reports before writing the progress report.
+### Output
+The progress tracking file will be updated with the new information and validated against the original goal/milestone specifications.
+
+**Agent Type**: __AGENT__

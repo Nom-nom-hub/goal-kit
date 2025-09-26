@@ -1,24 +1,33 @@
 ---
-description: Create and manage goal milestones with dependencies, resource allocation, and progress tracking.
+description: Create and plan a milestone for a goal
 scripts:
-  sh: scripts/bash/update-progress.sh --json "{ARGS}"
-  ps: scripts/powershell/update-progress.ps1 -Json "{ARGS}"
+  sh: create-goal.sh --milestone
+  ps: create-goal.ps1 -Milestone
 ---
 
-The user input to you can be provided directly by the agent or as a command argument - you **MUST** consider it before proceeding with the prompt (if not empty).
+## Milestone Creation Command
 
-User input:
+Define and create a milestone within a goal with the following specifications:
 
-{ARGS}
+**Command**: `{SCRIPT} {ARGS}`
 
-The text the user typed after `/milestone` in the triggering message **is** the milestone description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
+### Parameters
+- `goal_id`: ID of the parent goal
+- `name`: Name of the milestone
+- `description`: Detailed description of the milestone
+- `due_date`: Expected completion date
+- `dependencies`: List of dependencies (other milestones or tasks)
+- `success_criteria`: Clear criteria for milestone completion
 
-Given that milestone description, do this:
+### Usage
+This command will create a new milestone specification following best practices for goal management. The milestone will include:
 
-1. Run the script `{SCRIPT}` from repo root and parse its JSON output for MILESTONE_STATUS and PROGRESS_FILE. All file paths must be absolute.
-  **IMPORTANT** You must only ever run this script once. The JSON is provided in the terminal as output - always refer to it to get the actual content you're looking for.
-2. Load `templates/milestone-planning.md` to understand required sections.
-3. Update the milestone tracking in PROGRESS_FILE using the template structure, replacing placeholders with concrete details derived from the milestone description (arguments) while preserving section order and headings.
-4. Report completion with milestone file path, progress status, and next steps.
+1. Clear success criteria and deliverables
+2. Timeline and dependencies mapping
+3. Resource requirements and potential blockers
+4. Progress tracking mechanisms
 
-Note: The script updates the milestone progress and generates progress reports before updating the detailed milestone definition.
+### Output
+A new milestone specification will be added to the parent goal's structure with proper validation.
+
+**Agent Type**: __AGENT__

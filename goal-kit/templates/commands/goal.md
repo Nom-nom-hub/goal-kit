@@ -1,24 +1,32 @@
 ---
-description: Create comprehensive goal definitions with structured planning, milestones, and success criteria.
+description: Create a new goal with specifications and milestones
 scripts:
-  sh: scripts/bash/create-goal.sh --json "{ARGS}"
-  ps: scripts/powershell/create-goal.ps1 -Json "{ARGS}"
+  sh: create-goal.sh
+  ps: create-goal.ps1
 ---
 
-The user input to you can be provided directly by the agent or as a command argument - you **MUST** consider it before proceeding with the prompt (if not empty).
+## Goal Creation Command
 
-User input:
+Create and define a new goal with the following specifications:
 
-{ARGS}
+**Command**: `{SCRIPT} {ARGS}`
 
-The text the user typed after `/goal` in the triggering message **is** the goal description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
+### Parameters
+- `name`: Name of the goal
+- `description`: Detailed description of what the goal aims to achieve
+- `category`: Category of the goal (personal, business, learning, etc.)
+- `priority`: Priority level (high, medium, low)
+- `milestones`: Key milestones to track progress
 
-Given that goal description, do this:
+### Usage
+This command will create a new goal specification file following the goal-template.json structure. The goal will include:
 
-1. Run the script `{SCRIPT}` from repo root and parse its output for goal creation status. All file paths must be relative to repo root.
-   **IMPORTANT** You must only ever run this script once. The output is provided in the terminal - always refer to it to get the actual content you're looking for.
-2. Load `templates/goal-definition.md` to understand the required goal definition structure.
-3. Write the comprehensive goal definition using the template structure, replacing placeholders with concrete details derived from the goal description (arguments) while preserving section order and headings.
-4. Report completion with goal file path, creation status, and next steps.
+1. Goal metadata (name, description, category, priority)
+2. Milestone definitions with success criteria
+3. Optional dependencies and resources
+4. Timeline and deadline information
 
-Note: The script creates the goal directory structure, initializes git repository, and generates the initial goal.json file before writing the detailed goal definition.
+### Output
+A new goal specification file will be created in the appropriate directory with proper structure and validation.
+
+**Agent Type**: __AGENT__
