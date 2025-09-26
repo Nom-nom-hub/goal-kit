@@ -5,7 +5,7 @@
 set -euo pipefail
 
 # Configuration
-VERSION="${1:-0.0.1-test}"
+VERSION="${1:-0.0.1}"
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 RELEASE_DIR="$REPO_ROOT/releases"
 GOAL_KIT_DIR="$REPO_ROOT/goal-kit"
