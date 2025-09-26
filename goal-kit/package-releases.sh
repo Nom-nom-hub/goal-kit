@@ -6,7 +6,7 @@ set -euo pipefail
 
 # Configuration
 VERSION="${1:-0.0.1}"
-RELEASE_DIR="../releases"
+RELEASE_DIR="releases"           # <-- changed here!
 GOAL_KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Colors
