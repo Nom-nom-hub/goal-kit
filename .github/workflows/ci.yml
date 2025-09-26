@@ -187,7 +187,7 @@ jobs:
       - name: 🧹 Cleanup Test Files
         run: |
           rm -rf /tmp/test-releases
-          rm -f releases/*.zip releases/*.sha256
+          rm -f ../releases/*.zip ../releases/*.sha256
 
   lint-and-format:
     name: 🎨 Lint and Format Code
