@@ -83,11 +83,19 @@ Write-Host "✅ PowerShell scripts ready" -ForegroundColor Green
 EOF
     fi
 
-    # Ensure the release directory exists (absolute path)
-    mkdir -p "$GOAL_KIT_DIR/$RELEASE_DIR"
-
-    # Zip the contents of package_dir into the release directory (absolute path)
-    (cd "$package_dir" && zip -r "$GOAL_KIT_DIR/$package_file" .)
+    # Ensure the release directory exists and calculate absolute path from script location
+    mkdir -p "$RELEASE_DIR"
+    ABSOLUTE_RELEASE_DIR="$(cd "$(dirname "$RELEASE_DIR")" && pwd)/$(basename "$RELEASE_DIR")"
+    mkdir -p "$ABSOLUTE_RELEASE_DIR"
+    
+    # Update package_file to point to the correct location for checksum generation
+    package_file="$ABSOLUTE_RELEASE_DIR/goal-kit-template-${agent}-${platform}-v${VERSION}.zip"
+    
+    # Use absolute path for zip command to avoid directory context issues
+    ABSOLUTE_PACKAGE_DIR="$(cd "$package_dir" && pwd)"
+    
+    # Zip from the absolute package directory to the absolute release file location
+    cd "$ABSOLUTE_PACKAGE_DIR" && zip -r "$package_file" .
 
     # SHA256 checksum
     if [ -f "$GOAL_KIT_DIR/$package_file" ]; then
