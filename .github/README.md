@@ -9,9 +9,7 @@
 
 [![Release](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/release.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/release.yml)
 [![CI](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/ci.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/ci.yml)
-[![Tests](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/test.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/test.yml)
 [![Docs](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/docs.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/docs.yml)
-[![Dependencies](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/dependencies.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/dependencies.yml)
 
 ---
 
