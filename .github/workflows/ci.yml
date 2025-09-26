@@ -159,14 +159,14 @@ jobs:
           ./package-releases.sh 0.0.1-test
 
           # Check if packages were created
-          if [ -f "releases/goal-kit-template-cursor-sh-v0.0.1-test.zip" ]; then
+          if [ -f "../releases/goal-kit-template-cursor-sh-v0.0.1-test.zip" ]; then
             echo "✅ Bash package created successfully"
           else
             echo "❌ Bash package creation failed"
             exit 1
           fi
 
-          if [ -f "releases/goal-kit-template-cursor-ps-v0.0.1-test.zip" ]; then
+          if [ -f "../releases/goal-kit-template-cursor-ps-v0.0.1-test.zip" ]; then
             echo "✅ PowerShell package created successfully"
           else
             echo "❌ PowerShell package creation failed"
@@ -174,7 +174,7 @@ jobs:
           fi
 
           # Test package integrity
-          unzip -t releases/goal-kit-template-cursor-sh-v0.0.1-test.zip > /dev/null
+          unzip -t ../releases/goal-kit-template-cursor-sh-v0.0.1-test.zip > /dev/null
           if [ $? -eq 0 ]; then
             echo "✅ Package integrity test passed"
           else
@@ -187,7 +187,7 @@ jobs:
       - name: 🧹 Cleanup Test Files
         run: |
           rm -rf /tmp/test-releases
-          rm -f releases/*.zip releases/*.sha256
+          rm -f ../releases/*.zip ../releases/*.sha256
 
   lint-and-format:
     name: 🎨 Lint and Format Code
