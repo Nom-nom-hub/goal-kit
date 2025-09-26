@@ -83,10 +83,10 @@ Write-Host "✅ PowerShell scripts ready" -ForegroundColor Green
 EOF
     fi
 
-    # Ensure the release directory exists
-    mkdir -p "$RELEASE_DIR"
+    # Ensure the release directory exists (relative to the output zip file)
+    mkdir -p "$(dirname "$package_file")"
 
-    # Zip the contents of package_dir into the release directory (from project root context)
+    # Zip the contents of package_dir into the release directory
     (cd "$package_dir" && zip -r "$package_file" .)
 
     # SHA256 checksum
