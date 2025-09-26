@@ -19,7 +19,7 @@ if [[ $# -ne 1 ]]; then
 fi
 NEW_VERSION="$1"
 if [[ ! $NEW_VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
-  echo "Version must look like v0.0.0" >&2
+  echo "Version must look like v0.0.0 (e.g., v0.0.1, v1.2.3-test)" >&2
   exit 1
 fi
 
