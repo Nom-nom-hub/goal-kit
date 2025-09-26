@@ -4,6 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
+      - 'goal-kit/**'
       - 'memory/**'
       - 'scripts/**'
       - 'templates/**'
@@ -23,43 +24,72 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Get latest tag
         id: get_tag
         run: |
-          chmod +x .github/workflows/scripts/get-next-version.sh
-          .github/workflows/scripts/get-next-version.sh
+          cd goal-kit
+          chmod +x scripts/get-next-version.sh
+          ./scripts/get-next-version.sh
+          # Extract the version from the output
+          OUTPUT=$(./scripts/get-next-version.sh)
+          NEW_VERSION=$(echo "$OUTPUT" | grep "new_version=" | cut -d'=' -f2)
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Computed new version: $NEW_VERSION"
 
       - name: Check if release already exists
         id: check_release
         run: |
-          chmod +x .github/workflows/scripts/check-release-exists.sh
-          .github/workflows/scripts/check-release-exists.sh ${{ steps.get_tag.outputs.new_version }}
+          cd goal-kit
+          chmod +x scripts/check-release-exists.sh
+          # Use GitHub CLI to check if release exists
+          if gh release view ${{ steps.get_tag.outputs.new_version }} >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Release ${{ steps.get_tag.outputs.new_version }} already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Release ${{ steps.get_tag.outputs.new_version }} does not exist, proceeding with creation"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create release package variants
         if: steps.check_release.outputs.exists == 'false'
         run: |
-          chmod +x .github/workflows/scripts/package-releases.sh
-          .github/workflows/scripts/package-releases.sh ${{ steps.get_tag.outputs.new_version }}
+          cd goal-kit
+          chmod +x package-releases.sh
+          ./package-releases.sh ${{ steps.get_tag.outputs.new_version }}
 
       - name: Generate release notes
         if: steps.check_release.outputs.exists == 'false'
-        id: release_notes
         run: |
-          chmod +x .github/workflows/scripts/generate-release-notes.sh
-          .github/workflows/scripts/generate-release-notes.sh ${{ steps.get_tag.outputs.new_version }} ${{ steps.get_tag.outputs.latest_tag }}
+          cd goal-kit
+          chmod +x scripts/generate-release-notes.sh
+          # Get the previous tag to compare
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "v0.0.0")
+          ./scripts/generate-release-notes.sh ${{ steps.get_tag.outputs.new_version }} $PREVIOUS_TAG
 
       - name: Create GitHub Release
         if: steps.check_release.outputs.exists == 'false'
         run: |
-          chmod +x .github/workflows/scripts/create-github-release.sh
-          .github/workflows/scripts/create-github-release.sh ${{ steps.get_tag.outputs.new_version }}
+          cd goal-kit
+          chmod +x create-github-release.sh
+          ./create-github-release.sh ${{ steps.get_tag.outputs.new_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update version in pyproject.toml (release artifacts only)
         if: steps.check_release.outputs.exists == 'false'
         run: |
-          chmod +x .github/workflows/scripts/update-version.sh
-          .github/workflows/scripts/update-version.sh ${{ steps.get_tag.outputs.new_version }}
+          cd goal-kit
+          chmod +x scripts/update-version.sh
+          ./scripts/update-version.sh ${{ steps.get_tag.outputs.new_version }}
