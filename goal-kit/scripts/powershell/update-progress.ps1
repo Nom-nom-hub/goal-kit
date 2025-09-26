@@ -113,3 +113,43 @@ function Test-Dependencies {
 # Validate input
 function Test-Input {
     param(
+        [string]$GoalPath,
+        [int]$Progress,
+        [string]$Status,
+        [string[]]$Metrics,
+        [string]$Notes
+    )
+
+    # Validate goal path exists
+    if (-not (Test-Path $GoalPath)) {
+        Write-Error "Goal path does not exist: $GoalPath"
+        exit 1
+    }
+
+    # Validate progress value if provided
+    if ($Progress -ne $null -and ($Progress -lt 0 -or $Progress -gt 100)) {
+        Write-Error "Progress must be between 0 and 100: $Progress"
+        exit 1
+    }
+
+    # Validate status value if provided
+    $validStatuses = @("not_started", "in_progress", "on_track", "behind", "ahead", "completed")
+    if ($Status -and $Status -notin $validStatuses) {
+        Write-Error "Invalid status '$Status'. Valid statuses: $($validStatuses -join ', ')"
+        exit 1
+    }
+
+    # Validate metrics format if provided
+    if ($Metrics) {
+        foreach ($metric in $Metrics) {
+            if ($metric -notmatch "^[a-zA-Z0-9_-]+:.+$") {
+                Write-Error "Invalid metric format '$metric'. Use 'key:value' format."
+                exit 1
+            }
+        }
+    }
+
+    if ($Verbose) {
+        Write-Info "Input validation passed"
+    }
+}
