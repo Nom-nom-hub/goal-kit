@@ -87,14 +87,15 @@ EOF
     # Ensure the release directory exists
     mkdir -p "$RELEASE_DIR"
     
-    # Calculate the absolute path to the release file to avoid relative path issues
-    ABSOLUTE_RELEASE_FILE="$(cd .. && pwd)/releases/goal-kit-template-${agent}-${platform}-v${VERSION}.zip"
-    
     # Update package_file to point to the correct location for checksum generation
-    package_file="$ABSOLUTE_RELEASE_FILE"
+    package_file="$RELEASE_DIR/goal-kit-template-${agent}-${platform}-v${VERSION}.zip"
     
-    # Zip from the package directory to the absolute release location
-    (cd "$package_dir" && zip -r "$ABSOLUTE_RELEASE_FILE" .)
+    # Use absolute path for zip command to avoid directory context issues
+    ABSOLUTE_PACKAGE_DIR="$(cd "$package_dir" && pwd)"
+    ABSOLUTE_RELEASE_FILE="$(cd "$RELEASE_DIR" && pwd)/goal-kit-template-${agent}-${platform}-v${VERSION}.zip"
+    
+    # Zip from the absolute package directory to the absolute release file location
+    cd "$ABSOLUTE_PACKAGE_DIR" && zip -r "$ABSOLUTE_RELEASE_FILE" .
 
     # SHA256 checksum
     sha256sum "$package_file" | cut -d' ' -f1 > "$package_file.sha256"
