@@ -180,10 +180,10 @@ build_variant() {
   esac
   # Create releases directory if it doesn't exist
   mkdir -p "../releases"
-  # Create zip file in the base directory first, then move it to releases
-  ( cd "$base_dir" && zip -r "goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip" . )
-  # Move the zip file to the releases directory
-  mv "$base_dir/goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip" "../releases/"
+  # Create temporary zip file in the base directory first
+  ( cd "$base_dir" && zip -r "temp-package.zip" . )
+  # Move the completed zip file to the releases directory with the correct name
+  mv "$base_dir/temp-package.zip" "../releases/goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip"
   echo "Created $GENRELEASES_DIR/goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip"
 }
 
