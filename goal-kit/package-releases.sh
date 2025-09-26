@@ -233,5 +233,6 @@ for agent in "${AGENT_LIST[@]}"; do
   done
 done
 
-echo "Archives in $GENRELEASES_DIR:"
-ls -1 "$GENRELEASES_DIR"/goal-kit-template-*-"$NEW_VERSION".zip
+echo "Archives in releases/:"
+# List all archive files in releases directory matching our pattern
+ls -1 "../releases/" 2>/dev/null | grep "goal-kit-template.*${NEW_VERSION}" || echo "No matching archives found in releases/"
