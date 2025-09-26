@@ -178,7 +178,10 @@ build_variant() {
       mkdir -p "$base_dir/.roo/commands"
       generate_commands roo md "\$ARGUMENTS" "$base_dir/.roo/commands" "$script" ;;
   esac
-  ( cd "$base_dir" && zip -r "../releases/goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip" . )
+  # Create releases directory if it doesn't exist and use absolute path
+  mkdir -p "../releases"
+  ABSOLUTE_RELEASE_PATH="$(cd .. && pwd)/releases"
+  ( cd "$base_dir" && zip -r "$ABSOLUTE_RELEASE_PATH/goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip" . )
   echo "Created $GENRELEASES_DIR/goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip"
 }
 
