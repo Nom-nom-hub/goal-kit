@@ -38,5 +38,4 @@ gh release create "$VERSION" \
   releases/goal-kit-template-auggie-ps-v"$VERSION".zip \
   releases/goal-kit-template-roo-sh-v"$VERSION".zip \
   releases/goal-kit-template-roo-ps-v"$VERSION".zip \
-  --title "Goal-Kit Templates - $VERSION_NO_V" \
-  --notes-file releases/RELEASE_NOTES.md
+  --title "Goal-Kit Templates - $VERSION_NO_V"
