@@ -9,9 +9,7 @@
 
 [![Release](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/release.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/release.yml)
 [![CI](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/ci.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/ci.yml)
-[![Tests](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/test.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/test.yml)
 [![Docs](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/docs.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/docs.yml)
-[![Dependencies](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/dependencies.yml/badge.svg)](https://github.com/Nom-nom-hub/goal-dev-spec/actions/workflows/dependencies.yml)
 
 ---
 
@@ -112,19 +110,19 @@ For detailed step-by-step instructions, see our [comprehensive guide](../goal-dr
 
 ## 🤖 Supported AI Agents
 
-| Agent | Support | Notes |
-|-------|---------|-------|
-| [Claude Code](https://www.anthropic.com/claude-code) | ✅ | Full support for structured goal-driven development |
-| [GitHub Copilot](https://code.visualstudio.com/) | ✅ | Integrated with VS Code for seamless coding assistance |
-| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | ✅ | Multi-modal capabilities for complex goal visualization |
-| [Cursor](https://cursor.sh/) | ✅ | Real-time editing with goal-aware context |
-| [Qwen Code](https://github.com/QwenLM/qwen-code) | ✅ | Advanced code comprehension and generation |
-| [opencode](https://opencode.ai/) | ✅ | Open-source AI coding assistance |
-| [Windsurf](https://windsurf.com/) | ✅ | Collaborative AI development platform |
-| [Kilo Code](https://github.com/Kilo-Org/kilocode) | ✅ | Specialized for code understanding and refactoring |
-| [Auggie CLI](https://docs.augmentcode.com/cli/overview) | ✅ | Augmented coding with goal tracking |
-| [Roo Code](https://roocode.com/) | ✅ | Project navigation with goal context |
-| [Codex CLI](https://github.com/openai/codex) | ⚠️ | Codex [does not support](https://github.com/openai/codex/issues/2890) custom arguments for slash commands. |
+| Agent                                                     | Support | Notes                                                                                                      |
+| --------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
+| [Claude Code](https://www.anthropic.com/claude-code)      | ✅      | Full support for structured goal-driven development                                                        |
+| [GitHub Copilot](https://code.visualstudio.com/)          | ✅      | Integrated with VS Code for seamless coding assistance                                                     |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | ✅      | Multi-modal capabilities for complex goal visualization                                                    |
+| [Cursor](https://cursor.sh/)                              | ✅      | Real-time editing with goal-aware context                                                                  |
+| [Qwen Code](https://github.com/QwenLM/qwen-code)          | ✅      | Advanced code comprehension and generation                                                                 |
+| [opencode](https://opencode.ai/)                          | ✅      | Open-source AI coding assistance                                                                           |
+| [Windsurf](https://windsurf.com/)                         | ✅      | Collaborative AI development platform                                                                      |
+| [Kilo Code](https://github.com/Kilo-Org/kilocode)         | ✅      | Specialized for code understanding and refactoring                                                         |
+| [Auggie CLI](https://docs.augmentcode.com/cli/overview)   | ✅      | Augmented coding with goal tracking                                                                        |
+| [Roo Code](https://roocode.com/)                          | ✅      | Project navigation with goal context                                                                       |
+| [Codex CLI](https://github.com/openai/codex)              | ⚠️      | Codex [does not support](https://github.com/openai/codex/issues/2890) custom arguments for slash commands. |
 
 ## 🔧 Goal Kit CLI Reference
 
@@ -132,26 +130,26 @@ The `goal` command supports the following options:
 
 ### Commands
 
-| Command | Description |
-|---------|-------------|
-| `init` | Initialize a new Goal Kit project from the latest template |
-| `setup` | Configure Goal Kit for your preferred AI assistant |
-| `check` | Check for installed tools and dependencies |
+| Command | Description                                                |
+| ------- | ---------------------------------------------------------- |
+| `init`  | Initialize a new Goal Kit project from the latest template |
+| `setup` | Configure Goal Kit for your preferred AI assistant         |
+| `check` | Check for installed tools and dependencies                 |
 
 ### `goal init` Arguments & Options
 
-| Argument/Option | Type | Description |
-|-----------------|------|-------------|
-| `<project-name>` | Argument | Name for your new project directory (optional if using `--here`, or use `.` for current directory) |
-| `--ai` | Option | AI assistant to use: `claude`, `gemini`, `copilot`, `cursor`, `qwen`, `opencode`, `codex`, `windsurf`, `kilocode`, `auggie`, or `roo` |
-| `--script` | Option | Script variant to use: `sh` (bash/zsh) or `ps` (PowerShell) |
-| `--ignore-agent-tools` | Flag | Skip checks for AI agent tools |
-| `--no-git` | Flag | Skip git repository initialization |
-| `--here` | Flag | Initialize project in the current directory instead of creating a new one |
-| `--force` | Flag | Force merge/overwrite when initializing in current directory (skip confirmation) |
-| `--skip-tls` | Flag | Skip SSL/TLS verification (not recommended) |
-| `--debug` | Flag | Enable detailed debug output for troubleshooting |
-| `--github-token` | Option | GitHub token for API requests (or set GH_TOKEN/GITHUB_TOKEN env variable) |
+| Argument/Option        | Type     | Description                                                                                                                           |
+| ---------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `<project-name>`       | Argument | Name for your new project directory (optional if using `--here`, or use `.` for current directory)                                    |
+| `--ai`                 | Option   | AI assistant to use: `claude`, `gemini`, `copilot`, `cursor`, `qwen`, `opencode`, `codex`, `windsurf`, `kilocode`, `auggie`, or `roo` |
+| `--script`             | Option   | Script variant to use: `sh` (bash/zsh) or `ps` (PowerShell)                                                                           |
+| `--ignore-agent-tools` | Flag     | Skip checks for AI agent tools                                                                                                        |
+| `--no-git`             | Flag     | Skip git repository initialization                                                                                                    |
+| `--here`               | Flag     | Initialize project in the current directory instead of creating a new one                                                             |
+| `--force`              | Flag     | Force merge/overwrite when initializing in current directory (skip confirmation)                                                      |
+| `--skip-tls`           | Flag     | Skip SSL/TLS verification (not recommended)                                                                                           |
+| `--debug`              | Flag     | Enable detailed debug output for troubleshooting                                                                                      |
+| `--github-token`       | Option   | GitHub token for API requests (or set GH_TOKEN/GITHUB_TOKEN env variable)                                                             |
 
 ### Examples
 
@@ -178,7 +176,7 @@ goal init --here --ai copilot
 
 # Force merge into current (non-empty) directory without confirmation
 goal init . --force --ai copilot
-# or 
+# or
 goal init --here --force --ai copilot
 
 # Skip git initialization
@@ -198,21 +196,21 @@ goal check
 
 After running `goal init`, your AI coding agent will have access to these slash commands for structured goal-driven development:
 
-| Command | Description |
-|---------|-------------|
-| `/goal` | Define what you want to accomplish (high-level goal statement) |
-| `/constraints` | Define technical, business, and architectural constraints |
-| `/milestones` | Break down the goal into measurable milestones |
-| `/context` | Provide relevant context for the AI to understand the project |
-| `/execute` | Begin implementation based on the defined goal and milestones |
-| `/review` | Review progress against milestones and adjust as needed |
-| `/validate` | Validate that the implementation meets the original goal |
+| Command        | Description                                                    |
+| -------------- | -------------------------------------------------------------- |
+| `/goal`        | Define what you want to accomplish (high-level goal statement) |
+| `/constraints` | Define technical, business, and architectural constraints      |
+| `/milestones`  | Break down the goal into measurable milestones                 |
+| `/context`     | Provide relevant context for the AI to understand the project  |
+| `/execute`     | Begin implementation based on the defined goal and milestones  |
+| `/review`      | Review progress against milestones and adjust as needed        |
+| `/validate`    | Validate that the implementation meets the original goal       |
 
 ### Environment Variables
 
-| Variable | Description |
-|----------|-------------|
-| `GOAL_KIT_FEATURE` | Override feature detection for non-Git repositories. Set to the feature directory name (e.g., `001-photo-albums`) to work on a specific goal when not using Git branches.<br/>**Must be set in the context of the agent you're working with prior to using `/execute` or follow-up commands. |
+| Variable           | Description                                                                                                                                                                                                                                                                                    |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GOAL_KIT_FEATURE` | Override feature detection for non-Git repositories. Set to the feature directory name (e.g., `001-photo-albums`) to work on a specific goal when not using Git branches.<br/>\*\*Must be set in the context of the agent you're working with prior to using `/execute` or follow-up commands. |
 
 ## 📚 Core philosophy
 
@@ -227,23 +225,26 @@ Goal-Driven Development is a structured process that emphasizes:
 ## 🎯 Key features
 
 ### Goal Structuring
+
 - Clear goal definition templates
 - Constraint documentation
 - Milestone tracking
 - Progress validation
 
 ### AI Agent Integration
+
 - Templates optimized for each supported AI agent
 - Platform-specific configurations (Bash and PowerShell)
 - Context-aware development workflows
 - Consistent interface across providers
 
 ### Development Phases Support
-| Phase | Focus | Key Activities |
-|-------|-------|----------------|
-| **New Project Creation** | Goal-based initialization | <ul><li>Define high-level goals</li><li>Establish constraints</li><li>Create project structure</li><li>Set up development environment</li></ul> |
-| **Implementation** | Goal-driven coding | <ul><li>Break goals into milestones</li><li>Implement with AI assistance</li><li>Track progress</li></ul> |
-| **Validation** | Goal achievement verification | <ul><li>Review completed work</li><li>Validate against original goals</li><li>Adjust milestones as needed</li></ul> |
+
+| Phase                    | Focus                         | Key Activities                                                                                                                                  |
+| ------------------------ | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **New Project Creation** | Goal-based initialization     | <ul><li>Define high-level goals</li><li>Establish constraints</li><li>Create project structure</li><li>Set up development environment</li></ul> |
+| **Implementation**       | Goal-driven coding            | <ul><li>Break goals into milestones</li><li>Implement with AI assistance</li><li>Track progress</li></ul>                                       |
+| **Validation**           | Goal achievement verification | <ul><li>Review completed work</li><li>Validate against original goals</li><li>Adjust milestones as needed</li></ul>                             |
 
 ## 🔧 Prerequisites
 
@@ -324,7 +325,7 @@ The first step should be defining your project goal using the `/goal` command:
 
 ```text
 /goal Build a task management application that allows users to create projects, add team members,
-assign tasks, comment and move tasks between boards in Kanban style. The initial version should 
+assign tasks, comment and move tasks between boards in Kanban style. The initial version should
 include user management with predefined users, sample projects, and Kanban boards with drag-and-drop
 functionality.
 ```
@@ -336,8 +337,8 @@ This step creates the foundational goal document that will guide all subsequent 
 With your goal defined, establish the constraints that will guide implementation. Use the `/constraints` command:
 
 ```text
-/constraints The application should use vanilla JavaScript, HTML, and CSS with minimal external 
-dependencies. Use a local SQLite database for storing project and task data. The UI should be 
+/constraints The application should use vanilla JavaScript, HTML, and CSS with minimal external
+dependencies. Use a local SQLite database for storing project and task data. The UI should be
 responsive and accessible. Focus on performance and maintainability.
 ```
 
