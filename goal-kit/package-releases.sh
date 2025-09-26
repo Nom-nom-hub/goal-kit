@@ -18,8 +18,13 @@ if [[ $# -ne 1 ]]; then
   exit 1
 fi
 NEW_VERSION="$1"
+# Add 'v' prefix if not present
+if [[ ! $NEW_VERSION =~ ^v ]]; then
+  NEW_VERSION="v$NEW_VERSION"
+fi
+
 if [[ ! $NEW_VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
-  echo "Version must look like v0.0.0 (e.g., v0.0.1, v1.2.3-test)" >&2
+  echo "Version must look like 0.0.0 or v0.0.0 (e.g., 0.0.1, v0.0.1, v1.2.3-test)" >&2
   exit 1
 fi
 

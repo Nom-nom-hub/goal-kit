@@ -12,6 +12,7 @@ Create and define a new goal with the following specifications:
 **Command**: `{SCRIPT} {ARGS}`
 
 ### Parameters
+
 - `name`: Name of the goal
 - `description`: Detailed description of what the goal aims to achieve
 - `category`: Category of the goal (personal, business, learning, etc.)
@@ -19,6 +20,7 @@ Create and define a new goal with the following specifications:
 - `milestones`: Key milestones to track progress
 
 ### Usage
+
 This command will create a new goal specification file following the goal-template.json structure. The goal will include:
 
 1. Goal metadata (name, description, category, priority)
@@ -27,6 +29,7 @@ This command will create a new goal specification file following the goal-templa
 4. Timeline and deadline information
 
 ### Output
+
 A new goal specification file will be created in the appropriate directory with proper structure and validation.
 
-**Agent Type**: __AGENT__
+**Agent Type**: **AGENT**

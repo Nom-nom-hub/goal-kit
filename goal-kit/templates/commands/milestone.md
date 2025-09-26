@@ -12,6 +12,7 @@ Define and create a milestone within a goal with the following specifications:
 **Command**: `{SCRIPT} {ARGS}`
 
 ### Parameters
+
 - `goal_id`: ID of the parent goal
 - `name`: Name of the milestone
 - `description`: Detailed description of the milestone
@@ -20,6 +21,7 @@ Define and create a milestone within a goal with the following specifications:
 - `success_criteria`: Clear criteria for milestone completion
 
 ### Usage
+
 This command will create a new milestone specification following best practices for goal management. The milestone will include:
 
 1. Clear success criteria and deliverables
@@ -28,6 +30,7 @@ This command will create a new milestone specification following best practices 
 4. Progress tracking mechanisms
 
 ### Output
+
 A new milestone specification will be added to the parent goal's structure with proper validation.
 
-**Agent Type**: __AGENT__
+**Agent Type**: **AGENT**

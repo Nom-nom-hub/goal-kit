@@ -12,6 +12,7 @@ Update and track progress on goals and milestones with the following capabilitie
 **Command**: `{SCRIPT} {ARGS}`
 
 ### Parameters
+
 - `target_id`: ID of the goal or milestone to update
 - `status`: Current status (not_started, in_progress, completed, blocked)
 - `progress`: Percentage progress (0-100)
@@ -19,6 +20,7 @@ Update and track progress on goals and milestones with the following capabilitie
 - `next_steps`: Planned next steps
 
 ### Usage
+
 This command will update the progress tracking information for the specified goal or milestone. It allows for:
 
 1. Status updates with timestamps
@@ -27,6 +29,7 @@ This command will update the progress tracking information for the specified goa
 4. Planning for next steps
 
 ### Output
+
 The progress tracking file will be updated with the new information and validated against the original goal/milestone specifications.
 
-**Agent Type**: __AGENT__
+**Agent Type**: **AGENT**

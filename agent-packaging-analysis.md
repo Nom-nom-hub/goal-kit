@@ -1,11 +1,13 @@
 # Agent-Specific Packaging Analysis: Spec-Kit vs Goal-Kit
 
 ## Overview
+
 This document analyzes the differences between how spec-kit and goal-kit handle agent-specific packaging, providing recommendations for goal-kit to adopt spec-kit's approach.
 
 ## Current Approaches
 
 ### Spec-Kit Packaging Approach
+
 - Uses YAML frontmatter in command templates with script variants (sh/ps) defined in the template
 - Supports dynamic command generation with the `generate_commands()` function
 - Creates agent-specific packages with tailored command files for each AI agent
@@ -14,6 +16,7 @@ This document analyzes the differences between how spec-kit and goal-kit handle 
 - Supports 11 different agents (claude, gemini, copilot, cursor, qwen, opencode, windsurf, codex, kilocode, auggie, roo)
 
 ### Goal-Kit Packaging Approach
+
 - Uses static command files in agent-specific directories (`.qwen/commands/`, `.cursor/commands/`)
 - Currently only supports cursor but the GitHub release script indicates support for multiple agents
 - Uses `.goalify/` as base directory
@@ -41,6 +44,7 @@ This document analyzes the differences between how spec-kit and goal-kit handle 
 ## Recommendations for Goal-Kit
 
 ### 1. Implement Dynamic Command Generation
+
 Goal-Kit should implement a `generate_commands()` function similar to spec-kit to dynamically create agent-specific command files from a single template:
 
 ```bash
@@ -51,6 +55,7 @@ generate_commands() {
 ```
 
 ### 2. Update Template Structure
+
 Convert static command files to templates with YAML frontmatter that define both bash and PowerShell variants:
 
 ```yaml
@@ -60,21 +65,22 @@ scripts:
   sh: scripts/bash/create-goal.sh --json "{ARGS}"
   ps: scripts/powershell/create-goal.ps1 -Json "{ARGS}"
 ---
-
 # Command content with placeholders
 ```
 
 ### 3. Enhance Packaging Script
+
 Modify the packaging script to support agent-specific inclusion like spec-kit does, with support for all major AI agents:
 
 - Claude: `.claude/commands/` (Markdown format)
-- Gemini: `.gemini/commands/` (TOML format) 
+- Gemini: `.gemini/commands/` (TOML format)
 - Copilot: `.github/prompts/` (Markdown format)
 - Cursor: `.cursor/commands/` (Markdown format)
 - Qwen: `.qwen/commands/` (TOML format)
 - And other supported agents
 
 ### 4. Implement Agent-Specific Path Rewriting
+
 Use a `rewrite_paths()` function to ensure paths are correctly rewritten for each agent's expected directory structure:
 
 ```bash
@@ -87,11 +93,14 @@ rewrite_paths() {
 ```
 
 ### 5. Standardize Argument Placeholders
+
 Ensure consistent use of agent-appropriate argument placeholders:
+
 - Markdown-based agents: `$ARGUMENTS`
 - TOML-based agents: `{{args}}`
 
 ### 6. Support Both Script Variants
+
 Like spec-kit, provide both bash (sh) and PowerShell (ps) script variants in the same template, allowing the packaging script to select the appropriate one during package creation.
 
 ## Expected Benefits
