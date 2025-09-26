@@ -31,7 +31,6 @@ jobs:
 
       - name: Run packaging script
         run: |
-          cd goal-kit
           chmod +x package-releases.sh
           ./package-releases.sh $(echo ${{ github.ref_name }} | sed 's/refs\/tags\///')
 
