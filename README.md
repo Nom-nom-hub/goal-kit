@@ -7,18 +7,28 @@
     <strong>An effort to allow organizations to focus on business outcomes and user goals rather than writing undifferentiated code with the help of Goal-Driven Development.</strong>
 </p>
 
+<p align="center">
+  <a href="https://github.com/Nom-nom-hub/goal-kit/releases/latest">
+    <img src="https://img.shields.io/github/v/release/Nom-nom-hub/goal-kit?color=brightgreen&sort=semver" alt="GitHub Release">
+  </a>
+  <a href="https://github.com/Nom-nom-hub/goal-kit/actions/workflows/release.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/goal-kit/release.yml?branch=main&label=release" alt="Release Workflow">
+  </a>
+  <a href="https://github.com/Nom-nom-hub/goal-kit/actions/workflows/docs.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/goal-kit/docs.yml?branch=main&label=docs" alt="Docs Workflow">
+  </a>
+  <a href="https://github.com/Nom-nom-hub/goal-kit/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Nom-nom-hub/goal-kit.svg?color=blue" alt="License">
+  </a>
+  <a href="https://github.com/Nom-nom-hub/goal-kit/stargazers">
+    <img src="https://img.shields.io/github/stars/Nom-nom-hub/goal-kit.svg?color=yellow" alt="GitHub Stars">
+  </a>
+  <a href="https://github.com/Nom-nom-hub/goal-kit/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/Nom-nom-hub/goal-kit.svg" alt="Contributors">
+  </a>
+</p>
+
 ---
-
-## Table of Contents
-
-- [🌟 What is Goal-Driven Development?](#-what-is-goal-driven-development)
-- [⚡ Get started](#-get-started)
-- [🤖 Supported AI Agents](#-supported-ai-agents)
-- [🔧 Goalkeeper CLI Reference](#-goalkeeper-cli-reference)
-- [📚 Core philosophy](#-core-philosophy)
-- [🎯 Development phases](#-development-phases)
-- [🔧 Prerequisites](#-prerequisites)
-- [📖 Learn more](#-learn-more)
 
 ## 🌟 What is Goal-Driven Development?
 
@@ -33,7 +43,7 @@ Goal-Driven Development **focuses on outcomes over specifications**. While Spec-
 | Requirements-focused | Metrics and success-focused |
 | Implementation precision | Outcome flexibility |
 
-## ⚡ Get started
+## ⚡ Quick Start
 
 ### 1. Install Goalkeeper
 
@@ -44,7 +54,7 @@ Choose your preferred installation method:
 Install once and use everywhere:
 
 ```bash
-uv tool install goalkeeper-cli --from git+https://github.com/your-org/goal-kit.git
+uv tool install goalkeeper-cli --from git+https://github.com/Nom-nom-hub/goal-kit.git
 ```
 
 Then use the tool directly:
@@ -59,7 +69,7 @@ goalkeeper check
 Run directly without installing:
 
 ```bash
-uvx --from git+https://github.com/your-org/goal-kit.git goalkeeper init <PROJECT_NAME>
+uvx --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper init <PROJECT_NAME>
 ```
 
 ### 2. Establish project vision
@@ -231,5 +241,14 @@ Goal-Driven Development is a structured process that emphasizes:
 ### Learning Focus
 - Treat implementation as a learning process
 - Use results and feedback to improve approaches
-- Document what works and what doesn't for future goals#   T r i g g e r   n e w   r e l e a s e   1 0 / 0 9 / 2 0 2 5   1 0 : 5 2 : 4 8  
- 
+- Document what works and what doesn't for future goals
+
+---
+
+<p align="center">
+  <strong>Goal Kit transforms software development from task execution to outcome achievement.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Nom-nom-hub/goal-kit/issues">Report Bug</a> · <a href="https://github.com/Nom-nom-hub/goal-kit/issues">Request Feature</a> · <a href="https://github.com/Nom-nom-hub/goal-kit/discussions">Ask Question</a>
+</p>
