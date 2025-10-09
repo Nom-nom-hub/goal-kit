@@ -44,6 +44,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install mkdocs mkdocs-material
 
+      - name: Copy docs to root for MkDocs build
+        run: |
+          cp -r docs/* . 2>/dev/null || true
+          # If index.md doesn't exist in root, copy from docs
+          if [ ! -f index.md ]; then
+            cp docs/index.md . 2>/dev/null || true
+          fi
+
       - name: Create mkdocs.yml
         run: |
           cat > mkdocs.yml << 'EOF'
@@ -62,6 +70,7 @@ jobs:
             - Goal-Driven Development: goal-driven.md
             - Comparison: comparison.md
             - Examples: examples.md
+            - Table of Contents: toc.md
             - README: README.md
 
           markdown_extensions:
@@ -69,47 +78,6 @@ jobs:
             - codehilite
             - toc:
                 permalink: true
-          EOF
-
-      - name: Create index.md
-        run: |
-          cat > index.md << 'EOF'
-          # Goal Kit Documentation
-
-          Welcome to the Goal Kit documentation. Goal Kit implements Goal-Driven Development, a methodology that focuses on outcomes and learning rather than detailed upfront specifications.
-
-          ## Quick Start
-
-          1. **Set Vision**: Establish your project vision and principles
-          2. **Define Goals**: Create measurable goals with success criteria
-          3. **Explore Strategies**: Consider multiple approaches for each goal
-          4. **Plan Milestones**: Break goals into measurable progress steps
-          5. **Execute & Learn**: Implement with continuous adaptation
-
-          ## Key Commands
-
-          - `/goalkit.vision` - Establish project vision
-          - `/goalkit.goal` - Define goals and success criteria
-          - `/goalkit.strategies` - Explore implementation strategies
-          - `/goalkit.milestones` - Create measurable milestones
-          - `/goalkit.execute` - Execute with learning and adaptation
-
-          ## Philosophy
-
-          Goal-Driven Development emphasizes:
-
-          - **Outcome-First**: Prioritize user and business outcomes
-          - **Strategy Flexibility**: Multiple valid approaches for any goal
-          - **Measurement-Driven**: Progress must be measured and validated
-          - **Learning Integration**: Treat implementation as hypothesis testing
-          - **Adaptive Planning**: Change course based on evidence
-
-          ## Supported AI Agents
-
-          Goal Kit works with all major AI coding assistants:
-          - Claude Code, GitHub Copilot, Gemini CLI, Cursor, Qwen Code, opencode, Codex CLI, Windsurf, Kilo Code, Auggie CLI, Roo Code, Amazon Q Developer CLI
-
-          [Get Started](README.md) | [Learn More](goal-driven.md) | [See Examples](examples.md) | [Compare Approaches](comparison.md)
           EOF
 
       - name: Build with MkDocs
