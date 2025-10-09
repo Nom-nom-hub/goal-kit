@@ -1,0 +1,57 @@
+{
+    "goalkit.projectType": "goal-driven",
+    "goalkit.visionFile": ".goalkit/vision.md",
+    "goalkit.goalsDirectory": "goals",
+    "goalkit.enableSlashCommands": true,
+    "goalkit.slashCommands": [
+        "/goalkit.vision",
+        "/goalkit.goal",
+        "/goalkit.strategies",
+        "/goalkit.milestones",
+        "/goalkit.execute",
+        "/goalkit.explore",
+        "/goalkit.measure",
+        "/goalkit.adapt"
+    ],
+    "files.associations": {
+        "*.md": "markdown",
+        "goal.md": "markdown",
+        "strategies.md": "markdown",
+        "milestones.md": "markdown",
+        "execution.md": "markdown"
+    },
+    "markdown.preview.breaks": true,
+    "markdown.preview.typographer": true,
+    "markdown.extensions.includes": [
+        "markdown-language-features"
+    ],
+    "git.confirmSync": false,
+    "git.autofetch": true,
+    "editor.formatOnSave": true,
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+        "markdown": true,
+        "comments": "off"
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/dist": true,
+        "**/.git": false,
+        "**/*.log": true
+    },
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/dist": true,
+        "**/.git/objects": true,
+        "**/*.log": true
+    },
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": false,
+    "explorer.fileNesting.patterns": {
+        "*.md": "${capture}.md",
+        "goal.md": "goal.md,strategies.md,milestones.md,execution.md,actions.md",
+        "strategies.md": "goal.md,strategies.md,milestones.md,execution.md",
+        "milestones.md": "goal.md,strategies.md,milestones.md,execution.md",
+        "execution.md": "goal.md,strategies.md,milestones.md,execution.md"
+    }
+}

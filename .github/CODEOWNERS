@@ -1,0 +1,22 @@
+# Goal Kit CODEOWNERS
+# This file defines the code owners for different parts of the repository
+
+# Repository administrators
+* @Nom-nom-hub/goal-kit
+
+# Documentation
+*.md @Nom-nom-hub/goal-kit
+
+# Core CLI tool
+/src/ @Nom-nom-hub/goal-kit
+/pyproject.toml @Nom-nom-hub/goal-kit
+
+# Templates and memory
+/templates/ @Nom-nom-hub/goal-kit
+/memory/ @Nom-nom-hub/goal-kit
+
+# Scripts
+/scripts/ @Nom-nom-hub/goal-kit
+
+# GitHub workflows
+/.github/ @Nom-nom-hub/goal-kit
