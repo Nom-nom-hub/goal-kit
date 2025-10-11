@@ -35,6 +35,7 @@ import json
 import re
 from pathlib import Path
 from typing import Optional, Tuple
+from datetime import datetime
 
 import typer
 import httpx
@@ -1395,6 +1396,290 @@ def automate(
     else:
         console.print(f"[red]Error: Unknown automation action '{action}'. Use 'create-goal', 'update-status', or 'generate-templates'.[/red]")
         raise typer.Exit(code=1)
+
+
+@app.command()
+def tasks(
+    goal_dir: Path = typer.Argument(None, help="Path to the goal directory (default: current directory)"),
+    milestone: str = typer.Option(None, "--milestone", "-m", help="Specific milestone to create tasks for"),
+    output_file: Path = typer.Option(None, "--output", "-o", help="File to save the tasks (optional)"),
+    priority: str = typer.Option("auto", "--priority", "-p", help="Default priority for tasks: auto, P0, P1, P2, P3"),
+    format: str = typer.Option("markdown", "--format", "-f", help="Output format: markdown, checklist, json"),
+):
+    """Create actionable tasks for goals and milestones to enable focused execution."""
+    show_banner()
+
+    console.print("[bold cyan]Creating Tasks for Goal Execution[/bold cyan]\n")
+
+    # Find the goal directory
+    if goal_dir is None:
+        goal_dir = Path.cwd()
+
+    # Look for goal files in the current directory or .goalkit/goals subdirectory
+    goal_file = goal_dir / "goal.md"
+    if not goal_file.exists():
+        # Check if we're in a goal directory within .goalkit/goals
+        if (goal_dir / ".goalkit").exists():
+            goals_dir = goal_dir / ".goalkit" / "goals"
+            if goals_dir.exists():
+                # Find the first goal directory
+                goal_dirs = [d for d in goals_dir.iterdir() if d.is_dir()]
+                if goal_dirs:
+                    goal_dir = goal_dirs[0]
+                    goal_file = goal_dir / "goal.md"
+
+    if not goal_file.exists():
+        console.print(f"[red]Error: goal.md file not found in {goal_dir}[/red]")
+        console.print("[yellow]Tip: Run this command from a goal directory or specify the path with --goal-dir[/yellow]")
+        raise typer.Exit(code=1)
+
+    # Read the goal file to understand context
+    try:
+        content = goal_file.read_text(encoding='utf-8')
+    except Exception as e:
+        console.print(f"[red]Error reading goal file:[/red] {e}")
+        raise typer.Exit(code=1)
+
+    # Extract goal information
+    goal_title_match = re.search(r'^# Goal Definition: (.*)', content, re.MULTILINE)
+    goal_title = goal_title_match.group(1) if goal_title_match else "Unknown Goal"
+
+    console.print(f"[cyan]Goal:[/cyan] {goal_title}")
+    console.print(f"[cyan]Directory:[/cyan] {goal_dir.name}\n")
+
+    # Extract milestones if available
+    milestones_section = re.search(r'## 🚀 Goal Milestones(.*?)(?=## \\w|\\Z)', content, re.DOTALL)
+    milestones = []
+
+    if milestones_section:
+        milestone_pattern = r'### (Milestone [0-9]+:.*?)\\n\\*\\*Description:\\*\\*(.*?)\\n\\*\\*Success Indicators:\\*\\*(.*?)\\n\\*\\*Validation Method:\\*\\*(.*?)\\n\\*\\*Expected Timeline:\\*\\*(.*?)(?=\\n---|\\n### |$)'
+        milestone_matches = re.findall(milestone_pattern, milestones_section.group(1), re.DOTALL)
+
+        for i, (title, description, indicators, validation, timeline) in enumerate(milestone_matches, 1):
+            milestones.append({
+                "id": i,
+                "title": title.strip(),
+                "description": description.strip(),
+                "indicators": indicators.strip(),
+                "validation": validation.strip(),
+                "timeline": timeline.strip()
+            })
+
+    if not milestones:
+        console.print("[yellow]No milestones found in goal file. Creating general tasks for goal execution.[/yellow]\n")
+        # Create general tasks for the overall goal
+        tasks_content = f"""# Tasks for: {goal_title}
+
+**Goal Directory**: `{goal_dir.name}`
+**Created**: {datetime.now().strftime('%Y-%m-%d')}
+**Status**: Draft
+
+## 🎯 Goal Context
+{goal_title}
+
+## 📋 Task Breakdown
+
+### Priority 0 (Critical Path) - Foundation
+- [ ] **Goal Analysis**: Review goal requirements and success criteria in detail
+- [ ] **Context Setup**: Establish development environment and gather necessary resources
+- [ ] **Initial Planning**: Create high-level implementation approach
+
+### Priority 1 (High) - Core Implementation
+- [ ] **Core Development**: Implement primary goal functionality
+- [ ] **Testing Framework**: Set up testing structure and validation methods
+- [ ] **Integration Points**: Connect with existing systems and dependencies
+
+### Priority 2 (Medium) - Enhancement
+- [ ] **Feature Polish**: Refine user experience and interface design
+- [ ] **Performance Optimization**: Ensure responsive and efficient operation
+- [ ] **Documentation**: Create user and technical documentation
+
+### Priority 3 (Low) - Optimization
+- [ ] **Advanced Features**: Add nice-to-have enhancements
+- [ ] **Analytics Integration**: Implement tracking and measurement
+- [ ] **Future Planning**: Prepare for scaling and maintenance
+
+## 🔧 Execution Guidelines
+
+### Development Approach
+- Focus on testable, incremental progress
+- Regular validation against success criteria
+- Maintain clear documentation of decisions
+- Seek feedback at each major milestone
+
+### Quality Standards
+- Code follows project conventions and best practices
+- Features meet defined acceptance criteria
+- Testing covers critical user journeys
+- Documentation is clear and complete
+
+---
+*These tasks provide a structured approach to achieving the goal. Update priorities and add specific tasks as the project evolves.*
+"""
+    else:
+        console.print(f"[green]Found {len(milestones)} milestone(s) to create tasks for[/green]\n")
+
+        if milestone:
+            # Filter to specific milestone if provided
+            milestone_num = milestone.replace("Milestone ", "").strip()
+            filtered_milestones = [m for m in milestones if f"Milestone {milestone_num}" in m["title"]]
+            if not filtered_milestones:
+                console.print(f"[red]Error: Milestone '{milestone}' not found[/red]")
+                raise typer.Exit(code=1)
+            milestones = filtered_milestones
+
+        # Generate tasks for each milestone
+        tasks_content = f"""# Tasks for: {goal_title}
+
+**Goal Directory**: `{goal_dir.name}`
+**Created**: {datetime.now().strftime('%Y-%m-%d')}
+**Status**: Draft
+
+## 🎯 Goal Context
+{goal_title}
+
+## 📋 Milestone-Based Task Breakdown
+
+"""
+
+        for milestone_info in milestones:
+            tasks_content += f"""### {milestone_info['title']}
+
+**Description**: {milestone_info['description']}
+**Success Indicators**: {milestone_info['indicators']}
+**Timeline**: {milestone_info['timeline']}
+
+#### Priority 1 (Core) Tasks
+- [ ] **Analysis & Design**: Analyze requirements and design approach for this milestone
+- [ ] **Core Implementation**: Build the primary functionality for this milestone
+- [ ] **Validation**: Test against success indicators and validation criteria
+- [ ] **Integration**: Connect with other components and systems
+
+#### Priority 2 (Supporting) Tasks
+- [ ] **Documentation**: Document the milestone implementation and decisions
+- [ ] **Testing**: Create comprehensive tests for milestone functionality
+- [ ] **Review**: Conduct peer review and stakeholder feedback
+- [ ] **Refinement**: Polish based on feedback and testing results
+
+---
+
+"""
+
+        tasks_content += """## 🎯 Overall Goal Tasks
+
+### Priority 1 (Critical) - Project Management
+- [ ] **Progress Tracking**: Set up systems to track milestone and task progress
+- [ ] **Stakeholder Communication**: Establish regular updates for project stakeholders
+- [ ] **Risk Management**: Identify and monitor potential issues and dependencies
+
+### Priority 2 (Important) - Quality Assurance
+- [ ] **Cross-Milestone Integration**: Ensure milestones work together cohesively
+- [ ] **Performance Validation**: Verify system meets performance requirements
+- [ ] **User Experience Review**: Validate overall user experience across milestones
+
+### Priority 3 (Enhancement) - Optimization
+- [ ] **Efficiency Improvements**: Identify opportunities to streamline implementation
+- [ ] **Knowledge Transfer**: Document learnings for future projects
+- [ ] **Process Refinement**: Improve development processes based on experience
+
+## 🔧 Execution Framework
+
+### Task Management
+- **Regular Updates**: Keep task status current and accurate
+- **Blocker Escalation**: Raise issues preventing progress immediately
+- **Completion Validation**: Ensure tasks meet quality standards before marking complete
+- **Learning Capture**: Document insights, decisions, and adaptations
+
+### Quality Standards
+- **Acceptance Criteria**: Each task must meet defined completion standards
+- **Testing Requirements**: Critical tasks require appropriate testing
+- **Documentation**: Important decisions and implementations are documented
+- **Review Process**: Complex tasks undergo peer review
+
+---
+*These tasks break down the goal into actionable work items aligned with milestones. Update priorities and add specific technical tasks as implementation details become clear.*
+"""
+
+    # Determine output file path
+    if output_file:
+        output_path = output_file
+    else:
+        output_path = goal_dir / "tasks.md"
+
+    # Handle different output formats
+    if format == "checklist":
+        # Convert to checklist format
+        checklist_content = f"""# Task Checklist for: {goal_title}
+
+**Goal Directory**: `{goal_dir.name}`
+**Created**: {datetime.now().strftime('%Y-%m-%d')}
+
+## 📋 Actionable Checklist
+
+"""
+        # Simple conversion to checklist items (this could be enhanced)
+        lines = tasks_content.split('\n')
+        for line in lines:
+            if line.strip().startswith('- [ ]'):
+                checklist_content += f"{line}\n"
+            elif line.strip().startswith('- [x]'):
+                checklist_content += f"{line}\n"
+            elif line.startswith('### ') or line.startswith('## '):
+                checklist_content += f"\n{line}\n"
+
+        tasks_content = checklist_content
+
+    elif format == "json":
+        # Convert to JSON structure (simplified)
+        json_content = {
+            "goal": goal_title,
+            "directory": goal_dir.name,
+            "created": datetime.now().strftime('%Y-%m-%d'),
+            "milestones": [
+                {
+                    "title": m["title"],
+                    "description": m["description"],
+                    "tasks": [
+                        {"priority": "P1", "description": "Core implementation task", "status": "pending"},
+                        {"priority": "P2", "description": "Supporting task", "status": "pending"}
+                    ]
+                } for m in milestones
+            ]
+        }
+
+        import json
+        tasks_content = json.dumps(json_content, indent=2)
+
+        # Update output path for JSON
+        if not output_file:
+            output_path = goal_dir / "tasks.json"
+
+    # Write the tasks file
+    try:
+        output_path.write_text(tasks_content, encoding='utf-8')
+        console.print(f"[green]+[/green] Tasks {format} created successfully!")
+        console.print(f"[cyan]File:[/cyan] {output_path}")
+
+        if format == "markdown":
+            task_count = len([line for line in tasks_content.split('\n') if line.strip().startswith('- [ ]')])
+            console.print(f"[cyan]Tasks:[/cyan] {task_count} items")
+        elif format == "checklist":
+            checklist_count = len([line for line in tasks_content.split('\n') if line.strip().startswith('- [ ]')])
+            console.print(f"[cyan]Checklist items:[/cyan] {checklist_count} items")
+        elif format == "json":
+            console.print(f"[cyan]JSON structure:[/cyan] Goal with {len(json_content.get('milestones', []))} milestones")
+
+    except Exception as e:
+        console.print(f"[red]Error writing tasks file:[/red] {e}")
+        raise typer.Exit(code=1)
+
+    # Show next steps
+    console.print("\n[bold]Next Steps:[/bold]")
+    console.print("1. [cyan]Review and customize[/cyan] the generated tasks for your specific needs")
+    console.print("2. [cyan]Update priorities[/cyan] based on your current context and resources")
+    console.print("3. [cyan]Add specific technical tasks[/cyan] as implementation details become clear")
+    console.print("4. [cyan]Start executing[/cyan] Priority 0 and Priority 1 tasks")
+    console.print("5. [cyan]Track progress[/cyan] and update task status regularly")
 
 
 @app.command()
