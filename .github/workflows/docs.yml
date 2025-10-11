@@ -46,11 +46,8 @@ jobs:
 
       - name: Copy docs to root for MkDocs build
         run: |
-          cp -r docs/* . 2>/dev/null || true
-          # If index.md doesn't exist in root, copy from docs
-          if [ ! -f index.md ]; then
-            cp docs/index.md . 2>/dev/null || true
-          fi
+          mkdir -p docs
+          cp -r docs/* docs/ 2>/dev/null || true
 
       - name: Create mkdocs.yml
         run: |
