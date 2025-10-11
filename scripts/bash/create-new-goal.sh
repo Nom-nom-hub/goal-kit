@@ -142,7 +142,7 @@ fi
 mkdir -p "$GOAL_DIR"
 log_success "Created goal directory: $GOAL_DIR"
 
-# Create goal.md file
+# Create goal.md file with better structure and guidance
 cat > "$GOAL_DIR/goal.md" << EOF
 # Goal Definition: ${GOAL_DESCRIPTION}
 

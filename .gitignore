@@ -16,7 +16,7 @@ goals/*/temp/
 .augment/
 .roo/
 .amazonq/
-
+QWEN.md
 # Python
 __pycache__/
 *.py[cod]
