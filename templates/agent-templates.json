@@ -108,5 +108,27 @@
       }
     },
     "ai_prompt_style": "comprehensive_detailed"
+  },
+  "kilocode": {
+    "name": "Kilo Code",
+    "description": "Kilo Code IDE agent optimized for efficient development",
+    "template_modifiers": {
+      "vision": {
+        "principles_count": "3-5",
+        "focus": "practical_implementation",
+        "style": "efficient"
+      },
+      "goal": {
+        "metrics_count": "2-3",
+        "hypothesis_style": "practical",
+        "validation_approach": "implementation_focused"
+      },
+      "strategies": {
+        "options_per_dimension": "2-3",
+        "comparison_depth": "practical",
+        "risk_assessment": "development_focused"
+      }
+    },
+    "ai_prompt_style": "efficient_practical"
   }
 }

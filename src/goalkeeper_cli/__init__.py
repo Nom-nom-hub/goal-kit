@@ -122,6 +122,12 @@ AI_AGENT_CONFIG = {
     "focus": "thorough_coverage",
     "principles_count": "4-6",
     "description": "Qwen agent optimized for comprehensive, detailed analysis"
+},
+"kilocode": {
+    "template_style": "efficient_practical",
+    "focus": "implementation_guidance",
+    "principles_count": "3-5",
+    "description": "Kilo Code IDE optimized for efficient development work"
 }
 }
 
