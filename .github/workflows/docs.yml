@@ -55,7 +55,6 @@ jobs:
           site_name: Goal Kit Documentation
           site_description: Goal-Driven Development Toolkit
           site_author: Nom-nom-hub
-          docs_dir: '.'
 
           theme:
             name: material
