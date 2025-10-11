@@ -49,6 +49,16 @@ from rich.table import Table
 from rich.tree import Tree
 from typer.core import TyperGroup
 
+# Import memory system
+try:
+    from .memory import ProjectMemory, AISessionMemory, CrossProjectInsights, extract_goal_learnings
+except ImportError:
+    # Fallback if memory module not available
+    ProjectMemory = None
+    AISessionMemory = None
+    CrossProjectInsights = None
+    extract_goal_learnings = None
+
 # For cross-platform keyboard input
 import readchar
 import ssl
@@ -275,21 +285,24 @@ def validate_ai_response(response_content: str, response_type: str) -> dict:
 
     return validation_results
 
-def log_ai_interaction(agent_name: str, command: str, success: bool, validation_score: int = None):
-    """Log AI agent interactions for performance analytics."""
+def log_ai_interaction(agent_name: str, command: str, success: bool, validation_score: int = None, user_input: str = "", ai_response: str = ""):
+    """Log AI agent interactions for performance analytics and memory system."""
     import json
     from datetime import datetime
 
+    # Enhanced log entry with more context
     log_entry = {
         "timestamp": datetime.now().isoformat(),
         "agent": agent_name,
         "command": command,
         "success": success,
         "validation_score": validation_score,
-        "session_id": getattr(app, '_session_id', 'unknown')
+        "user_input_summary": user_input[:200] + "..." if len(user_input) > 200 else user_input,
+        "response_summary": ai_response[:200] + "..." if len(ai_response) > 200 else ai_response,
+        "session_id": getattr(app, '_current_session_id', 'unknown')
     }
 
-    # Append to AI interaction log
+    # Append to AI interaction log (legacy support)
     log_file = Path.cwd() / ".goalkit" / "ai_interactions.jsonl"
     try:
         log_file.parent.mkdir(exist_ok=True)
@@ -297,6 +310,21 @@ def log_ai_interaction(agent_name: str, command: str, success: bool, validation_
             f.write(json.dumps(log_entry) + '\n')
     except Exception as e:
         console.print(f"[yellow]Warning: Could not log AI interaction: {e}[/yellow]")
+
+    # Enhanced memory system integration
+    if AISessionMemory:
+        try:
+            session_memory = AISessionMemory(Path.cwd())
+            if not hasattr(app, '_current_session_id') or app._current_session_id == 'unknown':
+                app._current_session_id = session_memory.start_session(agent_name)
+
+            # Add interaction to memory with enhanced context
+            success_score = validation_score if validation_score is not None else (10 if success else 3)
+            session_memory.add_interaction(command, user_input, ai_response, success_score)
+
+        except Exception as e:
+            # Don't fail if memory system has issues
+            console.print(f"[dim]Memory system: {e}[/dim]")
 
 def select_with_arrows(options: dict, prompt_text: str = "Select an option", default_key: str = None) -> str:
     """
@@ -2240,6 +2268,239 @@ def benchmark_project(
 
     console.print("
 [green]Benchmarking framework established. Use /goalkit.benchmark for comprehensive AI-powered benchmarking.[/green]")
+
+@app.command()
+def memory_status(
+    project_path: Path = typer.Argument(Path.cwd(), help="Path to the project directory"),
+    show_details: bool = typer.Option(False, "--details", help="Show detailed memory statistics")
+):
+    """Display memory system status and learning insights."""
+    show_banner()
+
+    console.print("[bold cyan]🧠 Memory System Status[/bold cyan]")
+    console.print(f"Project: {project_path.name}\n")
+
+    if not ProjectMemory:
+        console.print("[red]Memory system not available[/red]")
+        return
+
+    try:
+        memory = ProjectMemory(project_path)
+
+        # Check memory structure
+        console.print("[cyan]Memory Structure:[/cyan]")
+        console.print(f"• Memory directory: {'✅' if memory.memory_path.exists() else '❌'}")
+        console.print(f"• Projects data: {'✅' if memory.projects_path.exists() else '❌'}")
+        console.print(f"• Sessions data: {'✅' if memory.sessions_path.exists() else '❌'}")
+        console.print(f"• Insights data: {'✅' if memory.insights_path.exists() else '❌'}")
+
+        # Get project patterns
+        patterns = memory.get_project_patterns()
+
+        if patterns["patterns"]:
+            console.print("
+[bold]Project Statistics:[/bold]")
+            total_goals = patterns["patterns"].get("total_goals", 0)
+            success_rate = patterns["patterns"].get("success_rate", 0)
+            avg_score = patterns["patterns"].get("average_success_score", 0)
+
+            console.print(f"• Total goals tracked: {total_goals}")
+            console.print(f"• Success rate: [green]{success_rate:.1%}[/green]")
+            console.print(f"• Average success score: [cyan]{avg_score:.1f}/10[/cyan]")
+
+            if show_details:
+                console.print("
+[bold]Top Success Factors:[/bold]")
+                for factor, count in patterns["patterns"].get("common_success_factors", []):
+                    console.print(f"• {factor} ({count} times)")
+
+                console.print("
+[bold]Key Insights:[/bold]")
+                for insight in patterns.get("insights", []):
+                    console.print(f"• {insight}")
+
+        console.print("
+[green]Memory system operational[/green]")
+
+    except Exception as e:
+        console.print(f"[red]Error accessing memory: {e}[/red]")
+
+@app.command()
+def learn_extract(
+    goal_name: str = typer.Argument(..., help="Name of the completed goal to extract learnings from"),
+    project_path: Path = typer.Argument(Path.cwd(), help="Path to the project directory"),
+    success_score: int = typer.Option(7, "--score", "-s", help="Success score 1-10")
+):
+    """Extract learnings from a completed goal and add to memory system."""
+    show_banner()
+
+    console.print("[bold cyan]📚 Learning Extraction[/bold cyan]")
+    console.print(f"Extracting learnings from goal: {goal_name}\n")
+
+    if not ProjectMemory:
+        console.print("[red]Memory system not available[/red]")
+        return
+
+    try:
+        # Find the goal
+        goal_path = project_path / ".goalkit" / "goals" / goal_name
+        if not goal_path.exists():
+            console.print(f"[red]Goal '{goal_name}' not found[/red]")
+            # Show available goals
+            goals_dir = project_path / ".goalkit" / "goals"
+            if goals_dir.exists():
+                available_goals = [d.name for d in goals_dir.iterdir() if d.is_dir()]
+                console.print(f"[yellow]Available goals: {', '.join(available_goals)}[/yellow]")
+            return
+
+        # Extract learnings
+        learnings = extract_goal_learnings(goal_path)
+        learnings["success_score"] = success_score
+
+        # Add to memory system
+        memory = ProjectMemory(project_path)
+        memory.record_goal_completion(goal_name, learnings)
+
+        console.print(f"[green]✅ Learnings extracted and stored[/green]")
+        console.print(f"• Success score: {success_score}/10")
+        console.print(f"• Milestones found: {learnings['milestone_count']}")
+        console.print(f"• Learnings captured: {len(learnings['key_learnings'])}")
+
+        # Show next steps
+        console.print("
+[bold]Next Steps:[/bold]")
+        console.print("• Use [cyan]goalkeeper memory-status[/cyan] to view memory insights")
+        console.print("• Use [cyan]goalkeeper insights-project[/cyan] for AI-powered analysis")
+
+    except Exception as e:
+        console.print(f"[red]Error extracting learnings: {e}[/red]")
+
+@app.command()
+def memory_insights(
+    project_path: Path = typer.Argument(Path.cwd(), help="Path to the project directory"),
+    include_patterns: bool = typer.Option(True, "--patterns", help="Include pattern analysis")
+):
+    """Get AI-powered insights from project memory and learning data."""
+    show_banner()
+
+    console.print("[bold cyan]💡 Memory-Driven Insights[/bold cyan]")
+    console.print(f"Generating insights for: {project_path.name}\n")
+
+    if not ProjectMemory:
+        console.print("[red]Memory system not available[/red]")
+        return
+
+    try:
+        memory = ProjectMemory(project_path)
+        patterns = memory.get_project_patterns()
+
+        if not patterns["patterns"]:
+            console.print("[yellow]No project data available for insights[/yellow]")
+            console.print("[cyan]Next: Use 'goalkeeper learn-extract <goal>' to add learning data[/cyan]")
+            return
+
+        # Display insights
+        console.print("[bold]📊 Project Performance:[/bold]")
+        stats = patterns["patterns"]
+        console.print(f"• Goals tracked: {stats.get('total_goals', 0)}")
+        console.print(f"• Success rate: [green]{stats.get('success_rate', 0):.1%}[/green]")
+        console.print(f"• Average score: [cyan]{stats.get('average_success_score', 0):.1f}/10[/cyan]")
+
+        if include_patterns and patterns.get("insights"):
+            console.print("
+[bold]🔍 Key Insights:[/bold]")
+            for insight in patterns["insights"]:
+                console.print(f"• {insight}")
+
+        if patterns.get("recommendations"):
+            console.print("
+[bold]🎯 Recommendations:[/bold]")
+            for rec in patterns["recommendations"]:
+                console.print(f"• {rec}")
+
+        # Cross-project insights
+        try:
+            cross_insights = CrossProjectInsights(memory)
+            best_practices = cross_insights.get_best_practices()
+
+            if best_practices["success_factors"]:
+                console.print("
+[bold]🏆 Best Practices:[/bold]")
+                for factor, count in best_practices["success_factors"][:3]:
+                    console.print(f"• {factor} ({count} projects)")
+
+        except Exception as e:
+            console.print(f"[dim]Cross-project analysis: {e}[/dim]")
+
+        console.print("
+[green]Insights complete. Use /goalkit.insights for AI-powered analysis.[/green]")
+
+    except Exception as e:
+        console.print(f"[red]Error generating insights: {e}[/red]")
+
+@app.command()
+def memory_patterns(
+    project_path: Path = typer.Argument(Path.cwd(), help="Path to the project directory"),
+    pattern_type: str = typer.Option("success", "--type", help="Pattern type: success, failure, or process")
+):
+    """Analyze patterns in project memory for continuous improvement."""
+    show_banner()
+
+    console.print("[bold cyan]🔍 Pattern Analysis[/bold cyan]")
+    console.print(f"Analyzing {pattern_type} patterns in: {project_path.name}\n")
+
+    if not ProjectMemory:
+        console.print("[red]Memory system not available[/red]")
+        return
+
+    try:
+        memory = ProjectMemory(project_path)
+        patterns = memory.get_project_patterns()
+
+        if not patterns["patterns"]:
+            console.print("[yellow]No pattern data available[/yellow]")
+            return
+
+        console.print(f"[bold]{pattern_type.title()} Patterns:[/bold]")
+
+        if pattern_type == "success" and patterns["patterns"].get("common_success_factors"):
+            console.print("
+🟢 Success Factors:")
+            for factor, count in patterns["patterns"]["common_success_factors"]:
+                console.print(f"• {factor} ({count} occurrences)")
+
+        elif pattern_type == "failure" and patterns["patterns"].get("common_challenges"):
+            console.print("
+🔴 Common Challenges:")
+            for challenge, count in patterns["patterns"]["common_challenges"]:
+                console.print(f"• {challenge} ({count} occurrences)")
+
+        elif pattern_type == "process":
+            console.print("
+🔄 Process Patterns:")
+            if patterns.get("insights"):
+                for insight in patterns["insights"]:
+                    console.print(f"• {insight}")
+
+        # Risk pattern detection
+        try:
+            cross_insights = CrossProjectInsights(memory)
+            risk_patterns = cross_insights.detect_risk_patterns()
+
+            if risk_patterns:
+                console.print("
+⚠️ Risk Patterns Detected:")
+                for risk in risk_patterns[:5]:
+                    console.print(f"• {risk}")
+
+        except Exception as e:
+            console.print(f"[dim]Risk analysis: {e}[/dim]")
+
+        console.print("
+[green]Pattern analysis complete[/green]")
+
+    except Exception as e:
+        console.print(f"[red]Error analyzing patterns: {e}[/red]")
 
 @app.command()
 def check():
