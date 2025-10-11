@@ -49,33 +49,9 @@ jobs:
           mkdir -p docs
           cp -r docs/* docs/ 2>/dev/null || true
 
-      - name: Create mkdocs.yml
+      - name: Copy mkdocs.yml to root
         run: |
-          cat > mkdocs.yml << 'EOF'
-          site_name: Goal Kit Documentation
-          site_description: Goal-Driven Development Toolkit
-          site_author: Nom-nom-hub
-
-          theme:
-            name: material
-            palette:
-              primary: green
-              accent: green
-
-          nav:
-            - Home: index.md
-            - Goal-Driven Development: goal-driven.md
-            - Comparison: comparison.md
-            - Examples: examples.md
-            - Table of Contents: toc.md
-            - README: README.md
-
-          markdown_extensions:
-            - admonition
-            - codehilite
-            - toc:
-                permalink: true
-          EOF
+          cp docs/mkdocs.yml mkdocs.yml 2>/dev/null || true
 
       - name: Build with MkDocs
         run: mkdocs build
