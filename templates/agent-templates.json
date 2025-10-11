@@ -1,0 +1,112 @@
+{
+  "claude": {
+    "name": "Claude Code",
+    "description": "Anthropic's Claude agent optimized for thoughtful analysis",
+    "template_modifiers": {
+      "vision": {
+        "principles_count": "4-6",
+        "focus": "detailed_analysis",
+        "style": "comprehensive"
+      },
+      "goal": {
+        "metrics_count": "2-3",
+        "hypothesis_style": "detailed",
+        "validation_approach": "thorough"
+      },
+      "strategies": {
+        "options_per_dimension": "3-4",
+        "comparison_depth": "detailed",
+        "risk_assessment": "comprehensive"
+      }
+    },
+    "ai_prompt_style": "analytical_detailed"
+  },
+  "copilot": {
+    "name": "GitHub Copilot",
+    "description": "GitHub's Copilot optimized for code-focused development",
+    "template_modifiers": {
+      "vision": {
+        "principles_count": "3-5",
+        "focus": "practical_implementation",
+        "style": "concise"
+      },
+      "goal": {
+        "metrics_count": "2-3",
+        "hypothesis_style": "practical",
+        "validation_approach": "code_focused"
+      },
+      "strategies": {
+        "options_per_dimension": "2-3",
+        "comparison_depth": "practical",
+        "risk_assessment": "development_focused"
+      }
+    },
+    "ai_prompt_style": "practical_concise"
+  },
+  "gemini": {
+    "name": "Gemini CLI",
+    "description": "Google's Gemini optimized for creative problem-solving",
+    "template_modifiers": {
+      "vision": {
+        "principles_count": "3-5",
+        "focus": "innovative_solutions",
+        "style": "creative"
+      },
+      "goal": {
+        "metrics_count": "2-4",
+        "hypothesis_style": "creative",
+        "validation_approach": "experimental"
+      },
+      "strategies": {
+        "options_per_dimension": "3-5",
+        "comparison_depth": "creative",
+        "risk_assessment": "innovative"
+      }
+    },
+    "ai_prompt_style": "creative_exploratory"
+  },
+  "cursor": {
+    "name": "Cursor",
+    "description": "Cursor IDE agent optimized for focused development",
+    "template_modifiers": {
+      "vision": {
+        "principles_count": "3-4",
+        "focus": "implementation_guidance",
+        "style": "focused"
+      },
+      "goal": {
+        "metrics_count": "2-3",
+        "hypothesis_style": "focused",
+        "validation_approach": "direct"
+      },
+      "strategies": {
+        "options_per_dimension": "2-3",
+        "comparison_depth": "focused",
+        "risk_assessment": "practical"
+      }
+    },
+    "ai_prompt_style": "focused_practical"
+  },
+  "qwen": {
+    "name": "Qwen Code",
+    "description": "Qwen agent optimized for comprehensive analysis",
+    "template_modifiers": {
+      "vision": {
+        "principles_count": "4-6",
+        "focus": "comprehensive_coverage",
+        "style": "detailed"
+      },
+      "goal": {
+        "metrics_count": "3-4",
+        "hypothesis_style": "comprehensive",
+        "validation_approach": "thorough"
+      },
+      "strategies": {
+        "options_per_dimension": "3-4",
+        "comparison_depth": "comprehensive",
+        "risk_assessment": "detailed"
+      }
+    },
+    "ai_prompt_style": "comprehensive_detailed"
+  }
+}

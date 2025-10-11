@@ -1,5 +1,26 @@
 # /goalkit.vision Command
 
+## AI AGENT INSTRUCTIONS
+
+When processing `/goalkit.vision` requests, follow this structured approach:
+
+### Input Analysis
+1. **Extract Core Purpose**: Identify the fundamental mission and desired outcomes from user input
+2. **Define Success Metrics**: Convert user descriptions into specific, measurable success criteria
+3. **Generate Principles**: Create actionable guiding principles with clear AI application guidance
+4. **Align Goals**: Ensure generated goals support the vision and have measurable outcomes
+
+### Processing Framework
+- Focus on outcomes over implementation details
+- Generate specific, quantifiable success metrics (percentages, timeframes, user counts)
+- Create 4-6 actionable principles that guide AI decision-making
+- Ensure vision provides foundation for goal-driven development workflow
+
+### Output Structure
+Use the template sections below to structure your response. Maintain consistency with existing project context and ensure all sections are populated with actionable content.
+
+---
+
 ## Overview
 
 The `/goalkit.vision` command establishes your project's foundational vision, values, and success criteria that will guide all subsequent goal-driven development activities.

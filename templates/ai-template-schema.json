@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0",
+  "template_structure": {
+    "vision": {
+      "required_sections": [
+        "project_purpose",
+        "success_metrics",
+        "guiding_principles",
+        "project_goals",
+        "project_scope"
+      ],
+      "ai_processing_notes": [
+        "Focus on extracting core mission from user input",
+        "Generate 2-3 specific, measurable success metrics",
+        "Create 4-6 actionable principles with clear AI guidance",
+        "Ensure goals align with vision and have measurable outcomes"
+      ],
+      "output_validation": {
+        "min_principles": 4,
+        "max_principles": 6,
+        "required_metrics": ["primary", "secondary"],
+        "structure_check": "markdown_headings"
+      }
+    },
+    "goal": {
+      "required_sections": [
+        "goal_overview",
+        "success_metrics",
+        "target_users",
+        "goal_hypotheses",
+        "goal_milestones"
+      ],
+      "ai_processing_notes": [
+        "Convert user outcome descriptions into measurable goals",
+        "Generate specific success criteria with targets",
+        "Frame assumptions as testable hypotheses",
+        "Create milestones with clear validation methods"
+      ],
+      "output_validation": {
+        "min_metrics": 2,
+        "max_metrics": 4,
+        "hypothesis_format": "if_then_statement",
+        "milestone_count": "3-5"
+      }
+    },
+    "strategies": {
+      "required_sections": [
+        "strategy_exploration",
+        "strategy_comparison",
+        "recommended_strategy",
+        "validation_experiments"
+      ],
+      "ai_processing_notes": [
+        "Explore multiple valid approaches (not single solution)",
+        "Compare across technical, UX, and business dimensions",
+        "Evaluate against goal success criteria",
+        "Frame as testable hypotheses"
+      ],
+      "output_validation": {
+        "min_strategies_per_dimension": 2,
+        "max_strategies_per_dimension": 4,
+        "comparison_criteria": ["feasibility", "effort", "risk", "learning"],
+        "recommendation_rationale": "required"
+      }
+    },
+    "milestones": {
+      "required_sections": [
+        "milestone_definitions",
+        "progress_tracking",
+        "review_process",
+        "success_validation"
+      ],
+      "ai_processing_notes": [
+        "Break goals into measurable progress steps",
+        "Focus on learning and hypothesis validation",
+        "Create clear success indicators for each milestone",
+        "Sequence to validate riskiest assumptions first"
+      ],
+      "output_validation": {
+        "milestone_count": "3-5",
+        "validation_criteria": "required",
+        "learning_objectives": "required",
+        "progression_logic": "sequential"
+      }
+    },
+    "tasks": {
+      "required_sections": [
+        "task_definitions",
+        "task_organization",
+        "progress_tracking",
+        "quality_assurance"
+      ],
+      "ai_processing_notes": [
+        "Convert milestones into specific, actionable work items",
+        "Organize by priority (P0, P1, P2, P3) and dependencies",
+        "Define clear deliverables and completion criteria",
+        "Include supporting tasks for quality and testing"
+      ],
+      "output_validation": {
+        "task_count": "10-20",
+        "priority_distribution": "p0_10_p1_30_p2_40_p3_20",
+        "completion_criteria": "required",
+        "effort_estimation": "recommended"
+      }
+    }
+  },
+  "ai_guidance": {
+    "general_instructions": [
+      "Always focus on outcomes over implementation details",
+      "Generate specific, quantifiable success criteria",
+      "Frame work as hypothesis testing and learning",
+      "Maintain consistency with existing project context",
+      "Provide actionable guidance for AI decision-making"
+    ],
+    "context_awareness": [
+      "Check for existing vision before creating goals",
+      "Ensure goal alignment with established vision",
+      "Reference related goals when creating strategies",
+      "Maintain consistency with established principles"
+    ],
+    "quality_standards": [
+      "Use specific numbers and percentages in metrics",
+      "Create testable hypotheses with clear validation",
+      "Provide multiple strategy options with trade-offs",
+      "Include clear success criteria for all deliverables"
+    ]
+  }
+}

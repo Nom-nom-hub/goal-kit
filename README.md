@@ -135,10 +135,11 @@ The `goalkeeper` command supports the following options:
 
 ### Commands
 
-| Command     | Description                                                    |
-|-------------|----------------------------------------------------------------|
-| `init`      | Initialize a new Goalkeeper project from the latest template  |
-| `check`     | Check for installed tools (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`) |
+| Command       | Description                                                    |
+|---------------|----------------------------------------------------------------|
+| `init`        | Initialize a new Goalkeeper project from the latest template  |
+| `check`       | Check for installed tools (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`) |
+| `ai-analytics`| Display AI agent performance analytics and interaction insights |
 
 ### `goalkeeper init` Arguments & Options
 
@@ -154,6 +155,14 @@ The `goalkeeper` command supports the following options:
 | `--skip-tls`           | Flag     | Skip SSL/TLS verification (not recommended)                                 |
 | `--debug`              | Flag     | Enable detailed debug output for troubleshooting                            |
 | `--github-token`       | Option   | GitHub token for API requests (or set GH_TOKEN/GITHUB_TOKEN env variable)  |
+
+### `goalkeeper ai-analytics` Arguments & Options
+
+| Argument/Option | Type     | Description                                                                  |
+|-----------------|----------|------------------------------------------------------------------------------|
+| `--agent`       | Option   | Filter analytics by specific AI agent (e.g., `claude`, `copilot`)           |
+| `--days`        | Option   | Number of days to analyze (default: 30)                                     |
+| `--format`      | Option   | Output format: `table` (default), `json`, or `csv`                          |
 
 ### Available Slash Commands
 
@@ -180,6 +189,37 @@ Additional commands for enhanced exploration and validation:
 | `/goalkit.explore`   | Explore alternative approaches and what-if scenarios                 |
 | `/goalkit.measure`   | Define success metrics and measurement approaches                    |
 | `/goalkit.adapt`     | Adapt strategies based on results and learning                       |
+
+## 🚀 AI Agent Integration
+
+Goal Kit now includes enhanced AI agent integration for more effective slash command processing:
+
+### Enhanced Command Templates
+All slash command templates (`/goalkit.vision`, `/goalkit.goal`, etc.) now include:
+- **Clear AI processing instructions** for consistent, high-quality responses
+- **Structured input/output frameworks** for reliable AI agent parsing
+- **Agent-specific optimizations** tailored to different AI capabilities
+- **Built-in validation criteria** ensuring methodology compliance
+
+### AI Agent Optimization
+- **Claude**: Optimized for thoughtful, detailed analysis (4-6 principles)
+- **GitHub Copilot**: Optimized for practical, concise implementation (3-5 principles)
+- **Gemini**: Optimized for creative, exploratory approaches (3-5 principles)
+- **Cursor**: Optimized for focused, direct implementation (3-4 principles)
+- **Qwen**: Optimized for comprehensive, detailed coverage (4-6 principles)
+
+### Performance Analytics
+Monitor AI agent effectiveness with the new `goalkeeper ai-analytics` command:
+- Track success rates across different AI agents
+- Monitor response quality scores and validation compliance
+- Identify which agents work best for specific command types
+- Analyze interaction patterns and improvement opportunities
+
+### Quality Assurance
+- **Response validation** ensures AI outputs meet Goal Kit standards
+- **Methodology compliance** checking for outcome-focused language
+- **Consistency monitoring** across all generated documents
+- **Performance tracking** for continuous improvement
 
 ## 📚 Core philosophy
 

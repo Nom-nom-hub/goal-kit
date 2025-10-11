@@ -1,5 +1,26 @@
 # /goalkit.tasks Command
 
+## AI AGENT INSTRUCTIONS
+
+When processing `/goalkit.tasks` requests, follow this structured approach:
+
+### Input Analysis
+1. **Convert Milestones to Tasks**: Break milestone outcomes into specific, actionable work items
+2. **Create Task Hierarchy**: Organize tasks by priority (P0, P1, P2, P3) and dependency order
+3. **Define Clear Deliverables**: Specify concrete outputs and completion criteria for each task
+4. **Estimate Effort**: Provide realistic time estimates and resource requirements
+
+### Processing Framework
+- Focus on actionable activities that advance milestones toward goal achievement
+- Create specific, implementable tasks with clear "done" criteria
+- Organize by priority and logical execution sequence
+- Include supporting tasks for quality, testing, and documentation
+
+### Output Structure
+Use the template sections below to structure your response. Generate 10-20 focused tasks organized by priority and milestone alignment.
+
+---
+
 ## Overview
 
 The `/goalkit.tasks` command creates actionable tasks that break down goals and milestones into specific, implementable work items. Unlike milestones that focus on outcomes, tasks focus on concrete activities and deliverables.

@@ -1,5 +1,26 @@
 # /goalkit.strategies Command
 
+## AI AGENT INSTRUCTIONS
+
+When processing `/goalkit.strategies` requests, follow this structured approach:
+
+### Input Analysis
+1. **Identify Strategy Dimensions**: Extract technical, UX, and implementation approaches from user input
+2. **Generate Multiple Options**: Create 2-3 viable strategies for each dimension (technical, UX, implementation)
+3. **Evaluate Trade-offs**: Compare strategies across feasibility, effort, risk, and learning potential
+4. **Recommend Starting Point**: Suggest initial strategy with clear rationale and fallback options
+
+### Processing Framework
+- Explore multiple valid approaches (not just one "correct" solution)
+- Evaluate strategies against goal success criteria and vision principles
+- Consider technical feasibility, user experience quality, and business impact
+- Frame strategies as testable hypotheses with clear validation criteria
+
+### Output Structure
+Use the template sections below to structure your response. Provide balanced exploration of options with evidence-based recommendations and clear next steps.
+
+---
+
 ## Overview
 
 The `/goalkit.strategies` command explores multiple implementation approaches for achieving your defined goals. Unlike planning that focuses on a single solution, strategies emphasize exploration and comparison of different approaches.

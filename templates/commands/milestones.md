@@ -1,5 +1,26 @@
 # /goalkit.milestones Command
 
+## AI AGENT INSTRUCTIONS
+
+When processing `/goalkit.milestones` requests, follow this structured approach:
+
+### Input Analysis
+1. **Break Goals into Progress Steps**: Convert goal outcomes into measurable milestone definitions
+2. **Define Learning Objectives**: Identify what should be learned or validated at each milestone
+3. **Create Validation Criteria**: Establish clear success indicators for each milestone
+4. **Sequence for Learning**: Order milestones to validate riskiest assumptions first
+
+### Processing Framework
+- Focus on learning and validation, not just implementation activities
+- Create milestones that demonstrate measurable progress toward goals
+- Include clear success criteria and measurement approaches for each milestone
+- Ensure milestones build on each other and align with chosen strategies
+
+### Output Structure
+Use the template sections below to structure your response. Create 3-5 milestones that progressively validate the goal with increasing confidence and learning.
+
+---
+
 ## Overview
 
 The `/goalkit.milestones` command breaks goals into measurable progress steps that demonstrate movement toward goal achievement. Unlike tasks that focus on implementation activities, milestones focus on learning and validation.

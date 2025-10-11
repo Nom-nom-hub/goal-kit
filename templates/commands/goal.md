@@ -1,5 +1,26 @@
 # /goalkit.goal Command
 
+## AI AGENT INSTRUCTIONS
+
+When processing `/goalkit.goal` requests, follow this structured approach:
+
+### Input Analysis
+1. **Convert Outcomes to Goals**: Transform user descriptions of desired outcomes into structured goal definitions
+2. **Generate Success Metrics**: Create specific, measurable success criteria with targets and timelines
+3. **Define Testable Hypotheses**: Frame assumptions as testable hypotheses with clear validation methods
+4. **Structure Milestones**: Break goals into measurable progress steps with learning objectives
+
+### Processing Framework
+- Focus on user/business outcomes, not implementation features
+- Generate 2-3 primary metrics with specific, quantifiable targets (%, $, timeframes, user counts)
+- Create testable assumptions in "If we do X, then Y will happen" format
+- Ensure each milestone has clear success indicators and validation methods
+
+### Output Structure
+Use the template sections below to structure your response. Ensure alignment with existing project vision and maintain consistency with goal-driven development principles.
+
+---
+
 ## Overview
 
 The `/goalkit.goal` command defines specific, measurable goals that contribute to your project's vision. Unlike specifications that focus on implementation details, goals focus on outcomes and success metrics.

@@ -67,18 +67,52 @@ def _github_auth_headers(cli_token: str | None = None) -> dict:
     return {"Authorization": f"Bearer {token}"} if token else {}
 
 AI_CHOICES = {
-    "copilot": "GitHub Copilot",
-    "claude": "Claude Code",
-    "gemini": "Gemini CLI",
-    "cursor": "Cursor",
-    "qwen": "Qwen Code",
-    "opencode": "opencode",
-    "codex": "Codex CLI",
-    "windsurf": "Windsurf",
-    "kilocode": "Kilo Code",
-    "auggie": "Auggie CLI",
-    "roo": "Roo Code",
-    "q": "Amazon Q Developer CLI",
+"copilot": "GitHub Copilot",
+"claude": "Claude Code",
+"gemini": "Gemini CLI",
+"cursor": "Cursor",
+"qwen": "Qwen Code",
+"opencode": "opencode",
+"codex": "Codex CLI",
+"windsurf": "Windsurf",
+"kilocode": "Kilo Code",
+"auggie": "Auggie CLI",
+"roo": "Roo Code",
+"q": "Amazon Q Developer CLI",
+}
+
+# AI Agent Configuration for Template Optimization
+AI_AGENT_CONFIG = {
+"claude": {
+    "template_style": "analytical_detailed",
+    "focus": "comprehensive_analysis",
+    "principles_count": "4-6",
+    "description": "Anthropic's Claude optimized for thoughtful, detailed analysis"
+},
+"copilot": {
+    "template_style": "practical_concise",
+    "focus": "implementation_guidance",
+    "principles_count": "3-5",
+    "description": "GitHub's Copilot optimized for practical development focus"
+},
+"gemini": {
+    "template_style": "creative_exploratory",
+    "focus": "innovative_solutions",
+    "principles_count": "3-5",
+    "description": "Google's Gemini optimized for creative problem-solving"
+},
+"cursor": {
+    "template_style": "focused_practical",
+    "focus": "direct_implementation",
+    "principles_count": "3-4",
+    "description": "Cursor IDE optimized for focused development work"
+},
+"qwen": {
+    "template_style": "comprehensive_detailed",
+    "focus": "thorough_coverage",
+    "principles_count": "4-6",
+    "description": "Qwen agent optimized for comprehensive, detailed analysis"
+}
 }
 
 SCRIPT_TYPE_CHOICES = {"sh": "POSIX Shell (bash/zsh)", "ps": "PowerShell"}
@@ -200,6 +234,69 @@ def get_key():
         raise KeyboardInterrupt
 
     return key
+
+def validate_ai_response(response_content: str, response_type: str) -> dict:
+    """Validate AI-generated content against Goal Kit standards."""
+    validation_results = {
+        "is_valid": True,
+        "issues": [],
+        "suggestions": [],
+        "score": 0
+    }
+
+    # Basic structure validation
+    if response_type == "vision":
+        required_sections = ["guiding principles", "success metrics", "project goals"]
+        for section in required_sections:
+            if section.lower() not in response_content.lower():
+                validation_results["issues"].append(f"Missing required section: {section}")
+                validation_results["is_valid"] = False
+
+        # Check for measurable metrics
+        if not any(char.isdigit() for char in response_content):
+            validation_results["suggestions"].append("Consider adding specific numbers or percentages to success metrics")
+            validation_results["score"] -= 10
+
+    elif response_type == "goal":
+        # Check for outcome-focused language
+        implementation_words = ["build", "create", "develop", "implement", "code"]
+        outcome_words = ["achieve", "improve", "increase", "decrease", "enable", "help"]
+
+        impl_count = sum(1 for word in implementation_words if word.lower() in response_content.lower())
+        outcome_count = sum(1 for word in outcome_words if word.lower() in response_content.lower())
+
+        if impl_count > outcome_count:
+            validation_results["suggestions"].append("Consider focusing more on outcomes rather than implementation")
+            validation_results["score"] -= 5
+
+    # Calculate overall score (0-100)
+    base_score = 100
+    validation_results["score"] = max(0, base_score + validation_results["score"])
+
+    return validation_results
+
+def log_ai_interaction(agent_name: str, command: str, success: bool, validation_score: int = None):
+    """Log AI agent interactions for performance analytics."""
+    import json
+    from datetime import datetime
+
+    log_entry = {
+        "timestamp": datetime.now().isoformat(),
+        "agent": agent_name,
+        "command": command,
+        "success": success,
+        "validation_score": validation_score,
+        "session_id": getattr(app, '_session_id', 'unknown')
+    }
+
+    # Append to AI interaction log
+    log_file = Path.cwd() / ".goalkit" / "ai_interactions.jsonl"
+    try:
+        log_file.parent.mkdir(exist_ok=True)
+        with open(log_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(log_entry) + '\n')
+    except Exception as e:
+        console.print(f"[yellow]Warning: Could not log AI interaction: {e}[/yellow]")
 
 def select_with_arrows(options: dict, prompt_text: str = "Select an option", default_key: str = None) -> str:
     """
@@ -1681,6 +1778,173 @@ def tasks(
     console.print("4. [cyan]Start executing[/cyan] Priority 0 and Priority 1 tasks")
     console.print("5. [cyan]Track progress[/cyan] and update task status regularly")
 
+
+@app.command()
+def ai_analytics(
+    agent_filter: str = typer.Option(None, "--agent", "-a", help="Filter analytics by specific AI agent"),
+    days: int = typer.Option(30, "--days", "-d", help="Number of days to analyze (default: 30)"),
+    output_format: str = typer.Option("table", "--format", "-f", help="Output format: table, json, or csv")
+):
+    """Display AI agent performance analytics and interaction insights."""
+    show_banner()
+
+    console.print("[bold cyan]AI Agent Performance Analytics[/bold cyan]\n")
+
+    log_file = Path.cwd() / ".goalkit" / "ai_interactions.jsonl"
+    if not log_file.exists():
+        console.print("[yellow]No AI interaction data found. Analytics will be available after using slash commands.[/yellow]")
+        return
+
+    try:
+        import json
+        from datetime import datetime, timedelta
+
+        interactions = []
+        cutoff_date = datetime.now() - timedelta(days=days)
+
+        # Read and filter interactions
+        with open(log_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                try:
+                    entry = json.loads(line.strip())
+                    entry_date = datetime.fromisoformat(entry.get('timestamp', '').replace('Z', '+00:00'))
+
+                    if entry_date >= cutoff_date:
+                        if agent_filter is None or entry.get('agent') == agent_filter:
+                            interactions.append(entry)
+                except json.JSONDecodeError:
+                    continue
+
+        if not interactions:
+            console.print(f"[yellow]No interactions found in the last {days} days for the specified criteria.[/yellow]")
+            return
+
+        # Calculate analytics
+        total_interactions = len(interactions)
+        successful_interactions = len([i for i in interactions if i.get('success', False)])
+        success_rate = (successful_interactions / total_interactions * 100) if total_interactions > 0 else 0
+
+        # Agent breakdown
+        agent_stats = {}
+        for interaction in interactions:
+            agent = interaction.get('agent', 'unknown')
+            if agent not in agent_stats:
+                agent_stats[agent] = {'total': 0, 'successful': 0, 'avg_score': 0, 'scores': []}
+
+            agent_stats[agent]['total'] += 1
+            if interaction.get('success', False):
+                agent_stats[agent]['successful'] += 1
+
+            score = interaction.get('validation_score', 0)
+            if score > 0:
+                agent_stats[agent]['scores'].append(score)
+
+        # Calculate average scores
+        for agent, stats in agent_stats.items():
+            if stats['scores']:
+                agent_stats[agent]['avg_score'] = sum(stats['scores']) / len(stats['scores'])
+
+        # Display results
+        if output_format == "json":
+            # JSON output
+            output_data = {
+                "summary": {
+                    "total_interactions": total_interactions,
+                    "successful_interactions": successful_interactions,
+                    "success_rate": round(success_rate, 2),
+                    "period_days": days
+                },
+                "agent_breakdown": agent_stats,
+                "interactions": interactions[-50:]  # Last 50 interactions
+            }
+            console.print(json.dumps(output_data, indent=2))
+
+        elif output_format == "csv":
+            # CSV output
+            console.print("Agent,Total Interactions,Successful,Success Rate,Avg Validation Score")
+            for agent, stats in agent_stats.items():
+                agent_success_rate = (stats['successful'] / stats['total'] * 100) if stats['total'] > 0 else 0
+                avg_score = round(stats['avg_score'], 1) if stats['scores'] else 0
+                console.print(f"{agent},{stats['total']},{stats['successful']},{agent_success_rate:.1f}%,{avg_score}")
+
+        else:
+            # Table output (default)
+            # Summary panel
+            summary_data = [
+                f"[bold]Total Interactions:[/bold] {total_interactions}",
+                f"[bold]Success Rate:[/bold] {success_rate:.1f}%",
+                f"[bold]Period:[/bold] Last {days} days"
+            ]
+
+            if agent_filter:
+                summary_data.append(f"[bold]Agent Filter:[/bold] {agent_filter}")
+
+            console.print(Panel("\n".join(summary_data), title="Summary", border_style="cyan"))
+
+            # Agent performance table
+            if agent_stats:
+                table = Table(title="AI Agent Performance", show_header=True, header_style="bold magenta")
+                table.add_column("Agent", style="cyan", width=12)
+                table.add_column("Total", justify="center", width=8)
+                table.add_column("Success", justify="center", width=8)
+                table.add_column("Rate", justify="center", width=8)
+                table.add_column("Avg Score", justify="center", width=10)
+
+                for agent in sorted(agent_stats.keys()):
+                    stats = agent_stats[agent]
+                    success_rate = (stats['successful'] / stats['total'] * 100) if stats['total'] > 0 else 0
+                    avg_score = f"{stats['avg_score']:.1f}" if stats['scores'] else "N/A"
+
+                    # Color coding based on performance
+                    if success_rate >= 80:
+                        rate_color = "green"
+                    elif success_rate >= 60:
+                        rate_color = "yellow"
+                    else:
+                        rate_color = "red"
+
+                    table.add_row(
+                        agent,
+                        str(stats['total']),
+                        str(stats['successful']),
+                        f"[{rate_color}]{success_rate:.1f}%[/{rate_color}]",
+                        avg_score
+                    )
+
+                console.print(table)
+
+            # Recent interactions
+            if len(interactions) <= 10:
+                recent_table = Table(title=f"Recent Interactions ({len(interactions)})", show_header=True, header_style="bold blue")
+                recent_table.add_column("Time", width=20)
+                recent_table.add_column("Agent", width=10)
+                recent_table.add_column("Command", width=12)
+                recent_table.add_column("Status", width=8)
+                recent_table.add_column("Score", width=6)
+
+                for interaction in interactions[-10:]:
+                    timestamp = interaction.get('timestamp', '')
+                    if len(timestamp) > 19:
+                        timestamp = timestamp[:19]
+
+                    status = "[green]✓[/green]" if interaction.get('success') else "[red]✗[/red]"
+                    score = str(interaction.get('validation_score', 'N/A'))
+
+                    recent_table.add_row(
+                        timestamp,
+                        interaction.get('agent', 'unknown'),
+                        interaction.get('command', 'unknown'),
+                        status,
+                        score
+                    )
+
+                console.print(recent_table)
+
+        console.print(f"\n[green]Analytics complete. Logged {total_interactions} interactions.[/green]")
+
+    except Exception as e:
+        console.print(f"[red]Error generating analytics:[/red] {e}")
+        raise typer.Exit(1)
 
 @app.command()
 def check():
