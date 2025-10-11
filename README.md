@@ -8,25 +8,29 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Nom-nom-hub/goal-kit/releases/latest">
-    <img src="https://img.shields.io/github/v/release/Nom-nom-hub/goal-kit?color=brightgreen&sort=semver" alt="GitHub Release">
-  </a>
-  <a href="https://github.com/Nom-nom-hub/goal-kit/actions/workflows/release.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/goal-kit/release.yml?branch=main&label=release" alt="Release Workflow">
-  </a>
-  <a href="https://github.com/Nom-nom-hub/goal-kit/actions/workflows/docs.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/goal-kit/docs.yml?branch=main&label=docs" alt="Docs Workflow">
-  </a>
-  <a href="https://github.com/Nom-nom-hub/goal-kit/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Nom-nom-hub/goal-kit.svg?color=blue" alt="License">
-  </a>
-  <a href="https://github.com/Nom-nom-hub/goal-kit/stargazers">
-    <img src="https://img.shields.io/github/stars/Nom-nom-hub/goal-kit.svg?color=yellow" alt="GitHub Stars">
-  </a>
-  <a href="https://github.com/Nom-nom-hub/goal-kit/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/Nom-nom-hub/goal-kit.svg" alt="Contributors">
-  </a>
-</p>
+   <a href="https://github.com/Nom-nom-hub/goal-kit/releases/latest">
+     <img src="https://img.shields.io/github/v/release/Nom-nom-hub/goal-kit?color=brightgreen&sort=semver" alt="GitHub Release">
+   </a>
+   <a href="https://github.com/Nom-nom-hub/goal-kit/actions/workflows/release.yml">
+     <img src="https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/goal-kit/release.yml?branch=main&label=release" alt="Release Workflow">
+   </a>
+   <a href="https://github.com/Nom-nom-hub/goal-kit/actions/workflows/docs.yml">
+     <img src="https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/goal-kit/docs.yml?branch=main&label=docs" alt="Docs Workflow">
+   </a>
+   <a href="https://github.com/Nom-nom-hub/goal-kit/blob/main/LICENSE">
+     <img src="https://img.shields.io/github/license/Nom-nom-hub/goal-kit.svg?color=blue" alt="License">
+   </a>
+   <a href="https://github.com/Nom-nom-hub/goal-kit/stargazers">
+     <img src="https://img.shields.io/github/stars/Nom-nom-hub/goal-kit.svg?color=yellow" alt="GitHub Stars">
+   </a>
+   <a href="https://github.com/Nom-nom-hub/goal-kit/graphs/contributors">
+     <img src="https://img.shields.io/github/contributors/Nom-nom-hub/goal-kit.svg" alt="Contributors">
+   </a>
+ </p>
+
+<p align="center">
+   <img src="https://img.shields.io/badge/The%20Future-✅%20Goal--Driven%20Development-brightgreen?style=for-the-badge&logo=github" alt="The Future - Goal-Driven Development">
+ </p>
 
 ---
 
