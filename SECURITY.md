@@ -13,13 +13,16 @@ We take security seriously. If you discover a security vulnerability, please fol
 
 ### How to Report
 
-1. **Do NOT** create a public GitHub issue for security vulnerabilities
-2. **Email** the security team: security@goal-kit.dev
+1. **DO NOT** create a public GitHub issue for security vulnerabilities
+2. **Create a private GitHub Security Advisory**:
+   - Go to [GitHub Security Advisories](https://github.com/Nom-nom-hub/goal-kit/security/advisories)
+   - Click "Report a vulnerability"
+   - Provide detailed information about the security issue
 3. **Include** as much detail as possible:
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Potential impact
-   - Suggested fix (if known)
+    - Description of the vulnerability
+    - Steps to reproduce
+    - Potential impact
+    - Suggested fix (if known)
 
 ### What to Expect
 
@@ -63,9 +66,13 @@ It does not cover:
 
 ## Contact
 
-- **Security Email**: security@goal-kit.dev
-- **Project Email**: contact@goal-kit.dev
-- **GitHub Issues**: Use for non-security related issues and feature requests
+### Security Issues
+- **GitHub Security Advisories**: [Report vulnerabilities privately](https://github.com/Nom-nom-hub/goal-kit/security/advisories)
+- **Private Reports Only**: Do NOT create public issues for security vulnerabilities
+
+### Non-Security Issues
+- **GitHub Issues**: [Create issues for bugs and feature requests](https://github.com/Nom-nom-hub/goal-kit/issues)
+- **GitHub Discussions**: [General questions and discussions](https://github.com/Nom-nom-hub/goal-kit/discussions)
 
 ---
 
