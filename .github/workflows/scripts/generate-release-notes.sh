@@ -40,6 +40,23 @@ Goal Kit introduces a new approach to software development that focuses on outco
 - **Comprehensive measurement** frameworks for tracking progress
 - **Cross-platform support** for both Windows (PowerShell) and Unix (Bash) systems
 
+## Recent Changes
+
+EOF
+
+# Add the actual commits to the release notes
+if [ -n "$COMMITS" ]; then
+  echo "" >> release_notes.md
+  echo "## Changes in This Release" >> release_notes.md
+  echo "" >> release_notes.md
+  echo "$COMMITS" >> release_notes.md
+else
+  echo "" >> release_notes.md
+  echo "No new commits in this release." >> release_notes.md
+fi
+
+cat >> release_notes.md << EOF
+
 ## Supported AI Agents
 
 All packages include templates for:
