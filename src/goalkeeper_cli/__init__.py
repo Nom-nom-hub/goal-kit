@@ -2073,8 +2073,7 @@ def validate_goals(
         else:
             console.print(f"[red]✗[/red] {goal_dir.name} (no goal.md file)")
 
-    console.print("
-[green]Validation complete. Use /goalkit.validate for comprehensive AI-powered validation.[/green]")
+    console.print("\n[green]Validation complete. Use /goalkit.validate for comprehensive AI-powered validation.[/green]")
 
 @app.command()
 def plan_project(
@@ -2105,8 +2104,7 @@ def plan_project(
     console.print("• [cyan]Phase 3:[/cyan] Validation & Testing (Weeks 7-8)")
     console.print("• [cyan]Phase 4:[/cyan] Launch & Optimization (Weeks 9-12)")
 
-    console.print("
-[green]Plan structure created. Use /goalkit.plan for comprehensive AI-powered planning.[/green]")
+    console.print("\n[green]Plan structure created. Use /goalkit.plan for comprehensive AI-powered planning.[/green]")
 
 @app.command()
 def insights_project(
@@ -2133,8 +2131,7 @@ def insights_project(
     console.print("• [green]Goal Clarity:[/green] Clear objectives identified")
     console.print("• [cyan]Next Recommendation:[/cyan] Use /goalkit.analyze for detailed health assessment")
 
-    console.print("
-[green]Basic insights complete. Use /goalkit.insights for comprehensive AI-powered analysis.[/green]")
+    console.print("\n[green]Basic insights complete. Use /goalkit.insights for comprehensive AI-powered analysis.[/green]")
 
 @app.command()
 def prioritize_goals(
@@ -2169,8 +2166,7 @@ def prioritize_goals(
     console.print("• [yellow]P2 (Medium):[/yellow] Valuable but not urgent")
     console.print("• [green]P3 (Low):[/green] Nice-to-have, future consideration")
 
-    console.print("
-[green]Prioritization framework ready. Use /goalkit.prioritize for comprehensive AI-powered prioritization.[/green]")
+    console.print("\n[green]Prioritization framework ready. Use /goalkit.prioritize for comprehensive AI-powered prioritization.[/green]")
 
 @app.command()
 def track_progress(
@@ -2201,8 +2197,7 @@ def track_progress(
         console.print("• Week 7-8: [cyan]Testing & Validation[/cyan]")
         console.print("• Week 9-12: [cyan]Launch & Optimization[/cyan]")
 
-    console.print("
-[green]Progress tracking active. Use /goalkit.track for comprehensive AI-powered progress analysis.[/green]")
+    console.print("\n[green]Progress tracking active. Use /goalkit.track for comprehensive AI-powered progress analysis.[/green]")
 
 @app.command()
 def research_project(
@@ -2226,8 +2221,7 @@ def research_project(
     console.print("• [cyan]Technical Research:[/cyan] Tools and implementation options")
     console.print("• [cyan]Risk Assessment:[/cyan] Potential challenges and mitigations")
 
-    console.print("
-[green]Research framework established. Use /goalkit.research for comprehensive AI-powered research.[/green]")
+    console.print("\n[green]Research framework established. Use /goalkit.research for comprehensive AI-powered research.[/green]")
 
 @app.command()
 def learn_from_project(
@@ -2249,8 +2243,7 @@ def learn_from_project(
     console.print("• [cyan]Process Improvements:[/cyan] Better ways of working identified")
     console.print("• [purple]Innovation Opportunities:[/purple] New approaches discovered")
 
-    console.print("
-[green]Learning framework ready. Use /goalkit.learn for comprehensive AI-powered learning extraction.[/green]")
+    console.print("\n[green]Learning framework ready. Use /goalkit.learn for comprehensive AI-powered learning extraction.[/green]")
 
 @app.command()
 def benchmark_project(
@@ -2272,8 +2265,7 @@ def benchmark_project(
     console.print("• [purple]Innovation:[/purple] Use of modern approaches and tools")
     console.print("• [orange]Team:[/orange] Collaboration and productivity patterns")
 
-    console.print("
-[green]Benchmarking framework established. Use /goalkit.benchmark for comprehensive AI-powered benchmarking.[/green]")
+    console.print("\n[green]Benchmarking framework established. Use /goalkit.benchmark for comprehensive AI-powered benchmarking.[/green]")
 
 @app.command()
 def memory_status(
@@ -2304,8 +2296,7 @@ def memory_status(
         patterns = memory.get_project_patterns()
 
         if patterns["patterns"]:
-            console.print("
-[bold]Project Statistics:[/bold]")
+            console.print("\n[bold]Project Statistics:[/bold]")
             total_goals = patterns["patterns"].get("total_goals", 0)
             success_rate = patterns["patterns"].get("success_rate", 0)
             avg_score = patterns["patterns"].get("average_success_score", 0)
@@ -2315,18 +2306,15 @@ def memory_status(
             console.print(f"• Average success score: [cyan]{avg_score:.1f}/10[/cyan]")
 
             if show_details:
-                console.print("
-[bold]Top Success Factors:[/bold]")
+                console.print("\n[bold]Top Success Factors:[/bold]")
                 for factor, count in patterns["patterns"].get("common_success_factors", []):
                     console.print(f"• {factor} ({count} times)")
 
-                console.print("
-[bold]Key Insights:[/bold]")
+                console.print("\n[bold]Key Insights:[/bold]")
                 for insight in patterns.get("insights", []):
                     console.print(f"• {insight}")
 
-        console.print("
-[green]Memory system operational[/green]")
+        console.print("\n[green]Memory system operational[/green]")
 
     except Exception as e:
         console.print(f"[red]Error accessing memory: {e}[/red]")
@@ -2373,8 +2361,7 @@ def learn_extract(
         console.print(f"• Learnings captured: {len(learnings['key_learnings'])}")
 
         # Show next steps
-        console.print("
-[bold]Next Steps:[/bold]")
+        console.print("\n[bold]Next Steps:[/bold]")
         console.print("• Use [cyan]goalkeeper memory-status[/cyan] to view memory insights")
         console.print("• Use [cyan]goalkeeper insights-project[/cyan] for AI-powered analysis")
 
@@ -2413,14 +2400,12 @@ def memory_insights(
         console.print(f"• Average score: [cyan]{stats.get('average_success_score', 0):.1f}/10[/cyan]")
 
         if include_patterns and patterns.get("insights"):
-            console.print("
-[bold]🔍 Key Insights:[/bold]")
+            console.print("\n[bold]🔍 Key Insights:[/bold]")
             for insight in patterns["insights"]:
                 console.print(f"• {insight}")
 
         if patterns.get("recommendations"):
-            console.print("
-[bold]🎯 Recommendations:[/bold]")
+            console.print("\n[bold]🎯 Recommendations:[/bold]")
             for rec in patterns["recommendations"]:
                 console.print(f"• {rec}")
 
@@ -2430,16 +2415,14 @@ def memory_insights(
             best_practices = cross_insights.get_best_practices()
 
             if best_practices["success_factors"]:
-                console.print("
-[bold]🏆 Best Practices:[/bold]")
+                console.print("\n[bold]🏆 Best Practices:[/bold]")
                 for factor, count in best_practices["success_factors"][:3]:
                     console.print(f"• {factor} ({count} projects)")
 
         except Exception as e:
             console.print(f"[dim]Cross-project analysis: {e}[/dim]")
 
-        console.print("
-[green]Insights complete. Use /goalkit.insights for AI-powered analysis.[/green]")
+        console.print("\n[green]Insights complete. Use /goalkit.insights for AI-powered analysis.[/green]")
 
     except Exception as e:
         console.print(f"[red]Error generating insights: {e}[/red]")
@@ -2470,20 +2453,17 @@ def memory_patterns(
         console.print(f"[bold]{pattern_type.title()} Patterns:[/bold]")
 
         if pattern_type == "success" and patterns["patterns"].get("common_success_factors"):
-            console.print("
-🟢 Success Factors:")
+            console.print("\n🟢 Success Factors:")
             for factor, count in patterns["patterns"]["common_success_factors"]:
                 console.print(f"• {factor} ({count} occurrences)")
 
         elif pattern_type == "failure" and patterns["patterns"].get("common_challenges"):
-            console.print("
-🔴 Common Challenges:")
+            console.print("\n🔴 Common Challenges:")
             for challenge, count in patterns["patterns"]["common_challenges"]:
                 console.print(f"• {challenge} ({count} occurrences)")
 
         elif pattern_type == "process":
-            console.print("
-🔄 Process Patterns:")
+            console.print("\n🔄 Process Patterns:")
             if patterns.get("insights"):
                 for insight in patterns["insights"]:
                     console.print(f"• {insight}")
@@ -2494,16 +2474,14 @@ def memory_patterns(
             risk_patterns = cross_insights.detect_risk_patterns()
 
             if risk_patterns:
-                console.print("
-⚠️ Risk Patterns Detected:")
+                console.print("\n⚠️ Risk Patterns Detected:")
                 for risk in risk_patterns[:5]:
                     console.print(f"• {risk}")
 
         except Exception as e:
             console.print(f"[dim]Risk analysis: {e}[/dim]")
 
-        console.print("
-[green]Pattern analysis complete[/green]")
+        console.print("\n[green]Pattern analysis complete[/green]")
 
     except Exception as e:
         console.print(f"[red]Error analyzing patterns: {e}[/red]")
