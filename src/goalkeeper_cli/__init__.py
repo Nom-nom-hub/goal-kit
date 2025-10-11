@@ -49,15 +49,19 @@ from rich.table import Table
 from rich.tree import Tree
 from typer.core import TyperGroup
 
-# Import memory system
+# Import memory system and baseline metrics
 try:
     from .memory import ProjectMemory, AISessionMemory, CrossProjectInsights, extract_goal_learnings
+    from .baseline_metrics import BaselineCollector, HypothesisTester, initialize_baseline_system
 except ImportError:
-    # Fallback if memory module not available
+    # Fallback if modules not available
     ProjectMemory = None
     AISessionMemory = None
     CrossProjectInsights = None
     extract_goal_learnings = None
+    BaselineCollector = None
+    HypothesisTester = None
+    initialize_baseline_system = None
 
 # For cross-platform keyboard input
 import readchar
@@ -331,6 +335,23 @@ def log_ai_interaction(agent_name: str, command: str, success: bool, validation_
         except Exception as e:
             # Don't fail if memory system has issues
             console.print(f"[dim]Memory system: {e}[/dim]")
+
+    # Enhanced baseline metrics collection
+    if BaselineCollector:
+        try:
+            baseline_collector = BaselineCollector(Path.cwd())
+
+            # Calculate enhanced metrics for this interaction
+            interaction_metrics = baseline_collector.collect_interaction_metrics(
+                command, user_input, ai_response, validation_score
+            )
+
+            # Save metrics for baseline tracking
+            baseline_collector.save_interaction_metrics(interaction_metrics)
+
+        except Exception as e:
+            # Don't fail if baseline system has issues
+            console.print(f"[dim]Baseline metrics: {e}[/dim]")
 
 def select_with_arrows(options: dict, prompt_text: str = "Select an option", default_key: str = None) -> str:
     """
@@ -2863,6 +2884,63 @@ def memory_patterns(
 
     except Exception as e:
         console.print(f"[red]Error analyzing patterns: {e}[/red]")
+
+@app.command()
+def baseline(
+    project_path: Path = typer.Argument(Path.cwd(), help="Path to the project directory"),
+    days: int = typer.Option(30, "--days", "-d", help="Number of days of data to analyze for baseline"),
+    run_tests: bool = typer.Option(True, "--run-tests", help="Run hypothesis tests after establishing baseline")
+):
+    """Establish baseline metrics for AI performance and run hypothesis tests."""
+    show_banner()
+
+    console.print("[bold cyan]📊 AI Performance Baseline Measurement[/bold cyan]")
+    console.print(f"Project: {project_path.name}\n")
+
+    if not BaselineCollector:
+        console.print("[red]Baseline measurement system not available[/red]")
+        return
+
+    try:
+        # Initialize baseline system
+        console.print("[cyan]Initializing baseline measurement system...[/cyan]")
+        initialize_baseline_system(project_path)
+
+        # Run hypothesis tests if requested
+        if run_tests:
+            console.print("[cyan]Running hypothesis tests...[/cyan]")
+            tester = HypothesisTester(project_path)
+            test_results = tester.run_all_hypothesis_tests()
+
+            # Display test results
+            console.print("\n[bold]🧪 Hypothesis Test Results:[/bold]")
+
+            for test_name, test_result in test_results["test_results"].items():
+                hypothesis = test_result["hypothesis"]
+                status = test_result["current_status"]
+
+                console.print(f"\n[bold]{test_name.title()}:[/bold]")
+                console.print(f"  Hypothesis: {hypothesis}")
+                console.print(f"  Status: [green]{status}[/green]")
+
+                if "baseline_clarification_rate" in test_result:
+                    rate = test_result["baseline_clarification_rate"]
+                    console.print(f"  Current baseline: [cyan]{rate:.2%}[/cyan]")
+
+            console.print("\n[bold]✅ Baseline measurement complete![/bold]")
+            console.print(f"[green]📁 Files created in:[/green] {project_path}/.goalkit/metrics/")
+            console.print(f"[green]📁 Test results in:[/green] {project_path}/.goalkit/tests/")
+
+            # Show next steps
+            console.print("\n[bold]Next Steps:[/bold]")
+            console.print("1. [cyan]Review baseline metrics[/cyan] to understand current AI performance")
+            console.print("2. [cyan]Begin implementing enhanced goal templates[/cyan] (Milestone 2)")
+            console.print("3. [cyan]Continue daily measurement[/cyan] to track improvements")
+            console.print("4. [cyan]Run 'goalkeeper baseline'[/cyan] regularly to update measurements")
+
+    except Exception as e:
+        console.print(f"[red]Error establishing baseline: {e}[/red]")
+        raise typer.Exit(1)
 
 @app.command()
 def check():
