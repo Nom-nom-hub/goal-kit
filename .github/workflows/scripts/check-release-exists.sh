@@ -13,9 +13,9 @@ fi
 VERSION="$1"
 
 if gh release view "$VERSION" >/dev/null 2>&1; then
-  echo "exists=true" >> $GITHUB_OUTPUT
+  echo "exists=true" >> "$GITHUB_OUTPUT"
   echo "Release $VERSION already exists, skipping..."
 else
-  echo "exists=false" >> $GITHUB_OUTPUT
+  echo "exists=false" >> "$GITHUB_OUTPUT"
   echo "Release $VERSION does not exist, proceeding..."
 fi

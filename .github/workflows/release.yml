@@ -4,10 +4,14 @@ on:
   push:
     branches: [ main ]
     paths:
+      - 'src/**'
       - 'memory/**'
       - 'scripts/**'
       - 'templates/**'
       - '.github/workflows/**'
+      - 'SECURITY.md'
+      - 'README.md'
+      - 'CHANGELOG.md'
   workflow_dispatch:
 
 jobs:

@@ -39,6 +39,9 @@ Goal Kit introduces a new approach to software development that focuses on outco
 - **Adaptive execution** with continuous learning and evidence-based changes
 - **Comprehensive measurement** frameworks for tracking progress
 - **Cross-platform support** for both Windows (PowerShell) and Unix (Bash) systems
+- **AI-powered memory system** for continuous learning and improvement
+- **18 powerful slash commands** for complete workflow coverage
+- **Advanced analytics and insights** for data-driven development
 
 ## Recent Changes
 
