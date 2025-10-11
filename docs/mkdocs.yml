@@ -3,6 +3,7 @@ site_description: Goal-Driven Development Toolkit
 site_author: Nom-nom-hub
 repo_url: https://github.com/Nom-nom-hub/goal-kit
 edit_uri: edit/main/docs/
+docs_dir: '.'
 
 theme:
   name: material
