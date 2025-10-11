@@ -44,14 +44,41 @@ jobs:
           python -m pip install --upgrade pip
           pip install mkdocs mkdocs-material
 
-      - name: Copy docs to root for MkDocs build
-        run: |
-          mkdir -p docs
-          cp -r docs/* docs/ 2>/dev/null || true
+      # Remove this step, it's unnecessary and may cause issues:
+      # - name: Copy docs to root for MkDocs build
+      #   run: |
+      #     mkdir -p docs
+      #     cp -r docs/* docs/ 2>/dev/null || true
 
-      - name: Copy mkdocs.yml to root
+      - name: Create mkdocs.yml
         run: |
-          cp docs/mkdocs.yml mkdocs.yml 2>/dev/null || true
+          cat > mkdocs.yml << 'EOF'
+          site_name: Goal Kit Documentation
+          site_description: Goal-Driven Development Toolkit
+          site_author: Nom-nom-hub
+          docs_dir: 'docs'
+          site_dir: 'site'
+
+          theme:
+            name: material
+            palette:
+              primary: green
+              accent: green
+
+          nav:
+            - Home: index.md
+            - Goal-Driven Development: goal-driven.md
+            - Comparison: comparison.md
+            - Examples: examples.md
+            - Table of Contents: toc.md
+            - README: README.md
+
+          markdown_extensions:
+            - admonition
+            - codehilite
+            - toc:
+                permalink: true
+          EOF
 
       - name: Build with MkDocs
         run: mkdocs build
