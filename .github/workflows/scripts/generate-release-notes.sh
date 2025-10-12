@@ -14,12 +14,15 @@ NEW_VERSION="$1"
 LAST_TAG="$2"
 
 # Extract the section for the new version from CHANGELOG.md
-CHANGELOG_SECTION=$(awk -v version="$NEW_VERSION" '
+# Remove 'v' prefix if present in version
+CLEAN_VERSION=$(echo "$NEW_VERSION" | sed 's/^v//')
+
+CHANGELOG_SECTION=$(awk -v version="$CLEAN_VERSION" '
 BEGIN { in_section = 0; section = ""; }
-/^## \[/{ 
+/^## \\[/{ 
     if (in_section) exit 0;
     # Check if this line starts with the target version (with optional date info after)
-    if ($0 ~ ("## \\[" version ".*")) {
+    if ($0 ~ ("## \\\[" version ".*")) {
         in_section = 1;
         next;
     } else {
@@ -27,7 +30,7 @@ BEGIN { in_section = 0; section = ""; }
     }
 }
 in_section { 
-    if ($0 ~ /^## \[/) { 
+    if ($0 ~ /^## \\[/) { 
         exit 0; 
     }
     section = section $0 "\n";
