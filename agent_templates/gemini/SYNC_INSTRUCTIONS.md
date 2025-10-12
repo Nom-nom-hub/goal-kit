@@ -5,6 +5,22 @@ This document provides specific guidance for Gemini Code agents to maintain sync
 
 ## Core Synchronization Principles
 
+### 0. Template Discovery Process
+- When users reference goals, first attempt to discover existing templates in `templates/` directory
+- Use `glob()` to search for templates in `templates/context-templates/` and `templates/completed-goals/`
+- Use `list_directory()` to enumerate available template directories
+- If user implementation matches context patterns, reference `templates/context-templates/`
+- When implementing features, suggest using templates from the templates directory
+
+### 0.1 Context Retention Process
+- When working in a project with Goal Kit, implement context retention to maintain project awareness across chat sessions
+- Detect the `.goalkit/` directory structure when beginning new sessions
+- Load context summary from `ai-context.md` if it exists
+- Parse active goals from `.goalkit/goals/` directory with their status, milestones, and strategies
+- Present current project state to inform AI responses
+- Maintain awareness of project context throughout the session
+- For implementation guidance, refer to `templates/context-templates/context-retention-system.md`
+
 ### 1. Automatic File Tracking
 - Monitor changes to goal-related files in `.goalkit/` directory
 - Track relationships between goals, strategies, milestones, and evidence files

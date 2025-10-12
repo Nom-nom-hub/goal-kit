@@ -156,6 +156,43 @@ New Risks Identified: [Any new risks discovered]
 
 ## Working with Code Implementation
 
+### Template Discovery and Usage
+Before beginning any implementation, especially context-related features, discover and reference existing templates:
+
+```
+Template Discovery Process:
+1. Check `templates/context-templates/` for context-related implementation examples
+2. Review `templates/completed-goals/` for full goal implementation examples
+3. Identify which templates are relevant to the current task
+4. Apply appropriate patterns from these templates to the new implementation
+5. Update templates with new learnings when appropriate
+
+For context-related implementations specifically review:
+- `templates/context-templates/context-capture.md`
+- `templates/context-templates/context-retrieval.md`
+- `templates/context-templates/context-retrieval-implementation.md`
+- `templates/context-templates/context-retention-system.md`
+- `templates/context-templates/performance-optimization.md`
+- `templates/context-templates/testing-context-functionality.md`
+```
+
+### Context Retention Implementation
+When working in a project with Goal Kit, implement context retention to maintain project awareness across chat sessions:
+
+```
+When an AI agent begins a new session in a Goal Kit project:
+
+1. Detect the `.goalkit/` directory structure
+2. Load context summary from `ai-context.md` (if exists)
+3. Parse active goals from `.goalkit/goals/` directory
+4. Read relevant metadata about goal status, current milestone, active strategy
+5. Optionally load recent interaction logs
+6. Present current project state to inform AI responses
+7. Maintain awareness of project context throughout the session
+
+For implementation guidance, refer to `templates/context-templates/context-retention-system.md`
+```
+
 ### Code Planning Phase
 Before implementing, ask Gemini to help plan:
 
@@ -166,6 +203,7 @@ Goal: [Your specific goal]
 Strategy: [Selected strategy]
 Success Criteria: [How success will be measured]
 Constraints: [Technical or business constraints]
+Template Reference: [Which templates from the templates directory will be used]
 
 Provide:
 1. Architecture overview
@@ -173,6 +211,7 @@ Provide:
 3. Implementation sequence
 4. Testing strategy
 5. Potential challenges and solutions
+6. How patterns from templates directory will be applied
 ```
 
 ### Code Review with Goal Alignment
