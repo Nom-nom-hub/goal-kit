@@ -30,20 +30,9 @@ fi
 cat > release_notes.md << EOF
 This is the latest set of Goal Kit releases that you can use with your AI agent of choice. We recommend using the Goalkeeper CLI to scaffold your projects, however you can download these independently and manage them yourself.
 
-## What's New in Goal-Driven Development
-
-Goal Kit introduces a new approach to software development that focuses on outcomes and learning rather than detailed upfront specifications. This release includes:
-
-- **Goal-driven workflow** with vision → goals → strategies → milestones → execution
-- **Multiple strategy exploration** for each goal to find optimal approaches
-- **Adaptive execution** with continuous learning and evidence-based changes
-- **Comprehensive measurement** frameworks for tracking progress
-- **Cross-platform support** for both Windows (PowerShell) and Unix (Bash) systems
-- **AI-powered memory system** for continuous learning and improvement
-- **28 powerful slash commands** for complete workflow coverage
-- **Advanced analytics and insights** for data-driven development
-
 ## Recent Changes
+
+$commits
 
 EOF
 
