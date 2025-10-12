@@ -19,10 +19,11 @@ CLEAN_VERSION=$(echo "$NEW_VERSION" | sed 's/^v//')
 
 CHANGELOG_SECTION=$(awk -v version="$CLEAN_VERSION" '
 BEGIN { in_section = 0; section = ""; }
-/^## \\[/{ 
+/^## \[/{ 
     if (in_section) exit 0;
     # Check if this line starts with the target version (with optional date info after)
-    if ($0 ~ ("## \\\[" version ".*")) {
+    pattern = "^## \\[" version ".*";
+    if ($0 ~ pattern) {
         in_section = 1;
         next;
     } else {
@@ -30,10 +31,10 @@ BEGIN { in_section = 0; section = ""; }
     }
 }
 in_section { 
-    if ($0 ~ /^## \\[/) { 
+    if ($0 ~ /^## \[/) { 
         exit 0; 
     }
-    section = section $0 "\n";
+    section = section $0 "\\n";
 }
 END { 
     gsub(/\r/, "", section);
