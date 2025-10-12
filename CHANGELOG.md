@@ -5,7 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.47] - 2025-10-12 (Latest)
+## [0.0.53] - 2025-10-12 (Latest)
+
+### 🧠 Implemented AI Agent Context Retention System
+
+#### ⚙️ Core Features:
+- **Cross-Session Context**: AI agents now maintain project awareness across new chat sessions
+- **Goal Kit Integration**: Automatic detection and loading of `.goalkit/` project structure
+- **Context Summary Loading**: Automatic parsing of `ai-context.md` for project overview
+- **Goal State Tracking**: Real-time awareness of active goals, milestones, and strategies
+- **Implementation Guide**: Created `context-retention-system.md` with detailed implementation steps
+
+#### 🤖 Agent Enhancements:
+- **Universal Support**: Updated all 12 supported agents (auggie, claude, codex, copilot, cursor, gemini, kilocode, opencode, q, qwen, roo, windsurf) with context retention instructions
+- **SYNC Instructions**: Added Context Retention Process to all SYNC_INSTRUCTIONS.md files
+- **Template Integration**: Updated QWEN.md and GEMINI.md with context retention guidance
+- **File Parsing**: Enhanced agents to read and interpret Goal Kit markdown files automatically
+
+#### 📁 Template Updates:
+- **New Template**: Added `context-retention-system.md` with implementation guide for AI context retention
+- **README Update**: Enhanced documentation for context templates with context retention focus
+- **Extended References**: Updated all agent templates to reference context retention system
+
+#### 🔄 Process Improvements:
+- **Automatic Detection**: Agents now automatically detect Goal Kit projects and load context
+- **Session Continuity**: Maintains project awareness without requiring user re-explanation
+- **State Awareness**: Real-time knowledge of project status, active goals, and recent decisions
+
+## [0.0.47] - 2025-10-12
 
 ### 🔍 Added debug output to release script
 
