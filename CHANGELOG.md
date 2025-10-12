@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.20] - 2025-10-11 (Latest)
+## [0.0.32] - 2025-10-12 (Latest)
+
+### 🚀 add 10 new slash commands for collaboration, quality, and UX
+
+#### ⚙️ Added new slash commands across three categories:
+- **Collaboration & Management**: /goalkit.collaborate, /goalkit.schedule, /goalkit.dependencies, /goalkit.report
+- **Quality & Security**: /goalkit.test, /goalkit.security, /goalkit.risk
+- **User Experience & Setup**: /goalkit.help, /goalkit.onboard, /goalkit.methodology, /goalkit.config
+
+## [0.0.20] - 2025-10-11
 
 ### 🚀 Major AI Integration Enhancement
 
