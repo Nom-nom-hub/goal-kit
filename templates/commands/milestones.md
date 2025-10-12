@@ -66,6 +66,21 @@ The command generates:
 - Learning objectives for each milestone
 - Foundation for adaptive execution
 
+### Agent File Creation Instructions
+
+When processing `/goalkit.milestones` commands, AI agents should:
+1. Locate the appropriate goal directory in the `goals/` folder (the most recently created or specified goal)
+2. Create the `milestones.md` file inside that goal directory
+3. Use the current date in YYYY-MM-DD format for the "Date" field
+4. Write the complete milestone plan using the template structure below
+5. Reference the associated goal and strategy in the document header
+6. After creating the milestones file, inform the user that the milestone plan has been completed and suggest next steps using `/goalkit.execute`
+
+### File Creation Process
+- **Locate Directory**: `goals/[###-goal-name]/` (most recent goal or specified goal)
+- **Create File**: `goals/[###-goal-name]/milestones.md` with the milestone content
+- **Template**: Use the structure provided in the "Milestone Components" section below
+
 ## Milestone Components
 
 ### 1. Milestone Definition Framework

@@ -17,6 +17,12 @@ Success Metrics: [Quantifiable measures of success]
 Timeline: [Expected completion timeline]
 ```
 
+After receiving this command, Gemini Code will:
+1. Create or update the `.goalkit/vision.md` file in the project root
+2. Use the current date in YYYY-MM-DD format for the "Created" field
+3. Write the complete vision document using the template structure
+4. Inform the user that the vision has been established and suggest creating the first goal using `/goalkit.goal`
+
 ### 2. Goal Definition Command
 Use `/goalkit.goal` to define specific, measurable goals:
 
@@ -28,6 +34,14 @@ Priority: [High/Medium/Low]
 Dependencies: [Any dependencies on other goals or resources]
 Estimated Effort: [Time and resources needed]
 ```
+
+After receiving this command, Gemini Code should:
+1. Create a new directory in the `goals/` folder using the format: `[###-goal-name]` where `###` is a number with leading zeros (e.g., `001-improve-testing`)
+2. Create the goal.md file inside the created directory
+3. Use the current date in YYYY-MM-DD format for the "Created" field
+4. Use the directory name as the "Goal Branch" identifier
+5. Write the complete goal definition using the template structure
+6. Inform the user that the goal has been created and suggest next steps using `/goalkit.strategies` and `/goalkit.milestones`
 
 ### 3. Strategy Exploration Command
 Use `/goalkit.strategies` to explore multiple approaches:
@@ -41,6 +55,14 @@ Strategy 3: [Third approach with pros/cons]
 Evaluation Framework: [How you'll compare strategies]
 Recommended Strategy: [Selection with reasoning]
 ```
+
+After receiving this command, Gemini Code should:
+1. Locate the appropriate goal directory in the `goals/` folder (the most recently created or specified goal)
+2. Create the `strategies.md` file inside that goal directory
+3. Use the current date in YYYY-MM-DD format for the "Date" field
+4. Write the complete strategy analysis using the template structure
+5. Reference the associated goal in the document header
+6. Inform the user that the strategy analysis has been completed and suggest next steps using `/goalkit.milestones`
 
 ### 4. Milestone Planning Command
 Use `/goalkit.milestones` to create measurable progress indicators:
@@ -58,6 +80,14 @@ Milestone 2: [Second measurable milestone]
   - Timeline: [When it should be complete]
 ```
 
+After receiving this command, Gemini Code should:
+1. Locate the appropriate goal directory in the `goals/` folder (the most recently created or specified goal)
+2. Create the `milestones.md` file inside that goal directory
+3. Use the current date in YYYY-MM-DD format for the "Date" field
+4. Write the complete milestone plan using the template structure
+5. Reference the associated goal and strategy in the document header
+6. Inform the user that the milestone plan has been completed and suggest next steps using `/goalkit.execute`
+
 ### 5. Execution Command
 Use `/goalkit.execute` to begin implementation with continuous learning:
 
@@ -69,6 +99,14 @@ Approach: [Selected strategy from strategies phase]
 Daily Focus: [Specific tasks for today]
 Success Indicator: [How you'll know today's work was successful]
 ```
+
+After receiving this command, Gemini Code should:
+1. Locate the appropriate goal directory in the `goals/` folder (the most recently created or specified goal)
+2. Create the `execution.md` file inside that goal directory
+3. Use the current date in YYYY-MM-DD format for the "Date" field
+4. Write the complete execution plan using the template structure
+5. Reference the associated goal, strategy, and milestones in the document header
+6. Inform the user that the execution plan has been completed and suggest beginning implementation
 
 ## Advanced Usage Patterns
 

@@ -56,6 +56,18 @@ The command generates:
 - Project structure optimized for goal-driven development
 - Foundation for all subsequent goal definitions
 
+### Agent File Creation Instructions
+
+When processing `/goalkit.vision` commands, AI agents should:
+1. Create or update the `.goalkit/vision.md` file in the project root
+2. Use the current date in YYYY-MM-DD format for the "Created" field
+3. Write the complete vision document using the template structure below
+4. After creating the vision file, inform the user that the vision has been established and suggest creating the first goal using `/goalkit.goal`
+
+### File Creation Process
+- **Create/Update File**: `.goalkit/vision.md` with the vision content
+- **Template**: Use the structure provided in the "Vision Components" section below
+
 ## Vision Components
 
 ### 1. Project Purpose

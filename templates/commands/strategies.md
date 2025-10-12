@@ -65,6 +65,21 @@ The command generates:
 - Risk assessment and mitigation plans for each strategy
 - Foundation for milestone planning and execution
 
+### Agent File Creation Instructions
+
+When processing `/goalkit.strategies` commands, AI agents should:
+1. Locate the appropriate goal directory in the `goals/` folder (the most recently created or specified goal)
+2. Create the `strategies.md` file inside that goal directory
+3. Use the current date in YYYY-MM-DD format for the "Date" field
+4. Write the complete strategy analysis using the template structure below
+5. Reference the associated goal in the document header
+6. After creating the strategies file, inform the user that the strategy analysis has been completed and suggest next steps using `/goalkit.milestones`
+
+### File Creation Process
+- **Locate Directory**: `goals/[###-goal-name]/` (most recent goal or specified goal)
+- **Create File**: `goals/[###-goal-name]/strategies.md` with the strategy content
+- **Template**: Use the structure provided in the "Strategy Components" section below
+
 ## Strategy Components
 
 ### 1. Strategy Exploration Framework

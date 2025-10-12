@@ -40,6 +40,19 @@ The command generates:
 - Risk-benefit analysis of alternatives
 - Recommendations for next steps
 
+### Agent File Creation Instructions
+
+When processing `/goalkit.explore` commands, AI agents should:
+1. Determine if the exploration is related to a specific goal in the `goals/` folder
+2. If related to a specific goal, consider creating or updating exploration notes in that goal's directory
+3. Provide the detailed analysis with clear recommendations
+4. If the exploration is significant enough, suggest creating an `exploration.md` file in the relevant goal directory
+5. Reference any related goals, strategies, or milestones in the analysis
+
+### File Creation Process
+- **Optional File**: `goals/[###-goal-name]/exploration.md` (if exploration is substantial and goal-specific)
+- **Template**: Use the structure provided in the "Exploration Areas" section below
+
 ## Exploration Areas
 
 ### 1. Technical Strategy Deep Dive

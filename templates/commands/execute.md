@@ -40,6 +40,21 @@ The command generates:
 - Learning capture system for insights
 - Adaptation framework for strategy changes
 
+### Agent File Creation Instructions
+
+When processing `/goalkit.execute` commands, AI agents should:
+1. Locate the appropriate goal directory in the `goals/` folder (the most recently created or specified goal)
+2. Create the `execution.md` file inside that goal directory
+3. Use the current date in YYYY-MM-DD format for the "Date" field
+4. Write the complete execution plan using the template structure below
+5. Reference the associated goal, strategy, and milestones in the document header
+6. After creating the execution file, inform the user that the execution plan has been completed and suggest beginning implementation
+
+### File Creation Process
+- **Locate Directory**: `goals/[###-goal-name]/` (most recent goal or specified goal)
+- **Create File**: `goals/[###-goal-name]/execution.md` with the execution content
+- **Template**: Use the structure provided in the "Execution Components" section below
+
 ## Execution Components
 
 ### 1. Execution Strategy

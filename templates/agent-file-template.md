@@ -95,11 +95,29 @@ project/
 │   │   ├── goal.md           # Goal definition
 │   │   ├── strategies.md     # Strategy exploration
 │   │   ├── milestones.md     # Measurable milestones
-│   │   └── execution.md      # Adaptive execution guide
+│   │   ├── execution.md      # Adaptive execution guide
+│   │   └── exploration.md    # In-depth analysis and exploration
 │   └── 002-user-engagement/   # Second goal
 │       └── goal.md
 └── src/                      # Implementation code
 ```
+
+## 🛠️ Agent File Operations
+
+When handling Goal Kit slash commands, AI agents should perform these file operations:
+
+1. **`/goalkit.vision`**: Create or update `.goalkit/vision.md`
+2. **`/goalkit.goal`**: Create `goals/[###-goal-name]/goal.md` directory and file
+3. **`/goalkit.strategies`**: Create `goals/[###-goal-name]/strategies.md` in the relevant goal directory
+4. **`/goalkit.milestones`**: Create `goals/[###-goal-name]/milestones.md` in the relevant goal directory
+5. **`/goalkit.execute`**: Create `goals/[###-goal-name]/execution.md` in the relevant goal directory
+6. **`/goalkit.explore`**: May update or create `goals/[###-goal-name]/exploration.md` if exploration is goal-specific
+
+### Required Tools for File Creation
+- Use `write_file` or `edit` commands to create and modify files
+- Use appropriate directory creation commands if needed
+- Ensure proper file extensions (.md for markdown documents)
+- Follow the naming conventions: `[###-goal-name]` with leading zeros for directory names
 
 ## 🎯 Goal-Driven Principles
 

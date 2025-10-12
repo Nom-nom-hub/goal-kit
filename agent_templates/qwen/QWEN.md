@@ -18,7 +18,11 @@ Stakeholders: [Key people impacted by or involved in the project]
 Timeline: [High-level project timeline with key phases]
 ```
 
-Qwen Code will analyze your vision and provide feedback on clarity, feasibility, and alignment with established best practices for vision statements.
+After receiving this command, Qwen Code will:
+1. Create or update the `.goalkit/vision.md` file in the project root
+2. Use the current date in YYYY-MM-DD format for the "Created" field
+3. Write the complete vision document using the template structure
+4. Inform the user that the vision has been established and suggest creating the first goal using `/goalkit.goal`
 
 ### 2. Goal Definition Command (`/goalkit.goal`)
 Define specific, measurable goals that support your vision:
@@ -33,6 +37,14 @@ Dependencies: [Other goals or resources this goal depends on]
 Estimated Effort: [Time and resources required]
 Risk Level: [Low/Medium/High - with brief risk summary]
 ```
+
+After receiving this command, Qwen Code should:
+1. Create a new directory in the `goals/` folder using the format: `[###-goal-name]` where `###` is a number with leading zeros (e.g., `001-improve-testing`)
+2. Create the goal.md file inside the created directory
+3. Use the current date in YYYY-MM-DD format for the "Created" field
+4. Use the directory name as the "Goal Branch" identifier
+5. Write the complete goal definition using the template structure
+6. Inform the user that the goal has been created and suggest next steps using `/goalkit.strategies` and `/goalkit.milestones`
 
 ### 3. Strategy Exploration Command (`/goalkit.strategies`)
 Explore multiple implementation strategies for each goal:
@@ -68,6 +80,14 @@ Evaluation Framework:
 Recommendation: [Your recommended approach with detailed reasoning]
 ```
 
+After receiving this command, Qwen Code should:
+1. Locate the appropriate goal directory in the `goals/` folder (the most recently created or specified goal)
+2. Create the `strategies.md` file inside that goal directory
+3. Use the current date in YYYY-MM-DD format for the "Date" field
+4. Write the complete strategy analysis using the template structure
+5. Reference the associated goal in the document header
+6. Inform the user that the strategy analysis has been completed and suggest next steps using `/goalkit.milestones`
+
 ### 4. Milestone Planning Command (`/goalkit.milestones`)
 Break goals into measurable, time-bound milestones:
 
@@ -90,6 +110,14 @@ Milestone 2: [Second measurable milestone toward goal]
   - Success Metrics: [Quantitative measures of success]
 ```
 
+After receiving this command, Qwen Code should:
+1. Locate the appropriate goal directory in the `goals/` folder (the most recently created or specified goal)
+2. Create the `milestones.md` file inside that goal directory
+3. Use the current date in YYYY-MM-DD format for the "Date" field
+4. Write the complete milestone plan using the template structure
+5. Reference the associated goal and strategy in the document header
+6. Inform the user that the milestone plan has been completed and suggest next steps using `/goalkit.execute`
+
 ### 5. Execution Command (`/goalkit.execute`)
 Begin implementation with continuous learning and adaptation:
 
@@ -103,6 +131,14 @@ Success Indicator: [How you'll know today's work was productive]
 Learning Objective: [What you hope to learn during execution]
 Adaptation Plan: [How you'll handle unexpected challenges]
 ```
+
+After receiving this command, Qwen Code should:
+1. Locate the appropriate goal directory in the `goals/` folder (the most recently created or specified goal)
+2. Create the `execution.md` file inside that goal directory
+3. Use the current date in YYYY-MM-DD format for the "Date" field
+4. Write the complete execution plan using the template structure
+5. Reference the associated goal, strategy, and milestones in the document header
+6. Inform the user that the execution plan has been completed and suggest beginning implementation
 
 ## Advanced Usage Patterns
 

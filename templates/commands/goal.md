@@ -60,6 +60,21 @@ The command generates:
 - `goals/[###-goal-name]/` directory structure for strategies and milestones
 - Foundation for strategy exploration and milestone planning
 
+### Agent File Creation Instructions
+
+When processing `/goalkit.goal` commands, AI agents should:
+1. Create a new directory in the `goals/` folder using the format: `[###-goal-name]` where `###` is a number with leading zeros (e.g., `001-improve-testing`)
+2. Create the goal.md file inside the created directory
+3. Use the current date in YYYY-MM-DD format for the "Created" field
+4. Use the directory name as the "Goal Branch" identifier
+5. Write the complete goal definition using the template structure below
+6. After creating the goal file, inform the user that the goal has been created and suggest next steps using `/goalkit.strategies` and `/goalkit.milestones`
+
+### File Creation Process
+- **Create Directory**: `goals/[###-goal-name]/` (where ### is incremented from existing goals)
+- **Create File**: `goals/[###-goal-name]/goal.md` with the goal content
+- **Template**: Use the structure provided in the "Goal Components" section below
+
 ## Goal Components
 
 ### 1. Goal Overview

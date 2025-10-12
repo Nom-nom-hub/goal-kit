@@ -27,6 +27,24 @@ This document provides specific guidance for AI coding agents to maintain synchr
 2. Generate standard files: `goal.md`, `strategies/`, `milestones/`
 3. Establish baseline cross-references with existing goals if applicable
 
+### When Processing Goal Kit Commands
+When processing Goal Kit slash commands, Copilot should:
+
+- **`/goalkit.vision`**: Create or update `.goalkit/vision.md` in the project root
+- **`/goalkit.goal`**: Create `goals/[###-goal-name]/goal.md` directory and file
+- **`/goalkit.strategies`**: Create `goals/[###-goal-name]/strategies.md` in the relevant goal directory
+- **`/goalkit.milestones`**: Create `goals/[###-goal-name]/milestones.md` in the relevant goal directory
+- **`/goalkit.execute`**: Create `goals/[###-goal-name]/execution.md` in the relevant goal directory
+- **`/goalkit.explore`**: May update or create `goals/[###-goal-name]/exploration.md` if exploration is goal-specific
+
+Use the following process:
+1. Identify the appropriate directory based on the command
+2. Create the directory if it doesn't exist
+3. Create the appropriate file with proper headers
+4. Use current date in YYYY-MM-DD format for "Created" fields
+5. Include proper cross-references to related artifacts
+6. Inform the user that the file has been created and suggest next steps
+
 ### When Modifying Goals
 1. Check for related milestones that might need updates
 2. Validate that strategy options still align with the updated goal
