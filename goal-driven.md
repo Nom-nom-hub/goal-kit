@@ -1,4 +1,5 @@
 # Goal-Driven Development (GDD)
+*Original research and development by Goal Kit. Attribution appreciated but not required.*
 
 ## The Outcome Inversion
 

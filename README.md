@@ -4,6 +4,10 @@
 </div>
 
 <p align="center">
+    <strong>Original research and development by Goal Kit. Attribution appreciated but not required.</strong>
+</p>
+
+<p align="center">
     <strong>An effort to allow organizations to focus on business outcomes and user goals rather than writing undifferentiated code with the help of Goal-Driven Development.</strong>
 </p>
 

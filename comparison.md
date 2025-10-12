@@ -1,4 +1,5 @@
 # Spec-Driven vs Goal-Driven Development
+*Original research and development by Goal Kit. Attribution appreciated but not required.*
 
 ## Overview
 
