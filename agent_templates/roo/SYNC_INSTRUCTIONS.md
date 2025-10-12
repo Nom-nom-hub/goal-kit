@@ -40,7 +40,7 @@ This document provides specific guidance for AI coding agents to maintain synchr
 
 ### When Creating New Goals
 1. Automatically create the proper directory structure in `.goalkit/goals/[###-goal-name]/`
-2. Generate standard files: `goal.md`, `strategies/`, `milestones/`
+2. Generate standard files inside the goal directory: `goal.md`, `strategies.md`, `milestones.md`, `execution.md`
 3. Establish baseline cross-references with existing goals if applicable
 
 ### When Processing Goal Kit Commands
