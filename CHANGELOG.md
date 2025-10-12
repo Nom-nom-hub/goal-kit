@@ -5,9 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.32] - 2025-10-12 (Latest)
+## [0.0.33] - 2025-10-12 (Latest)
 
-### 🚀 add 10 new slash commands for collaboration, quality, and UX
+### 🚀 Enhanced agent synchronization and release process fixes
+
+#### ⚙️ Added synchronization instructions for all 12 supported agents:
+- **Agent Support**: Added SYNC_INSTRUCTIONS.md for auggie, claude, codex, copilot, cursor, gemini, kilocode, opencode, q, qwen, roo, windsurf
+- **File Synchronization**: Agents now maintain consistency across goal-related files during development
+- **Goal Management**: Proper handling of goals, strategies, milestones, and evidence file relationships
+- **Automatic Updates**: Agents keep goal files updated as users develop and create goals
+
+#### 🔧 Release Process Improvements:
+- **Fixed Release Script**: Corrected unbound variable in generate-release-notes.sh that was causing workflow failures
+- **Improved Reliability**: Release workflow now properly handles all required variables
+
+### 🚀 Previous: add 10 new slash commands for collaboration, quality, and UX
 
 #### ⚙️ Added new slash commands across three categories:
 - **Collaboration & Management**: /goalkit.collaborate, /goalkit.schedule, /goalkit.dependencies, /goalkit.report
