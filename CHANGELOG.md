@@ -5,7 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.40] - 2025-10-12 (Latest)
+## [0.0.41] - 2025-10-12 (Latest)
+
+### 🛠️ Fixed release notes generation
+
+#### 🐛 Bug Fixes:
+- **Changelog Parsing**: Fixed regex pattern in generate-release-notes.sh to properly match version entries with dates
+- **Release Notes Content**: Release notes now properly extract content from CHANGELOG.md instead of using git logs
+- **Version Matching**: Corrected pattern matching to handle version formats like `[0.0.X] - YYYY-MM-DD`
+
+#### ⚙️ Technical Improvements:
+- **Reliability**: Release workflow now properly extracts changelog entries for release notes
+- **Accuracy**: Release notes accurately reflect content in CHANGELOG.md
+
+## [0.0.40] - 2025-10-12
 
 ### 🚀 Enhanced agent synchronization and release process fixes
 
