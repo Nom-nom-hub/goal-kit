@@ -4,7 +4,7 @@
 ### Document Information
 - **Title**: IP Protection Analysis for GDD Methodology
 - **Methodology**: Goal-Driven Development (GDD)
-- **Author**: [Your Name]
+- **Author**: [Andrew]
 - **Date Created**: October 12, 2025
 - **Last Updated**: October 12, 2025
 - **Version**: 1.0
