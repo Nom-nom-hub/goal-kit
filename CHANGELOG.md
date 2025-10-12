@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.44] - 2025-10-12 (Latest)
+## [0.0.45] - 2025-10-12 (Latest)
+
+### 🐛 Fixed newline handling in release notes
+
+#### ⚙️ Improvements:
+- **Proper Line Breaks**: Fixed how newlines are handled in extracted changelog content
+- **Clean Output**: Release notes now display with proper formatting instead of literal \\n characters
+- **Better Readability**: Generated release notes have improved formatting and readability
+
+## [0.0.44] - 2025-10-12
 
 ### 🐛 Fixed version matching in release notes
 
