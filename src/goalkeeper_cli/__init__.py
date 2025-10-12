@@ -34,7 +34,7 @@ import shlex
 import json
 import re
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Dict, Any, List
 from datetime import datetime
 
 import typer
@@ -48,6 +48,12 @@ from rich.align import Align
 from rich.table import Table
 from rich.tree import Tree
 from typer.core import TyperGroup
+
+# Import template processor for goal creation
+try:
+    from .template_processor import TemplateProcessor
+except ImportError:
+    TemplateProcessor = None
 
 # Import memory system and baseline metrics
 try:
@@ -430,6 +436,413 @@ def select_with_arrows(options: dict, prompt_text: str = "Select an option", def
     return selected_key
 
 console = Console()
+
+class GoalCreationService:
+    """Service for creating goals from AI responses and managing goal file structure."""
+
+    def __init__(self, project_path: Path):
+        """Initialize the goal creation service.
+
+        Args:
+            project_path: Path to the project directory
+        """
+        self.project_path = project_path
+        self.goals_dir = project_path / ".goalkit" / "goals"
+        self.goals_dir.mkdir(parents=True, exist_ok=True)
+        self.template_processor = TemplateProcessor(project_path) if TemplateProcessor else None
+
+    def parse_ai_response(self, ai_response: str, goal_description: str) -> Dict[str, Any]:
+        """Parse AI response to extract structured goal data.
+
+        Args:
+            ai_response: The AI response containing goal information
+            goal_description: Original user description for context
+
+        Returns:
+            Dictionary containing structured goal data
+        """
+        import re
+        from datetime import datetime
+
+        # Extract goal title from description
+        goal_title = self._extract_goal_title(goal_description)
+
+        # Generate goal directory name (###-goal-name format)
+        goal_dir_name = self._generate_goal_dir_name(goal_title)
+
+        # Extract key components from AI response
+        goal_data = {
+            "goal_statement": goal_description,
+            "goal_title": goal_title,
+            "goal_directory": goal_dir_name,
+            "created_date": datetime.now().strftime('%Y-%m-%d'),
+            "status": "Draft",
+            "ai_response": ai_response,
+            "success_metrics": self._extract_success_metrics(ai_response),
+            "target_users": self._extract_target_users(ai_response),
+            "hypotheses": self._extract_hypotheses(ai_response),
+            "risk_factors": self._extract_risk_factors(ai_response),
+            "milestones": self._extract_milestones(ai_response)
+        }
+
+        return goal_data
+
+    def _extract_goal_title(self, description: str) -> str:
+        """Extract a concise goal title from the description."""
+        # Remove common prefixes and clean up
+        title = description.strip()
+
+        # Remove common prefixes
+        prefixes_to_remove = [
+            "create", "build", "develop", "implement", "design", "a", "an", "the",
+            "i want to", "i need to", "we want to", "we need to"
+        ]
+
+        for prefix in prefixes_to_remove:
+            if title.lower().startswith(prefix):
+                title = title[len(prefix):].strip()
+                break
+
+        # Capitalize first letter of each word
+        title = title.title()
+
+        # Limit length
+        if len(title) > 50:
+            title = title[:47] + "..."
+
+        return title
+
+    def _generate_goal_dir_name(self, goal_title: str) -> str:
+        """Generate a goal directory name in ###-goal-name format."""
+        # Create a simple counter for the number
+        existing_goals = [d for d in self.goals_dir.iterdir() if d.is_dir()]
+        goal_number = len(existing_goals) + 1
+
+        # Create a URL-friendly name from the title
+        clean_name = re.sub(r'[^a-zA-Z0-9\s-]', '', goal_title)
+        clean_name = re.sub(r'\s+', '-', clean_name.strip())
+
+        return f"{goal_number:03d}-{clean_name.lower()}"
+
+    def _extract_success_metrics(self, ai_response: str) -> List[str]:
+        """Extract success metrics from AI response."""
+        metrics = []
+
+        # Look for patterns indicating metrics
+        metric_patterns = [
+            r'success.*metric.*?[:;]\s*(.*?)(?:\n|$)',
+            r'measure.*?[:;]\s*(.*?)(?:\n|$)',
+            r'target.*?[:;]\s*(.*?)(?:\n|$)',
+            r'goal.*?[:;]\s*(.*?)(?:\n|$)'
+        ]
+
+        for pattern in metric_patterns:
+            matches = re.findall(pattern, ai_response, re.IGNORECASE | re.MULTILINE)
+            for match in matches:
+                if len(match.strip()) > 10:  # Filter out very short matches
+                    metrics.append(match.strip())
+
+        # If no metrics found, create default ones
+        if not metrics:
+            metrics = [
+                "Successful implementation of core functionality",
+                "User satisfaction with the solution",
+                "Achievement of performance targets"
+            ]
+
+        return metrics[:5]  # Limit to 5 metrics
+
+    def _extract_target_users(self, ai_response: str) -> List[str]:
+        """Extract target users from AI response."""
+        users = []
+
+        # Look for user-related patterns
+        user_patterns = [
+            r'user.*?[:;]\s*(.*?)(?:\n|$)',
+            r'target.*?audience.*?[:;]\s*(.*?)(?:\n|$)',
+            r'benefit.*?[:;]\s*(.*?)(?:\n|$)'
+        ]
+
+        for pattern in user_patterns:
+            matches = re.findall(pattern, ai_response, re.IGNORECASE | re.MULTILINE)
+            for match in matches:
+                if len(match.strip()) > 5:
+                    users.append(match.strip())
+
+        # Default users if none found
+        if not users:
+            users = [
+                "End users who will directly interact with the solution",
+                "Stakeholders who will benefit from the outcomes"
+            ]
+
+        return users[:3]
+
+    def _extract_hypotheses(self, ai_response: str) -> List[str]:
+        """Extract hypotheses from AI response."""
+        hypotheses = []
+
+        # Look for assumption or hypothesis patterns
+        hypothesis_patterns = [
+            r'assum.*?[:;]\s*(.*?)(?:\n|$)',
+            r'hypothesis.*?[:;]\s*(.*?)(?:\n|$)',
+            r'believe.*?[:;]\s*(.*?)(?:\n|$)'
+        ]
+
+        for pattern in hypothesis_patterns:
+            matches = re.findall(pattern, ai_response, re.IGNORECASE | re.MULTILINE)
+            for match in matches:
+                if len(match.strip()) > 10:
+                    hypotheses.append(match.strip())
+
+        # Default hypotheses if none found
+        if not hypotheses:
+            hypotheses = [
+                "The proposed solution will effectively address the identified need",
+                "Users will adopt and benefit from the implemented solution"
+            ]
+
+        return hypotheses[:3]
+
+    def _extract_risk_factors(self, ai_response: str) -> List[str]:
+        """Extract risk factors from AI response."""
+        risks = []
+
+        # Look for risk or challenge patterns
+        risk_patterns = [
+            r'risk.*?[:;]\s*(.*?)(?:\n|$)',
+            r'challenge.*?[:;]\s*(.*?)(?:\n|$)',
+            r'concern.*?[:;]\s*(.*?)(?:\n|$)'
+        ]
+
+        for pattern in risk_patterns:
+            matches = re.findall(pattern, ai_response, re.IGNORECASE | re.MULTILINE)
+            for match in matches:
+                if len(match.strip()) > 10:
+                    risks.append(match.strip())
+
+        # Default risks if none found
+        if not risks:
+            risks = [
+                "Technical complexity may require additional time",
+                "User adoption may be slower than expected"
+            ]
+
+        return risks[:3]
+
+    def _extract_milestones(self, ai_response: str) -> List[Dict[str, Any]]:
+        """Extract milestones from AI response."""
+        milestones = []
+
+        # Look for milestone or step patterns
+        milestone_patterns = [
+            r'milestone.*?[:;]\s*(.*?)(?:\n|$)',
+            r'step.*?[:;]\s*(.*?)(?:\n|$)',
+            r'phase.*?[:;]\s*(.*?)(?:\n|$)'
+        ]
+
+        for pattern in milestone_patterns:
+            matches = re.findall(pattern, ai_response, re.IGNORECASE | re.MULTILINE)
+            for match in matches:
+                if len(match.strip()) > 10:
+                    milestones.append({
+                        "title": match.strip(),
+                        "description": f"Complete {match.strip().lower()}",
+                        "priority": "P1",
+                        "success_indicators": [f"Successfully {match.strip().lower()}"],
+                        "timeline": "TBD"
+                    })
+
+        # Default milestones if none found
+        if not milestones:
+            milestones = [
+                {
+                    "title": "Planning & Setup",
+                    "description": "Define detailed requirements and approach",
+                    "priority": "P1",
+                    "success_indicators": ["Requirements documented", "Approach approved"],
+                    "timeline": "Week 1-2"
+                },
+                {
+                    "title": "Core Implementation",
+                    "description": "Build and deliver core functionality",
+                    "priority": "P1",
+                    "success_indicators": ["Core features working", "Basic validation passed"],
+                    "timeline": "Week 3-6"
+                },
+                {
+                    "title": "Validation & Launch",
+                    "description": "Final validation and deployment",
+                    "priority": "P1",
+                    "success_indicators": ["All criteria met", "User acceptance confirmed"],
+                    "timeline": "Week 7-8"
+                }
+            ]
+
+        return milestones[:5]  # Limit to 5 milestones
+
+    def create_goal_directory(self, goal_data: Dict[str, Any]) -> Path:
+        """Create the goal directory structure."""
+        goal_dir = self.goals_dir / goal_data["goal_directory"]
+        goal_dir.mkdir(exist_ok=True)
+        return goal_dir
+
+    def generate_goal_file(self, goal_data: Dict[str, Any], goal_dir: Path) -> Path:
+        """Generate the goal.md file using the goal template."""
+        goal_file = goal_dir / "goal.md"
+
+        # Read the goal template
+        template_path = Path(__file__).parent.parent / "templates" / "goal-template.md"
+        if template_path.exists():
+            template_content = template_path.read_text(encoding='utf-8')
+        else:
+            # Fallback template if file doesn't exist
+            template_content = self._get_fallback_template()
+
+        # Replace template placeholders with actual data
+        content = self._populate_template(template_content, goal_data)
+
+        # Write the goal file
+        goal_file.write_text(content, encoding='utf-8')
+
+        return goal_file
+
+    def _get_fallback_template(self) -> str:
+        """Get a fallback template if the template file doesn't exist."""
+        return """# Goal Definition: [GOAL_TITLE]
+
+**Goal Branch**: `[GOAL_DIRECTORY]`
+**Created**: [CREATED_DATE]
+**Status**: Draft
+
+## 🎯 Goal Overview
+
+**Goal Statement**: [GOAL_STATEMENT]
+
+## 📊 Success Metrics
+
+[PRIMARY_METRICS]
+
+## 👥 Target Users & Stakeholders
+
+[PRIMARY_USERS]
+
+## 🎯 Goal Hypotheses
+
+### Key Assumptions
+[HYPOTHESES]
+
+### Risk Factors
+[RISK_FACTORS]
+
+## 🚀 Goal Milestones
+
+[MILESTONES]
+
+---
+*This goal definition serves as the foundation for strategy exploration and milestone planning.*
+"""
+
+    def _populate_template(self, template: str, goal_data: Dict[str, Any]) -> str:
+        """Populate the template with goal data."""
+        # Basic replacements
+        replacements = {
+            "[GOAL_TITLE]": goal_data.get("goal_title", "Untitled Goal"),
+            "[GOAL_DIRECTORY]": goal_data.get("goal_directory", "unnamed-goal"),
+            "[CREATED_DATE]": goal_data.get("created_date", datetime.now().strftime('%Y-%m-%d')),
+            "[GOAL_STATEMENT]": goal_data.get("goal_statement", "")
+        }
+
+        # Replace basic placeholders
+        for placeholder, value in replacements.items():
+            template = template.replace(placeholder, str(value))
+
+        # Replace complex sections
+        template = self._replace_metrics_section(template, goal_data)
+        template = self._replace_users_section(template, goal_data)
+        template = self._replace_hypotheses_section(template, goal_data)
+        template = self._replace_risks_section(template, goal_data)
+        template = self._replace_milestones_section(template, goal_data)
+
+        return template
+
+    def _replace_metrics_section(self, template: str, goal_data: Dict[str, Any]) -> str:
+        """Replace the metrics section in the template."""
+        metrics = goal_data.get("success_metrics", [])
+        if not metrics:
+            return template.replace("[PRIMARY_METRICS]", "- No specific metrics defined yet")
+
+        metrics_text = "\n".join([f"- {metric}" for metric in metrics])
+        return template.replace("[PRIMARY_METRICS]", metrics_text)
+
+    def _replace_users_section(self, template: str, goal_data: Dict[str, Any]) -> str:
+        """Replace the users section in the template."""
+        users = goal_data.get("target_users", [])
+        if not users:
+            return template.replace("[PRIMARY_USERS]", "- End users who will benefit from this goal")
+
+        users_text = "\n".join([f"- {user}" for user in users])
+        return template.replace("[PRIMARY_USERS]", users_text)
+
+    def _replace_hypotheses_section(self, template: str, goal_data: Dict[str, Any]) -> str:
+        """Replace the hypotheses section in the template."""
+        hypotheses = goal_data.get("hypotheses", [])
+        if not hypotheses:
+            return template.replace("[HYPOTHESES]", "- The proposed solution will be effective")
+
+        hypotheses_text = "\n".join([f"- {hypothesis}" for hypothesis in hypotheses])
+        return template.replace("[HYPOTHESES]", hypotheses_text)
+
+    def _replace_risks_section(self, template: str, goal_data: Dict[str, Any]) -> str:
+        """Replace the risks section in the template."""
+        risks = goal_data.get("risk_factors", [])
+        if not risks:
+            return template.replace("[RISK_FACTORS]", "- Technical challenges may arise")
+
+        risks_text = "\n".join([f"- **Risk**: {risk} - Mitigation: TBD" for risk in risks])
+        return template.replace("[RISK_FACTORS]", risks_text)
+
+    def _replace_milestones_section(self, template: str, goal_data: Dict[str, Any]) -> str:
+        """Replace the milestones section in the template."""
+        milestones = goal_data.get("milestones", [])
+        if not milestones:
+            return template.replace("[MILESTONES]", "### Milestone 1: Planning\n**Description**: Define requirements and approach")
+
+        milestones_text = ""
+        for i, milestone in enumerate(milestones, 1):
+            milestones_text += f"""### Milestone {i}: {milestone['title']}
+
+**Description**: {milestone['description']}
+
+**Success Indicators**:
+- {chr(10).join(milestone['success_indicators'])}
+
+**Expected Timeline**: {milestone['timeline']}
+
+---
+"""
+
+        return template.replace("[MILESTONES]", milestones_text)
+
+    def validate_goal_structure(self, goal_dir: Path) -> bool:
+        """Validate that the goal structure is correct."""
+        required_files = ["goal.md"]
+        return all((goal_dir / file).exists() for file in required_files)
+
+    def get_next_goal_number(self) -> int:
+        """Get the next available goal number."""
+        existing_goals = [d for d in self.goals_dir.iterdir() if d.is_dir()]
+        if not existing_goals:
+            return 1
+
+        # Extract numbers from existing goal directories
+        numbers = []
+        for goal_dir in existing_goals:
+            match = re.match(r'^(\d+)-', goal_dir.name)
+            if match:
+                numbers.append(int(match.group(1)))
+
+        return max(numbers) + 1 if numbers else 1
 
 class BannerGroup(TyperGroup):
     """Custom group that shows banner before help."""
@@ -2943,6 +3356,137 @@ def baseline(
         raise typer.Exit(1)
 
 @app.command()
+def goal_create(
+    description: str = typer.Argument(..., help="Description of the goal to create"),
+    ai_response: str = typer.Option(None, "--ai-response", "-r", help="AI response containing goal details (optional)"),
+    project_path: Path = typer.Option(Path.cwd(), "--project-path", "-p", help="Path to the project directory"),
+    interactive: bool = typer.Option(False, "--interactive", "-i", help="Interactive mode for AI response input"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed processing information"),
+):
+    """Create a new goal from description and AI response.
+
+    This command processes a goal description and creates the proper directory structure
+    and goal.md file using the goal template. It can work with or without an AI response.
+
+    Examples:
+        goalkeeper goal-create "create a user authentication system"
+        goalkeeper goal-create "build a dashboard" --ai-response "AI response here"
+        goalkeeper goal-create "implement feature X" --interactive
+    """
+    show_banner()
+
+    console.print(f"[cyan]Creating goal:[/cyan] {description}\n")
+
+    try:
+        # Initialize goal creation service
+        goal_service = GoalCreationService(project_path)
+
+        # Get AI response if not provided
+        if not ai_response:
+            if interactive:
+                console.print("[yellow]Interactive mode: Please paste the AI response below.[/yellow]")
+                console.print("[yellow]Press Enter twice when finished:[/yellow]\n")
+                ai_response_lines = []
+                try:
+                    while True:
+                        line = input()
+                        if not line and ai_response_lines:
+                            break
+                        ai_response_lines.append(line)
+                except (KeyboardInterrupt, EOFError):
+                    console.print("\n[yellow]Input cancelled.[/yellow]")
+                    raise typer.Exit(1)
+
+                ai_response = '\n'.join(ai_response_lines)
+            else:
+                console.print("[yellow]No AI response provided. Use --ai-response or --interactive flag.[/yellow]")
+                console.print("[yellow]Creating goal with basic structure only.[/yellow]")
+                ai_response = f"Goal: {description}\n\nThis goal needs further development and refinement."
+
+        if verbose:
+            console.print(f"[dim]AI Response Preview:[/dim]\n{ai_response[:200]}{'...' if len(ai_response) > 200 else ''}\n")
+
+        # Parse AI response and create goal data
+        if verbose:
+            console.print("[cyan]Parsing AI response...[/cyan]")
+
+        goal_data = goal_service.parse_ai_response(ai_response, description)
+
+        if verbose:
+            console.print(f"[green]✓[/green] Parsed goal: {goal_data['goal_title']}")
+            console.print(f"[green]✓[/green] Generated directory: {goal_data['goal_directory']}")
+
+        # Create goal directory structure
+        if verbose:
+            console.print("[cyan]Creating goal directory structure...[/cyan]")
+
+        goal_dir = goal_service.create_goal_directory(goal_data)
+
+        if verbose:
+            console.print(f"[green]✓[/green] Created directory: {goal_dir}")
+
+        # Generate goal file
+        if verbose:
+            console.print("[cyan]Generating goal.md file...[/cyan]")
+
+        goal_file = goal_service.generate_goal_file(goal_data, goal_dir)
+
+        if verbose:
+            console.print(f"[green]✓[/green] Created goal file: {goal_file}")
+
+        # Validate the created structure
+        if goal_service.validate_goal_structure(goal_dir):
+            console.print(f"\n[bold green]✅ Goal created successfully![/bold green]")
+            console.print(f"[cyan]Directory:[/cyan] {goal_dir}")
+            console.print(f"[cyan]Goal file:[/cyan] {goal_file}")
+            console.print(f"[cyan]Title:[/cyan] {goal_data['goal_title']}")
+
+            # Show next steps
+            console.print("\n[bold]Next Steps:[/bold]")
+            console.print("1. [cyan]Review and customize[/cyan] the generated goal.md file")
+            console.print("2. [cyan]Use /goalkit.strategies[/cyan] to explore implementation approaches")
+            console.print("3. [cyan]Use /goalkit.milestones[/cyan] to create detailed milestones")
+            console.print("4. [cyan]Use /goalkit.execute[/cyan] to start implementation")
+
+            # Log the goal creation
+            log_ai_interaction("qwen", "goal_create", True, 100, description, f"Created goal: {goal_data['goal_title']}")
+
+        else:
+            console.print(f"\n[red]❌ Goal creation failed - structure validation error[/red]")
+            console.print(f"[yellow]Directory created but files may be missing:[/yellow] {goal_dir}")
+            raise typer.Exit(1)
+
+    except Exception as e:
+        console.print(f"\n[red]❌ Error creating goal:[/red] {e}")
+        if verbose:
+            import traceback
+            console.print(f"[red]Traceback:[/red]\n{traceback.format_exc()}")
+        raise typer.Exit(1)
+
+
+@app.command()
+def goalkit_goal(
+    description: str = typer.Argument(..., help="Description of the goal to create"),
+    ai_response: str = typer.Option(None, "--ai-response", "-r", help="AI response containing goal details (optional)"),
+    project_path: Path = typer.Option(Path.cwd(), "--project-path", "-p", help="Path to the project directory"),
+    interactive: bool = typer.Option(False, "--interactive", "-i", help="Interactive mode for AI response input"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed processing information"),
+):
+    """Handle /goalkit.goal slash command for creating goals.
+
+    This command provides the /goalkit.goal interface that AI agents use to create
+    structured goals from descriptions and AI responses.
+
+    Examples:
+        goalkeeper goalkit-goal "create a user authentication system"
+        goalkeeper goalkit-goal "build a dashboard" --ai-response "AI response here"
+        goalkeeper goalkit-goal "implement feature X" --interactive
+    """
+    # Delegate to the main goal creation function
+    goal_create(description, ai_response, project_path, interactive, verbose)
+
+
+@app.command()
 def check():
     """Check that all required tools are installed."""
     show_banner()
@@ -2992,3 +3536,70 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Test function for goal creation (for development/debugging)
+def test_goal_creation():
+    """Test function to verify goal creation functionality."""
+    try:
+        from pathlib import Path
+
+        # Create a test project directory
+        test_project = Path.cwd() / "test_goal_creation"
+        test_project.mkdir(exist_ok=True)
+
+        # Initialize goal creation service
+        goal_service = GoalCreationService(test_project)
+
+        # Test data
+        test_description = "create a user authentication system"
+        test_ai_response = """
+        This goal involves implementing a secure user authentication system with the following key features:
+
+        Success Metrics:
+        - 99.9% uptime for authentication services
+        - Support for 10,000 concurrent users
+        - Sub-second response times for login/logout
+
+        Target Users:
+        - End users who need secure access to the application
+        - Administrators who manage user accounts
+        - Developers who integrate with the authentication system
+
+        Key Hypotheses:
+        - Users prefer OAuth integration over custom authentication
+        - Multi-factor authentication increases security without hurting UX
+
+        Risk Factors:
+        - Integration with existing user database may be complex
+        - Security vulnerabilities could compromise user data
+
+        Milestones:
+        - Design authentication architecture and security model
+        - Implement core authentication service
+        - Add multi-factor authentication support
+        - Integration testing and security audit
+        """
+
+        # Parse and create goal
+        goal_data = goal_service.parse_ai_response(test_ai_response, test_description)
+        goal_dir = goal_service.create_goal_directory(goal_data)
+        goal_file = goal_service.generate_goal_file(goal_data, goal_dir)
+
+        print(f"[SUCCESS] Goal created successfully!")
+        print(f"[DIR] Directory: {goal_dir}")
+        print(f"[FILE] Goal file: {goal_file}")
+        print(f"[TITLE] Title: {goal_data['goal_title']}")
+
+        # Validate structure
+        if goal_service.validate_goal_structure(goal_dir):
+            print("[SUCCESS] Goal structure validation passed")
+        else:
+            print("[ERROR] Goal structure validation failed")
+
+        return True
+
+    except Exception as e:
+        print(f"[ERROR] Test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
