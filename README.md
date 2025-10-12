@@ -230,7 +230,7 @@ The `goalkeeper` command supports the following options:
 
 ### Available Slash Commands
 
-After running `goalkeeper init`, your AI coding agent will have access to these **18 powerful slash commands** for comprehensive goal-driven development:
+After running `goalkeeper init`, your AI coding agent will have access to these **28 powerful slash commands** for comprehensive goal-driven development:
 
 #### 🚀 Core Workflow Commands
 
@@ -256,6 +256,7 @@ Advanced commands for project analysis, insights, and optimization:
 | `/goalkit.insights`      | AI-powered pattern recognition and actionable recommendations        |
 | `/goalkit.prioritize`    | Smart goal prioritization using multiple factors                     |
 | `/goalkit.track`         | Advanced progress monitoring and forecasting                         |
+| `/goalkit.analytics`     | Advanced analytics and predictive forecasting for project optimization |
 
 #### 📊 Research & Learning Commands
 
@@ -265,7 +266,7 @@ Commands for external knowledge integration and continuous improvement:
 |--------------------------|-----------------------------------------------------------------------|
 | `/goalkit.research`      | External knowledge integration and market research                   |
 | `/goalkit.learn`         | Experience capture and knowledge management                          |
-| `/goalkit.benchmark`     | Industry comparison and best practice alignment                     |
+| `/goalkit.benchmark`     | Industry comparison and best practice alignment                      |
 
 #### 🛠️ Enhancement Commands
 
@@ -277,6 +278,38 @@ Additional commands for enhanced exploration and validation:
 | `/goalkit.explore`   | Explore alternative approaches and what-if scenarios                 |
 | `/goalkit.measure`   | Define success metrics and measurement approaches                    |
 | `/goalkit.adapt`     | Adapt strategies based on results and learning                       |
+
+#### 👥 Collaboration & Management Commands
+
+Commands for team coordination and project management:
+
+| Command                  | Description                                                           |
+|--------------------------|-----------------------------------------------------------------------|
+| `/goalkit.collaborate`   | Manage team workflows, assign tasks, and coordinate multi-user development |
+| `/goalkit.schedule`      | Create detailed project timelines with dependencies and resource allocation |
+| `/goalkit.dependencies`  | Map and manage dependencies between goals, milestones, and tasks     |
+| `/goalkit.report`        | Generate various project reports (status, progress, forecast, retrospective) |
+
+#### 🔒 Quality & Security Commands
+
+Commands for quality assurance and security integration:
+
+| Command                  | Description                                                           |
+|--------------------------|-----------------------------------------------------------------------|
+| `/goalkit.test`          | Design and verify testing strategies that support specific goals     |
+| `/goalkit.security`      | Integrate security considerations into goal planning and execution   |
+| `/goalkit.risk`          | Identify, assess, and create mitigation plans for project risks      |
+
+#### 🛠️ User Experience & Setup Commands
+
+Commands for onboarding, methodology support, and configuration:
+
+| Command                  | Description                                                           |
+|--------------------------|-----------------------------------------------------------------------|
+| `/goalkit.help`          | Comprehensive help system and command reference                      |
+| `/goalkit.onboard`       | New user onboarding and quick start assistance                       |
+| `/goalkit.methodology`   | Support for different development methodologies (Agile, Scrum, Kanban) |
+| `/goalkit.config`        | Manage project configurations and environment settings               |
 
 ## 🚀 AI Agent Integration
 
