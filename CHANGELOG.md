@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.45] - 2025-10-12 (Latest)
+## [0.0.47] - 2025-10-12 (Latest)
+
+### 🔍 Added debug output to release script
+
+#### ⚙️ Improvements:
+- **Diagnostic Output**: Added debug information to identify why release notes were blank
+- **Version Matching**: Added logging to see what version is being searched for
+- **Changelog Entries**: Added logging to see available versions in changelog file
+
+## [0.0.45] - 2025-10-12
 
 ### 🐛 Fixed newline handling in release notes
 
