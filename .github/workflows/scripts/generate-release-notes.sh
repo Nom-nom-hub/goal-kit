@@ -18,7 +18,8 @@ CHANGELOG_SECTION=$(awk -v version="$NEW_VERSION" '
 BEGIN { in_section = 0; section = ""; }
 /^## \[/{ 
     if (in_section) exit 0;
-    if ($0 ~ ("## \\[" version "\\]|## \\[0\\.0\\." (substr(version, 5)+0) "\\]")) {
+    # Check if this line starts with the target version (with optional date info after)
+    if ($0 ~ ("## \\[" version ".*")) {
         in_section = 1;
         next;
     } else {
