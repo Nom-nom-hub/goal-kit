@@ -43,6 +43,64 @@ This document provides specific guidance for AI coding agents to maintain synchr
 2. Generate standard files inside the goal directory: `goal.md`, `strategies.md`, `milestones.md`, `execution.md`
 3. Establish baseline cross-references with existing goals if applicable
 
+### When Processing Goal Kit Slash Commands
+When processing Goal Kit slash commands, ensure files are created in the proper directory structure:
+
+Core Goal Management:
+- **`/goalkit.goal`**: Create `goals/[###-goal-name]/goal.md` with sequential numbering
+- **`/goalkit.strategies`**: Create `goals/[###-goal-name]/strategies.md` in the relevant goal directory
+- **`/goalkit.milestones`**: Create `goals/[###-goal-name]/milestones.md` in the relevant goal directory
+- **`/goalkit.execute`**: Create `goals/[###-goal-name]/execution.md` in the relevant goal directory
+- **`/goalkit.explore`**: May update or create `goals/[###-goal-name]/exploration.md` if exploration is goal-specific
+
+Analysis and Planning:
+- **`/goalkit.analyze`**: Create project health analysis documentation
+- **`/goalkit.validate`**: Create quality assurance and methodology compliance checking
+- **`/goalkit.plan`**: Create detailed execution planning and resource allocation
+- **`/goalkit.insights`**: Create AI-powered pattern recognition and actionable recommendations
+- **`/goalkit.prioritize`**: Create smart goal prioritization using multiple factors
+- **`/goalkit.track`**: Create advanced progress monitoring and forecasting
+
+Collaboration & Management:
+- **`/goalkit.collaborate`**: Create collaboration workflows and team coordination plans
+- **`/goalkit.schedule`**: Create project scheduling and timeline management
+- **`/goalkit.dependencies`**: Document goal dependencies and inter-relationships
+- **`/goalkit.report`**: Create status reports and progress summaries
+
+Quality & Security:
+- **`/goalkit.test`**: Create testing strategy and quality assurance documentation
+- **`/goalkit.security`**: Create security considerations and vulnerability assessments
+- **`/goalkit.risk`**: Create risk assessment and mitigation strategies
+
+User Experience & Setup:
+- **`/goalkit.help`**: Create help documentation and command reference
+- **`/goalkit.onboard`**: Create onboarding guides and initial setup instructions
+- **`/goalkit.methodology`**: Document development methodology and approach
+- **`/goalkit.config`**: Create configuration files and setup instructions
+
+Advanced Features:
+- **`/goalkit.research`**: Create external knowledge integration and market research
+- **`/goalkit.learn`**: Create experience capture and knowledge management system
+- **`/goalkit.benchmark`**: Create industry comparison and best practice alignment
+
+Additional Commands (Optional Implementation):
+- **`/goalkit.measure`**: Create measurement framework documentation
+- **`/goalkit.adapt`**: Create strategy adjustment framework based on learning
+- **`/goalkit.tasks`**: Create actionable task breakdown for goals and milestones
+- **`/goalkit.progress`**: Create progress tracking and visualization
+- **`/goalkit.analytics`**: Create goal and strategy effectiveness reports
+- **`/goalkit.ai-analyze`**: Create AI performance and interaction analytics
+- **`/goalkit.memory`**: Create memory system and learning insights
+- **`/goalkit.baseline`**: Create AI performance baseline metrics
+
+Use the following process for all slash commands:
+1. Verify `.goalkit/` directory exists (create if needed)
+2. Identify or create the appropriate goal directory with proper sequential numbering
+3. Create the appropriate file within that goal directory or project root as appropriate
+4. Use directory name format: `[###]-[url-friendly-goal-title]` for goal-specific directories
+5. Include proper cross-references to related artifacts
+6. Inform the user that the file has been created and suggest next steps
+
 ### When Processing Goal Kit Commands
 When processing Goal Kit slash commands, Amazon Q should:
 
