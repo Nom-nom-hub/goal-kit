@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.43] - 2025-10-12 (Latest)
+## [0.0.44] - 2025-10-12 (Latest)
+
+### 🐛 Fixed version matching in release notes
+
+#### ⚙️ Improvements:
+- **Version Prefix Handling**: Added logic to remove 'v' prefix when matching versions in changelog
+- **Proper Extraction**: Changelog entries now properly extract based on cleaned version string
+- **Reliability**: Release notes generation now handles all version formats consistently
+
+## [0.0.43] - 2025-10-12
 
 ### 🛠️ Fixed release notes generation
 
