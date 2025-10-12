@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # generate-release-notes.sh
-# Generate release notes from git history
+# Generate release notes from CHANGELOG.md
 # Usage: generate-release-notes.sh <new_version> <last_tag>
 
 if [[ $# -ne 2 ]]; then
@@ -13,18 +13,29 @@ fi
 NEW_VERSION="$1"
 LAST_TAG="$2"
 
-# Get commits since last tag
-if [ "$LAST_TAG" = "v0.0.0" ]; then
-  # Check how many commits we have and use that as the limit
-  COMMIT_COUNT=$(git rev-list --count HEAD)
-  if [ "$COMMIT_COUNT" -gt 10 ]; then
-    COMMITS=$(git log --oneline --pretty=format:"- %s" HEAD~10..HEAD)
-  else
-    COMMITS=$(git log --oneline --pretty=format:"- %s" HEAD~$COMMIT_COUNT..HEAD 2>/dev/null || git log --oneline --pretty=format:"- %s")
-  fi
-else
-  COMMITS=$(git log --oneline --pretty=format:"- %s" $LAST_TAG..HEAD)
-fi
+# Extract the section for the new version from CHANGELOG.md
+CHANGELOG_SECTION=$(awk -v version="$NEW_VERSION" '
+BEGIN { in_section = 0; section = ""; }
+/^## \[/{ 
+    if (in_section) exit 0;
+    if ($0 ~ ("## \\[" version "\\]|## \\[0\\.0\\." (substr(version, 5)+0) "\\]")) {
+        in_section = 1;
+        next;
+    } else {
+        next;
+    }
+}
+in_section { 
+    if ($0 ~ /^## \[/) { 
+        exit 0; 
+    }
+    section = section $0 "\n";
+}
+END { 
+    gsub(/\r/, "", section);
+    print section; 
+}
+' CHANGELOG.md)
 
 # Create release notes
 cat > release_notes.md << EOF
@@ -32,20 +43,9 @@ This is the latest set of Goal Kit releases that you can use with your AI agent 
 
 ## Recent Changes
 
-$COMMITS
+$CHANGELOG_SECTION
 
 EOF
-
-# Add the actual commits to the release notes
-if [ -n "$COMMITS" ]; then
-  echo "" >> release_notes.md
-  echo "## Changes in This Release" >> release_notes.md
-  echo "" >> release_notes.md
-  echo "$COMMITS" >> release_notes.md
-else
-  echo "" >> release_notes.md
-  echo "No new commits in this release." >> release_notes.md
-fi
 
 cat >> release_notes.md << EOF
 
