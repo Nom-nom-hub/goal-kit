@@ -4,6 +4,13 @@
 
 When processing `/goalkit.goal` requests, follow this structured approach:
 
+### Goal Discovery (First Step)
+1. **Locate Existing Goals**: Search for existing goals in `.goalkit/goals/` directory
+   - Use `glob(path="PROJECT_ROOT/.goalkit/goals", pattern="**")` to discover existing goals
+   - Use `list_directory(path="PROJECT_ROOT/.goalkit/goals")` to enumerate goal directories
+   - Determine the next available goal number based on existing goals
+   - If user is referencing an existing goal, confirm which one they mean
+
 ### Input Analysis
 1. **Convert Outcomes to Goals**: Transform user descriptions of desired outcomes into structured goal definitions
 2. **Generate Success Metrics**: Create specific, measurable success criteria with targets and timelines

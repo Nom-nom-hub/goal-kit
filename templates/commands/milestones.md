@@ -4,6 +4,14 @@
 
 When processing `/goalkit.milestones` requests, follow this structured approach:
 
+### Goal Discovery (First Step)
+1. **Locate Associated Goal**: Search for the goal that milestones will support
+   - Use `glob(path="PROJECT_ROOT/.goalkit/goals", pattern="**")` to discover goals
+   - Use `list_directory(path="PROJECT_ROOT/.goalkit/goals")` to enumerate goal directories
+   - If user specified a goal, locate that specific goal directory
+   - If multiple goals exist, ask user to clarify which goal needs milestones
+   - If no goals exist, inform user that goals must be created first
+
 ### Input Analysis
 1. **Break Goals into Progress Steps**: Convert goal outcomes into measurable milestone definitions
 2. **Define Learning Objectives**: Identify what should be learned or validated at each milestone

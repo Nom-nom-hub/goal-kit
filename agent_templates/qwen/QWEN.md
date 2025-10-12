@@ -5,6 +5,18 @@ Goal Kit for Qwen Code enables goal-driven development that emphasizes measurabl
 
 ## Core Commands and Usage
 
+### 0. Goal Discovery Framework
+When processing any command that involves specific goals, Qwen Code should first try to discover existing goals:
+
+```
+Goal Discovery Process:
+1. Use glob() to search for goals in .goalkit/goals/ directory
+2. Use list_directory() to enumerate available goal directories
+3. If user references a specific goal, attempt to locate it
+4. If multiple goals exist, ask user to specify which one
+5. If no goals exist, inform user and suggest creating a new goal
+```
+
 ### 1. Vision Command (`/goalkit.vision`)
 Establish your project foundation with a clear vision:
 

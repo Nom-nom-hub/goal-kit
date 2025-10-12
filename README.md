@@ -163,6 +163,24 @@ Adaptation Plan: [How you'll handle unexpected challenges]
 
 The `goalkeeper` command supports the following options:
 
+## 🎯 Goal Discovery for AI Agents
+
+When using Goal Kit with AI coding agents, agents now follow a systematic approach to discover existing goals:
+
+1. **Goal Discovery Process**: When processing commands that reference goals, AI agents will:
+   - Use filesystem tools to search for goals in the `.goalkit/goals/` directory
+   - Enumerate available goals when needed
+   - Ask for clarification when goal references are ambiguous
+   - Guide users to create new goals when none exist
+
+2. **Enhanced Documentation**: For complete details on goal discovery mechanisms, see `templates/agent_goal_discovery.md`
+
+3. **Improved User Experience**: This enhancement ensures AI agents can help users work with existing goals more effectively, even when the `.goalkit/` directory is git-ignored.
+
+## 🔧 Goalkeeper CLI Reference
+
+The `goalkeeper` command supports the following options:
+
 ### Commands
 
 | Command           | Description                                                    |

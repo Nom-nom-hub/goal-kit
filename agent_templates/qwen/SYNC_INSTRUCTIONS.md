@@ -5,6 +5,14 @@ This document provides specific guidance for Qwen Code agents to maintain synchr
 
 ## Core Synchronization Principles
 
+### 0. Goal Discovery Process
+- When users reference goals, first attempt to discover existing goals in `.goalkit/goals/` directory
+- Use `glob()` to search for goals in `.goalkit/goals/` directory with pattern "**"
+- Use `list_directory()` to enumerate available goal directories
+- If user references a specific goal, locate that specific goal directory
+- If multiple goals exist, ask user to clarify which goal they mean
+- If no goals exist or referenced goal not found, ask user for clarification
+
 ### 1. Automatic File Tracking
 - Monitor changes to goal-related files in `.goalkit/` directory
 - Track relationships between goals, strategies, milestones, and evidence files

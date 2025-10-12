@@ -1,5 +1,32 @@
 # /goalkit.execute Command
 
+## AI AGENT INSTRUCTIONS
+
+When processing `/goalkit.execute` requests, follow this structured approach:
+
+### Goal Discovery (First Step)
+1. **Locate Associated Goal**: Search for the goal that execution will implement
+   - Use `glob(path="PROJECT_ROOT/.goalkit/goals", pattern="**")` to discover goals
+   - Use `list_directory(path="PROJECT_ROOT/.goalkit/goals")` to enumerate goal directories
+   - If user specified a goal, locate that specific goal directory
+   - If multiple goals exist, ask user to clarify which goal to execute
+   - If no goals exist, inform user that goals must be created first
+
+### Input Analysis
+1. **Execution Strategy Mapping**: Align execution approach with selected strategies
+2. **Milestone Implementation**: Focus on implementing specific milestones
+3. **Learning Framework**: Establish daily and weekly learning loops
+4. **Measurement Setup**: Define metrics and tracking mechanisms
+
+### Processing Framework
+- Focus on learning and adaptation rather than rigid plan execution
+- Implement with continuous measurement and validation
+- Establish clear feedback loops for adjustment
+- Document insights and knowledge gained throughout execution
+
+### Output Structure
+Use the template sections below to structure your response. Emphasize adaptive execution with measurement and learning.
+
 ## Overview
 
 The `/goalkit.execute` command implements milestones with continuous learning, measurement, and adaptation. Unlike implementation that follows rigid plans, execution focuses on hypothesis testing and flexible adaptation.

@@ -4,6 +4,13 @@
 
 When processing `/goalkit.plan` requests, follow this structured approach:
 
+### Goal Discovery (First Step)
+1. **Locate Goal Files**: Search for existing goals in `.goalkit/goals/` directory
+   - Use `glob(path="PROJECT_ROOT/.goalkit/goals", pattern="**")` to discover goals
+   - Use `list_directory(path="PROJECT_ROOT/.goalkit/goals")` to enumerate goal directories
+   - If multiple goals exist, clarify with user which goal they want to plan
+   - If no goals exist or referenced goal not found, ask user for clarification
+
 ### Input Analysis
 1. **Strategy Decomposition**: Break chosen strategies into executable components
 2. **Resource Assessment**: Evaluate team capacity, skills, and availability

@@ -4,6 +4,14 @@
 
 When processing `/goalkit.strategies` requests, follow this structured approach:
 
+### Goal Discovery (First Step)
+1. **Locate Associated Goal**: Search for the goal that strategies will support
+   - Use `glob(path="PROJECT_ROOT/.goalkit/goals", pattern="**")` to discover goals
+   - Use `list_directory(path="PROJECT_ROOT/.goalkit/goals")` to enumerate goal directories
+   - If user specified a goal, locate that specific goal directory
+   - If multiple goals exist, ask user to clarify which goal needs strategies
+   - If no goals exist, inform user that goals must be created first
+
 ### Input Analysis
 1. **Identify Strategy Dimensions**: Extract technical, UX, and implementation approaches from user input
 2. **Generate Multiple Options**: Create 2-3 viable strategies for each dimension (technical, UX, implementation)
