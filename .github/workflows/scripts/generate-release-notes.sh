@@ -34,7 +34,11 @@ in_section {
     if ($0 ~ /^## \[/) { 
         exit 0; 
     }
-    section = section $0 "\\n";
+    if (length(section) > 0) {
+        section = section "\n" $0;
+    } else {
+        section = $0;
+    }
 }
 END { 
     gsub(/\r/, "", section);
