@@ -32,7 +32,7 @@ This is the latest set of Goal Kit releases that you can use with your AI agent 
 
 ## Recent Changes
 
-$commits
+$COMMITS
 
 EOF
 
