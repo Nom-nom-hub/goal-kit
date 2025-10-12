@@ -225,9 +225,50 @@ All examples emphasize learning and adaptation:
 /goalkit.milestones Create milestones that [validate assumptions], [deliver value], and [generate learning]. Each milestone should be [measurable and valuable].
 ```
 
-### Step 5: Execute and Learn
+### Step 5: Create Detailed Plans
 ```bash
-/goalkit.execute Implement with [measurement focus] and [adaptation readiness]. Document [insights] and be willing to [adjust based on evidence].
+/goalkit.plan
+Goal: [Reference to specific goal]
+Selected Strategy: [The strategy you're planning for]
+Execution Phases: [What implementation phases to define]
+Resource Allocation: [How to distribute team effort and time]
+Timeline: [Project schedule with milestones and deadlines]
+Success Metrics: [How to measure plan effectiveness]
+Risk Management: [Contingency plans and mitigation strategies]
+```
+
+### Step 6: Analyze Project Health
+```bash
+/goalkit.analyze
+Project Focus: [Specific area or aspect to analyze]
+Health Indicators: [Metrics and KPIs to evaluate]
+Pattern Recognition: [Trends and patterns to identify]
+Risk Assessment: [Potential issues to examine]
+Recommendations: [Specific improvements to suggest]
+Next Steps: [Actionable guidance for improvement]
+```
+
+### Step 7: Conduct Research
+```bash
+/goalkit.research
+Research Topic: [Specific subject or question to research]
+Research Goal: [What you hope to learn or validate]
+Methodology: [How to approach the research]
+Sources: [Where to find relevant information]
+Success Criteria: [How to evaluate research quality]
+Application: [How to use findings in your project]
+```
+
+### Step 8: Execute and Learn
+```bash
+/goalkit.execute
+Goal: [Reference to specific goal]
+Current Milestone: [Which milestone you're currently working on]
+Selected Strategy: [The strategy chosen from strategies phase]
+Daily Focus: [Specific tasks for the current day]
+Success Indicator: [How you'll know today's work was productive]
+Learning Objective: [What you hope to learn during execution]
+Adaptation Plan: [How you'll handle unexpected challenges]
 ```
 
 ## Next Steps

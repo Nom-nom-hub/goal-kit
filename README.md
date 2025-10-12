@@ -108,12 +108,34 @@ Use **`/goalkit.milestones`** to create measurable milestones from your strategi
 /goalkit.milestones
 ```
 
-### 6. Execute with flexibility
+### 6. Create detailed plans
 
-Use **`/goalkit.execute`** to implement with the ability to adapt based on results and learning.
+Use **`/goalkit.plan`** to transform your strategies into detailed, actionable execution plans with clear resource allocation and realistic timelines.
+
+```bash
+/goalkit.plan
+Goal: [Reference to specific goal]
+Selected Strategy: [The strategy you're planning for]
+Execution Phases: [What implementation phases to define]
+Resource Allocation: [How to distribute team effort and time]
+Timeline: [Project schedule with milestones and deadlines]
+Success Metrics: [How to measure plan effectiveness]
+Risk Management: [Contingency plans and mitigation strategies]
+```
+
+### 7. Execute with flexibility
+
+Use **`/goalkit.execute`** to begin implementation with continuous learning and adaptation. This command helps structure your execution approach, focusing on measurable progress and evidence-based adjustments.
 
 ```bash
 /goalkit.execute
+Goal: [Reference to specific goal]
+Current Milestone: [Which milestone you're currently working on]
+Selected Strategy: [The strategy chosen from strategies phase]
+Daily Focus: [Specific tasks for the current day]
+Success Indicator: [How you'll know today's work was productive]
+Learning Objective: [What you hope to learn during execution]
+Adaptation Plan: [How you'll handle unexpected challenges]
 ```
 
 ## 🤖 Supported AI Agents
@@ -221,7 +243,7 @@ Essential commands for the complete Goal-Driven Development workflow:
 | `/goalkit.strategies`    | Explore multiple implementation strategies for achieving goals        |
 | `/goalkit.milestones`    | Generate measurable milestones and progress indicators               |
 | `/goalkit.plan`          | Create detailed execution plans with resource allocation             |
-| `/goalkit.execute`       | Execute implementation with flexibility to adapt and learn            |
+| `/goalkit.execute`       | Execute implementation with flexibility to adapt and learn (requires goal, milestone, strategy, daily focus, success indicator, learning objective, and adaptation plan) |
 
 #### 🔍 Analysis & Intelligence Commands
 
