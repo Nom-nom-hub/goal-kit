@@ -15,7 +15,11 @@ LAST_TAG="$2"
 
 # Extract the section for the new version from CHANGELOG.md
 # Remove 'v' prefix if present in version
+echo "Looking for version: $NEW_VERSION" >&2
 CLEAN_VERSION=$(echo "$NEW_VERSION" | sed 's/^v//')
+echo "Cleaned version: $CLEAN_VERSION" >&2
+echo "Available changelog entries:" >&2
+grep "^## \[" CHANGELOG.md | head -10 >&2
 
 CHANGELOG_SECTION=$(awk -v version="$CLEAN_VERSION" '
 BEGIN { in_section = 0; section = ""; }
@@ -45,6 +49,8 @@ END {
     print section; 
 }
 ' CHANGELOG.md)
+
+echo "Extracted section: [$CHANGELOG_SECTION]" >&2
 
 # Create release notes
 cat > release_notes.md << EOF
