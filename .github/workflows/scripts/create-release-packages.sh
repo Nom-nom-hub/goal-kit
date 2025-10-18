@@ -27,10 +27,14 @@ mkdir -p "$GENRELEASES_DIR"
 rm -rf "$GENRELEASES_DIR"/* || true
 
 rewrite_paths() {
+  # First remove any existing .goalkit prefix, then add it properly
   sed -E \
-    -e 's@(/?)memory/@.goalkit/memory/@g' \
-    -e 's@(/?)scripts/@.goalkit/scripts/@g' \
-    -e 's@(/?)templates/@.goalkit/templates/@g'
+    -e 's@\.goalkit/memory/@memory/@g' \
+    -e 's@\.goalkit/scripts/@scripts/@g' \
+    -e 's@\.goalkit/templates/@templates/@g' \
+    -e 's@(^|[^.])(/?)memory/@\1\2.goalkit/memory/@g' \
+    -e 's@(^|[^.])(/?)scripts/@\1\2.goalkit/scripts/@g' \
+    -e 's@(^|[^.])(/?)templates/@\1\2.goalkit/templates/@g'
 }
 
 generate_commands() {
