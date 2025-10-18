@@ -37,7 +37,7 @@ rewrite_paths() {
     -e 's@(^|[^.])memory/@\1.goalkit/memory/@g' \
     -e 's@(^|[^.])scripts/@\1.goalkit/scripts/@g' \
     -e 's@(^|[^.])templates/@\1.goalkit/templates/@g'
-} with proper logic
+}
 
 generate_commands() {
   local agent=$1 ext=$2 arg_format=$3 output_dir=$4 script_variant=$5
