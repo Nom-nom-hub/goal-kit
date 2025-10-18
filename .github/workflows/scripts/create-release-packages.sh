@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # create-release-packages.sh
-# Create zip archives for each AI agent and script type combination
+# Build zip archives for each AI agent and script type
 # Usage: create-release-packages.sh <version>
 
 if [[ $# -ne 1 ]]; then
@@ -11,166 +11,73 @@ if [[ $# -ne 1 ]]; then
 fi
 
 VERSION="$1"
-
 echo "Building release packages for $VERSION"
 
-# List of AI agents to create packages for
-AGENTS=(
-    "copilot"
-    "claude"
-    "gemini"
-    "cursor"
-    "qwen"
-    "opencode"
-    "codex"
-    "windsurf"
-    "kilocode"
-    "auggie"
-    "codebuddy"
-    "roo"
-    "q"
-)
+# Agents and script types
+AGENTS=(copilot claude gemini cursor qwen opencode codex windsurf kilocode auggie roo q)
+SCRIPT_TYPES=(sh ps)
 
-# Script types
-SCRIPT_TYPES=("sh" "ps")
+# Ensure release folder exists
+GENRELEASES_DIR=".genreleases"
+mkdir -p "$GENRELEASES_DIR"
 
-# Create a directory for generated releases
-mkdir -p .genreleases
-
-# Main loop to create packages
 for agent in "${AGENTS[@]}"; do
-    for script_type in "${SCRIPT_TYPES[@]}"; do
-        echo "Packaging for $agent with $script_type scripts..."
-        
-        # Create temp directory
-        TEMP_DIR=$(mktemp -d)
-        echo "Created temp dir for $agent-$script_type at $TEMP_DIR" >&2
+  for script_type in "${SCRIPT_TYPES[@]}"; do
+    echo "Packaging $agent ($script_type)..."
 
-        # Create the .goalkit directory structure in temp
-        mkdir -p "$TEMP_DIR/.goalkit"
-        
-        # Copy common files (only if they exist)
-        if [ -d "memory/" ]; then
-            cp -r memory/ "$TEMP_DIR/"
-        fi
-        if [ -d "templates/" ]; then
-            cp -r templates/ "$TEMP_DIR/"
-        fi
-        for file in CHANGELOG.md LICENSE README.md SECURITY.md .gitignore; do
-            if [ -f "$file" ]; then
-                cp "$file" "$TEMP_DIR/"
-            fi
-        done
+    # Temp working dir
+    TEMP_DIR=$(mktemp -d)
+    echo "Using temp dir: $TEMP_DIR"
 
-        # Copy agent-specific files
-        case "$agent" in
-            "copilot")
-                if [ -d ".github/agent_templates/copilot" ]; then
-                    mkdir -p "$TEMP_DIR/.github"
-                    cp -r .github/agent_templates/copilot/* "$TEMP_DIR/.github/" 2>/dev/null || true
-                fi
-                ;;
-            "claude")
-                if [ -d ".claude" ]; then
-                    mkdir -p "$TEMP_DIR/.claude"
-                    cp -r .claude/* "$TEMP_DIR/.claude/" 2>/dev/null || true
-                fi
-                ;;
-            "gemini")
-                if [ -d ".gemini" ]; then
-                    mkdir -p "$TEMP_DIR/.gemini"
-                    cp -r .gemini/* "$TEMP_DIR/.gemini/" 2>/dev/null || true
-                fi
-                ;;
-            "cursor")
-                if [ -d ".cursor" ]; then
-                    mkdir -p "$TEMP_DIR/.cursor"
-                    cp -r .cursor/* "$TEMP_DIR/.cursor/" 2>/dev/null || true
-                fi
-                ;;
-            "qwen")
-                if [ -d ".qwen" ]; then
-                    mkdir -p "$TEMP_DIR/.qwen"
-                    cp -r .qwen/* "$TEMP_DIR/.qwen/" 2>/dev/null || true
-                fi
-                ;;
-            "opencode")
-                if [ -d ".opencode" ]; then
-                    mkdir -p "$TEMP_DIR/.opencode"
-                    cp -r .opencode/* "$TEMP_DIR/.opencode/" 2>/dev/null || true
-                fi
-                ;;
-            "codex")
-                if [ -d ".codex" ]; then
-                    mkdir -p "$TEMP_DIR/.codex"
-                    cp -r .codex/* "$TEMP_DIR/.codex/" 2>/dev/null || true
-                fi
-                ;;
-            "windsurf")
-                if [ -d ".windsurf" ]; then
-                    mkdir -p "$TEMP_DIR/.windsurf"
-                    cp -r .windsurf/* "$TEMP_DIR/.windsurf/" 2>/dev/null || true
-                fi
-                ;;
-            "kilocode")
-                if [ -d ".kilocode" ]; then
-                    mkdir -p "$TEMP_DIR/.kilocode"
-                    cp -r .kilocode/* "$TEMP_DIR/.kilocode/" 2>/dev/null || true
-                fi
-                ;;
-            "auggie")
-                if [ -d ".augment" ]; then
-                    mkdir -p "$TEMP_DIR/.augment"
-                    cp -r .augment/* "$TEMP_DIR/.augment/" 2>/dev/null || true
-                fi
-                ;;
-            "roo")
-                if [ -d ".roo" ]; then
-                    mkdir -p "$TEMP_DIR/.roo"
-                    cp -r .roo/* "$TEMP_DIR/.roo/" 2>/dev/null || true
-                fi
-                ;;
-            "q")
-                if [ -d ".amazonq" ]; then
-                    mkdir -p "$TEMP_DIR/.amazonq"
-                    cp -r .amazonq/* "$TEMP_DIR/.amazonq/" 2>/dev/null || true
-                fi
-                ;;
-        esac
+    # Base goalkit structure
+    GOALKIT_DIR="$TEMP_DIR/.goalkit"
+    mkdir -p "$GOALKIT_DIR"
 
-        # Copy script files based on type
-        if [[ "$script_type" == "sh" ]]; then
-            if [ -d "scripts/bash" ]; then
-                mkdir -p "$TEMP_DIR/.goalkit/scripts"
-                cp -r scripts/bash/* "$TEMP_DIR/.goalkit/scripts/" 2>/dev/null || true
-            fi
-        elif [[ "$script_type" == "ps" ]]; then
-            if [ -d "scripts/powershell" ]; then
-                mkdir -p "$TEMP_DIR/.goalkit/scripts"
-                cp -r scripts/powershell/* "$TEMP_DIR/.goalkit/scripts/" 2>/dev/null || true
-            fi
-        fi
+    # Copy common folders into .goalkit (avoid double nesting)
+    [ -d memory ] && cp -r memory "$GOALKIT_DIR/"
+    [ -d templates ] && cp -r templates "$GOALKIT_DIR/"
 
-        # Clean up unnecessary files from the package
-        rm -rf "$TEMP_DIR/scripts"
-        find "$TEMP_DIR" -name ".DS_Store" -delete 2>/dev/null || true
-
-        # Define archive name
-        ARCHIVE_NAME="goal-kit-template-$agent-$script_type-$VERSION.zip"
-        
-        # Create zip archive
-        if command -v zip >/dev/null 2>&1; then
-            # Create zip from temp directory to the project root's .genreleases folder
-            (cd "$TEMP_DIR" && zip -r "../.genreleases/$ARCHIVE_NAME" .)
-        else
-            echo "Error: zip command not found. Please install zip utility to create release packages." >&2
-            exit 1
-        fi
-
-        # Clean up temp directory
-        rm -rf "$TEMP_DIR"
-        echo "Created .genreleases/$ARCHIVE_NAME"
+    # Copy top-level files
+    for file in CHANGELOG.md LICENSE README.md SECURITY.md .gitignore; do
+      [ -f "$file" ] && cp "$file" "$TEMP_DIR/"
     done
+
+    # Copy agent-specific directories to temp root (not inside .goalkit)
+    case "$agent" in
+      copilot)   [ -d ".github/agent_templates/copilot" ] && cp -r .github/agent_templates/copilot "$TEMP_DIR/.github" ;;
+      claude)    [ -d ".claude" ] && cp -r .claude "$TEMP_DIR/" ;;
+      gemini)    [ -d ".gemini" ] && cp -r .gemini "$TEMP_DIR/" ;;
+      cursor)    [ -d ".cursor" ] && cp -r .cursor "$TEMP_DIR/" ;;
+      qwen)      [ -d ".qwen" ] && cp -r .qwen "$TEMP_DIR/" ;;
+      opencode)  [ -d ".opencode" ] && cp -r .opencode "$TEMP_DIR/" ;;
+      codex)     [ -d ".codex" ] && cp -r .codex "$TEMP_DIR/" ;;
+      windsurf)  [ -d ".windsurf" ] && cp -r .windsurf "$TEMP_DIR/" ;;
+      kilocode)  [ -d ".kilocode" ] && cp -r .kilocode "$TEMP_DIR/" ;;
+      auggie)    [ -d ".augment" ] && cp -r .augment "$TEMP_DIR/" ;;
+      roo)       [ -d ".roo" ] && cp -r .roo "$TEMP_DIR/" ;;
+      q)         [ -d ".amazonq" ] && cp -r .amazonq "$TEMP_DIR/" ;;
+    esac
+
+    # Copy script files based on type
+    mkdir -p "$GOALKIT_DIR/scripts"
+    if [[ "$script_type" == "sh" && -d scripts/bash ]]; then
+      cp -r scripts/bash/* "$GOALKIT_DIR/scripts/" 2>/dev/null || true
+    elif [[ "$script_type" == "ps" && -d scripts/powershell ]]; then
+      cp -r scripts/powershell/* "$GOALKIT_DIR/scripts/" 2>/dev/null || true
+    fi
+
+    # Remove any unneeded top-level script dirs to prevent duplication
+    rm -rf "$TEMP_DIR/scripts" 2>/dev/null || true
+    find "$TEMP_DIR" -name ".DS_Store" -delete 2>/dev/null || true
+
+    # Archive
+    ARCHIVE_NAME="goal-kit-template-$agent-$script_type-$VERSION.zip"
+    (cd "$TEMP_DIR" && zip -r "$PWD/$GENRELEASES_DIR/$ARCHIVE_NAME" .)
+
+    # Cleanup temp
+    rm -rf "$TEMP_DIR"
+    echo "Created $GENRELEASES_DIR/$ARCHIVE_NAME"
+  done
 done
 
 echo "All release packages created successfully."
