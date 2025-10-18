@@ -44,7 +44,7 @@ for agent in "${AGENTS[@]}"; do
 
     # Copy agent-specific directories to temp root (not inside .goalkit)
     case "$agent" in
-      copilot)   [ -d ".github/agent_templates/copilot" ] && cp -r .github/agent_templates/copilot "$TEMP_DIR/.github" ;;
+      copilot)   [ -d ".github/agent_templates/copilot" ] && mkdir -p "$TEMP_DIR/.github" && cp -r .github/agent_templates/copilot/* "$TEMP_DIR/.github/" ;;
       claude)    [ -d ".claude" ] && cp -r .claude "$TEMP_DIR/" ;;
       gemini)    [ -d ".gemini" ] && cp -r .gemini "$TEMP_DIR/" ;;
       cursor)    [ -d ".cursor" ] && cp -r .cursor "$TEMP_DIR/" ;;
@@ -72,7 +72,8 @@ for agent in "${AGENTS[@]}"; do
 
     # Archive
     ARCHIVE_NAME="goal-kit-template-$agent-$script_type-$VERSION.zip"
-    (cd "$TEMP_DIR" && zip -r "$PWD/$GENRELEASES_DIR/$ARCHIVE_NAME" .)
+    OUTPUT_PATH="$PWD/$GENRELEASES_DIR/$ARCHIVE_NAME"
+    (cd "$TEMP_DIR" && zip -r "$OUTPUT_PATH" .)
 
     # Cleanup temp
     rm -rf "$TEMP_DIR"
