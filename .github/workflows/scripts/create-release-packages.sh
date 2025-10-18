@@ -43,19 +43,37 @@ create_temp_package_dir() {
     local script_type="$2"
     local temp_dir
 
-    temp_dir=$(mktemp -d)
-    echo "Created temp dir for $agent-$script_type at $temp_dir"
+    # Create temp directory (cross-platform compatible)
+    if command -v mktemp >/dev/null 2>&1; then
+        temp_dir=$(mktemp -d 2>/dev/null || mktemp -d -t tmp)
+    else
+        # Fallback for Windows/other systems
+        temp_dir="/tmp/goalkit_temp_$(date +%s)_$"
+        mkdir -p "$temp_dir"
+    fi
+    echo "Created temp dir for $agent-$script_type at $temp_dir" >&2
 
-    # Copy common files
-    cp -r .goalkit/ "$temp_dir/"
-    cp -r memory/ "$temp_dir/"
-    cp -r templates/ "$temp_dir/"
-    cp CHANGELOG.md LICENSE README.md SECURITY.md .gitignore "$temp_dir/"
+    # Create the .goalkit directory structure in temp
+    mkdir -p "$temp_dir/.goalkit"
+    
+    # Copy common files (only if they exist)
+    if [ -d "memory/" ]; then
+        cp -r memory/ "$temp_dir/"
+    fi
+    if [ -d "templates/" ]; then
+        cp -r templates/ "$temp_dir/"
+    fi
+    for file in CHANGELOG.md LICENSE README.md SECURITY.md .gitignore; do
+        if [ -f "$file" ]; then
+            cp "$file" "$temp_dir/"
+        fi
+    done
 
     # Copy agent-specific files
     case "$agent" in
         "copilot")
             if [ -d ".github/agent_templates/copilot" ]; then
+                mkdir -p "$temp_dir/.github"
                 cp -r .github/agent_templates/copilot/* "$temp_dir/.github/"
             fi
             ;;
@@ -129,15 +147,22 @@ create_temp_package_dir() {
 
     # Copy script files based on type
     if [[ "$script_type" == "sh" ]]; then
-        cp -r scripts/bash/* "$temp_dir/.goalkit/scripts/"
+        if [ -d "scripts/bash" ]; then
+            mkdir -p "$temp_dir/.goalkit/scripts"
+            cp -r scripts/bash/* "$temp_dir/.goalkit/scripts/"
+        fi
     elif [[ "$script_type" == "ps" ]]; then
-        cp -r scripts/powershell/* "$temp_dir/.goalkit/scripts/"
+        if [ -d "scripts/powershell" ]; then
+            mkdir -p "$temp_dir/.goalkit/scripts"
+            cp -r scripts/powershell/* "$temp_dir/.goalkit/scripts/"
+        fi
     fi
 
     # Clean up unnecessary files from the package
     rm -rf "$temp_dir/scripts"
-    find "$temp_dir" -name ".DS_Store" -delete
+    find "$temp_dir" -name ".DS_Store" -delete 2>/dev/null || true
 
+    # Output the temp_dir to stdout (for assignment) and the message to stderr
     echo "$temp_dir"
 }
 
@@ -151,10 +176,19 @@ for agent in "${AGENTS[@]}"; do
         ARCHIVE_NAME="goal-kit-template-$agent-$script_type-$VERSION.zip"
         
         # Create zip archive
-        (
-            cd "$TEMP_DIR"
-            zip -r "../../.genreleases/$ARCHIVE_NAME" .
-        )
+        if command -v zip >/dev/null 2>&1; then
+            (
+                cd "$TEMP_DIR"
+                zip -r "../../.genreleases/$ARCHIVE_NAME" .
+            )
+        else
+            echo "Error: zip command not found. Please install zip utility to create release packages." >&2
+            echo "On Ubuntu/Debian: sudo apt-get install zip" >&2
+            echo "On CentOS/RHEL: sudo yum install zip" >&2
+            echo "On macOS: brew install zip" >&2
+            echo "On Windows with Chocolatey: choco install zip" >&2
+            exit 1
+        fi
 
         # Clean up temp directory
         rm -rf "$TEMP_DIR"
