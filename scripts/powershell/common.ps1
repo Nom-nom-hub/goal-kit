@@ -122,9 +122,6 @@ function New-GoalBranch {
 # Update the agent context file with current goal information
 function Update-AgentContext {
     $projectRoot = Get-GitRoot
-    $currentDir = Get-Location
-    $goalName = Split-Path $currentDir -Leaf
-
     # Look for agent-specific context files
     $contextFiles = @(
         "CLAUDE.md",
@@ -183,7 +180,7 @@ $(if (Test-Path "goals") {
                 Where-Object { $_ -like "*Goal Statement*" } |
                 Select-Object -First 1 |
                 ForEach-Object { $_ -replace ".*Goal Statement:\s*", "" }
-            "- **$($_.Name)**: $($goalStatement ?? "Goal definition in progress")"
+            "- **$($_.Name)**: $(if ($goalStatement) { $goalStatement } else { "Goal definition in progress" })"
         } | Select-Object -First 3
     } else {
         "No active goals yet. Use /goalkit.goal to create your first goal."
@@ -292,7 +289,7 @@ function Set-GoalEnvironment {
 }
 
 # Cleanup function for error handling
-function Cleanup-OnError {
+function Clear-ErrorState {
     $exitCode = $LASTEXITCODE
     if ($exitCode -ne 0) {
         Write-Error "Script failed with exit code $exitCode"
@@ -303,11 +300,11 @@ function Cleanup-OnError {
 
 # Set up error handling
 trap {
-    Cleanup-OnError
+    Clear-ErrorState
 }
 
 # Common function for JSON mode output
-function Output-JsonMode {
+function Write-JsonOutput {
     param([object]$JsonData)
     
     $jsonOutput = $JsonData | ConvertTo-Json -Compress
