@@ -8,10 +8,6 @@ set -euo pipefail
 #   Optionally set AGENTS and/or SCRIPTS env vars to limit what gets built.
 #     AGENTS  : space or comma separated subset of: claude gemini copilot cursor qwen opencode windsurf codex kilocode auggie roo q (default: all)
 #     SCRIPTS : space or comma separated subset of: sh ps (default: both)
-#   Examples:
-#     AGENTS=claude SCRIPTS=sh $0 v0.2.0
-#     AGENTS="copilot,gemini" $0 v0.2.0
-#     SCRIPTS=ps $0 v0.2.0
 
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <version-with-v-prefix>" >&2
@@ -25,7 +21,6 @@ fi
 
 echo "Building release packages for $NEW_VERSION"
 
-# Create and use .genreleases directory for all build artifacts
 GENRELEASES_DIR=".genreleases"
 mkdir -p "$GENRELEASES_DIR"
 rm -rf "$GENRELEASES_DIR"/* || true
@@ -45,13 +40,9 @@ generate_commands() {
     local name description script_command agent_script_command body
     name=$(basename "$template" .md)
 
-    # Normalize line endings
     file_content=$(tr -d '\r' < "$template")
-
-    # Extract description and script command from YAML frontmatter
     description=$(printf '%s\n' "$file_content" | awk '/^description:/ {sub(/^description:[[:space:]]*/, ""); print; exit}')
     script_command=$(printf '%s\n' "$file_content" | awk -v sv="$script_variant" '/^[[:space:]]*'"$script_variant"':[[:space:]]*/ {sub(/^[[:space:]]*'"$script_variant"':[[:space:]]*/, ""); print; exit}')
-
     [[ -z $script_command ]] && script_command="(Missing script command for $script_variant)"
 
     agent_script_command=$(printf '%s\n' "$file_content" | awk '
@@ -86,21 +77,24 @@ build_variant() {
     mkdir -p "$GOALKIT_DIR/scripts"
     case $script in
       sh)
-        [[ -d scripts/bash ]] && { cp -r scripts/bash/* "$GOALKIT_DIR/scripts/"; echo "Copied scripts/bash/* -> .goalkit/scripts"; }
+        [[ -d scripts/bash ]] && cp -r scripts/bash "$GOALKIT_DIR/scripts/" && echo "Copied scripts/bash -> .goalkit/scripts"
         find scripts -maxdepth 1 -type f -exec cp {} "$GOALKIT_DIR/scripts/" \; 2>/dev/null || true
         ;;
       ps)
-        [[ -d scripts/powershell ]] && { cp -r scripts/powershell/* "$GOALKIT_DIR/scripts/"; echo "Copied scripts/powershell/* -> .goalkit/scripts"; }
+        [[ -d scripts/powershell ]] && cp -r scripts/powershell "$GOALKIT_DIR/scripts/" && echo "Copied scripts/powershell -> .goalkit/scripts"
         find scripts -maxdepth 1 -type f -exec cp {} "$GOALKIT_DIR/scripts/" \; 2>/dev/null || true
         ;;
     esac
   fi
 
-  [[ -d templates ]] && { 
+  # Correct template copy to avoid double .goalkit
+  if [[ -d templates ]]; then
     mkdir -p "$GOALKIT_DIR/templates"
-    find templates -type f -not -path "templates/commands/*" -not -name "vscode-settings.json" -exec cp --parents {} "$GOALKIT_DIR"/ \;
+    cd templates
+    find . -type f -not -path "./commands/*" -not -name "vscode-settings.json" -exec cp --parents {} "$GOALKIT_DIR/templates" \;
+    cd - >/dev/null
     echo "Copied templates -> .goalkit/templates"
-  }
+  fi
 
   case $agent in
     claude)
@@ -149,12 +143,11 @@ build_variant() {
   echo "Created $GENRELEASES_DIR/goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip"
 }
 
+# AGENT and SCRIPT selection
 ALL_AGENTS=(claude gemini copilot cursor qwen opencode windsurf codex kilocode auggie roo q)
 ALL_SCRIPTS=(sh ps)
 
-norm_list() {
-  tr ',\n' '  ' | awk '{for(i=1;i<=NF;i++){if(!seen[$i]++){printf((out?" ":"") $i)}}}END{printf("\n")}'
-}
+norm_list() { tr ',\n' '  ' | awk '{for(i=1;i<=NF;i++){if(!seen[$i]++){printf((out?" ":"") $i)}}}END{printf("\n")}' }
 
 validate_subset() {
   local type=$1; shift; local -n allowed=$1; shift; local items=("$@")
