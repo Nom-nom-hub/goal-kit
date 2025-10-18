@@ -4,12 +4,6 @@
 
 set -euo pipefail
 
-#!/bin/bash
-
-# Setup strategy analysis in a Goal Kit project
-
-set -euo pipefail
-
 # Source common utilities
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
@@ -26,6 +20,7 @@ OPTIONS:
     -d, --dry-run          Show what would be created without creating it
     -v, --verbose          Enable verbose output
     -j, --json             Output JSON with strategy details only
+    --force                Overwrite existing strategy file without prompting
 
 ARGUMENTS:
     GOAL_DIRECTORY         Path to the goal directory to analyze
@@ -35,31 +30,7 @@ EXAMPLES:
     $0 --dry-run goals/001-user-authentication
     $0 --json goals/001-user-authentication
     $0 -v goals/001-user-authentication
-
-EOF
-}
-
-# Function to display usage information
-usage() {
-    cat << EOF
-Usage: $0 [OPTIONS] GOAL_DIRECTORY
-
-Setup strategy analysis in the current Goal Kit project.
-
-OPTIONS:
-    -h, --help              Show this help message
-    -d, --dry-run          Show what would be created without creating it
-    -v, --verbose          Enable verbose output
-    -j, --json             Output JSON with strategy details only
-
-ARGUMENTS:
-    GOAL_DIRECTORY         Path to the goal directory to analyze
-
-EXAMPLES:
-    $0 goals/001-user-authentication
-    $0 --dry-run goals/001-user-authentication
-    $0 --json goals/001-user-authentication
-    $0 -v goals/001-user-authentication
+    $0 --force goals/001-user-authentication
 
 EOF
 }
@@ -68,6 +39,7 @@ EOF
 DRY_RUN=false
 VERBOSE=false
 JSON_MODE=false
+FORCE_OVERWRITE=false
 GOAL_DIR=""
 
 while [[ $# -gt 0 ]]; do
@@ -86,6 +58,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         -j|--json)
             JSON_MODE=true
+            shift
+            ;;
+        --force)
+            FORCE_OVERWRITE=true
             shift
             ;;
         -*)
@@ -152,10 +128,17 @@ STRATEGY_FILE="$GOAL_DIR/strategies.md"
 if [[ -f "$STRATEGY_FILE" ]]; then
     log_warning "Strategy file already exists: $STRATEGY_FILE"
     if [[ "$DRY_RUN" == "false" ]]; then
-        read -p "Overwrite existing strategy file? (y/N): " response
-        if [[ ! "$response" =~ ^[Yy]$ ]]; then
-            log_info "Operation cancelled"
-            exit 0
+        if [[ "$FORCE_OVERWRITE" == "true" ]]; then
+            log_info "Force overwrite enabled, proceeding to overwrite $STRATEGY_FILE"
+        elif [[ -t 0 ]]; then
+            read -p "Overwrite existing strategy file? (y/N): " response
+            if [[ ! "$response" =~ ^[Yy]$ ]]; then
+                log_info "Operation cancelled"
+                exit 0
+            fi
+        else
+            log_error "Non-interactive mode detected and --force not set. Operation cancelled."
+            exit 1
         fi
     fi
 fi
@@ -211,4 +194,7 @@ echo "  2. Use /goalkit.milestones to create measurable milestones"
 echo "  3. Use /goalkit.execute to implement with learning and adaptation"
 
 # Setup goal environment for immediate development
-setup_goal_environment "$GOAL_DIR"
+if ! setup_goal_environment "$GOAL_DIR"; then
+    log_error "Failed to setup goal environment for $GOAL_DIR"
+    exit 1
+fi

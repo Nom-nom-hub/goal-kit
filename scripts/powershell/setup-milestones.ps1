@@ -1,8 +1,13 @@
+[CmdletBinding()]
 param(
-    [switch]$Verbose = $false,
-    [switch]$DryRun = $false,
-    [switch]$Json = $false,
-    [string]$GoalDirectory = ""
+    [Parameter(Mandatory=$true)]
+    [string]$GoalDirectory,
+
+    [Parameter()]
+    [switch]$DryRun,
+
+    [Parameter()]
+    [switch]$Force = $false
 )
 
 # Setup milestone planning in a Goal Kit project
@@ -18,9 +23,10 @@ function Show-Usage {
     "Setup milestone planning in the current Goal Kit project."
     ""
     "OPTIONS:"
-    "    -Verbose          Enable verbose output"
     "    -DryRun          Show what would be created without creating it"
+    "    -Force           Overwrite existing milestone file without prompting"
     "    -Json            Output JSON with milestone details only"
+    "    -Verbose         Enable verbose output"
     "    -h, -?           Show this help message"
     ""
     "ARGUMENTS:"
@@ -31,6 +37,7 @@ function Show-Usage {
     "    $($MyInvocation.MyCommand.Name) -DryRun 'goals\001-user-authentication'"
     "    $($MyInvocation.MyCommand.Name) -Json 'goals\001-user-authentication'"
     "    $($MyInvocation.MyCommand.Name) -Verbose 'goals\001-user-authentication'"
+    "    $($MyInvocation.MyCommand.Name) -Force 'goals\001-user-authentication'"
     ""
 }
 
@@ -92,10 +99,22 @@ $milestoneFile = Join-Path $GoalDirectory "milestones.md"
 if (Test-Path $milestoneFile) {
     Write-Warning "Milestone file already exists: $milestoneFile"
     if (-not $DryRun) {
-        $response = Read-Host "Overwrite existing milestone file? (y/N)"
-        if ($response -ne "y" -and $response -ne "Y") {
-            Write-Info "Operation cancelled"
-            exit 0
+        if (-not $Force) {
+            # Attempt to check if we can prompt the user (non-interactive environments may not support this)
+            try {
+                $response = Read-Host "Overwrite existing milestone file? (y/N)"
+                if ($response -ne "y" -and $response -ne "Y") {
+                    Write-Info "Operation cancelled"
+                    exit 0
+                }
+            } catch {
+                # If Read-Host fails (e.g., in CI/CD), handle gracefully
+                Write-Warning "Cannot prompt for overwrite in this environment. Use -Force to overwrite in CI/CD or non-interactive environments."
+                Write-Info "Operation cancelled"
+                exit 0
+            }
+        } else {
+            Write-Info "Overwriting milestone file due to -Force option."
         }
     }
 }
@@ -150,4 +169,9 @@ Write-Info "Next Steps:"
 "  2. Use /goalkit.execute to implement with learning and adaptation"
 
 # Setup goal environment for immediate development
-Set-GoalEnvironment -GoalDir $GoalDirectory
+try {
+    Set-GoalEnvironment -GoalDir $GoalDirectory
+} catch {
+    Write-Error "Failed to setup goal environment for $GoalDirectory"
+    exit 1
+}
