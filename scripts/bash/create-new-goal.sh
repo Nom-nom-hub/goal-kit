@@ -117,16 +117,9 @@ if [[ "$JSON_MODE" == "true" ]]; then
     GOAL_DIR="$GOALS_DIR/$GOAL_DIR_NAME"
     GOAL_FILE="$GOAL_DIR/goal.md"
     
-    # Output JSON with required variables
-    cat << EOF
-{
-  "GOAL_DIR": "$GOAL_DIR",
-  "GOAL_FILE": "$GOAL_FILE",
-  "GOAL_DESCRIPTION": "$GOAL_DESCRIPTION",
-  "BRANCH_NAME": "$GOAL_DIR_NAME"
-}
-EOF
-    exit 0
+    # Output JSON with required variables using common function
+    JSON_DATA="{\"GOAL_DIR\":\"$GOAL_DIR\",\"GOAL_FILE\":\"$GOAL_FILE\",\"GOAL_DESCRIPTION\":\"$GOAL_DESCRIPTION\",\"BRANCH_NAME\":\"$GOAL_DIR_NAME\"}"
+    output_json_mode "$JSON_DATA"
 fi
 
 # Check if goals directory exists

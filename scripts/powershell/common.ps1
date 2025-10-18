@@ -306,4 +306,13 @@ trap {
     Cleanup-OnError
 }
 
+# Common function for JSON mode output
+function Output-JsonMode {
+    param([object]$JsonData)
+    
+    $jsonOutput = $JsonData | ConvertTo-Json -Compress
+    Write-Output $jsonOutput
+    exit 0
+}
+
 Write-Info "Goal Kit PowerShell utilities loaded"

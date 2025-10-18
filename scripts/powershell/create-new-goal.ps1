@@ -93,16 +93,15 @@ if ($Json) {
     $goalDir = Join-Path $goalsDir $goalDirName
     $goalFile = Join-Path $goalDir "goal.md"
     
-    # Output JSON with required variables
-    $jsonOutput = @{
+    # Output JSON with required variables using common function
+    $jsonObj = @{
         GOAL_DIR = $goalDir
         GOAL_FILE = $goalFile
         GOAL_DESCRIPTION = $GoalDescription
         BRANCH_NAME = $goalDirName
-    } | ConvertTo-Json -Compress
+    }
     
-    Write-Output $jsonOutput
-    exit 0
+    Output-JsonMode $jsonObj
 }
 
 # Check if goals directory exists

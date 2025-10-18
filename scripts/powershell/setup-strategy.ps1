@@ -71,15 +71,14 @@ if ($Json) {
     $strategyFile = Join-Path $GoalDirectory "strategies.md"
     $branchName = $goalDirName
     
-    # Output JSON with required variables
-    $jsonOutput = @{
+    # Output JSON with required variables using common function
+    $jsonObj = @{
         GOAL_DIR = $GoalDirectory
         STRATEGY_FILE = $strategyFile
         BRANCH_NAME = $branchName
-    } | ConvertTo-Json -Compress
+    }
     
-    Write-Output $jsonOutput
-    exit 0
+    Output-JsonMode $jsonObj
 }
 
 # Verify goal directory exists
