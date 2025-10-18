@@ -45,9 +45,8 @@ Given that milestone planning, do this:
    
    - The milestone description argument is passed as the entire user input from $ARGUMENTS
    - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\\''m Groot' (or double-quote if possible: "I'm Groot")
-   - First find the git repository root by looking for `.git` directory or using git command to locate it
-   - Change to the repository root directory before executing the script
-   - Ensure the script path is resolved from the repository root (path should not contain duplicate `.goalkit/` prefixes. Scripts are in `{PROJECT_ROOT}/.goalkit/scripts/[platform]/[script-name]` )
+   - Execute the script from the current project directory (no directory change needed)  
+   - Ensure the script path is resolved from the current directory (path should not contain duplicate `.goalkit/` prefixes. Scripts are in `.goalkit/scripts/[platform]/[script-name]` )
    - Verify the script file exists at the expected path: `{PROJECT_ROOT}/.goalkit/scripts/[platform]/[script-name]` before executing
    - If the file exists at the expected path but the command fails, double-check path resolution
    - You must only ever run this script once
