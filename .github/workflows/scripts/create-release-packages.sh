@@ -78,8 +78,9 @@ generate_commands() {
       body=$(printf '%s\n' "$body" | sed "s|{AGENT_SCRIPT}|${agent_script_command}|g")
     fi
     
-    # Remove the scripts: and agent_scripts: sections from frontmatter while preserving YAML structure
-    body=$(printf '%s\n' "$file_content" | awk '
+    # Process the content: first remove YAML frontmatter sections, then apply path rewrites
+    local processed_body
+    processed_body=$(printf '%s\n' "$file_content" | awk '
       /^---$/ { print; if (++dash_count == 1) in_frontmatter=1; else in_frontmatter=0; next }
       in_frontmatter && /^scripts:$/ { skip_scripts=1; next }
       in_frontmatter && /^agent_scripts:$/ { skip_scripts=1; next }
@@ -89,7 +90,7 @@ generate_commands() {
     ')
     
     # Apply path rewrites to template paths FIRST, before replacing {SCRIPT} to avoid duplicating .goalkit/
-    body=$(printf '%s\n' "$body" | rewrite_paths)
+    body=$(printf '%s\n' "$processed_body" | rewrite_paths)
     
     # Replace {SCRIPT} placeholder with the script command after path rewrites
     body=$(printf '%s\n' "$body" | sed "s|{SCRIPT}|${script_command}|g")
