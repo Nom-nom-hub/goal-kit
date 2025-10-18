@@ -66,7 +66,7 @@ if (-not (Test-Path ".goalkit/vision.md")) {
 # If JSON mode, output JSON and exit early
 if ($Json) {
     # Check if goals directory exists
-    $goalsDir = "goals"
+    $goalsDir = ".goalkit/goals"
     if (-not (Test-Path $goalsDir)) {
         # Goals directory doesn't exist, so first goal will be 001
         $nextNumber = 1
@@ -88,7 +88,7 @@ if ($Json) {
     }
 
     # Create goal directory name
-    $goalNumber = "{0:D3}" -f $nextNumber
+    $goalNumber = "{0:D3}" -f [int]$nextNumber
     $goalDirName = $goalNumber + "-" + ($GoalDescription.ToLower() -replace ' ', '-' -replace '[^a-z0-9-]', '')
     $goalDir = Join-Path $goalsDir $goalDirName
     $goalFile = Join-Path $goalDir "goal.md"
@@ -105,7 +105,7 @@ if ($Json) {
 }
 
 # Check if goals directory exists
-$goalsDir = "goals"
+$goalsDir = ".goalkit/goals"
 if (-not (Test-Path $goalsDir)) {
     if ($DryRun) {
         Write-Info "[DRY RUN] Would create goals directory: $goalsDir"
@@ -134,7 +134,7 @@ if (Test-Path $goalsDir) {
 }
 
 # Create goal directory name
-$goalNumber = "{0:D3}" -f $nextNumber
+$goalNumber = "{0:D3}" -f [int]$nextNumber
 $goalDirName = $goalNumber + "-" + ($GoalDescription.ToLower() -replace ' ', '-' -replace '[^a-z0-9-]', '')
 $goalDir = Join-Path $goalsDir $goalDirName
 
