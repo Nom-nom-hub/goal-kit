@@ -1,43 +1,175 @@
 ---
 description: Explore multiple implementation strategies for achieving goals.
 scripts:
-  sh: scripts/bash/setup-strategy.sh --json
-  ps: scripts/powershell/setup-strategy.ps1 -Json
+  sh: .goalkit/scripts/bash/setup-strategy.sh --json "{ARGS}"
+  ps: .goalkit/scripts/powershell/setup-strategy.ps1 -Json "{ARGS}"
 agent_scripts:
-  sh: scripts/bash/update-agent-context.sh __AGENT__
-  ps: scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
+  sh: .goalkit/scripts/bash/update-agent-context.sh __AGENT__
+  ps: .goalkit/scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
 ---
 
-# /goalkit.strategies Command
+## User Input
 
-## AI AGENT INSTRUCTIONS
+```text
+$ARGUMENTS
+```
 
-When processing `/goalkit.strategies` requests, follow this structured approach:
+You **MUST** consider the user input before proceeding (if not empty).
 
-### Goal Discovery (First Step)
+## Outline
+
+The text the user typed after `/goalkit.strategies` in the triggering message **is** the strategy exploration description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
+
+Given that strategy exploration, do this:
+
 1. **Locate Associated Goal**: Search for the goal that strategies will support
    - Use `glob(path="PROJECT_ROOT/.goalkit/goals", pattern="**")` to discover goals
    - Use `list_directory(path="PROJECT_ROOT/.goalkit/goals")` to enumerate goal directories
    - If user specified a goal, locate that specific goal directory
    - If multiple goals exist, ask user to clarify which goal needs strategies
-   - If no goals exist, inform user that goals must be created first
+   - If no goals exist, inform user that goals must be created first using `/goalkit.goal`
 
-### Input Analysis
-1. **Identify Strategy Dimensions**: Extract technical, UX, and implementation approaches from user input
-2. **Generate Multiple Options**: Create 2-3 viable strategies for each dimension (technical, UX, implementation)
-3. **Evaluate Trade-offs**: Compare strategies across feasibility, effort, risk, and learning potential
-4. **Recommend Starting Point**: Suggest initial strategy with clear rationale and fallback options
+2. Run the script `{SCRIPT}` from repo root **with the strategy description argument** and parse its JSON output for GOAL_DIR, BRANCH_NAME and STRATEGY_FILE. All file paths must be absolute.
 
-### Processing Framework
+   **IMPORTANT**:
+   
+   - The strategy description argument is passed as the entire user input from $ARGUMENTS
+   - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\\''m Groot' (or double-quote if possible: "I'm Groot")
+   - You must only ever run this script once
+   - The JSON is provided in the terminal as output - always refer to it to get the actual content you're looking for
+
+3. Load `.goalkit/templates/strategies-template.md` to understand required sections.
+
+4. Follow this execution flow:
+
+    1. Parse user description from Input
+       If empty: ERROR "No strategy exploration provided"
+    2. Extract key concepts from description
+       Identify: strategy dimensions, technical approaches, UX approaches, implementation approaches
+    3. For unclear aspects:
+       - Make informed guesses based on context and best practices
+       - Only mark with [NEEDS CLARIFICATION: specific question] if:
+         - The choice significantly impacts strategy success or risk
+         - Multiple reasonable but conflicting approaches exist
+         - No reasonable default exists
+       - **LIMIT: Maximum 3 [NEEDS CLARIFICATION] markers total**
+       - Prioritize clarifications by impact: technical feasibility > user experience > implementation approach
+    4. Fill Strategy Exploration Framework
+       If no clear approaches: ERROR "Cannot determine strategy options"
+    5. Generate Strategy Comparison Matrix
+       Each strategy must be evaluated across feasibility, effort, risk, and learning potential
+       Use reasonable defaults for unspecified details (document assumptions in Assumptions section)
+    6. Define Recommended Starting Strategy
+       Identify which strategy to try first with rationale
+    7. Outline Validation Experiments
+       Define how to validate key assumptions of each strategy
+    8. Return: SUCCESS (strategies ready for milestone planning)
+
+5. Write the strategy analysis to STRATEGY_FILE using the template structure, replacing placeholders with concrete details derived from the strategy exploration (arguments) while preserving section order and headings.
+
+6. **Strategy Quality Validation**: After writing the initial strategy analysis, validate it against quality criteria:
+
+   a. **Create Strategy Quality Checklist**: Generate a checklist file at `GOAL_DIR/checklists/strategy-quality.md` using the checklist template structure with these validation items:
+   
+      ```markdown
+      # Strategy Quality Checklist: [STRATEGY NAME]
+      
+      **Purpose**: Validate strategy analysis completeness and quality before proceeding to milestone planning
+      **Created**: [DATE]
+      **Goal**: [Link to associated goal]
+      **Strategy**: [Link to strategy.md]
+      
+      ## Content Quality
+      
+      - [ ] Explores multiple valid approaches (not just one "correct" solution)
+      - [ ] Focused on measurable outcomes and learning potential
+      - [ ] Written for non-technical stakeholders
+      - [ ] All mandatory sections completed
+      
+      ## Strategy Completeness
+      
+      - [ ] No [NEEDS CLARIFICATION] markers remain
+      - [ ] Strategies are testable with clear validation criteria
+      - [ ] Strategy comparison is comprehensive across relevant dimensions
+      - [ ] Recommended starting strategy has clear rationale
+      - [ ] Validation experiments are defined for key assumptions
+      - [ ] Risk assessments are identified with mitigation approaches
+      - [ ] Strategies align with goal success criteria from associated goal
+      - [ ] Learning objectives are clearly defined
+      
+      ## Strategy Readiness
+      
+      - [ ] All strategies have clear evaluation framework
+      - [ ] Strategy success criteria are measurable
+      - [ ] Fallback options are defined if primary strategy fails
+      - [ ] No implementation details leak into strategy analysis
+      
+      ## Notes
+      
+      - Items marked incomplete require strategy updates before `/goalkit.milestones` or `/goalkit.execute`
+      ```
+      
+   b. **Run Validation Check**: Review the strategy analysis against each checklist item:
+      - For each item, determine if it passes or fails
+      - Document specific issues found (quote relevant strategy sections)
+      
+   c. **Handle Validation Results**:
+      
+      - **If all items pass**: Mark checklist complete and proceed to step 6
+      
+      - **If items fail (excluding [NEEDS CLARIFICATION])**:
+        1. List the failing items and specific issues
+        2. Update the strategy analysis to address each issue
+        3. Re-run validation until all items pass (max 3 iterations)
+        4. If still failing after 3 iterations, document remaining issues in checklist notes and warn user
+      
+      - **If [NEEDS CLARIFICATION] markers remain**:
+        1. Extract all [NEEDS CLARIFICATION: ...] markers from the strategy analysis
+        2. **LIMIT CHECK**: If more than 3 markers exist, keep only the 3 most critical (by feasibility/UX/implementation impact) and make informed guesses for the rest
+        3. For each clarification needed (max 3), present options to user in this format:
+        
+           ```markdown
+           ## Question [N]: [Topic]
+           
+           **Context**: [Quote relevant strategy section]
+           
+           **What we need to know**: [Specific question from NEEDS CLARIFICATION marker]
+           
+           **Suggested Answers**:
+           
+           | Option | Answer | Implications |
+           |--------|--------|--------------|
+           | A      | [First suggested answer] | [What this means for the strategy] |
+           | B      | [Second suggested answer] | [What this means for the strategy] |
+           | C      | [Third suggested answer] | [What this means for the strategy] |
+           | Custom | Provide your own answer | [Explain how to provide custom input] |
+           
+           **Your choice**: _[Wait for user response]_
+           ```
+        
+        4. **CRITICAL - Table Formatting**: Ensure markdown tables are properly formatted:
+           - Use consistent spacing with pipes aligned
+           - Each cell should have spaces around content: `| Content |` not `|Content|`
+           - Header separator must have at least 3 dashes: `|--------|`
+           - Test that the table renders correctly in markdown preview
+        5. Number questions sequentially (Q1, Q2, Q3 - max 3 total)
+        6. Present all questions together before waiting for responses
+        7. Wait for user to respond with their choices for all questions (e.g., "Q1: A, Q2: Custom - [details], Q3: B")
+        8. Update the strategy analysis by replacing each [NEEDS CLARIFICATION] marker with the user's selected or provided answer
+        9. Re-run validation after all clarifications are resolved
+   
+   d. **Update Checklist**: After each validation iteration, update the checklist file with current pass/fail status
+
+7. Report completion with branch name, strategy file path, checklist results, and readiness for the next phase (`/goalkit.milestones` or `/goalkit.execute`).
+
+**NOTE:** The script creates and checks out the new branch and initializes the strategy file before writing.
+
+## Key rules
+
 - Explore multiple valid approaches (not just one "correct" solution)
 - Evaluate strategies against goal success criteria and vision principles
-- Consider technical feasibility, user experience quality, and business impact
 - Frame strategies as testable hypotheses with clear validation criteria
-
-### Output Structure
-Use the template sections below to structure your response. Provide balanced exploration of options with evidence-based recommendations and clear next steps.
-
----
+- Focus on measurable outcomes and learning potential
 
 ## Overview
 
