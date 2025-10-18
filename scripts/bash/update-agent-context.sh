@@ -136,13 +136,31 @@ CONTEXT_CONTENT=$(cat << EOF
 **Active Collaborations**: $ACTIVE_COLLABORATIONS_COUNT
 **Updated**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-## 🎯 Goal-Driven Development Status
+## 🎯 CRITICAL: Goal-Driven Development Methodology
 
-This project uses Goal-Driven Development methodology. Focus on:
-- Measurable outcomes over feature specifications
-- Multiple strategy exploration before implementation
-- Learning and adaptation during execution
-- Success metrics validation
+**YOU MUST FOLLOW THESE RULES EXACTLY:**
+
+### Core Methodology Rules
+1. **OUTCOMES FIRST**: Always focus on measurable user/business outcomes, NOT implementation details
+2. **NO IMPLEMENTATION DETAILS IN GOALS**: Never put languages, frameworks, APIs, or methods in goal definitions
+3. **USE THE 5-CMD WORKFLOW**: Always follow vision → goal → strategies → milestones → execute sequence
+4. **MEASURABLE SUCCESS**: Every goal must have specific, quantifiable metrics (%, $, time, user counts)
+5. **STRATEGY EXPLORATION**: Before implementing, ALWAYS explore multiple approaches using /goalkit.strategies
+6. **ADAPTIVE EXECUTION**: Be ready to pivot based on learning and evidence during /goalkit.execute
+
+### When to Use Each Command
+- **/goalkit.vision**: Establish project foundation and guiding principles
+- **/goalkit.goal**: Create goals with specific success metrics (no implementation details!)
+- **/goalkit.strategies**: Explore 3+ different approaches to achieve goals
+- **/goalkit.milestones**: Create measurable progress checkpoints
+- **/goalkit.execute**: Implement with learning loops and measurement
+
+### ⚠️ CRITICAL ANTI-PATTERNS TO AVOID
+- ✗ Implementing features directly without following methodology
+- ✗ Adding implementation details to goal definitions  
+- ✗ Skipping strategy exploration phase
+- ✗ Creating goals without measurable success criteria
+- ✗ Treating this as traditional requirement-driven development
 
 ## 📋 Available Commands
 
