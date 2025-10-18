@@ -5,6 +5,21 @@ set -euo pipefail
 # Create zip archives for each AI agent and script type combination
 # Usage: create-release-packages.sh <version>
 
+# Check if we're running on Windows/Cygwin and redirect to PowerShell version if needed
+case "$(uname -s)" in
+    *MINGW*|*MSYS*|*CYGWIN*)
+        if command -v pwsh >/dev/null 2>&1; then
+            echo "Running on Windows - using PowerShell version" >&2
+            pwsh -ExecutionPolicy Bypass -File "$(dirname "$0")/create-release-packages.ps1" "$@"
+            exit $?
+        elif command -v powershell >/dev/null 2>&1; then
+            echo "Running on Windows - using PowerShell version" >&2
+            powershell -ExecutionPolicy Bypass -File "$(dirname "$0")/create-release-packages.ps1" "$@"
+            exit $?
+        fi
+        ;;
+esac
+
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <version>" >&2
   exit 1
@@ -48,7 +63,7 @@ create_temp_package_dir() {
         temp_dir=$(mktemp -d 2>/dev/null || mktemp -d -t tmp)
     else
         # Fallback for Windows/other systems
-        temp_dir="/tmp/goalkit_temp_$(date +%s)_$$"
+        temp_dir="/tmp/goalkit_temp_$(date +%s)_$"
         mkdir -p "$temp_dir"
     fi
     echo "Created temp dir for $agent-$script_type at $temp_dir" >&2
@@ -177,16 +192,25 @@ for agent in "${AGENTS[@]}"; do
         
         # Create zip archive
         if command -v zip >/dev/null 2>&1; then
+            # Ensure the output directory exists
+            mkdir -p .genreleases
             (
                 cd "$TEMP_DIR"
-                zip -r "../../.genreleases/$ARCHIVE_NAME" .
+                zip -r "../.genreleases/$ARCHIVE_NAME" .
             )
         else
             echo "Error: zip command not found. Please install zip utility to create release packages." >&2
             echo "On Ubuntu/Debian: sudo apt-get install zip" >&2
-            echo "On CentOS/RHEL: sudo yum install zip" >&2
             echo "On macOS: brew install zip" >&2
             echo "On Windows with Chocolatey: choco install zip" >&2
+            echo "Falling back to PowerShell version..." >&2
+            if command -v pwsh >/dev/null 2>&1; then
+                pwsh -ExecutionPolicy Bypass -File "$(dirname "$0")/create-release-packages.ps1" "$VERSION"
+                exit $?
+            elif command -v powershell >/dev/null 2>&1; then
+                powershell -ExecutionPolicy Bypass -File "$(dirname "$0")/create-release-packages.ps1" "$VERSION"
+                exit $?
+            fi
             exit 1
         fi
 
