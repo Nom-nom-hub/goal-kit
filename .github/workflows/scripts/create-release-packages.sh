@@ -48,7 +48,7 @@ create_temp_package_dir() {
         temp_dir=$(mktemp -d 2>/dev/null || mktemp -d -t tmp)
     else
         # Fallback for Windows/other systems
-        temp_dir="/tmp/goalkit_temp_$(date +%s)_$"
+        temp_dir="/tmp/goalkit_temp_$(date +%s)_$$"
         mkdir -p "$temp_dir"
     fi
     echo "Created temp dir for $agent-$script_type at $temp_dir" >&2
