@@ -120,6 +120,50 @@ Use **`/goalkit.execute`** to begin implementation with continuous learning and 
 /goalkit.execute
 ```
 
+### 7. Collaborate and coordinate (New!)
+
+Use **`/goalkit.collaborate`** to coordinate work between multiple agents or maintain consistency in single-agent environments. This command creates collaboration plans that track dependencies, communication, and progress across development activities.
+
+```bash
+/goalkit.collaborate Coordinate work between frontend and backend development
+```
+
+### 8. Persona Management (Advanced!)
+
+Switch between specialized agent personas for different development tasks. The agent can take on specific roles like GitHub specialist, milestone planner, strategy explorer, QA specialist, or documentation expert.
+
+```bash
+/goalkit.persona [persona-name]  # Switch to a specific persona
+/goalkit.persona github          # Switch to GitHub specialist mode
+/goalkit.persona milestone       # Switch to milestone planning mode
+/goalkit.persona strategy        # Switch to strategy exploration mode
+/goalkit.persona qa             # Switch to quality assurance mode
+/goalkit.persona documentation   # Switch to documentation mode
+/goalkit.persona general         # Return to general mode (default)
+```
+
+When you switch to a specific persona, the agent will:
+- Apply specialized knowledge and best practices for that role
+- Focus on the specific responsibilities of that persona
+- Use role-appropriate terminology and approaches
+- Follow persona-specific guidelines and standards
+
+### 9. Recommended Persona Workflows
+
+The persona system works best when you switch to the most appropriate role for your current task:
+
+**For Goal Creation**: Use the general agent or strategy explorer persona
+**For Strategy Exploration**: Use the strategy explorer persona for deep technical analysis
+**For Milestone Planning**: Use the milestone planner persona for measurable outcomes
+**For Implementation**: Either stay as general agent or switch to specialized personas as needed
+**For Code Review**: Switch to the QA specialist persona for quality focus
+**For Repository Management**: Use the GitHub specialist persona for version control
+**For Documentation**: Use the documentation specialist persona for clear docs
+
+Personas help ensure you apply the right expertise at the right time while maintaining overall project consistency.
+
+## 🤖 Supported AI Agents
+
 ## 🤖 Supported AI Agents
 
 | Agent                                                     | Support | Notes                                             |
@@ -187,7 +231,7 @@ The `goalkeeper` command supports the following options:
 
 ### Available Slash Commands
 
-After running `goalkeeper init`, your AI coding agent will have access to these **5 core slash commands** for comprehensive goal-driven development:
+After running `goalkeeper init`, your AI coding agent will have access to these **core slash commands** for comprehensive goal-driven development:
 
 #### 🚀 Core Workflow Commands
 
@@ -200,6 +244,44 @@ Essential commands for the complete Goal-Driven Development workflow:
 | `/goalkit.strategies`    | Explore multiple implementation strategies for achieving goals        |
 | `/goalkit.milestones`    | Generate measurable milestones and progress indicators               |
 | `/goalkit.execute`       | Execute implementation with flexibility to adapt and learn           |
+| `/goalkit.collaborate`   | Coordinate work between agents or maintain consistency across sessions |
+
+#### 🤝 Coordination Commands
+
+Commands for coordinating work between multiple agents or maintaining consistency:
+
+| Command                  | Description                                                           |
+|--------------------------|-----------------------------------------------------------------------|
+| `/goalkit.collaborate`   | Set up coordination between agents or maintain self-consistency      |
+
+#### 👤 Persona Management Commands
+
+Commands for managing specialized agent personas for different development tasks:
+
+| Command                  | Description                                                           |
+|--------------------------|-----------------------------------------------------------------------|
+| `/goalkit.persona [name]`| Switch between specialized agent personas (github, milestone, strategy, qa, documentation) |
+
+#### 🤖 Persona Roles Available
+
+The system supports specialized agent personas for different development tasks:
+
+| Persona | Specialization | Primary Focus |
+|---------|---------------|---------------|
+| General Agent | Default role | All aspects of goal-driven development |
+| GitHub/Git Specialist | Version control | Repository management, branching, PRs |
+| Milestone Planner | Planning | Breaking goals into measurable milestones |
+| Strategy Explorer | Research & Analysis | Exploring implementation approaches |
+| Quality Assurance | Testing & Validation | Quality metrics, testing strategies |
+| Documentation Specialist | Documentation | Creating and maintaining project docs |
+
+#### 🔄 Persona Switching Tips
+
+- **Context Switching**: Personas help you apply specialized knowledge at the right time
+- **Progress Continuity**: Switching personas maintains project context while changing focus
+- **Quality Gating**: Use QA persona for reviews before merging
+- **Documentation Focus**: Use Documentation persona when creating user-facing materials
+- **Technical Analysis**: Use Strategy Explorer for deep technical approach evaluation
 
 ## 🚀 AI Agent Integration
 

@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.78] - 2025-10-18
+
+### 👤 Advanced Persona System
+
+#### 🎯 Core Features:
+- **Persona System**: Introduce specialized agent personas for different development tasks (github, milestone, strategy, qa, documentation, general)
+- **Persona Management**: New `/goalkit.persona` command to switch between specialized agent roles
+- **Persona Guidelines**: Comprehensive guidance templates for each persona role (GitHub, Milestone, Strategy, QA, Documentation)
+- **Persona Configuration**: Configuration system with `personas.json` defining available personas and their capabilities
+- **Bash & PowerShell Scripts**: `manage-personas.sh` and `manage-personas.ps1` for persona management
+- **Persona-Aware Templates**: Updated command templates (`goal.md`, `strategies.md`, `collaborate.md`) to include persona context
+- **Persona Coordination**: Enhanced collaboration templates with persona transition points and handoff procedures
+- **Persona Documentation**: Complete documentation in README with usage instructions and recommended workflows
+
+#### 📁 Implementation Details:
+- **Agent Context**: Enhanced `update-agent-context.sh` and `update-agent-context.ps1` to track current persona
+- **Collaboration System**: Extended collaboration templates to include persona-specific guidance
+- **Command Templates**: All major command templates now aware of active persona context
+- **User Experience**: Improved user guidance for persona-based workflows
+
+#### 🔧 Technical Enhancements:
+- **Backward Compatibility**: Maintained all existing functionality while adding persona capabilities
+- **Coordination Integration**: Seamlessly integrated persona system with existing coordination features
+- **Script Integration**: Updated bash and PowerShell scripts to include persona information in commits and context
+
+---
+
 ## [0.0.77] - 2025-10-18
 
 ### 🎨 Enhanced UI/UX Design Guidelines
@@ -40,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### ⚡ Efficiency Improvements for Simple Tasks:
 - **Task Complexity Assessment**: Added guidance to distinguish between simple tasks and complex goals
-- **Direct Implementation**: Simple tasks (e.g., "enhanced header") now skip unnecessary goal methodology steps
+- **Direct Implementation**: Simple tasks (e.g., \"enhanced header\") now skip unnecessary goal methodology steps
 - **Template Updates**: Updated all command templates with complexity assessment instructions
 - **Smart Processing**: Agents now evaluate if full 5-step methodology is needed or if direct implementation is more appropriate
 - **Reduced Overhead**: Simple enhancements no longer create excessive documentation files

@@ -27,6 +27,18 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 If this is a simple task, suggest to the user that they might want to implement it directly rather than through the full goal process.
 
+## Active Persona Context
+
+**Current Persona**: [Agent determines current active persona]
+
+Consider your specialized role when creating this goal:
+- **General Agent**: Focus on overall goal structure and integration with other goals
+- **Strategy Explorer**: Emphasize multiple approach considerations and technical feasibility
+- **Milestone Planner**: Focus on measurable outcomes and success metrics
+- **QA Specialist**: Consider testing and validation requirements
+- **Documentation Specialist**: Plan for necessary documentation
+- **GitHub Specialist**: Consider version control and repository organization (if applicable)
+
 ## Outline
 
 The text the user typed after `/goalkit.goal` in the triggering message **is** the goal description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.

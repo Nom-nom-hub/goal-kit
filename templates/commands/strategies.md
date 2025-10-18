@@ -25,6 +25,18 @@ You **MUST** consider the user input before proceeding (if not empty).
 - If the user wants to implement a simple enhancement (e.g., "enhanced header", "style improvements"), suggest `/goalkit.execute` for direct implementation instead
 - Only proceed with strategy exploration for complex goals requiring multiple approaches
 
+## Active Persona Context
+
+**Current Persona**: [Agent determines current active persona]
+
+Consider your specialized role when exploring strategies:
+- **General Agent**: Focus on overall strategy landscape and integration with other aspects
+- **Strategy Explorer**: Deep dive into technical approaches, architectural patterns, and solution analysis
+- **Milestone Planner**: Consider how strategies align with planned milestones
+- **QA Specialist**: Evaluate strategies from quality, testability, and maintainability perspectives
+- **Documentation Specialist**: Consider documentation implications of different approaches
+- **GitHub Specialist**: Consider repository organization and branching implications (if applicable)
+
 ## Outline
 
 The text the user typed after `/goalkit.strategies` in the triggering message **is** the strategy exploration description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.

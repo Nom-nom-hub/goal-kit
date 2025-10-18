@@ -99,6 +99,32 @@ UPDATED_FILES=()
 PROJECT_NAME=$(basename "$PROJECT_ROOT")
 CURRENT_BRANCH=$(git branch --show-current)
 ACTIVE_GOALS_COUNT=$(find goals -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+ACTIVE_COLLABORATIONS_COUNT=$(find collaborations -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+
+# Get current persona information
+PERSONA_CONFIG_DIR="$PROJECT_ROOT/.goalkit/personas"
+CURRENT_PERSONA_FILE="$PERSONA_CONFIG_DIR/current_persona.txt"
+CURRENT_PERSONA="general"  # Default persona
+if [[ -f "$CURRENT_PERSONA_FILE" ]]; then
+    CURRENT_PERSONA=$(cat "$CURRENT_PERSONA_FILE")
+fi
+
+# Get persona display name
+PERSONA_NAME=$(python3 -c "
+import json
+personas_config = {
+  'default_persona': 'general',
+  'personas': {
+    'general': {'name': 'General Agent'},
+    'github': {'name': 'GitHub/Git Specialist'},
+    'milestone': {'name': 'Milestone Planner'},
+    'strategy': {'name': 'Strategy Explorer'},
+    'qa': {'name': 'Quality Assurance'},
+    'documentation': {'name': 'Documentation Specialist'}
+  }
+}
+print(personas_config['personas'].get('$CURRENT_PERSONA', {}).get('name', '$CURRENT_PERSONA'))
+" 2>/dev/null || echo "Unknown ($CURRENT_PERSONA)")
 
 # Generate context content
 CONTEXT_CONTENT=$(cat << EOF
@@ -107,6 +133,7 @@ CONTEXT_CONTENT=$(cat << EOF
 **Project**: $PROJECT_NAME
 **Branch**: $CURRENT_BRANCH
 **Active Goals**: $ACTIVE_GOALS_COUNT
+**Active Collaborations**: $ACTIVE_COLLABORATIONS_COUNT
 **Updated**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 ## 🎯 Goal-Driven Development Status
@@ -125,8 +152,16 @@ This project uses Goal-Driven Development methodology. Focus on:
 - **/goalkit.strategies** - Explore implementation strategies
 - **/goalkit.milestones** - Create measurable milestones
 - **/goalkit.execute** - Execute with learning and adaptation
+- **/goalkit.collaborate** - Coordinate work between agents or maintain consistency
 
+### Coordination Commands
+- **/goalkit.collaborate** - Set up coordination between agents or maintain self-consistency
+- **/goalkit.sync** - Synchronize state and progress (coming soon)
+- **/goalkit.check** - Check coordination status (coming soon)
 
+### Persona Commands
+- **Current Persona**: $PERSONA_NAME ($CURRENT_PERSONA)
+- **Use different personas**: Leverage specialized agent capabilities for different tasks
 
 ## 🚀 Project Vision
 
@@ -147,6 +182,21 @@ else
     echo "No active goals yet. Use /goalkit.goal to create your first goal."
 fi)
 
+## 🤝 Active Collaborations
+
+$(if [[ -d "collaborations" ]] && [[ $ACTIVE_COLLABORATIONS_COUNT -gt 0 ]]; then
+    echo "Active collaborations:"
+    for collab_dir in collaborations/*/; do
+        if [[ -d "$collab_dir" ]]; then
+            collab_name=$(basename "$collab_dir")
+            collab_statement=$(grep -m 1 "Coordination Statement" "$collab_dir/collaboration.md" 2>/dev/null | sed 's/.*Coordination Statement: //' | head -1 || echo "Collaboration in progress")
+            echo "- **$collab_name**: $collab_statement"
+        fi
+    done | head -3
+else
+    echo "No active collaborations. Use /goalkit.collaborate to coordinate work."
+fi)
+
 ## 📊 Development Principles
 
 Remember these core principles:
@@ -155,6 +205,8 @@ Remember these core principles:
 3. **Measurement-Driven**: Progress must be measured and validated
 4. **Learning Integration**: Treat implementation as hypothesis testing
 5. **Adaptive Planning**: Change course based on evidence
+6. **Coordination-Aware**: Consider how work fits with other agents and processes
+7. **Persona-Optimized**: Use specialized agent personas for different development tasks
 
 ## 🔧 Next Recommended Actions
 
@@ -162,9 +214,16 @@ $(if [[ $ACTIVE_GOALS_COUNT -eq 0 ]]; then
     echo "1. Use /goalkit.vision to establish project vision"
     echo "2. Use /goalkit.goal to define first goal"
 else
-    echo "1. Review active goals in goals/ directory"
-    echo "2. Use /goalkit.strategies to explore implementation approaches"
-    echo "3. Use /goalkit.milestones to plan measurable progress steps"
+    if [[ $ACTIVE_COLLABORATIONS_COUNT -eq 0 ]]; then
+        echo "1. Review active goals in goals/ directory"
+        echo "2. Use /goalkit.collaborate to coordinate work (if multiple agents)"
+        echo "3. Use /goalkit.strategies to explore implementation approaches"
+        echo "4. Use /goalkit.milestones to plan measurable progress steps"
+    else
+        echo "1. Review active goals in goals/ directory"
+        echo "2. Review active collaborations in collaborations/ directory"
+        echo "3. Use /goalkit.strategies, /goalkit.milestones, and /goalkit.execute as needed"
+    fi
 fi)
 
 ---
