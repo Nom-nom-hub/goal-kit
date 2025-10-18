@@ -30,13 +30,19 @@ GENRELEASES_DIR=".genreleases"
 mkdir -p "$GENRELEASES_DIR"
 rm -rf "$GENRELEASES_DIR"/* || true
 
+# Apply path rewrites to convert simple paths to .goalkit paths
+# But first, we'll temporarily mark existing .goalkit/ paths to avoid duplication
 rewrite_paths() {
-  # Add .goalkit/ prefix to paths that don't already have .goalkit/ prefix
-  # This is sed with basic regex - avoid duplicating when .goalkit/ is already there
-  sed -E \
-    -e 's@(^|[^.])memory/@\1.goalkit/memory/@g' \
-    -e 's@(^|[^.])scripts/@\1.goalkit/scripts/@g' \
-    -e 's@(^|[^.])templates/@\1.goalkit/templates/@g'
+  # Temporarily replace existing .goalkit/ patterns to avoid reprocessing them
+  sed \
+    -e 's@.goalkit/@TEMP_GOALKIT_MARKER@g' \
+    -e 's@/memory/@/.goalkit/memory/@g' \
+    -e 's@^memory/@.goalkit/memory/@g' \
+    -e 's@/scripts/@/.goalkit/scripts/@g' \
+    -e 's@^scripts/@.goalkit/scripts/@g' \
+    -e 's@/templates/@/.goalkit/templates/@g' \
+    -e 's@^templates/@.goalkit/templates/@g' \
+    -e 's@TEMP_GOALKIT_MARKER@.goalkit/@g'
 }
 
 generate_commands() {
