@@ -16,7 +16,17 @@ goals/*/temp/
 .augment/
 .roo/
 .amazonq/
+
+# Agent specific context files (may contain credentials or sensitive context)
+CLAUDE.md
+GEMINI.md
+CURSOR.md
 QWEN.md
+OPENCODE.md
+CODEX.md
+WINDSURF.md
+KILOCODE.md
+ROO.md
 # Python
 __pycache__/
 *.py[cod]
