@@ -1029,35 +1029,79 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
                 shutil.copytree(item, dest_path, dirs_exist_ok=True)
 
     # Create agent-specific command/workflow/prompt folders
-    commands_source_dir = Path(__file__).parent.parent / "templates" / "commands"
-    if commands_source_dir.exists():
-        # Define the correct folder structure for each agent type
-        agent_folder_structure = {
-            "claude": "commands",
-            "gemini": "commands",
-            "cursor": "commands",
-            "qwen": "commands",
-            "opencode": "command",  # Note: singular "command" not "commands"
-            "windsurf": "workflows",
-            "codex": "prompts",
-            "kilocode": "workflows",
-            "auggie": "commands",
-            "roo": "commands",
-            "codebuddy": "commands",
-            "copilot": "prompts",
-            "q": "prompts"
-        }
+    # Define the correct folder structure for each agent type
+    agent_folder_structure = {
+        "claude": "commands",
+        "gemini": "commands",
+        "cursor": "commands",
+        "qwen": "commands",
+        "opencode": "command",  # Note: singular "command" not "commands"
+        "windsurf": "workflows",
+        "codex": "prompts",
+        "kilocode": "workflows",
+        "auggie": "commands",
+        "roo": "commands",
+        "codebuddy": "commands",
+        "copilot": "prompts",
+        "q": "prompts"
+    }
 
-        # Get the correct folder name for this agent
-        folder_name = agent_folder_structure.get(selected_ai, "commands")
-        agent_commands_dir = agent_config_dir / folder_name
-        agent_commands_dir.mkdir(parents=True, exist_ok=True)
+    # Get the correct folder name for this agent
+    folder_name = agent_folder_structure.get(selected_ai, "commands")
+    agent_commands_dir = agent_config_dir / folder_name
+    agent_commands_dir.mkdir(parents=True, exist_ok=True)
 
-        # Copy all command templates to the agent folder
-        for command_file in commands_source_dir.iterdir():
-            if command_file.is_file() and command_file.suffix == ".md":
-                dest_path = agent_commands_dir / command_file.name
-                shutil.copy2(command_file, dest_path)
+    # Copy appropriate templates based on the folder type
+    # First, look for agent-specific templates if they exist
+    agent_specific_template_dir = Path(__file__).parent.parent / "templates" / selected_ai / folder_name
+    if agent_specific_template_dir.exists():
+        # Use agent-specific templates for this folder type
+        for template_file in agent_specific_template_dir.iterdir():
+            if template_file.is_file() and template_file.suffix == ".md":
+                dest_path = agent_commands_dir / template_file.name
+                shutil.copy2(template_file, dest_path)
+    else:
+        # Use generic templates based on folder type
+        if folder_name in ["workflows"]:
+            # Try to find workflows-specific templates, fallback to commands
+            workflows_template_dir = Path(__file__).parent.parent / "templates" / "workflows"
+            if workflows_template_dir.exists():
+                for template_file in workflows_template_dir.iterdir():
+                    if template_file.is_file() and template_file.suffix == ".md":
+                        dest_path = agent_commands_dir / template_file.name
+                        shutil.copy2(template_file, dest_path)
+            else:
+                # Fallback to commands if workflows directory doesn't exist
+                commands_source_dir = Path(__file__).parent.parent / "templates" / "commands"
+                if commands_source_dir.exists():
+                    for command_file in commands_source_dir.iterdir():
+                        if command_file.is_file() and command_file.suffix == ".md":
+                            dest_path = agent_commands_dir / command_file.name
+                            shutil.copy2(command_file, dest_path)
+        elif folder_name in ["prompts"]:
+            # Try to find prompts-specific templates, fallback to commands
+            prompts_template_dir = Path(__file__).parent.parent / "templates" / "prompts"
+            if prompts_template_dir.exists():
+                for template_file in prompts_template_dir.iterdir():
+                    if template_file.is_file() and template_file.suffix == ".md":
+                        dest_path = agent_commands_dir / template_file.name
+                        shutil.copy2(template_file, dest_path)
+            else:
+                # Fallback to commands if prompts directory doesn't exist
+                commands_source_dir = Path(__file__).parent.parent / "templates" / "commands"
+                if commands_source_dir.exists():
+                    for command_file in commands_source_dir.iterdir():
+                        if command_file.is_file() and command_file.suffix == ".md":
+                            dest_path = agent_commands_dir / command_file.name
+                            shutil.copy2(command_file, dest_path)
+        else:
+            # Default case: use commands templates for commands/command folders
+            commands_source_dir = Path(__file__).parent.parent / "templates" / "commands"
+            if commands_source_dir.exists():
+                for command_file in commands_source_dir.iterdir():
+                    if command_file.is_file() and command_file.suffix == ".md":
+                        dest_path = agent_commands_dir / command_file.name
+                        shutil.copy2(command_file, dest_path)
 
         # Special handling for VS Code settings for Copilot
         if selected_ai == "copilot":
