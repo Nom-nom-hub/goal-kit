@@ -29,12 +29,14 @@ Given that milestone planning, do this:
    - If multiple goals exist, ask user to clarify which goal needs milestones
    - If no goals exist, inform user that goals must be created first using `/goalkit.goal`
 
-2. Run the script `{SCRIPT}` from repo root **with the milestone description argument** and parse its JSON output for GOAL_DIR, BRANCH_NAME and MILESTONE_FILE. All file paths must be absolute.
+2. Locate the git repository root and run the script `{SCRIPT}` from there **with the milestone description argument**, then parse its JSON output for GOAL_DIR, BRANCH_NAME and MILESTONE_FILE. All file paths must be absolute.
 
    **IMPORTANT**:
    
    - The milestone description argument is passed as the entire user input from $ARGUMENTS
    - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\\''m Groot' (or double-quote if possible: "I'm Groot")
+   - First find the git repository root by looking for `.git` directory or using git command to locate it
+   - Change to the repository root directory before executing the script
    - You must only ever run this script once
    - The JSON is provided in the terminal as output - always refer to it to get the actual content you're looking for
 

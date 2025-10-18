@@ -34,12 +34,14 @@ Given that goal description, do this:
      - "Build analytics dashboard for user behavior" → "analytics-dashboard"
      - "Reduce application load time" → "reduce-load-time"
 
-2. Run the script `{SCRIPT}` from repo root **with the goal description argument** and parse its JSON output for GOAL_DIR, BRANCH_NAME and GOAL_FILE. All file paths must be absolute.
+2. Locate the git repository root and run the script `{SCRIPT}` from there **with the goal description argument**, then parse its JSON output for GOAL_DIR, BRANCH_NAME and GOAL_FILE. All file paths must be absolute.
 
    **IMPORTANT**:
    
    - The goal description argument is passed as the entire user input from $ARGUMENTS
    - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\\''m Groot' (or double-quote if possible: "I'm Groot")
+   - First find the git repository root by looking for `.git` directory or using git command to locate it
+   - Change to the repository root directory before executing the script
    - You must only ever run this script once
    - The JSON is provided in the terminal as output - always refer to it to get the actual content you're looking for
 
