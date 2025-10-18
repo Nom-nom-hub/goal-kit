@@ -94,11 +94,12 @@ while [[ $# -gt 0 ]]; do
             exit 1
             ;;
         *)
-            if [[ -z "$GOAL_DIR" ]]; then
-                GOAL_DIR="$1"
-            else
-                GOAL_DIR="$GOAL_DIR $1"
+            if [[ -n "$GOAL_DIR" ]]; then
+                log_error "Multiple goal directories specified: $GOAL_DIR and $1"
+                usage
+                exit 1
             fi
+            GOAL_DIR="$1"
             shift
             ;;
     esac
@@ -151,7 +152,6 @@ MILESTONE_FILE="$GOAL_DIR/milestones.md"
 if [[ -f "$MILESTONE_FILE" ]]; then
     log_warning "Milestone file already exists: $MILESTONE_FILE"
     if [[ "$DRY_RUN" == "false" ]]; then
-        response=$(echo "n")
         read -p "Overwrite existing milestone file? (y/N): " response
         if [[ ! "$response" =~ ^[Yy]$ ]]; then
             log_info "Operation cancelled"

@@ -33,7 +33,7 @@ function Show-Usage {
 }
 
 # Show help if requested
-if ($args -contains "-h" -or $args -contains "-?" -or $GoalDescription -eq "") {
+if ($args -contains "-h" -or $args -contains "-?") {
     Show-Usage
     exit 0
 }
