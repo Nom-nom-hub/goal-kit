@@ -4,42 +4,9 @@
 
 set -euo pipefail
 
-#!/bin/bash
-
-# Setup milestone planning in a Goal Kit project
-
-set -euo pipefail
-
 # Source common utilities
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
-
-# Function to display usage information
-usage() {
-    cat << EOF
-Usage: $0 [OPTIONS] GOAL_DIRECTORY
-
-Setup milestone planning in the current Goal Kit project.
-
-OPTIONS:
-    -h, --help              Show this help message
-    -d, --dry-run          Show what would be created without creating it
-    -v, --verbose          Enable verbose output
-    -j, --json             Output JSON with milestone details only
-    --force                Overwrite existing milestone file without prompting
-
-ARGUMENTS:
-    GOAL_DIRECTORY         Path to the goal directory to create milestones for
-
-EXAMPLES:
-    $0 goals/001-user-authentication
-    $0 --dry-run goals/001-user-authentication
-    $0 --json goals/001-user-authentication
-    $0 -v goals/001-user-authentication
-    $0 --force goals/001-user-authentication
-
-EOF
-}
 
 # Function to display usage information
 usage() {

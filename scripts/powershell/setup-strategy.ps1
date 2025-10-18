@@ -1,9 +1,19 @@
+[CmdletBinding()]
 param(
-    [switch]$Verbose = $false,
-    [switch]$DryRun = $false,
-    [switch]$Json = $false,
+    [Parameter(Mandatory=$true)]
+    [string]$GoalDirectory,
+
+    [Parameter()]
+    [switch]$DryRun,
+
+    [Parameter()]
     [switch]$Force = $false,
-    [string]$GoalDirectory = ""
+
+    [Parameter()]
+    [switch]$Json = $false,
+
+    [Parameter()]
+    [switch]$Verbose = $false
 )
 
 # Setup strategy analysis in a Goal Kit project
@@ -95,8 +105,16 @@ $strategyFile = Join-Path $GoalDirectory "strategies.md"
 if (Test-Path $strategyFile) {
     Write-Warning "Strategy file already exists: $strategyFile"
     if (-not $DryRun -and -not $Force) {
-        $response = Read-Host "Overwrite existing strategy file? (y/N)"
-        if ($response -ne "y" -and $response -ne "Y") {
+        # Attempt to check if we can prompt the user (non-interactive environments may not support this)
+        try {
+            $response = Read-Host "Overwrite existing strategy file? (y/N)"
+            if ($response -ne "y" -and $response -ne "Y") {
+                Write-Info "Operation cancelled"
+                exit 0
+            }
+        } catch {
+            # If Read-Host fails (e.g., in CI/CD), handle gracefully
+            Write-Warning "Cannot prompt for overwrite in this environment. Use -Force to overwrite in CI/CD or non-interactive environments."
             Write-Info "Operation cancelled"
             exit 0
         }

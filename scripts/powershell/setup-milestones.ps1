@@ -100,8 +100,16 @@ if (Test-Path $milestoneFile) {
     Write-Warning "Milestone file already exists: $milestoneFile"
     if (-not $DryRun) {
         if (-not $Force) {
-            $response = Read-Host "Overwrite existing milestone file? (y/N)"
-            if ($response -ne "y" -and $response -ne "Y") {
+            # Attempt to check if we can prompt the user (non-interactive environments may not support this)
+            try {
+                $response = Read-Host "Overwrite existing milestone file? (y/N)"
+                if ($response -ne "y" -and $response -ne "Y") {
+                    Write-Info "Operation cancelled"
+                    exit 0
+                }
+            } catch {
+                # If Read-Host fails (e.g., in CI/CD), handle gracefully
+                Write-Warning "Cannot prompt for overwrite in this environment. Use -Force to overwrite in CI/CD or non-interactive environments."
                 Write-Info "Operation cancelled"
                 exit 0
             }
