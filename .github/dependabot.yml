@@ -15,7 +15,6 @@ updates:
     target-branch: "main"
     labels:
       - "dependencies"
-      - "python"
     commit-message:
       prefix: "deps"
       prefix-development: "deps(dev)"
@@ -39,9 +38,7 @@ updates:
     target-branch: "main"
     labels:
       - "dependencies"
-      - "github-actions"
     commit-message:
       prefix: "deps"
-      prefix-development: "deps(dev)"
     pull-request-branch-name:
       separator: "/"
