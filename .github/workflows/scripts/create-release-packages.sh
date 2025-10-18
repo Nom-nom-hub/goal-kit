@@ -8,10 +8,6 @@ set -euo pipefail
 #   Optionally set AGENTS and/or SCRIPTS env vars to limit what gets built.
 #     AGENTS  : space or comma separated subset of: claude gemini copilot cursor qwen opencode windsurf codex kilocode auggie roo q (default: all)
 #     SCRIPTS : space or comma separated subset of: sh ps (default: both)
-#   Examples:
-#     AGENTS=claude SCRIPTS=sh $0 v0.2.0
-#     AGENTS="copilot,gemini" $0 v0.2.0
-#     SCRIPTS=ps $0 v0.2.0
 
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <version-with-v-prefix>" >&2
@@ -25,7 +21,6 @@ fi
 
 echo "Building release packages for $NEW_VERSION"
 
-# Create and use .genreleases directory for all build artifacts
 GENRELEASES_DIR=".genreleases"
 mkdir -p "$GENRELEASES_DIR"
 rm -rf "$GENRELEASES_DIR"/* || true
@@ -44,58 +39,25 @@ generate_commands() {
     [[ -f "$template" ]] || continue
     local name description script_command agent_script_command body
     name=$(basename "$template" .md)
-    
-    # Normalize line endings
+
     file_content=$(tr -d '\r' < "$template")
-    
-    # Extract description and script command from YAML frontmatter
     description=$(printf '%s\n' "$file_content" | awk '/^description:/ {sub(/^description:[[:space:]]*/, ""); print; exit}')
     script_command=$(printf '%s\n' "$file_content" | awk -v sv="$script_variant" '/^[[:space:]]*'"$script_variant"':[[:space:]]*/ {sub(/^[[:space:]]*'"$script_variant"':[[:space:]]*/, ""); print; exit}')
-    
-    if [[ -z $script_command ]]; then
-      echo "Warning: no script command found for $script_variant in $template" >&2
-      script_command="(Missing script command for $script_variant)"
-    fi
-    
-    # Extract agent_script command from YAML frontmatter if present
+    [[ -z $script_command ]] && script_command="(Missing script command for $script_variant)"
+
     agent_script_command=$(printf '%s\n' "$file_content" | awk '
       /^agent_scripts:$/ { in_agent_scripts=1; next }
-      in_agent_scripts && /^[[:space:]]*'"$script_variant"':[[:space:]]*/ {
-        sub(/^[[:space:]]*'"$script_variant"':[[:space:]]*/, "")
-        print
-        exit
-      }
+      in_agent_scripts && /^[[:space:]]*'"$script_variant"':[[:space:]]*/ { sub(/^[[:space:]]*'"$script_variant"':[[:space:]]*/, ""); print; exit }
       in_agent_scripts && /^[a-zA-Z]/ { in_agent_scripts=0 }
     ')
-    
-    # Replace {SCRIPT} placeholder with the script command
+
     body=$(printf '%s\n' "$file_content" | sed "s|{SCRIPT}|${script_command}|g")
-    
-    # Replace {AGENT_SCRIPT} placeholder with the agent script command if found
-    if [[ -n $agent_script_command ]]; then
-      body=$(printf '%s\n' "$body" | sed "s|{AGENT_SCRIPT}|${agent_script_command}|g")
-    fi
-    
-    # Remove the scripts: and agent_scripts: sections from frontmatter while preserving YAML structure
-    body=$(printf '%s\n' "$body" | awk '
-      /^---$/ { print; if (++dash_count == 1) in_frontmatter=1; else in_frontmatter=0; next }
-      in_frontmatter && /^scripts:$/ { skip_scripts=1; next }
-      in_frontmatter && /^agent_scripts:$/ { skip_scripts=1; next }
-      in_frontmatter && /^[a-zA-Z].*:/ && skip_scripts { skip_scripts=0 }
-      in_frontmatter && skip_scripts && /^[[:space:]]/ { next }
-      { print }
-    ')
-    
-    # Apply other substitutions
+    [[ -n $agent_script_command ]] && body=$(printf '%s\n' "$body" | sed "s|{AGENT_SCRIPT}|${agent_script_command}|g")
     body=$(printf '%s\n' "$body" | sed "s|{ARGS}|$arg_format|g" | sed "s/__AGENT__/$agent/g" | rewrite_paths)
 
     case $ext in
-      toml)
-        { echo "description = \"${description}\""; echo; echo "prompt = \"\"\""; echo "$body"; echo "\"\"\""; } > "$output_dir/goalkit.$name.$ext" ;;
-      md)
-        echo "$body" > "$output_dir/goalkit.$name.$ext" ;;
-      prompt.md)
-        echo "$body" > "$output_dir/goalkit.$name.$ext" ;;
+      toml) { echo "description = \"${description}\""; echo; echo "prompt = \"\"\""; echo "$body"; echo "\"\"\""; } > "$output_dir/goalkit.$name.$ext" ;;
+      md|prompt.md) echo "$body" > "$output_dir/goalkit.$name.$ext" ;;
     esac
   done
 }
@@ -105,36 +67,34 @@ build_variant() {
   local base_dir="$GENRELEASES_DIR/gdd-${agent}-package-${script}"
   echo "Building $agent ($script) package..."
   mkdir -p "$base_dir"
-  
-  # Copy base structure but filter scripts by variant
+
   GOALKIT_DIR="$base_dir/.goalkit"
   mkdir -p "$GOALKIT_DIR"
-  
+
   [[ -d memory ]] && { cp -r memory "$GOALKIT_DIR/"; echo "Copied memory -> .goalkit"; }
-  
-  # Only copy the relevant script variant directory
+
   if [[ -d scripts ]]; then
     mkdir -p "$GOALKIT_DIR/scripts"
     case $script in
       sh)
-        [[ -d scripts/bash ]] && { cp -r scripts/bash "$GOALKIT_DIR/scripts/"; echo "Copied scripts/bash -> .goalkit/scripts"; }
-        # Copy any script files that aren't in variant-specific directories
+        [[ -d scripts/bash ]] && cp -r scripts/bash "$GOALKIT_DIR/scripts/" && echo "Copied scripts/bash -> .goalkit/scripts"
         find scripts -maxdepth 1 -type f -exec cp {} "$GOALKIT_DIR/scripts/" \; 2>/dev/null || true
         ;;
       ps)
-        [[ -d scripts/powershell ]] && { cp -r scripts/powershell "$GOALKIT_DIR/scripts/"; echo "Copied scripts/powershell -> .goalkit/scripts"; }
-        # Copy any script files that aren't in variant-specific directories
+        [[ -d scripts/powershell ]] && cp -r scripts/powershell "$GOALKIT_DIR/scripts/" && echo "Copied scripts/powershell -> .goalkit/scripts"
         find scripts -maxdepth 1 -type f -exec cp {} "$GOALKIT_DIR/scripts/" \; 2>/dev/null || true
         ;;
     esac
   fi
-  
-  [[ -d templates ]] && { mkdir -p "$GOALKIT_DIR/templates"; find templates -type f -not -path "templates/commands/*" -not -name "vscode-settings.json" -exec cp --parents {} "$GOALKIT_DIR"/ \; ; echo "Copied templates -> .goalkit/templates"; }
-  
-  # NOTE: We substitute {ARGS} internally. Outward tokens differ intentionally:
-  #   * Markdown/prompt (claude, copilot, cursor, opencode): $ARGUMENTS
-  #   * TOML (gemini, qwen): {{args}}
-  # This keeps formats readable without extra abstraction.
+
+  # Correct template copy to avoid double .goalkit
+  if [[ -d templates ]]; then
+    mkdir -p "$GOALKIT_DIR/templates"
+    cd templates
+    find . -type f -not -path "./commands/*" -not -name "vscode-settings.json" -exec cp --parents {} "$GOALKIT_DIR/templates" \;
+    cd - >/dev/null
+    echo "Copied templates -> .goalkit/templates"
+  fi
 
   case $agent in
     claude)
@@ -147,10 +107,8 @@ build_variant() {
     copilot)
       mkdir -p "$base_dir/.github/prompts"
       generate_commands copilot prompt.md "\$ARGUMENTS" "$base_dir/.github/prompts" "$script"
-      # Create VS Code workspace settings
       mkdir -p "$base_dir/.vscode"
-      [[ -f templates/vscode-settings.json ]] && cp templates/vscode-settings.json "$base_dir/.vscode/settings.json"
-      ;;
+      [[ -f templates/vscode-settings.json ]] && cp templates/vscode-settings.json "$base_dir/.vscode/settings.json" ;;
     cursor)
       mkdir -p "$base_dir/.cursor/commands"
       generate_commands cursor md "\$ARGUMENTS" "$base_dir/.cursor/commands" "$script" ;;
@@ -180,19 +138,16 @@ build_variant() {
       mkdir -p "$base_dir/.amazonq/prompts"
       generate_commands q md "\$ARGUMENTS" "$base_dir/.amazonq/prompts" "$script" ;;
   esac
+
   ( cd "$base_dir" && zip -r "../goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip" . )
   echo "Created $GENRELEASES_DIR/goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip"
 }
 
-# Determine agent list
+# AGENT and SCRIPT selection
 ALL_AGENTS=(claude gemini copilot cursor qwen opencode windsurf codex kilocode auggie roo q)
 ALL_SCRIPTS=(sh ps)
 
-
-norm_list() {
-  # convert comma+space separated -> space separated unique while preserving order of first occurrence
-  tr ',\n' '  ' | awk '{for(i=1;i<=NF;i++){if(!seen[$i]++){printf((out?" ":"") $i)}}}END{printf("\n")}'
-}
+norm_list() { tr ',\n' '  ' | awk '{for(i=1;i<=NF;i++){if(!seen[$i]++){printf((out?" ":"") $i)}}}END{printf("\n")}' }
 
 validate_subset() {
   local type=$1; shift; local -n allowed=$1; shift; local items=("$@")
@@ -200,10 +155,7 @@ validate_subset() {
   for it in "${items[@]}"; do
     local found=0
     for a in "${allowed[@]}"; do [[ $it == "$a" ]] && { found=1; break; }; done
-    if [[ $found -eq 0 ]]; then
-      echo "Error: unknown $type '$it' (allowed: ${allowed[*]})" >&2
-      ok=0
-    fi
+    [[ $found -eq 0 ]] && { echo "Error: unknown $type '$it' (allowed: ${allowed[*]})" >&2; ok=0; }
   done
   return $ok
 }
