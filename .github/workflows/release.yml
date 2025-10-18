@@ -26,6 +26,9 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install zip
+        run: sudo apt-get update && sudo apt-get install -y zip
+        if: runner.os == 'Linux'
       - name: Get latest tag
         id: get_tag
         run: |
