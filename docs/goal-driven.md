@@ -61,6 +61,24 @@ Goal Kit supports 12 different AI agents:
 4. **Milestone Planning** - Measurable progress
 5. **Adaptive Execution** - Learning implementation
 
+## Task Complexity Assessment
+
+Goal Kit includes a task complexity assessment to determine the appropriate approach:
+
+### Simple Tasks (Direct Implementation)
+For minor changes and enhancements:
+- Visual improvements (e.g., "enhanced header", "better styling")
+- Minor bug fixes
+- Small UI adjustments
+- Use direct implementation without the full methodology
+
+### Complex Goals (Full Methodology) 
+For substantial features requiring measurement:
+- New major functionality
+- System architecture changes
+- Complex user workflows
+- Features requiring measurable success criteria
+
 ## Key Principles
 
 ### Goals over Specifications
@@ -72,6 +90,27 @@ Goal Kit supports 12 different AI agents:
 - Explore different approaches to achieve each goal
 - Consider various technical and user experience patterns
 - Evaluate trade-offs and risks openly
+
+### Professional UI/UX Standards
+Goal Kit now includes comprehensive UI/UX design standards to ensure professional, accessible interfaces:
+
+#### Visual Consistency
+- **Typography**: Use maximum 2 font families with clear heading hierarchy (H1, H2, H3, etc.)
+- **Color Palette**: Define consistent color system with primary, secondary, and accent colors
+- **Spacing System**: Use consistent spacing scale (4px, 8px, 16px, 24px, 32px) for margins and padding
+- **Component Library**: Create reusable components with consistent styling and behavior
+
+#### Accessibility Requirements
+- **WCAG Compliance**: Meet WCAG 2.1 AA standards for color contrast, keyboard navigation, and screen reader compatibility
+- **Color Usage**: Maintain minimum 4.5:1 contrast ratio for normal text and 3:1 for large text
+- **Keyboard Navigation**: All functionality accessible via keyboard
+- **Screen Reader Support**: All UI elements with proper semantic markup and ARIA labels
+
+#### Professional Aesthetics
+- **Visual Hierarchy**: Use clear typography, appropriate sizing, and strategic color contrast
+- **Whitespace**: Apply generous spacing between elements to reduce cognitive load
+- **Responsive Design**: Ensure interfaces work well across all screen sizes and devices
+- **Performance**: Optimize UI elements for fast loading and smooth interactions
 
 ## Quick Installation
 

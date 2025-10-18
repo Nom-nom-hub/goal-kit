@@ -18,6 +18,14 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Task Complexity Assessment
+
+**CRITICAL**: Milestones are for breaking complex goals into measurable steps. For simple tasks:
+
+- Simple enhancements (e.g., "enhanced header") typically don't need milestone planning
+- Suggest direct implementation using `/goalkit.execute` instead
+- Only create milestones for substantial goals with multiple measurable phases
+
 ## Outline
 
 The text the user typed after `/goalkit.milestones` in the triggering message **is** the milestone planning description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
