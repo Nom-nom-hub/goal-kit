@@ -31,12 +31,10 @@ mkdir -p "$GENRELEASES_DIR"
 rm -rf "$GENRELEASES_DIR"/* || true
 
 rewrite_paths() {
-  # Add .goalkit/ prefix to paths that don't already have .goalkit/ prefix
-  # This is sed with basic regex - avoid duplicating when .goalkit/ is already there
   sed -E \
-    -e 's@(^|[^.])memory/@\1.goalkit/memory/@g' \
-    -e 's@(^|[^.])scripts/@\1.goalkit/scripts/@g' \
-    -e 's@(^|[^.])templates/@\1.goalkit/templates/@g'
+    -e 's@(/?)memory/@.goalkit/memory/@g' \
+    -e 's@(/?)scripts/@.goalkit/scripts/@g' \
+    -e 's@(/?)templates/@.goalkit/templates/@g'
 }
 
 generate_commands() {
@@ -78,9 +76,8 @@ generate_commands() {
       body=$(printf '%s\n' "$body" | sed "s|{AGENT_SCRIPT}|${agent_script_command}|g")
     fi
     
-    # Process the content: first remove YAML frontmatter sections, then apply path rewrites
-    local processed_body
-    processed_body=$(printf '%s\n' "$file_content" | awk '
+    # Remove the scripts: and agent_scripts: sections from frontmatter while preserving YAML structure
+    body=$(printf '%s\n' "$file_content" | awk '
       /^---$/ { print; if (++dash_count == 1) in_frontmatter=1; else in_frontmatter=0; next }
       in_frontmatter && /^scripts:$/ { skip_scripts=1; next }
       in_frontmatter && /^agent_scripts:$/ { skip_scripts=1; next }
@@ -89,10 +86,7 @@ generate_commands() {
       { print }
     ')
     
-    # Apply path rewrites to template paths FIRST, before replacing {SCRIPT} to avoid duplicating .goalkit/
-    body=$(printf '%s\n' "$processed_body" | rewrite_paths)
-    
-    # Replace {SCRIPT} placeholder with the script command after path rewrites
+    # Replace {SCRIPT} placeholder with the script command
     body=$(printf '%s\n' "$body" | sed "s|{SCRIPT}|${script_command}|g")
     
     # Replace {AGENT_SCRIPT} placeholder with the agent script command if found
@@ -100,8 +94,8 @@ generate_commands() {
       body=$(printf '%s\n' "$body" | sed "s|{AGENT_SCRIPT}|${agent_script_command}|g")
     fi
     
-    # Apply other substitutions last
-    body=$(printf '%s\n' "$body" | sed "s|{ARGS}|$arg_format|g" | sed "s/__AGENT__/$agent/g")
+    # Apply other substitutions and then path rewrites
+    body=$(printf '%s\n' "$body" | sed "s|{ARGS}|$arg_format|g" | sed "s/__AGENT__/$agent/g" | rewrite_paths)
 
     case $ext in
       toml)
