@@ -1,5 +1,5 @@
 # Spec-Driven vs Goal-Driven Development
-*Original research and development by Goal Kit. Attribution appreciated but not required.*
+*Original research and development by both methodologies. Attribution appreciated but not required.*
 
 ## Overview
 
@@ -49,14 +49,6 @@ Defined  Focused   Approaches  Progress    Implementation  Drive    Based
 | `/speckit.tasks` | `/goalkit.milestones` | Implementation tasks vs Measurable progress indicators |
 | `/speckit.implement` | `/goalkit.execute` | Plan execution vs Adaptive implementation with learning |
 
-### Enhancement Commands
-
-| Spec-Driven | Goal-Driven | Purpose Difference |
-|-------------|-------------|-------------------|
-| `/speckit.clarify` | `/goalkit.explore` | Specification clarification vs Deep strategy exploration |
-| `/speckit.analyze` | `/goalkit.measure` | Cross-artifact analysis vs Measurement framework design |
-| `/speckit.checklist` | `/goalkit.adapt` | Quality validation vs Evidence-based adaptation |
-
 ## Template Comparison
 
 ### Documentation Templates
@@ -67,13 +59,13 @@ Defined  Focused   Approaches  Progress    Implementation  Drive    Based
 | `plan-template.md` | `strategies-template.md` | Single implementation plan vs Multiple strategy comparison |
 | `tasks-template.md` | `milestones-template.md` | Implementation tasks vs Measurable milestones |
 | N/A | `actions-template.md` | N/A vs Detailed actionable tasks for milestones |
-| `checklist-template.md` | `checklist-template.md` | Spec compliance vs Goal validation |
+| N/A | `execution-template.md` | N/A vs Adaptive execution guide |
 
 ### Configuration Templates
 
 | Spec-Driven | Goal-Driven | Purpose Difference |
 |-------------|-------------|-------------------|
-| `agent-file-template.md` | `agent-file-template.md` | Spec-driven setup vs Goal-driven setup |
+| `agent-file-template.md` | `agent-file-template.md` | Spec-driven dynamic structure vs Goal-driven dynamic structure |
 | `vscode-settings.json` | `vscode-settings.json` | Spec-focused IDE config vs Goal-focused IDE config |
 | N/A | `constitution-template.md` | N/A vs Goal-oriented principles |
 
@@ -102,8 +94,8 @@ project/
 │   │   ├── goal.md           # Outcome-focused goal definition
 │   │   ├── strategies.md     # Multiple strategy exploration
 │   │   ├── milestones.md     # Measurable progress indicators
-│   │   ├── actions.md        # Detailed actionable tasks
-│   │   └── execution.md      # Adaptive execution guide
+│   │   ├── execution.md      # Adaptive execution guide
+│   │   └── evidence.md       # Learning and results documentation
 ├── src/                      # Implementation code
 └── .goalkit/                 # Goal Kit configuration
     ├── vision.md             # Project vision and principles
@@ -232,6 +224,51 @@ project/
 - **Low Uncertainty Domains**: Well-understood problems with known solutions
 - **Resource Constraints**: Limited capacity for exploration and learning
 
+## Technical Implementation Comparison
+
+### Command System Architecture
+
+Both systems use similar architectural patterns:
+
+**Spec-Driven Architecture:**
+- YAML frontmatter for script execution metadata
+- Template-based content generation
+- Agent context synchronization
+- Environment variable management
+
+**Goal-Driven Architecture:**
+- YAML frontmatter for script execution metadata
+- Template-based content generation
+- Agent context synchronization
+- Environment variable management
+
+### Script Organization
+
+**Similarities:**
+- Common utility functions in `common.sh`/`common.ps1`
+- Feature/goal creation scripts with branching support
+- Agent context update functionality
+- Prerequisite checking capabilities
+
+**Differences:**
+- **Spec-kit**: Focuses on specification, plan, and task creation
+- **Goal-kit**: Focuses on goal definition, strategy exploration, and milestone planning
+
+## Tooling Comparison
+
+### Supported AI Agents
+
+Both systems support the same 12+ AI agents:
+- Claude Code, GitHub Copilot, Gemini CLI, Cursor, Qwen Code, opencode, Codex CLI
+- Windsurf, Kilo Code, Auggie CLI, Roo Code, Amazon Q Developer CLI
+
+### CLI Tools
+
+| Tool | Purpose | Methodology |
+|------|---------|-------------|
+| `specify` | Spec Kit initialization and management | Spec-Driven |
+| `goalkeeper` | Goal Kit initialization and management | Goal-Driven |
+
 ## Conclusion
 
 Spec-Driven Development and Goal-Driven Development represent two different approaches to software development, each with distinct strengths and appropriate use cases.
@@ -249,3 +286,5 @@ Spec-Driven Development and Goal-Driven Development represent two different appr
 - Focus on user outcomes and business value
 
 Both approaches can be valuable depending on context, and the choice should be based on project characteristics, team capabilities, and organizational goals.
+
+The tools are architecturally similar but optimized for their respective methodologies - Spec Kit for detailed specification and implementation, Goal Kit for outcome-focused exploration and adaptation.

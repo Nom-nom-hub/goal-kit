@@ -34,9 +34,7 @@ Essential commands for the Goal-Driven Development workflow:
 
 Additional commands for enhanced exploration and validation:
 
-- **`/goalkit.explore`** - Explore alternative approaches and what-if scenarios
-- **`/goalkit.measure`** - Define success metrics and measurement approaches
-- **`/goalkit.adapt`** - Adapt strategies based on results and learning
+
 
 ## Supported AI Agents
 

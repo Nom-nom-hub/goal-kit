@@ -41,9 +41,7 @@ Goal-Driven Development (GDD) focuses on outcomes over specifications. While tra
 
 ### Optional Commands
 
-- `/goalkit.explore` - Explore alternative approaches
-- `/goalkit.measure` - Define success metrics
-- `/goalkit.adapt` - Adapt strategies based on results
+
 
 ## Supported AI Agents
 

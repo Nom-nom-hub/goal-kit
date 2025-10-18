@@ -126,9 +126,6 @@ When processing `/goalkit.execute` commands, AI agents should:
 - **`/goalkit.milestones`**: Defines what to execute and measure
 
 ### After Using `/goalkit.execute`
-- **`/goalkit.measure`**: Track execution metrics and progress
-- **`/goalkit.adapt`**: Make strategy adjustments based on learning
-- **`/goalkit.explore`**: Investigate new approaches discovered during execution
 
 ## Best Practices
 

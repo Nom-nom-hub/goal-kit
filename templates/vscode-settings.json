@@ -8,20 +8,7 @@
         "/goalkit.goal",
         "/goalkit.strategies",
         "/goalkit.milestones",
-        "/goalkit.tasks",
-        "/goalkit.execute",
-        "/goalkit.explore",
-        "/goalkit.measure",
-        "/goalkit.adapt",
-        "/goalkit.analyze",
-        "/goalkit.validate",
-        "/goalkit.plan",
-        "/goalkit.insights",
-        "/goalkit.prioritize",
-        "/goalkit.track",
-        "/goalkit.research",
-        "/goalkit.learn",
-        "/goalkit.benchmark"
+        "/goalkit.execute"
     ],
     "files.associations": {
         "*.md": "markdown",

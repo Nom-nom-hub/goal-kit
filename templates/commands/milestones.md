@@ -1,3 +1,13 @@
+---
+description: Create measurable milestones and progress indicators for achieving goals.
+scripts:
+  sh: scripts/bash/setup-milestones.sh --json
+  ps: scripts/powershell/setup-milestones.ps1 -Json
+agent_scripts:
+  sh: scripts/bash/update-agent-context.sh __AGENT__
+  ps: scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
+---
+
 # /goalkit.milestones Command
 
 ## AI AGENT INSTRUCTIONS
@@ -130,8 +140,6 @@ When processing `/goalkit.milestones` commands, AI agents should:
 
 ### After Using `/goalkit.milestones`
 - **`/goalkit.execute`**: Implement milestones with learning and adaptation
-- **`/goalkit.measure`**: Track milestone progress and metrics
-- **`/goalkit.adapt`**: Adjust milestones based on learning
 
 ## Best Practices
 

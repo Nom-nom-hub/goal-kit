@@ -28,9 +28,7 @@ Goal-Driven Development emphasizes:
 - `/goalkit.strategies` - Explore implementation strategies
 - `/goalkit.milestones` - Create measurable milestones
 - `/goalkit.execute` - Execute with learning and adaptation
-- `/goalkit.explore` - Explore alternative approaches
-- `/goalkit.measure` - Define success metrics
-- `/goalkit.adapt` - Adapt strategies based on results
+
 
 ## Documentation Sections
 

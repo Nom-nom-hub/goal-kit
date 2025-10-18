@@ -1,156 +1,122 @@
-# Goal Definition: [GOAL TITLE]
+# Goal Definition: [GOAL NAME]
 
-**Goal Branch**: `[###-goal-name]`
-**Created**: [DATE]
-**Status**: Draft
-**Vision**: [link to vision document]
+**Goal Branch**: `[###-goal-name]`  
+**Created**: [DATE]  
+**Status**: Draft  
+**Vision**: [Link to vision document]
 
-## 🎯 Goal Overview
+## Goal Scenarios & Outcomes *(mandatory)*
 
-**Goal Statement**: [Clear, concise description of the outcome this goal seeks to achieve]
+<!--
+  IMPORTANT: Goal outcomes should be PRIORITIZED as measurable results ordered by importance.
+  Each goal outcome must be INDEPENDENTLY MEASURABLE - meaning if you achieve just ONE of them,
+  you should still have a viable outcome that delivers value.
+  
+  Assign priorities (P1, P2, P3, etc.) to each outcome, where P1 is the most critical.
+  Think of each outcome as a standalone measurable result that can be:
+  - Planned independently
+  - Measured independently
+  - Validated independently
+  - Demonstrated to stakeholders independently
+-->
 
-**Context**: [Why is this goal important? What problem does it solve?]
+### Goal Outcome 1 - [Brief Title] (Priority: P1)
 
-**Success Level**: [What "success" looks like for this goal]
+[Describe this measurable outcome in plain language]
 
-## 📊 Success Metrics
+**Why this priority**: [Explain the value and why it has this priority level]
 
-### Primary Metrics (Must achieve for success)
+**Independent Measurement**: [Describe how this can be measured independently - e.g., "Can be fully measured by [specific metric] and delivers [specific value]"]
 
-- **Metric 1**: [Measurable outcome] - Target: [specific, quantifiable target]
-- **Metric 2**: [Measurable outcome] - Target: [specific, quantifiable target]
-- **Metric 3**: [Measurable outcome] - Target: [specific, quantifiable target]
+**Success Scenarios**:
 
-### Secondary Metrics (Valuable but not required)
-
-- **Metric 1**: [Nice-to-have outcome] - Target: [aspirational target]
-- **Metric 2**: [Nice-to-have outcome] - Target: [aspirational target]
-
-## 👥 Target Users & Stakeholders
-
-### Primary Users
-- **[User Type 1]**: [How they benefit from this goal]
-- **[User Type 2]**: [How they benefit from this goal]
-
-### Stakeholders
-- **[Stakeholder 1]**: [Their interest in this goal]
-- **[Stakeholder 2]**: [Their interest in this goal]
-
-## 🎯 Goal Hypotheses
-
-### Key Assumptions
-- **Hypothesis 1**: [Testable assumption about user behavior or outcome]
-- **Hypothesis 2**: [Testable assumption about technical feasibility]
-- **Hypothesis 3**: [Testable assumption about business value]
-
-### Risk Factors
-- **Risk 1**: [Potential issue] - Mitigation: [how to address]
-- **Risk 2**: [Potential issue] - Mitigation: [how to address]
-
-## 🚀 Goal Milestones
-
-### Milestone 1: [Milestone Title] (Priority: P1)
-**Description**: [What this milestone achieves]
-
-**Success Indicators**:
-- [Measurable outcome 1]
-- [Measurable outcome 2]
-
-**Validation Method**: [How to confirm this milestone is achieved]
-
-**Expected Timeline**: [Rough time estimate]
+1. **Given** [current state], **When** [goal achievement], **Then** [expected outcome]
+2. **Given** [current state], **When** [goal achievement], **Then** [expected outcome]
 
 ---
 
-### Milestone 2: [Milestone Title] (Priority: P2)
-**Description**: [What this milestone achieves]
+### Goal Outcome 2 - [Brief Title] (Priority: P2)
 
-**Success Indicators**:
-- [Measurable outcome 1]
-- [Measurable outcome 2]
+[Describe this measurable outcome in plain language]
 
-**Validation Method**: [How to confirm this milestone is achieved]
+**Why this priority**: [Explain the value and why it has this priority level]
 
-**Expected Timeline**: [Rough time estimate]
+**Independent Measurement**: [Describe how this can be measured independently]
 
----
+**Success Scenarios**:
 
-### Milestone 3: [Milestone Title] (Priority: P3)
-**Description**: [What this milestone achieves]
-
-**Success Indicators**:
-- [Measurable outcome 1]
-- [Measurable outcome 2]
-
-**Validation Method**: [How to confirm this milestone is achieved]
-
-**Expected Timeline**: [Rough time estimate]
+1. **Given** [current state], **When** [goal achievement], **Then** [expected outcome]
 
 ---
 
-## 🔍 Validation Strategy
+### Goal Outcome 3 - [Brief Title] (Priority: P3)
 
-### Measurement Approach
-- **Data Sources**: [Where to collect metrics from]
-- **Measurement Frequency**: [How often to measure]
-- **Success Thresholds**: [When to consider the goal achieved]
+[Describe this measurable outcome in plain language]
 
-### Learning Objectives
-- **What to Learn**: [Key insights to gain from pursuing this goal]
-- **Pivot Points**: [When to reconsider the goal or approach]
-- **Documentation**: [What to document for future reference]
+**Why this priority**: [Explain the value and why it has this priority level]
 
-## 🎯 Goal Dependencies
+**Independent Measurement**: [Describe how this can be measured independently]
 
-### Supports These Goals
-- **[Goal 1]**: [How this goal contributes to another goal]
-- **[Goal 2]**: [How this goal contributes to another goal]
+**Success Scenarios**:
 
-### Depends on These Goals
-- **[Goal 1]**: [What this goal needs from another goal]
-- **[Goal 2]**: [What this goal needs from another goal]
-
-## 💡 Strategy Exploration Areas
-
-### Technical Strategies to Explore
-- **[Strategy 1]**: [Alternative approach to consider]
-- **[Strategy 2]**: [Alternative approach to consider]
-
-### User Experience Strategies to Explore
-- **[UX Approach 1]**: [Different way users could achieve this goal]
-- **[UX Approach 2]**: [Different way users could achieve this goal]
-
-### Implementation Strategies to Explore
-- **[Implementation 1]**: [Different development approach]
-- **[Implementation 2]**: [Different development approach]
-
-## 📈 Success Criteria Validation
-
-### Goal Achievement Checklist
-- [ ] Primary metrics achieved at target levels
-- [ ] User feedback validates the outcome
-- [ ] Business impact confirmed through measurement
-- [ ] Learning objectives accomplished
-- [ ] No significant negative consequences discovered
-
-### Goal Failure Indicators
-- [ ] Primary metrics not achievable despite multiple strategies
-- [ ] User feedback indicates different needs
-- [ ] Business case no longer valid
-- [ ] Technical constraints make goal unachievable
-
-## 🔄 Review & Adaptation Points
-
-### Regular Review Schedule
-- **After Each Milestone**: [What to review and how]
-- **Monthly**: [Strategic review of goal relevance]
-- **Quarterly**: [Overall goal effectiveness assessment]
-
-### Adaptation Triggers
-- **Pivot Trigger 1**: [When to consider changing approach]
-- **Pause Trigger**: [When to temporarily stop pursuing this goal]
-- **Abandon Trigger**: [When to stop pursuing this goal entirely]
+1. **Given** [current state], **When** [goal achievement], **Then** [expected outcome]
 
 ---
 
-*This goal definition serves as the foundation for strategy exploration and milestone planning. It should be reviewed and updated as learning occurs during implementation.*
+[Add more goal outcomes as needed, each with an assigned priority]
+
+### Edge Cases & Risk Scenarios
+
+<!--
+  ACTION REQUIRED: The content in this section represents placeholders.
+  Fill them out with the right edge cases.
+-->
+
+- What happens when [risk condition]?
+- How does system handle [constraint scenario]?
+
+## Success Requirements *(mandatory)*
+
+<!--
+  ACTION REQUIRED: The content in this section represents placeholders.
+  Fill them out with the right success requirements.
+-->
+
+### Measurable Requirements
+
+- **SR-001**: Outcome MUST achieve [specific measurable result, e.g., "80% user satisfaction score"]
+- **SR-002**: Goal MUST deliver [specific measurable impact, e.g., "20% increase in user engagement"]  
+- **SR-003**: Impact MUST be [specific measurable criterion, e.g., "sustainable over 6 months"]
+- **SR-004**: Results MUST include [specific data point, e.g., "quantified user behavior changes"]
+- **SR-005**: Success MUST be [specific validation, e.g., "confirmed by independent assessment"]
+
+*Example of marking unclear requirements:*
+
+- **SR-006**: Outcome MUST achieve [NEEDS CLARIFICATION: success metric not specified - satisfaction, engagement, retention?]
+- **SR-007**: Impact MUST be sustained for [NEEDS CLARIFICATION: time period not specified]
+
+### Key Success Indicators *(include if goal involves measurable impact)*
+
+- **[Indicator 1]**: [What it measures, key metrics without implementation details]
+- **[Indicator 2]**: [What it measures, relationships to other outcomes]
+
+## Goal Validation *(mandatory)*
+
+<!--
+  ACTION REQUIRED: Define measurable validation approaches.
+  These must be outcome-focused and measurable.
+-->
+
+### Validation Criteria
+
+- **VC-001**: [Measurable metric, e.g., "Users achieve desired outcome within specified timeframe"]
+- **VC-002**: [Measurable metric, e.g., "Business metric improves by specific percentage"]
+- **VC-003**: [User impact metric, e.g., "90% of users confirm positive change"]
+- **VC-004**: [Business impact metric, e.g., "Reduce negative outcomes by 50%"]
+
+### Validation Methods
+
+- **Direct Measurement**: [How to measure results directly]
+- **User Feedback**: [How to validate with actual users]
+- **Business Metrics**: [How to validate business impact]
+- **Long-term Tracking**: [How to validate sustainability]

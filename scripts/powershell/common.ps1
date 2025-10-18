@@ -165,10 +165,7 @@ This project uses Goal-Driven Development methodology. Focus on:
 - **/goalkit.milestones** - Create measurable milestones
 - **/goalkit.execute** - Execute with learning and adaptation
 
-### Enhancement Commands
-- **/goalkit.explore** - Dive deeper into strategy options
-- **/goalkit.measure** - Define measurement frameworks
-- **/goalkit.adapt** - Adjust strategies based on learning
+
 
 ## 🚀 Project Vision
 

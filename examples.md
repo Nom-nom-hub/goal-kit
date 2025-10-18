@@ -227,7 +227,7 @@ All examples emphasize learning and adaptation:
 
 ### Step 5: Create Detailed Plans
 ```bash
-/goalkit.plan
+
 Goal: [Reference to specific goal]
 Selected Strategy: [The strategy you're planning for]
 Execution Phases: [What implementation phases to define]
@@ -239,7 +239,7 @@ Risk Management: [Contingency plans and mitigation strategies]
 
 ### Step 6: Analyze Project Health
 ```bash
-/goalkit.analyze
+
 Project Focus: [Specific area or aspect to analyze]
 Health Indicators: [Metrics and KPIs to evaluate]
 Pattern Recognition: [Trends and patterns to identify]
@@ -250,7 +250,7 @@ Next Steps: [Actionable guidance for improvement]
 
 ### Step 7: Conduct Research
 ```bash
-/goalkit.research
+
 Research Topic: [Specific subject or question to research]
 Research Goal: [What you hope to learn or validate]
 Methodology: [How to approach the research]

@@ -103,22 +103,7 @@ This document provides practical examples of how to use Goal Kit in different sc
 3. **Learning-First**: Tackle elements that will teach the most
 4. **Foundation-First**: Build core infrastructure before features
 
-## Using Enhancement Commands
 
-### `/goalkit.explore` Example
-```
-/goalkit.explore Dive deeper into authentication options: research passwordless authentication, investigate biometric options, and compare different identity provider integrations for our use case.
-```
-
-### `/goalkit.measure` Example
-```
-/goalkit.measure Define comprehensive success metrics for our dashboard: user engagement time, feature adoption rates, error frequencies, and correlation between dashboard usage and project success metrics.
-```
-
-### `/goalkit.adapt` Example
-```
-/goalkit.adapt User data shows 60% mobile usage but current web-first strategy only serves 20% mobile users effectively. Pivot to mobile-responsive approach, update milestones to prioritize mobile experience, and adjust success metrics for mobile user engagement.
-```
 
 ## Learning Integration
 

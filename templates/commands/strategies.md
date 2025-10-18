@@ -1,3 +1,13 @@
+---
+description: Explore multiple implementation strategies for achieving goals.
+scripts:
+  sh: scripts/bash/setup-strategy.sh --json
+  ps: scripts/powershell/setup-strategy.ps1 -Json
+agent_scripts:
+  sh: scripts/bash/update-agent-context.sh __AGENT__
+  ps: scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
+---
+
 # /goalkit.strategies Command
 
 ## AI AGENT INSTRUCTIONS
@@ -131,7 +141,6 @@ When processing `/goalkit.strategies` commands, AI agents should:
 ### After Using `/goalkit.strategies`
 - **`/goalkit.milestones`**: Create measurable milestones for chosen strategy
 - **`/goalkit.execute`**: Implement chosen strategy with adaptation framework
-- **`/goalkit.explore`**: Dive deeper into specific strategy options
 
 ## Best Practices
 
