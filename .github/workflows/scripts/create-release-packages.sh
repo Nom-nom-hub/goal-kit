@@ -8,11 +8,16 @@ set -euo pipefail
 #   Optionally set AGENTS and/or SCRIPTS env vars to limit what gets built.
 #     AGENTS  : space or comma separated subset of: claude gemini copilot cursor qwen opencode windsurf codex kilocode auggie roo q (default: all)
 #     SCRIPTS : space or comma separated subset of: sh ps (default: both)
+#   Examples:
+#     AGENTS=claude SCRIPTS=sh $0 v0.2.0
+#     AGENTS="copilot,gemini" $0 v0.2.0
+#     SCRIPTS=ps $0 v0.2.0
 
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <version-with-v-prefix>" >&2
   exit 1
 fi
+
 NEW_VERSION="$1"
 if [[ ! $NEW_VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Version must look like v0.0.0" >&2
@@ -27,9 +32,11 @@ rm -rf "$GENRELEASES_DIR"/* || true
 
 rewrite_paths() {
   sed -E \
-    -e 's@(/?)memory/@.goalkit/memory/@g' \
-    -e 's@(/?)scripts/@.goalkit/scripts/@g' \
-    -e 's@(/?)templates/@.goalkit/templates/@g'
+    -e 's@\.goalkit/@__TEMP_GOALKIT__/@g' \
+    -e 's@(^|[^.])memory/@\1.goalkit/memory/@g' \
+    -e 's@(^|[^.])scripts/@\1.goalkit/scripts/@g' \
+    -e 's@(^|[^.])templates/@\1.goalkit/templates/@g' \
+    -e 's@__TEMP_GOALKIT__/@.goalkit/@g'
 }
 
 generate_commands() {
@@ -41,23 +48,34 @@ generate_commands() {
     name=$(basename "$template" .md)
 
     file_content=$(tr -d '\r' < "$template")
-    description=$(printf '%s\n' "$file_content" | awk '/^description:/ {sub(/^description:[[:space:]]*/, ""); print; exit}')
-    script_command=$(printf '%s\n' "$file_content" | awk -v sv="$script_variant" '/^[[:space:]]*'"$script_variant"':[[:space:]]*/ {sub(/^[[:space:]]*'"$script_variant"':[[:space:]]*/, ""); print; exit}')
+    description=$(awk '/^description:/ {sub(/^description:[[:space:]]*/, ""); print; exit}' <<< "$file_content")
+    script_command=$(awk -v sv="$script_variant" '$0 ~ sv ":" {sub(sv ":[[:space:]]*", ""); print; exit}' <<< "$file_content")
+
     [[ -z $script_command ]] && script_command="(Missing script command for $script_variant)"
 
-    agent_script_command=$(printf '%s\n' "$file_content" | awk '
-      /^agent_scripts:$/ { in_agent_scripts=1; next }
-      in_agent_scripts && /^[[:space:]]*'"$script_variant"':[[:space:]]*/ { sub(/^[[:space:]]*'"$script_variant"':[[:space:]]*/, ""); print; exit }
+    agent_script_command=$(awk -v sv="$script_variant" '
+      /^agent_scripts:/ { in_agent_scripts=1; next }
+      in_agent_scripts && $0 ~ sv ":" { sub(sv ":[[:space:]]*", ""); print; exit }
       in_agent_scripts && /^[a-zA-Z]/ { in_agent_scripts=0 }
-    ')
+    ' <<< "$file_content")
 
-    body=$(printf '%s\n' "$file_content" | sed "s|{SCRIPT}|${script_command}|g")
-    [[ -n $agent_script_command ]] && body=$(printf '%s\n' "$body" | sed "s|{AGENT_SCRIPT}|${agent_script_command}|g")
-    body=$(printf '%s\n' "$body" | sed "s|{ARGS}|$arg_format|g" | sed "s/__AGENT__/$agent/g" | rewrite_paths)
+    body=$(sed "s|{SCRIPT}|${script_command}|g" <<< "$file_content")
+    [[ -n $agent_script_command ]] && body=$(sed "s|{AGENT_SCRIPT}|${agent_script_command}|g" <<< "$body")
+    body=$(sed "s|{ARGS}|$arg_format|g; s|__AGENT__|$agent|g" <<< "$body" | rewrite_paths)
 
     case $ext in
-      toml) { echo "description = \"${description}\""; echo; echo "prompt = \"\"\""; echo "$body"; echo "\"\"\""; } > "$output_dir/goalkit.$name.$ext" ;;
-      md|prompt.md) echo "$body" > "$output_dir/goalkit.$name.$ext" ;;
+      toml)
+        {
+          echo "description = \"${description}\""
+          echo
+          echo "prompt = \"\"\""
+          echo "$body"
+          echo "\"\"\""
+        } > "$output_dir/goalkit.$name.$ext"
+        ;;
+      md|prompt.md)
+        echo "$body" > "$output_dir/goalkit.$name.$ext"
+        ;;
     esac
   done
 }
@@ -77,73 +95,41 @@ build_variant() {
     mkdir -p "$GOALKIT_DIR/scripts"
     case $script in
       sh)
-        [[ -d scripts/bash ]] && cp -r scripts/bash "$GOALKIT_DIR/scripts/" && echo "Copied scripts/bash -> .goalkit/scripts"
+        [[ -d scripts/bash ]] && cp -r scripts/bash/* "$GOALKIT_DIR/scripts/" 2>/dev/null && echo "Copied scripts/bash -> .goalkit/scripts"
         find scripts -maxdepth 1 -type f -exec cp {} "$GOALKIT_DIR/scripts/" \; 2>/dev/null || true
         ;;
       ps)
-        [[ -d scripts/powershell ]] && cp -r scripts/powershell "$GOALKIT_DIR/scripts/" && echo "Copied scripts/powershell -> .goalkit/scripts"
+        [[ -d scripts/powershell ]] && cp -r scripts/powershell/* "$GOALKIT_DIR/scripts/" 2>/dev/null && echo "Copied scripts/powershell -> .goalkit/scripts"
         find scripts -maxdepth 1 -type f -exec cp {} "$GOALKIT_DIR/scripts/" \; 2>/dev/null || true
         ;;
     esac
   fi
 
-  # Correct template copy to avoid double .goalkit
-  if [[ -d templates ]]; then
+  [[ -d templates ]] && {
     mkdir -p "$GOALKIT_DIR/templates"
-    cd templates
-    find . -type f -not -path "./commands/*" -not -name "vscode-settings.json" -exec cp --parents {} "$GOALKIT_DIR/templates" \;
-    cd - >/dev/null
+    find templates -type f -not -path "templates/commands/*" -not -name "vscode-settings.json" -exec cp --parents {} "$GOALKIT_DIR"/ \;
     echo "Copied templates -> .goalkit/templates"
-  fi
+  }
 
   case $agent in
-    claude)
-      mkdir -p "$base_dir/.claude/commands"
-      generate_commands claude md "\$ARGUMENTS" "$base_dir/.claude/commands" "$script" ;;
-    gemini)
-      mkdir -p "$base_dir/.gemini/commands"
-      generate_commands gemini toml "{{args}}" "$base_dir/.gemini/commands" "$script"
-      [[ -f agent_templates/gemini/GEMINI.md ]] && cp agent_templates/gemini/GEMINI.md "$base_dir/GEMINI.md" ;;
-    copilot)
-      mkdir -p "$base_dir/.github/prompts"
-      generate_commands copilot prompt.md "\$ARGUMENTS" "$base_dir/.github/prompts" "$script"
-      mkdir -p "$base_dir/.vscode"
-      [[ -f templates/vscode-settings.json ]] && cp templates/vscode-settings.json "$base_dir/.vscode/settings.json" ;;
-    cursor)
-      mkdir -p "$base_dir/.cursor/commands"
-      generate_commands cursor md "\$ARGUMENTS" "$base_dir/.cursor/commands" "$script" ;;
-    qwen)
-      mkdir -p "$base_dir/.qwen/commands"
-      generate_commands qwen toml "{{args}}" "$base_dir/.qwen/commands" "$script"
-      [[ -f agent_templates/qwen/QWEN.md ]] && cp agent_templates/qwen/QWEN.md "$base_dir/QWEN.md" ;;
-    opencode)
-      mkdir -p "$base_dir/.opencode/command"
-      generate_commands opencode md "\$ARGUMENTS" "$base_dir/.opencode/command" "$script" ;;
-    windsurf)
-      mkdir -p "$base_dir/.windsurf/workflows"
-      generate_commands windsurf md "\$ARGUMENTS" "$base_dir/.windsurf/workflows" "$script" ;;
-    codex)
-      mkdir -p "$base_dir/.codex/prompts"
-      generate_commands codex md "\$ARGUMENTS" "$base_dir/.codex/prompts" "$script" ;;
-    kilocode)
-      mkdir -p "$base_dir/.kilocode/workflows"
-      generate_commands kilocode md "\$ARGUMENTS" "$base_dir/.kilocode/workflows" "$script" ;;
-    auggie)
-      mkdir -p "$base_dir/.augment/commands"
-      generate_commands auggie md "\$ARGUMENTS" "$base_dir/.augment/commands" "$script" ;;
-    roo)
-      mkdir -p "$base_dir/.roo/commands"
-      generate_commands roo md "\$ARGUMENTS" "$base_dir/.roo/commands" "$script" ;;
-    q)
-      mkdir -p "$base_dir/.amazonq/prompts"
-      generate_commands q md "\$ARGUMENTS" "$base_dir/.amazonq/prompts" "$script" ;;
+    claude) mkdir -p "$base_dir/.claude/commands"; generate_commands claude md "\$ARGUMENTS" "$base_dir/.claude/commands" "$script" ;;
+    gemini) mkdir -p "$base_dir/.gemini/commands"; generate_commands gemini toml "{{args}}" "$base_dir/.gemini/commands" "$script"; [[ -f agent_templates/gemini/GEMINI.md ]] && cp agent_templates/gemini/GEMINI.md "$base_dir/GEMINI.md" ;;
+    copilot) mkdir -p "$base_dir/.github/prompts"; generate_commands copilot prompt.md "\$ARGUMENTS" "$base_dir/.github/prompts" "$script"; mkdir -p "$base_dir/.vscode"; [[ -f templates/vscode-settings.json ]] && cp templates/vscode-settings.json "$base_dir/.vscode/settings.json" ;;
+    cursor) mkdir -p "$base_dir/.cursor/commands"; generate_commands cursor md "\$ARGUMENTS" "$base_dir/.cursor/commands" "$script" ;;
+    qwen) mkdir -p "$base_dir/.qwen/commands"; generate_commands qwen toml "{{args}}" "$base_dir/.qwen/commands" "$script"; [[ -f agent_templates/qwen/QWEN.md ]] && cp agent_templates/qwen/QWEN.md "$base_dir/QWEN.md" ;;
+    opencode) mkdir -p "$base_dir/.opencode/command"; generate_commands opencode md "\$ARGUMENTS" "$base_dir/.opencode/command" "$script" ;;
+    windsurf) mkdir -p "$base_dir/.windsurf/workflows"; generate_commands windsurf md "\$ARGUMENTS" "$base_dir/.windsurf/workflows" "$script" ;;
+    codex) mkdir -p "$base_dir/.codex/prompts"; generate_commands codex md "\$ARGUMENTS" "$base_dir/.codex/prompts" "$script" ;;
+    kilocode) mkdir -p "$base_dir/.kilocode/workflows"; generate_commands kilocode md "\$ARGUMENTS" "$base_dir/.kilocode/workflows" "$script" ;;
+    auggie) mkdir -p "$base_dir/.augment/commands"; generate_commands auggie md "\$ARGUMENTS" "$base_dir/.augment/commands" "$script" ;;
+    roo) mkdir -p "$base_dir/.roo/commands"; generate_commands roo md "\$ARGUMENTS" "$base_dir/.roo/commands" "$script" ;;
+    q) mkdir -p "$base_dir/.amazonq/prompts"; generate_commands q md "\$ARGUMENTS" "$base_dir/.amazonq/prompts" "$script" ;;
   esac
 
   ( cd "$base_dir" && zip -r "../goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip" . )
   echo "Created $GENRELEASES_DIR/goal-kit-template-${agent}-${script}-${NEW_VERSION}.zip"
 }
 
-# AGENT and SCRIPT selection
 ALL_AGENTS=(claude gemini copilot cursor qwen opencode windsurf codex kilocode auggie roo q)
 ALL_SCRIPTS=(sh ps)
 
@@ -185,3 +171,4 @@ done
 
 echo "Archives in $GENRELEASES_DIR:"
 ls -1 "$GENRELEASES_DIR"/goal-kit-template-*-"${NEW_VERSION}".zip
+
