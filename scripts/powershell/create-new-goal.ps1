@@ -1,6 +1,7 @@
 param(
     [switch]$Verbose = $false,
     [switch]$DryRun = $false,
+    [switch]$Json = $false,
     [string]$GoalDescription = ""
 )
 
@@ -32,7 +33,7 @@ function Show-Usage {
 }
 
 # Show help if requested
-if ($args -contains "-h" -or $args -contains "-?" -or $GoalDescription -eq "") {
+if ($args -contains "-h" -or $args -contains "-?") {
     Show-Usage
     exit 0
 }
@@ -60,6 +61,47 @@ if (-not (Test-Path ".goalkit/vision.md")) {
     Write-Error "Not a Goal Kit project"
     Write-Info "Please run 'goalkeeper init' first to set up the project"
     exit 1
+}
+
+# If JSON mode, output JSON and exit early
+if ($Json) {
+    # Check if goals directory exists
+    $goalsDir = "goals"
+    if (-not (Test-Path $goalsDir)) {
+        # Goals directory doesn't exist, so first goal will be 001
+        $nextNumber = 1
+    } else {
+        # Find the next goal number
+        $nextNumber = 1
+        $existingGoals = Get-ChildItem $goalsDir -Directory | Where-Object {
+            $_.Name -match '^\d+-'
+        }
+
+        if ($existingGoals) {
+            $maxNum = $existingGoals | ForEach-Object {
+                $num = $_.Name.Split('-')[0]
+                [int]$num
+            } | Measure-Object -Maximum | Select-Object -ExpandProperty Maximum
+
+            $nextNumber = $maxNum + 1
+        }
+    }
+
+    # Create goal directory name
+    $goalNumber = "{0:D3}" -f $nextNumber
+    $goalDirName = $goalNumber + "-" + ($GoalDescription.ToLower() -replace ' ', '-' -replace '[^a-z0-9-]', '')
+    $goalDir = Join-Path $goalsDir $goalDirName
+    $goalFile = Join-Path $goalDir "goal.md"
+    
+    # Output JSON with required variables using common function
+    $jsonObj = @{
+        GOAL_DIR = $goalDir
+        GOAL_FILE = $goalFile
+        GOAL_DESCRIPTION = $GoalDescription
+        BRANCH_NAME = $goalDirName
+    }
+    
+    Output-JsonMode $jsonObj
 }
 
 # Check if goals directory exists
