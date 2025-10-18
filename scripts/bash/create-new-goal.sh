@@ -91,6 +91,44 @@ if [[ ! -f ".goalkit/vision.md" ]]; then
     exit 1
 fi
 
+# If JSON mode, output JSON and exit early
+if [[ "$JSON_MODE" == "true" ]]; then
+    # Find the next goal number
+    NEXT_NUMBER=1
+    GOALS_DIR="goals"
+    if [[ -d "$GOALS_DIR" ]]; then
+        # Find the highest numbered goal directory
+        for dir in "$GOALS_DIR"/*/; do
+            if [[ -d "$dir" ]]; then
+                dir_name=$(basename "$dir")
+                if [[ "$dir_name" =~ ^[0-9]+- ]]; then
+                    num="${dir_name%%-*}"
+                    if [[ "$num" -ge "$NEXT_NUMBER" ]]; then
+                        NEXT_NUMBER=$((num + 1))
+                    fi
+                fi
+            fi
+        done
+    fi
+
+    # Create goal directory name
+    GOAL_NUMBER=$(printf "%03d" "$NEXT_NUMBER")
+    GOAL_DIR_NAME="${GOAL_NUMBER}-$(echo "$GOAL_DESCRIPTION" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')"
+    GOAL_DIR="$GOALS_DIR/$GOAL_DIR_NAME"
+    GOAL_FILE="$GOAL_DIR/goal.md"
+    
+    # Output JSON with required variables
+    cat << EOF
+{
+  "GOAL_DIR": "$GOAL_DIR",
+  "GOAL_FILE": "$GOAL_FILE",
+  "GOAL_DESCRIPTION": "$GOAL_DESCRIPTION",
+  "BRANCH_NAME": "$GOAL_DIR_NAME"
+}
+EOF
+    exit 0
+fi
+
 # Check if goals directory exists
 GOALS_DIR="goals"
 if [[ ! -d "$GOALS_DIR" ]]; then
