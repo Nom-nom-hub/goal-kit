@@ -17,6 +17,7 @@ if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <version-with-v-prefix>" >&2
   exit 1
 fi
+
 NEW_VERSION="$1"
 if [[ ! $NEW_VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Version must look like v0.0.0" >&2
@@ -47,24 +48,34 @@ generate_commands() {
     name=$(basename "$template" .md)
 
     file_content=$(tr -d '\r' < "$template")
-    description=$(printf '%s\n' "$file_content" | awk '/^description:/ {sub(/^description:[[:space:]]*/, ""); print; exit}')
-    script_command=$(printf '%s\n' "$file_content" | awk -v sv="$script_variant" '/^[[:space:]]*'"$script_variant"':[[:space:]]*/ {sub(/^[[:space:]]*'"$script_variant"':[[:space:]]*/, ""); print; exit}')
+    description=$(awk '/^description:/ {sub(/^description:[[:space:]]*/, ""); print; exit}' <<< "$file_content")
+    script_command=$(awk -v sv="$script_variant" '$0 ~ sv ":" {sub(sv ":[[:space:]]*", ""); print; exit}' <<< "$file_content")
 
     [[ -z $script_command ]] && script_command="(Missing script command for $script_variant)"
 
-    agent_script_command=$(printf '%s\n' "$file_content" | awk '
-      /^agent_scripts:$/ { in_agent_scripts=1; next }
-      in_agent_scripts && /^[[:space:]]*'"$script_variant"':[[:space:]]*/ { sub(/^[[:space:]]*'"$script_variant"':[[:space:]]*/, ""); print; exit }
+    agent_script_command=$(awk -v sv="$script_variant" '
+      /^agent_scripts:/ { in_agent_scripts=1; next }
+      in_agent_scripts && $0 ~ sv ":" { sub(sv ":[[:space:]]*", ""); print; exit }
       in_agent_scripts && /^[a-zA-Z]/ { in_agent_scripts=0 }
-    ')
+    ' <<< "$file_content")
 
-    body=$(printf '%s\n' "$file_content" | sed "s|{SCRIPT}|${script_command}|g")
-    [[ -n $agent_script_command ]] && body=$(printf '%s\n' "$body" | sed "s|{AGENT_SCRIPT}|${agent_script_command}|g")
-    body=$(printf '%s\n' "$body" | sed "s|{ARGS}|$arg_format|g" | sed "s/__AGENT__/$agent/g" | rewrite_paths)
+    body=$(sed "s|{SCRIPT}|${script_command}|g" <<< "$file_content")
+    [[ -n $agent_script_command ]] && body=$(sed "s|{AGENT_SCRIPT}|${agent_script_command}|g" <<< "$body")
+    body=$(sed "s|{ARGS}|$arg_format|g; s|__AGENT__|$agent|g" <<< "$body" | rewrite_paths)
 
     case $ext in
-      toml) { echo "description = \"${description}\""; echo; echo "prompt = \"\"\""; echo "$body"; echo "\"\"\""; } > "$output_dir/goalkit.$name.$ext" ;;
-      md|prompt.md) echo "$body" > "$output_dir/goalkit.$name.$ext" ;;
+      toml)
+        {
+          echo "description = \"${description}\""
+          echo
+          echo "prompt = \"\"\""
+          echo "$body"
+          echo "\"\"\""
+        } > "$output_dir/goalkit.$name.$ext"
+        ;;
+      md|prompt.md)
+        echo "$body" > "$output_dir/goalkit.$name.$ext"
+        ;;
     esac
   done
 }
@@ -74,7 +85,7 @@ build_variant() {
   local base_dir="$GENRELEASES_DIR/gdd-${agent}-package-${script}"
   echo "Building $agent ($script) package..."
   mkdir -p "$base_dir"
-  
+
   GOALKIT_DIR="$base_dir/.goalkit"
   mkdir -p "$GOALKIT_DIR"
 
@@ -94,7 +105,7 @@ build_variant() {
     esac
   fi
 
-  [[ -d templates ]] && { 
+  [[ -d templates ]] && {
     mkdir -p "$GOALKIT_DIR/templates"
     find templates -type f -not -path "templates/commands/*" -not -name "vscode-settings.json" -exec cp --parents {} "$GOALKIT_DIR"/ \;
     echo "Copied templates -> .goalkit/templates"
