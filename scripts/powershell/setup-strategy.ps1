@@ -2,6 +2,7 @@ param(
     [switch]$Verbose = $false,
     [switch]$DryRun = $false,
     [switch]$Json = $false,
+    [switch]$Force = $false,
     [string]$GoalDirectory = ""
 )
 
@@ -21,6 +22,7 @@ function Show-Usage {
     "    -Verbose          Enable verbose output"
     "    -DryRun          Show what would be created without creating it"
     "    -Json            Output JSON with strategy details only"
+    "    -Force           Overwrite existing strategy file without prompting"
     "    -h, -?           Show this help message"
     ""
     "ARGUMENTS:"
@@ -31,6 +33,7 @@ function Show-Usage {
     "    $($MyInvocation.MyCommand.Name) -DryRun 'goals\001-user-authentication'"
     "    $($MyInvocation.MyCommand.Name) -Json 'goals\001-user-authentication'"
     "    $($MyInvocation.MyCommand.Name) -Verbose 'goals\001-user-authentication'"
+    "    $($MyInvocation.MyCommand.Name) -Force 'goals\001-user-authentication'"
     ""
 }
 
@@ -91,12 +94,14 @@ if (-not (Test-Path $GoalDirectory)) {
 $strategyFile = Join-Path $GoalDirectory "strategies.md"
 if (Test-Path $strategyFile) {
     Write-Warning "Strategy file already exists: $strategyFile"
-    if (-not $DryRun) {
+    if (-not $DryRun -and -not $Force) {
         $response = Read-Host "Overwrite existing strategy file? (y/N)"
         if ($response -ne "y" -and $response -ne "Y") {
             Write-Info "Operation cancelled"
             exit 0
         }
+    } elseif (-not $DryRun -and $Force) {
+        Write-Info "Overwriting strategy file due to -Force option."
     }
 }
 
@@ -153,4 +158,9 @@ Write-Info "Next Steps:"
 "  3. Use /goalkit.execute to implement with learning and adaptation"
 
 # Setup goal environment for immediate development
-Set-GoalEnvironment -GoalDir $GoalDirectory
+try {
+    Set-GoalEnvironment -GoalDir $GoalDirectory
+} catch {
+    Write-Error "Failed to setup goal environment for $GoalDirectory"
+    exit 1
+}
