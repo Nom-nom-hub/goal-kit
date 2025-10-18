@@ -18,6 +18,13 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Task Complexity Assessment
+
+**CRITICAL**: This command is for exploring multiple strategies for complex goals. For simple tasks that don't require multiple approaches, consider if direct implementation would be more efficient:
+
+- If the user wants to implement a simple enhancement (e.g., "enhanced header", "style improvements"), suggest `/goalkit.execute` for direct implementation instead
+- Only proceed with strategy exploration for complex goals requiring multiple approaches
+
 ## Outline
 
 The text the user typed after `/goalkit.strategies` in the triggering message **is** the strategy exploration description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.

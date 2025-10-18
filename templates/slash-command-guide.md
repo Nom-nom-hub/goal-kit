@@ -5,6 +5,25 @@ This document provides instructions for AI agents on how to properly handle Goal
 ## Core Requirement
 AI agents must create goal-related files directly in the proper directory structure without requiring user intervention.
 
+## Task Complexity Assessment
+Before starting any development work, AI agents must assess the complexity of the requested task:
+
+### Simple Tasks (Direct Implementation)
+Use for small enhancements or fixes that don't need the full methodology:
+- Visual improvements (e.g., "enhanced header", "better styling")
+- Minor bug fixes
+- Small UI adjustments
+- Simple configuration changes
+- For these tasks, **SKIP** the full goal-driven process and implement directly using `/goalkit.execute` or simple code modifications
+
+### Complex Goals (Full Methodology)
+Use the complete 5-step process for substantial features:
+- New major functionality
+- System architecture changes
+- Complex user workflows
+- Features requiring measurable success criteria
+- When user specifies goals with success metrics
+
 ## Proper Directory Structure
 Goal files must be created inside the appropriate goal directory:
 ```

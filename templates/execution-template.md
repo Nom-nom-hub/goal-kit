@@ -1,7 +1,11 @@
 # Adaptive Execution: [GOAL TITLE]
+*For complex goals requiring learning and adaptation*
 
 **Branch**: `[###-goal-name]` | **Date**: [DATE] | **Milestones**: [link]
 **Input**: Goal definition, selected strategies, and milestone plan
+
+## Task Complexity Note
+**This template is for complex goals requiring adaptive execution with learning loops.** For simple tasks like "enhanced header", "styling improvements", or "minor fixes", use direct implementation without this complex template.
 
 ## 🚀 Execution Overview
 
@@ -167,6 +171,30 @@
 - [Review progress against goals]
 - [Document learning and insights]
 - [Plan adjustments for next day]
+
+### UI/UX Implementation Guidelines
+**Professional Design Standards**:
+- **Visual Hierarchy**: Use clear typography, appropriate sizing, and strategic color contrast to guide user attention
+- **Whitespace**: Apply generous spacing between elements to reduce cognitive load
+- **Accessibility**: Ensure sufficient color contrast (4.5:1 minimum), readable font sizes (16px minimum), and keyboard navigation support
+- **Consistency**: Maintain consistent design patterns, component styles, and interaction patterns throughout the application
+- **Responsive Design**: Ensure interfaces work well across all screen sizes and devices
+- **Performance**: Optimize UI elements for fast loading and smooth interactions
+- **User Testing**: Validate UI designs with real users before implementation wherever possible
+- **Error Handling**: Design clear, helpful error messages and recovery paths
+- **Loading States**: Provide appropriate feedback during data loading or processing
+- **Form Design**: Create clear, intuitive forms with proper validation and feedback
+- **Navigation**: Implement intuitive, discoverable navigation patterns
+- **Mobile-First**: Design for mobile devices first, then enhance for larger screens
+
+**Visual Consistency Requirements**:
+- **Typography**: Use maximum 2 font families throughout the application; establish clear heading hierarchy (H1, H2, H3, etc.)
+- **Color Palette**: Define and use a consistent color system with primary, secondary, and accent colors; maintain consistent color meanings across the app
+- **Spacing System**: Use a consistent spacing scale (e.g., 4px, 8px, 16px, 24px, 32px) for margins and padding
+- **Component Library**: Create reusable components with consistent styling and behavior
+- **Iconography**: Use a consistent icon style and set throughout the application
+- **Button Styles**: Define consistent button types, sizes, and states (primary, secondary, tertiary, disabled, hover, active)
+- **Form Elements**: Maintain consistent styling for all input fields, checkboxes, radio buttons, and other form controls
 
 ## 🚨 Risk Management
 

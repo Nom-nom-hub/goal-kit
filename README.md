@@ -165,11 +165,6 @@ The `goalkeeper` command supports the following options:
 |-------------------|----------------------------------------------------------------|
 | `init`            | Initialize a new Goalkeeper project from the latest template  |
 | `check`           | Check for installed tools (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`) |
-| `ai-analytics`    | Display AI agent performance analytics and interaction insights |
-| `memory-status`   | Display memory system status and learning insights             |
-| `learn-extract`   | Extract learnings from completed goals and add to memory      |
-| `memory-insights` | Get AI-powered insights from project memory and learning data |
-| `memory-patterns` | Analyze patterns in project memory for continuous improvement |
 
 ### `goalkeeper init` Arguments & Options
 
@@ -186,47 +181,9 @@ The `goalkeeper` command supports the following options:
 | `--debug`              | Flag     | Enable detailed debug output for troubleshooting                            |
 | `--github-token`       | Option   | GitHub token for API requests (or set GH_TOKEN/GITHUB_TOKEN env variable)  |
 
-### `goalkeeper ai-analytics` Arguments & Options
 
-| Argument/Option | Type     | Description                                                                  |
-|-----------------|----------|------------------------------------------------------------------------------|
-| `--agent`       | Option   | Filter analytics by specific AI agent (e.g., `claude`, `copilot`)           |
-| `--days`        | Option   | Number of days to analyze (default: 30)                                     |
-| `--format`      | Option   | Output format: `table` (default), `json`, or `csv`                          |
 
-### Memory System Commands
 
-| Command             | Description                                                                  |
-|---------------------|------------------------------------------------------------------------------|
-| `memory-status`     | Display memory system status and learning insights                           |
-| `learn-extract`     | Extract learnings from completed goals and add to memory system              |
-| `memory-insights`   | Get AI-powered insights from project memory and learning data                |
-| `memory-patterns`   | Analyze patterns in project memory for continuous improvement               |
-
-### `goalkeeper memory-status` Arguments & Options
-
-| Argument/Option | Type     | Description                                                                  |
-|-----------------|----------|------------------------------------------------------------------------------|
-| `--details`     | Flag     | Show detailed memory statistics and insights                                 |
-
-### `goalkeeper learn-extract` Arguments & Options
-
-| Argument/Option | Type     | Description                                                                  |
-|-----------------|----------|------------------------------------------------------------------------------|
-| `<goal-name>`   | Argument | Name of the completed goal to extract learnings from                        |
-| `--score`       | Option   | Success score 1-10 (default: 7)                                             |
-
-### `goalkeeper memory-insights` Arguments & Options
-
-| Argument/Option | Type     | Description                                                                  |
-|-----------------|----------|------------------------------------------------------------------------------|
-| `--patterns`    | Flag     | Include pattern analysis in insights (default: true)                        |
-
-### `goalkeeper memory-patterns` Arguments & Options
-
-| Argument/Option | Type     | Description                                                                  |
-|-----------------|----------|------------------------------------------------------------------------------|
-| `--type`        | Option   | Pattern type: success, failure, or process (default: success)                |
 
 ### Available Slash Commands
 
@@ -255,6 +212,13 @@ All slash command templates (`/goalkit.vision`, `/goalkit.goal`, etc.) now inclu
 - **Agent-specific optimizations** tailored to different AI capabilities
 - **Built-in validation criteria** ensuring methodology compliance
 
+### 🎨 Professional UI/UX Guidelines
+Goal Kit now includes comprehensive UI/UX design standards to ensure agents create professional, accessible interfaces:
+- **Visual Consistency**: Guidelines for typography, spacing, color palettes, and component design
+- **Accessibility Standards**: WCAG 2.1 AA compliance requirements for inclusive design
+- **Professional Aesthetics**: Standards for visual hierarchy, whitespace, and design quality
+- **User Experience**: Guidelines for error handling, form design, and navigation patterns
+
 ### AI Agent Optimization
 - **Claude**: Optimized for thoughtful, detailed analysis (4-6 principles)
 - **GitHub Copilot**: Optimized for practical, concise implementation (3-5 principles)
@@ -262,35 +226,16 @@ All slash command templates (`/goalkit.vision`, `/goalkit.goal`, etc.) now inclu
 - **Cursor**: Optimized for focused, direct implementation (3-4 principles)
 - **Qwen**: Optimized for comprehensive, detailed coverage (4-6 principles)
 
-### Performance Analytics
-Monitor AI agent effectiveness with the new `goalkeeper ai-analytics` command:
-- Track success rates across different AI agents
-- Monitor response quality scores and validation compliance
-- Identify which agents work best for specific command types
-- Analyze interaction patterns and improvement opportunities
-
-### 🧠 Intelligent Memory System
-**Project Learning Capture:**
-- Auto-extract learnings when goals complete
-- Pattern recognition for common success factors
-- Template updates based on what works in practice
-
-**AI Session Context:**
-- Conversation memory - remembers what was discussed
-- Decision tracking - records AI suggestions and outcomes
-- Preference learning - adapts to user and agent preferences
-
-**Cross-Project Insights:**
-- Similar project matching - finds relevant past experiences
-- Best practice evolution - improves templates based on outcomes
-- Risk pattern detection - early warning for common failure modes
-
 ### Quality Assurance
 - **Response validation** ensures AI outputs meet Goal Kit standards
 - **Methodology compliance** checking for outcome-focused language
 - **Consistency monitoring** across all generated documents
 - **Performance tracking** for continuous improvement
-- **Memory system integrity** ensuring learning data quality
+
+### ⚡ Smart Task Processing
+- **Task Complexity Assessment**: Intelligent evaluation of whether tasks need full methodology or direct implementation
+- **Efficient Handling**: Simple tasks like "enhanced header" now use direct implementation avoiding unnecessary complexity
+- **Smart Workflow**: AI agents determine optimal approach based on task requirements
 
 ## 📚 Core philosophy
 

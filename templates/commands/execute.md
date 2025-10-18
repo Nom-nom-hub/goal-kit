@@ -2,6 +2,14 @@
 
 ## AI AGENT INSTRUCTIONS
 
+### Task Complexity Assessment
+Before starting execution, determine if this is a complex goal requiring the full methodology or a simple task for direct implementation:
+
+- **Simple tasks** (direct implementation): visual enhancements, minor fixes, small improvements (e.g., "enhanced header", "better styling", "fix alignment")
+- **Complex goals** (structured execution): features requiring measurable milestones, learning loops, and adaptation
+
+For simple tasks, implement directly without the full goal tracking and learning framework.
+
 When processing `/goalkit.execute` requests, follow this structured approach:
 
 ### Goal Discovery (First Step)

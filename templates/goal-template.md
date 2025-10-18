@@ -120,3 +120,29 @@
 - **User Feedback**: [How to validate with actual users]
 - **Business Metrics**: [How to validate business impact]
 - **Long-term Tracking**: [How to validate sustainability]
+
+### UI/UX Requirements *(include if goal involves user interface)*
+
+**Design Standards**:
+- **Professional Appearance**: Interface must look polished and professionally designed
+- **Visual Consistency**: Consistent typography, spacing, and design patterns throughout
+- **Responsive Design**: Interface must work well on all screen sizes and devices
+- **Accessibility Compliance**: Must meet WCAG 2.1 AA standards for color contrast and navigation
+- **Performance**: Interface elements must load quickly and respond immediately to user input
+- **Error Handling**: Clear, helpful error messages and recovery paths for all user interactions
+- **User Testing**: Interface designs must be validated with real users before implementation
+
+**Success Criteria for UI**:
+- **Usability**: Users can accomplish primary tasks without confusion or assistance
+- **Aesthetics**: Interface appears modern, clean, and visually appealing
+- **Accessibility**: Interface works for users with disabilities using assistive technologies
+- **Performance**: All UI interactions respond within 100ms and pages load within 3 seconds
+
+**Accessibility Requirements**:
+- **WCAG Compliance**: Must meet WCAG 2.1 AA standards for color contrast, keyboard navigation, and screen reader compatibility
+- **Color Usage**: Maintain minimum 4.5:1 contrast ratio for normal text and 3:1 for large text
+- **Keyboard Navigation**: All functionality must be accessible via keyboard without requiring specific timing for individual keystrokes
+- **Screen Reader Support**: All UI elements must have proper semantic markup and ARIA labels where appropriate
+- **Focus Management**: Clear visual focus indicators and logical focus order for keyboard navigation
+- **Alternative Text**: All meaningful images and graphics must have descriptive alternative text
+- **Form Labels**: All form controls must have properly associated labels

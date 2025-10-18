@@ -18,6 +18,15 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Task Complexity Assessment
+
+**CRITICAL**: Before proceeding, assess if this is truly a substantial goal requiring the full methodology or a simple task that should be handled directly:
+
+- **Simple tasks** (skip full process): visual enhancements, minor fixes, small improvements (e.g., "enhanced header", "fix button color", "add margin")
+- **Complex goals** (use full process): new features with measurable outcomes, system changes, user workflows requiring success metrics
+
+If this is a simple task, suggest to the user that they might want to implement it directly rather than through the full goal process.
+
 ## Outline
 
 The text the user typed after `/goalkit.goal` in the triggering message **is** the goal description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
