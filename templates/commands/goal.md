@@ -1,9 +1,11 @@
 ---
 description: Execute the goal definition workflow by creating a new goal using the goal template to generate a goal definition.
 scripts:
+  # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
   sh: .goalkit/scripts/bash/create-new-goal.sh --json "{ARGS}"
   ps: .goalkit/scripts/powershell/create-new-goal.ps1 -Json "{ARGS}"
 agent_scripts:
+  # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
   sh: .goalkit/scripts/bash/update-agent-context.sh __AGENT__
   ps: .goalkit/scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
 ---
@@ -42,7 +44,7 @@ Given that goal description, do this:
    - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\\''m Groot' (or double-quote if possible: "I'm Groot")
    - First find the git repository root by looking for `.git` directory or using git command to locate it
    - Change to the repository root directory before executing the script  
-   - Ensure the script path is resolved from the repository root (path should not contain duplicate `.goalkit/` prefixes. Scripts are in `{PROJECT_ROOT}/.goalkit/scripts/[platform]/[script-name]` )
+   - Ensure the script path is resolved from the repository root (path should not contain duplicate `.goalkit/` prefixes.)
    - Verify the script file exists at the expected path: `{PROJECT_ROOT}/.goalkit/scripts/[platform]/[script-name]` before executing
    - If the file exists at the expected path but the command fails, double-check path resolution
    - You must only ever run this script once

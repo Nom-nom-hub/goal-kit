@@ -1,9 +1,11 @@
 ---
 description: Explore multiple implementation strategies for achieving goals.
 scripts:
+  # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
   sh: .goalkit/scripts/bash/setup-strategy.sh --json "{ARGS}"
   ps: .goalkit/scripts/powershell/setup-strategy.ps1 -Json "{ARGS}"
 agent_scripts:
+  # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
   sh: .goalkit/scripts/bash/update-agent-context.sh __AGENT__
   ps: .goalkit/scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
 ---
