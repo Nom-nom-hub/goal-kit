@@ -200,6 +200,13 @@ check_agent_command() {
     return 0
 }
 
+# Common function for JSON mode output
+output_json_mode() {
+    local json_data="$1"
+    echo "$json_data"
+    exit 0
+}
+
 # Setup environment variables for goal development
 setup_goal_environment() {
     local goal_dir="$1"
