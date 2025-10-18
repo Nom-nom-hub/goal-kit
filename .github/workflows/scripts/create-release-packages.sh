@@ -31,11 +31,19 @@ mkdir -p "$GENRELEASES_DIR"
 rm -rf "$GENRELEASES_DIR"/* || true
 
 rewrite_paths() {
+  # Two-pass approach to safely rewrite paths without duplicating .goalkit/ prefixes
+  # Pass 1: Protect existing .goalkit/ paths by temporarily marking them
+  # Pass 2: Apply standard rewrites to clean paths
+  # Pass 3: Restore protected paths
+
   sed -E \
-    -e 's@(/?)memory/@.goalkit/memory/@g' \
-    -e 's@(/?)scripts/@.goalkit/scripts/@g' \
-    -e 's@(/?)templates/@.goalkit/templates/@g'
+    -e 's@\.goalkit/@__TEMP_GOALKIT__/@g' \
+    -e 's@(^|[^.])memory/@\1.goalkit/memory/@g' \
+    -e 's@(^|[^.])scripts/@\1.goalkit/scripts/@g' \
+    -e 's@(^|[^.])templates/@\1.goalkit/templates/@g' \
+    -e 's@__TEMP_GOALKIT__/@.goalkit/@g'
 }
+
 
 generate_commands() {
   local agent=$1 ext=$2 arg_format=$3 output_dir=$4 script_variant=$5
