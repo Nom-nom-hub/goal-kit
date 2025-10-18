@@ -34,6 +34,7 @@ import shlex
 import json
 from pathlib import Path
 from typing import Optional, Tuple
+import datetime
 
 import typer
 import httpx
@@ -663,6 +664,128 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
     }
     return zip_path, metadata
 
+def create_agent_context_file(project_path: Path, ai_assistant: str):
+    """Create agent context files with Goal Kit commands based on the selected AI assistant."""
+    import datetime
+    import os
+    
+    # Define the agent context files patterns based on the selected agent
+    # Following the same patterns as in update-agent-context.sh and update-agent-context.ps1
+    agent_context_files = {
+        "claude": [
+            "CLAUDE.md",
+            ".claude/context.md"
+        ],
+        "gemini": [
+            "GEMINI.md", 
+            ".gemini/context.md"
+        ],
+        "cursor": [
+            "CURSOR.md",
+            ".cursor/context.md"
+        ],
+        "copilot": [
+            ".vscode/context.md"  # VSCode specific location
+        ],
+        "qwen": [
+            "QWEN.md",
+            ".qwen/context.md"
+        ],
+        "windsurf": [
+            "WINDSURF.md",
+            ".windsurf/context.md"
+        ],
+        "kilocode": [
+            "KILOCODE.md",
+            ".kilocode/context.md"
+        ],
+        "auggie": [
+            ".augment/context.md"  # Based on the pattern from create-release-packages.sh
+        ],
+        "roo": [
+            "ROO.md",
+            ".roo/context.md"
+        ],
+        "codex": [
+            ".codex/context.md"
+        ],
+        "opencode": [
+            "OPENCODE.md"
+        ]
+    }
+    
+    # Get the appropriate context file names for the selected agent
+    context_file_names = agent_context_files.get(ai_assistant, ["CLAUDE.md"])
+    
+    project_name = project_path.name
+    
+    # Create content for the agent context file
+    context_content = f"""# Goal Kit Project Context
+
+**Project**: {project_name}
+**Agent**: {ai_assistant}
+**Updated**: {datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')}
+
+## 🎯 Goal-Driven Development Status
+
+This project uses Goal-Driven Development methodology. Focus on:
+- Measurable outcomes over feature specifications
+- Multiple strategy exploration before implementation
+- Learning and adaptation during execution
+- Success metrics validation
+
+## 📋 Available Commands
+
+### Core Commands
+- **/goalkit.vision** - Establish project vision and principles
+- **/goalkit.goal** - Define goals and success criteria
+- **/goalkit.strategies** - Explore implementation strategies
+- **/goalkit.milestones** - Create measurable milestones
+- **/goalkit.execute** - Execute with learning and adaptation
+
+## 🚀 Project Vision
+
+Vision document not yet created
+
+## 🎯 Active Goals
+
+No active goals yet. Use /goalkit.goal to create your first goal.
+
+## 📊 Development Principles
+
+Remember these core principles:
+1. **Outcome-First**: Prioritize user and business outcomes
+2. **Strategy Flexibility**: Multiple valid approaches exist for any goal
+3. **Measurement-Driven**: Progress must be measured and validated
+4. **Learning Integration**: Treat implementation as hypothesis testing
+5. **Adaptive Planning**: Change course based on evidence
+
+## 🔧 Next Recommended Actions
+
+1. Use /goalkit.vision to establish project vision
+2. Use /goalkit.goal to define first goal
+3. Use /goalkit.strategies to explore implementation approaches
+4. Use /goalkit.milestones to plan measurable progress steps
+
+---
+
+*This context is automatically created by goalkeeper init. Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
+"""
+    
+    # Create all appropriate context files for the selected agent
+    for context_file_name in context_file_names:
+        context_file_path = project_path / context_file_name
+        try:
+            # Make sure parent directories exist
+            context_file_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            # Write the context file
+            with open(context_file_path, 'w', encoding='utf-8') as f:
+                f.write(context_content)
+        except Exception:
+            # If we can't create a specific file, continue - it's not critical for initialization
+            continue
+
 def download_and_extract_template(project_path: Path, ai_assistant: str, script_type: str, is_current_dir: bool = False, *, verbose: bool = True, tracker: StepTracker | None = None, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Path:
     """Download the latest release and extract it to create a new project.
     Returns project_path. Uses tracker if provided (with keys: fetch, download, extract, cleanup)
@@ -783,6 +906,9 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                         tracker.complete("flatten")
                     elif verbose:
                         console.print(f"[cyan]Flattened nested directory structure[/cyan]")
+
+        # Create agent context file based on selected AI assistant
+        create_agent_context_file(project_path, ai_assistant)
 
     except Exception as e:
         if tracker:
