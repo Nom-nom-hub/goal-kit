@@ -664,11 +664,76 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
     }
     return zip_path, metadata
 
+def create_agent_file(project_path: Path, ai_assistant: str):
+    """Create a customized agent file using the agent file template."""
+    import datetime
+
+    # Read the agent file template
+    template_path = Path(__file__).parent.parent / "templates" / "agent-file-template.md"
+    if not template_path.exists():
+        return  # Skip if template doesn't exist
+
+    try:
+        with open(template_path, 'r', encoding='utf-8') as f:
+            template_content = f.read()
+    except Exception:
+        return  # Skip if can't read template
+
+    # Replace placeholders with actual project information
+    project_name = project_path.name
+    current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    # Basic replacements
+    content = template_content.replace("[PROJECT NAME]", project_name)
+    content = content.replace("[DATE]", current_date)
+
+    # For now, set placeholder content for dynamic sections
+    # These would be populated by the update_agent_context.py script later
+    content = content.replace("[EXTRACTED FROM ALL GOAL.MD FILES]", "No goals created yet. Use /goalkit.goal to create your first goal.")
+    content = content.replace("[ACTUAL STRUCTURE FROM GOALS]", "Project structure will be populated as goals are created.")
+    content = content.replace("[EXTRACTED FROM STRATEGIES.MD]", "No strategies defined yet. Use /goalkit.strategies after creating goals.")
+    content = content.replace("[EXTRACTED FROM MILESTONES.MD]", "No milestones defined yet. Use /goalkit.milestones after defining strategies.")
+    content = content.replace("[EXTRACTED FROM EXECUTION.MD]", "No execution plans yet. Use /goalkit.execute after creating milestones.")
+    content = content.replace("[LAST 3 COMPLETED MILESTONES AND OUTCOMES]", "No completed milestones yet.")
+
+    # Define agent-specific file names and locations
+    agent_file_locations = {
+        "claude": [".claude/goal-kit-guide.md"],
+        "gemini": [".gemini/goal-kit-guide.md"],
+        "cursor": [".cursor/goal-kit-guide.md"],
+        "copilot": [".github/goal-kit-guide.md"],
+        "qwen": [".qwen/goal-kit-guide.md"],
+        "windsurf": [".windsurf/goal-kit-guide.md"],
+        "kilocode": [".kilocode/goal-kit-guide.md"],
+        "auggie": [".augment/goal-kit-guide.md"],
+        "roo": [".roo/goal-kit-guide.md"],
+        "codex": [".codex/goal-kit-guide.md"],
+        "opencode": ["goal-kit-guide.md"],  # Root level for opencode
+        "q": [".amazonq/goal-kit-guide.md"]
+    }
+
+    file_locations = agent_file_locations.get(ai_assistant, [f"{ai_assistant.upper()}.md"])
+
+    # Create all appropriate agent files for the selected agent
+    for file_location in file_locations:
+        file_path = project_path / file_location
+        try:
+            # Make sure parent directories exist
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+
+            # Write the agent file
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+        except Exception:
+            # If we can't create a specific file, continue - it's not critical for initialization
+            continue
+
+
 def create_agent_context_file(project_path: Path, ai_assistant: str):
     """Create agent context files with Goal Kit commands based on the selected AI assistant."""
     import datetime
     import os
-    
+
     # Define the agent context files patterns based on the selected agent
     # Following the same patterns as in update-agent-context.sh and update-agent-context.py
     agent_context_files = {
@@ -677,7 +742,7 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
             ".claude/context.md"
         ],
         "gemini": [
-            "GEMINI.md", 
+            "GEMINI.md",
             ".gemini/context.md"
         ],
         "cursor": [
@@ -713,12 +778,12 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
             "OPENCODE.md"
         ]
     }
-    
+
     # Get the appropriate context file names for the selected agent
     context_file_names = agent_context_files.get(ai_assistant, ["CLAUDE.md"])
-    
+
     project_name = project_path.name
-    
+
     # Create content for the agent context file
     context_content = f"""# Goal Kit Project Context
 
@@ -747,7 +812,7 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 
 ### ⚠️ CRITICAL ANTI-PATTERNS TO AVOID
 - ✗ Implementing features directly without following methodology
-- ✗ Adding implementation details to goal definitions  
+- ✗ Adding implementation details to goal definitions
 - ✗ Skipping strategy exploration phase
 - ✗ Creating goals without measurable success criteria
 - ✗ Treating this as traditional requirement-driven development
@@ -838,14 +903,14 @@ Following these guidelines will help prevent the syntax errors, merge conflict i
 
 *This context is automatically created by goalkeeper init. Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
 """
-    
+
     # Create all appropriate context files for the selected agent
     for context_file_name in context_file_names:
         context_file_path = project_path / context_file_name
         try:
             # Make sure parent directories exist
             context_file_path.parent.mkdir(parents=True, exist_ok=True)
-            
+
             # Write the context file
             with open(context_file_path, 'w', encoding='utf-8') as f:
                 f.write(context_content)
@@ -1005,6 +1070,43 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
 
     return project_path
 
+def copy_python_scripts_to_goalkit(project_path: Path, tracker: StepTracker | None = None) -> None:
+    """Copy Python scripts from scripts/python/ to .goalkit/scripts/python/"""
+    scripts_source = project_path / "scripts" / "python"
+    scripts_dest = project_path / ".goalkit" / "scripts" / "python"
+
+    if not scripts_source.exists() or not scripts_source.is_dir():
+        if tracker:
+            tracker.add("copy-scripts", "Copy Python scripts")
+            tracker.skip("copy-scripts", "source scripts/python/ not found")
+        return
+
+    try:
+        # Create destination directory
+        scripts_dest.mkdir(parents=True, exist_ok=True)
+
+        # Copy all Python scripts
+        copied_count = 0
+        for script_file in scripts_source.iterdir():
+            if script_file.is_file() and script_file.suffix == ".py":
+                dest_file = scripts_dest / script_file.name
+                shutil.copy2(script_file, dest_file)
+                copied_count += 1
+
+        if tracker:
+            tracker.add("copy-scripts", "Copy Python scripts")
+            tracker.complete("copy-scripts", f"copied {copied_count} scripts")
+        else:
+            console.print(f"[cyan]Copied {copied_count} Python scripts to .goalkit/scripts/python/[/cyan]")
+
+    except Exception as e:
+        if tracker:
+            tracker.add("copy-scripts", "Copy Python scripts")
+            tracker.error("copy-scripts", str(e))
+        else:
+            console.print(f"[red]Error copying Python scripts: {e}[/red]")
+
+
 def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = None) -> None:
     """Ensure POSIX .sh scripts under .goalkit/scripts (recursively) have execute bits (no-op on Windows)."""
     if os.name == "nt":
@@ -1129,7 +1231,7 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
                 shutil.copy2(template_file, dest_path)
     else:
         # Use the commands templates as a fallback for ALL agent types
-        # This ensures that even agents expecting "workflows" or "prompts" 
+        # This ensures that even agents expecting "workflows" or "prompts"
         # still get the core command templates if no specific templates exist
         commands_source_dir = Path(__file__).parent.parent / "templates" / "commands"
         if commands_source_dir.exists():
@@ -1146,6 +1248,9 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
                 vscode_dir.mkdir(parents=True, exist_ok=True)
                 dest_path = vscode_dir / "settings.json"
                 shutil.copy2(vscode_settings_source, dest_path)
+
+    # Create the main agent file with project-specific guidance
+    create_agent_file(project_path, selected_ai)
 
 @app.command()
 def init(
@@ -1333,6 +1438,12 @@ def init(
 
             # Create agent-specific configuration and commands folders
             create_agent_config(project_path, selected_ai)
+
+            # Copy Python scripts to .goalkit/scripts/python/
+            copy_python_scripts_to_goalkit(project_path, tracker=tracker)
+
+            # Create the main agent file with project-specific guidance
+            create_agent_file(project_path, selected_ai)
 
             ensure_executable_scripts(project_path, tracker=tracker)
 

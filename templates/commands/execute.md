@@ -1,70 +1,59 @@
 ---
-description: Implements goals with continuous learning, measurement, and adaptation. This command ensures agents are following the complete methodology by building on defined goals, strategies, and milestones.
+description: Execute goals with learning, measurement, and adaptation. Requires completed goal, strategies, and milestones.
 scripts:
-  # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
   sh: .goalkit/scripts/python/setup_strategy.py --json "{ARGS}"
   ps: .goalkit/scripts/python/setup_strategy.py --json "{ARGS}"
 agent_scripts:
-  # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
   sh: .goalkit/scripts/python/update_agent_context.py __AGENT__
   ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
 ---
 
-## User Input
+## Quick Prerequisites Check
 
-```text
-$ARGUMENTS
-```
+**BEFORE EXECUTING**:
+1. **Goal exists**: Check `goals/` directory for goal files
+2. **Strategies defined**: Verify `strategies.md` in goal directory
+3. **Milestones created**: Verify `milestones.md` in goal directory
 
-You **MUST** consider the user input before proceeding (if not empty).
+**If missing any**: Tell user to complete full sequence first.
 
-## CRITICAL Methodology Adherence Check
+## Simple vs Complex Assessment
 
-**BEFORE PROCEEDING:** Verify the user has completed the full methodology sequence:
+- **Simple tasks** (direct implementation): "fix styling", "update header", "add margin"
+- **Complex goals** (use methodology): features with measurable outcomes
 
-- **Check if a goal exists**: Search in `.goalkit/goals/` directory for existing goal files
-- **Check if strategies exist**: Verify strategy files in the goal directories
-- **Check if milestones exist**: Verify milestone files in the goal directories
-- **If any step is missing**: Inform user they must complete the full methodology sequence (`/goalkit.goal`, `/goalkit.strategies`, `/goalkit.milestones`) before execution
+## Quick Execution Steps
 
-## Task Complexity Assessment
-Before starting execution, determine if this is a complex goal requiring the full methodology or a simple task for direct implementation:
+**STEP 1**: Identify the goal to execute (most recent or specified)
 
-- **Simple tasks** (direct implementation): visual enhancements, minor fixes, small improvements (e.g., "enhanced header", "better styling", "fix alignment")
-- **Complex goals** (structured execution): features requiring measurable milestones, learning loops, and adaptation
+**STEP 2**: Review the goal's strategies and milestones
 
-For simple tasks, implement directly but suggest the user consider the full methodology for more substantial changes.
+**STEP 3**: Create `execution.md` in the goal directory with:
+- Current milestone focus
+- Measurement framework
+- Learning loop process
+- Adaptation triggers
 
-## CRITICAL Implementation Details Warning
+**STEP 4**: Implement with daily learning and weekly adaptation
 
-**IMPORTANT:** Execution should focus on learning, measurement, and adaptation rather than rigid implementation of specific technologies or frameworks.
+**STEP 5**: Document all insights and learnings
 
-## Outline
+## Key Execution Mindset
 
-When processing `/goalkit.execute` requests, follow this structured approach:
+- **Test hypotheses** rather than follow rigid plans
+- **Measure and adapt** based on real results
+- **Document learnings** for future decisions
+- **Stay flexible** to change approaches when needed
 
-### Goal Discovery (First Step)
-1. **Locate Associated Goal**: Search for the goal that execution will implement
-   - Use `glob(path="PROJECT_ROOT/.goalkit/goals", pattern="**")` to discover goals
-   - Use `list_directory(path="PROJECT_ROOT/.goalkit/goals")` to enumerate goal directories
-   - If user specified a goal, locate that specific goal directory
-   - If multiple goals exist, ask user to clarify which goal to execute
-   - If no goals exist, inform user that the full methodology sequence must be followed
+## Critical Rules
 
-### Input Analysis
-1. **Execution Strategy Mapping**: Align execution approach with selected strategies
-2. **Milestone Implementation**: Focus on implementing specific milestones
-3. **Learning Framework**: Establish daily and weekly learning loops
-4. **Measurement Setup**: Define metrics and tracking mechanisms
-
-### Processing Framework
-- Focus on learning and adaptation rather than rigid plan execution
-- Implement with continuous measurement and validation
-- Establish clear feedback loops for adjustment
-- Document insights and knowledge gained throughout execution
-
-### Output Structure
-Use the template sections below to structure your response. Emphasize adaptive execution with measurement and learning.
+✅ **DO**: Focus on learning and adaptation
+✅ **DO**: Measure progress with defined metrics
+✅ **DO**: Document insights and knowledge gained
+✅ **DO**: Be ready to pivot based on evidence
+❌ **DON'T**: Follow rigid, untested plans
+❌ **DON'T**: Ignore measurement and feedback
+❌ **DON'T**: Skip documentation of learnings
 
 ## Overview
 
