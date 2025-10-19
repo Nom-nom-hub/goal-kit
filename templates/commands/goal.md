@@ -2,12 +2,12 @@
 description: Execute the goal definition workflow by creating a new goal using the goal template to generate a goal definition. This command ensures agents follow the complete methodology by requiring measurable outcomes and success criteria.
 scripts:
   # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
-  sh: .goalkit/scripts/bash/create-new-goal.sh --json "{ARGS}"
-  ps: .goalkit/scripts/powershell/create-new-goal.ps1 -Json "{ARGS}"
+  sh: .goalkit/scripts/python/create_new_goal.py --json "{ARGS}"
+  ps: .goalkit/scripts/python/create_new_goal.py --json "{ARGS}"
 agent_scripts:
   # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
-  sh: .goalkit/scripts/bash/update-agent-context.sh __AGENT__
-  ps: .goalkit/scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
+  sh: .goalkit/scripts/python/update_agent_context.py __AGENT__
+  ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
 ---
 
 ## User Input

@@ -26,10 +26,10 @@ git checkout -b fix/bug-fix
 ### 4. Test Your Changes
 ```bash
 # Run tests
-./scripts/bash/validate-goals.sh
+./scripts/python/validate_goals.py
 
 # Test templates
-./scripts/bash/create-new-goal.sh test-goal
+python scripts/python/create_new_goal.py "test-goal"
 
 # Check formatting
 # (Add formatting checks as needed)
@@ -69,8 +69,7 @@ Then open a Pull Request on GitHub.
 - Update CHANGELOG.md for notable changes
 
 ### Scripts
-- Use `#!/usr/bin/env bash` for Bash scripts
-- Use `#!/usr/bin/env pwsh` for PowerShell scripts
+- Use `#!/usr/bin/env python3` for Python scripts
 - Include error handling with `set -euo pipefail`
 - Add usage comments and examples
 
@@ -108,8 +107,7 @@ Then open a Pull Request on GitHub.
 git clone https://github.com/nom-nom-hub/goal-kit.git
 
 # Make scripts executable
-chmod +x scripts/bash/*.sh
-chmod +x scripts/powershell/*.ps1
+# No need for executable permissions for Python scripts
 
 # Install dependencies (if any)
 pip install mkdocs mkdocs-material  # For documentation
@@ -118,10 +116,10 @@ pip install mkdocs mkdocs-material  # For documentation
 ### Testing Changes
 ```bash
 # Validate goal templates
-./scripts/bash/validate-goals.sh
+./scripts/python/validate_goals.py
 
 # Test script functionality
-./scripts/bash/check-prerequisites.sh
+python scripts/python/setup_goal.py --verbose
 
 # Build documentation
 mkdocs build

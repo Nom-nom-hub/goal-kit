@@ -245,7 +245,7 @@ Both systems use similar architectural patterns:
 ### Script Organization
 
 **Similarities:**
-- Common utility functions in `common.sh`/`common.ps1`
+- Common utility functions in `common.sh`/`common.py`
 - Feature/goal creation scripts with branching support
 - Agent context update functionality
 - Prerequisite checking capabilities

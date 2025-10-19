@@ -14,13 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Persona Management**: New `/goalkit.persona` command to switch between specialized agent roles
 - **Persona Guidelines**: Comprehensive guidance templates for each persona role (GitHub, Milestone, Strategy, QA, Documentation)
 - **Persona Configuration**: Configuration system with `personas.json` defining available personas and their capabilities
-- **Bash & PowerShell Scripts**: `manage-personas.sh` and `manage-personas.ps1` for persona management
+- **Python Scripts**: `manage_personas.py` for persona management
 - **Persona-Aware Templates**: Updated command templates (`goal.md`, `strategies.md`, `collaborate.md`) to include persona context
 - **Persona Coordination**: Enhanced collaboration templates with persona transition points and handoff procedures
 - **Persona Documentation**: Complete documentation in README with usage instructions and recommended workflows
 
 #### 📁 Implementation Details:
-- **Agent Context**: Enhanced `update-agent-context.sh` and `update-agent-context.ps1` to track current persona
+- **Agent Context**: Enhanced `update_agent_context.py` to track current persona
 - **Collaboration System**: Extended collaboration templates to include persona-specific guidance
 - **Command Templates**: All major command templates now aware of active persona context
 - **User Experience**: Improved user guidance for persona-based workflows
@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 🔧 Technical Enhancements:
 - **Backward Compatibility**: Maintained all existing functionality while adding persona capabilities
 - **Coordination Integration**: Seamlessly integrated persona system with existing coordination features
-- **Script Integration**: Updated bash and PowerShell scripts to include persona information in commits and context
+- **Script Integration**: Updated Python scripts to include persona information in commits and context
 
 ---
 

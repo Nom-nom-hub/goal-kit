@@ -1,28 +1,24 @@
 # Goal Kit Scripts
 
-This directory contains scripts for the Goal Kit methodology to complement the main CLI.
+This directory contains Python scripts for the Goal Kit methodology to complement the main CLI.
 
-## Bash Scripts
+## Python Scripts
 
-- `check-prerequisites.sh` - Checks if required tools are installed
-- `common.sh` - Common utilities for other scripts
-- `create-new-goal.sh` - Creates a new goal in a Goal Kit project
-- `setup-goal.sh` - Sets up the environment for a specific goal
-- `update-agent-context.sh` - Updates agent context files with current goal info
-
+- `check-prerequisites.py` - Checks if required tools are installed
+- `common.py` - Common utilities for other scripts
+- `create_new_goal.py` - Creates a new goal in a Goal Kit project
+- `setup_goal.py` - Sets up the environment for a specific goal
+- `setup_milestones.py` - Sets up milestone planning in a Goal Kit project
+- `setup_strategy.py` - Sets up strategy analysis in a Goal Kit project
+- `setup_collaboration.py` - Sets up collaboration planning in a Goal Kit project
+- `manage_personas.py` - Manages agent personas in a Goal Kit project
+- `update_agent_context.py` - Updates agent context files with current goal info
+- `validate_methodology.py` - Validates methodology completion for goals
 - `validate_goals.py` - Goal validation script that checks for:
   - Required sections in goal files
   - Filled-out elements (not just placeholders)
   - Measurable success metrics
   - Proper structure and content
-
-## PowerShell Scripts
-
-- `check-prerequisites.ps1` - Checks if required tools are installed (PowerShell version)
-- `common.ps1` - Common utilities for other scripts (PowerShell version)
-- `create-new-goal.ps1` - Creates a new goal in a Goal Kit project (PowerShell version)
-- `setup-goal.ps1` - Sets up the environment for a specific goal (PowerShell version)
-- `update-agent-context.ps1` - Updates agent context files with current goal info (PowerShell version)
 
 ## Key Features
 
@@ -49,13 +45,13 @@ goalkeeper create-goal --dry-run "Add payment system"
 goalkeeper validate-goal goals/001-improve-user-authentication/goal.md
 ```
 
-### For legacy script usage (if needed):
+### For direct script usage:
 ```bash
-# Using bash script directly
-./create-new-goal.sh "Standard goal creation"
+# Using Python script directly
+python scripts/python/create_new_goal.py "Standard goal creation"
 
-# Using PowerShell script directly
-.\create-new-goal.ps1 -GoalDescription "Standard goal creation"
+# Or on some systems
+python3 scripts/python/create_new_goal.py "Standard goal creation"
 ```
 
 ## Validation Requirements

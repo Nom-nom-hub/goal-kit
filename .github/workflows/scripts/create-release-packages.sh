@@ -34,7 +34,9 @@ rewrite_paths() {
     -e 's@\.goalkit/templates/@templates/@g' \
     -e 's@(^|[^.])(/?)memory/@\1\2.goalkit/memory/@g' \
     -e 's@(^|[^.])(/?)scripts/@\1\2.goalkit/scripts/@g' \
-    -e 's@(^|[^.])(/?)templates/@\1\2.goalkit/templates/@g'
+    -e 's@(^|[^.])(/?)templates/@\1\2.goalkit/templates/@g' \
+    -e 's@/scripts/bash/@/scripts/python/@g' \
+    -e 's@/scripts/powershell/@/scripts/python/@g'
 }
 
 generate_commands() {
@@ -118,12 +120,12 @@ build_variant() {
     mkdir -p "$GOALKIT_DIR/scripts"
     case $script in
       sh)
-        [[ -d scripts/bash ]] && { cp -r scripts/bash "$GOALKIT_DIR/scripts/"; echo "Copied scripts/bash -> .goalkit/scripts"; }
+        [[ -d scripts/python ]] && { cp -r scripts/python "$GOALKIT_DIR/scripts/"; echo "Copied scripts/python -> .goalkit/scripts"; }
         # Copy any script files that aren't in variant-specific directories
         find scripts -maxdepth 1 -type f -exec cp {} "$GOALKIT_DIR/scripts/" \; 2>/dev/null || true
         ;;
       ps)
-        [[ -d scripts/powershell ]] && { cp -r scripts/powershell "$GOALKIT_DIR/scripts/"; echo "Copied scripts/powershell -> .goalkit/scripts"; }
+        [[ -d scripts/python ]] && { cp -r scripts/python "$GOALKIT_DIR/scripts/"; echo "Copied scripts/python -> .goalkit/scripts"; }
         # Copy any script files that aren't in variant-specific directories
         find scripts -maxdepth 1 -type f -exec cp {} "$GOALKIT_DIR/scripts/" \; 2>/dev/null || true
         ;;

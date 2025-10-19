@@ -2,12 +2,12 @@
 description: Create measurable milestones and progress indicators for achieving goals.
 scripts:
   # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
-  sh: .goalkit/scripts/bash/setup-milestones.sh --json "{ARGS}"
-  ps: .goalkit/scripts/powershell/setup-milestones.ps1 -Json "{ARGS}"
+  sh: .goalkit/scripts/python/setup_milestones.py --json "{ARGS}"
+  ps: .goalkit/scripts/python/setup_milestones.py --json "{ARGS}"
 agent_scripts:
   # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
-  sh: .goalkit/scripts/bash/update-agent-context.sh __AGENT__
-  ps: .goalkit/scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
+  sh: .goalkit/scripts/python/update_agent_context.py __AGENT__
+  ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
 ---
 
 ## User Input

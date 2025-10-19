@@ -84,11 +84,11 @@ After completing each command, **ALWAYS** remind the user of the next required s
 [LAST 3 COMPLETED MILESTONES AND OUTCOMES]
 
 ## Agent Development Guidelines
-When working with bash scripts and code in this project, AI agents should follow these critical guidelines to avoid common mistakes:
+When working with Python scripts and code in this project, AI agents should follow these critical guidelines to avoid common mistakes:
 
 ### 1. Verify Before Modifying
 - Always check current repository state: `git status`, `git diff`
-- Test syntax before making changes: `bash -n script_name.sh`
+- Validate syntax before making changes: `python -m py_compile script_name.py`
 - Understand file structure before modifying complex elements like heredocs or multi-line strings
 
 ### 2. Safe Editing Practices
@@ -97,9 +97,9 @@ When working with bash scripts and code in this project, AI agents should follow
 - Always verify conditional blocks remain properly balanced (`if/fi`, `for/done`, etc.)
 
 ### 3. Thorough Validation After Changes
-- Immediately validate syntax after each change: `bash -n script_name.sh`
+- Immediately validate syntax after each change: `python -m py_compile script_name.py`
 - Test functionality before moving on to next tasks
-- Verify all related files (bash and PowerShell equivalents) have consistent changes
+- Verify all related files (Python equivalents) have consistent changes
 
 ### 4. Systematic Conflict Resolution
 - Resolve merge conflicts one at a time, not all at once
@@ -107,11 +107,11 @@ When working with bash scripts and code in this project, AI agents should follow
 - Look for special characters or encoding issues introduced during merges
 
 ### 5. Cross-Platform Consistency
-- When fixing an issue in one language/script type, check for similar patterns in others (bash vs PowerShell)
+- When fixing an issue in Python scripts, check for similar patterns in other Python scripts
 - Maintain consistent validation logic across implementations
 
-### 6. Verification Checklist for Bash Scripts
-- [ ] `bash -n script_name.sh` returns no errors
+### 6. Verification Checklist for Python Scripts
+- [ ] `python -m py_compile script_name.py` returns no errors
 - [ ] All variables are properly defined before use
 - [ ] All conditional blocks are properly closed
 - [ ] Heredoc structures are intact
