@@ -1,5 +1,6 @@
 # Goal Kit specific
 .goalkit/
+goals/gaol.md
 goals/*/execution.md
 goals/*/temp/
 *.log

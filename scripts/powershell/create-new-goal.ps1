@@ -355,3 +355,8 @@ Write-Info "Current branch is: $(git branch --show-current)"
 
 # Setup goal environment for immediate development
 Set-GoalEnvironment -GoalDir $goalDir
+
+# Run the methodology guide to help complete the methodology
+Write-Info "`nRunning methodology guide to help complete the goal methodology..."
+Set-Location $goalDir
+& "$scriptDir\guide-methodology.ps1" -CheckOnly

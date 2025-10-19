@@ -1,5 +1,5 @@
 ---
-description: Execute the goal definition workflow by creating a new goal using the goal template to generate a goal definition.
+description: Execute the goal definition workflow by creating a new goal using the goal template to generate a goal definition. This command ensures agents follow the complete methodology by requiring measurable outcomes and success criteria.
 scripts:
   # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
   sh: .goalkit/scripts/bash/create-new-goal.sh --json "{ARGS}"
@@ -18,14 +18,18 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
-## Task Complexity Assessment
+## CRITICAL Methodology Adherence Check
 
-**CRITICAL**: Before proceeding, assess if this is truly a substantial goal requiring the full methodology or a simple task that should be handled directly:
+**BEFORE PROCEEDING:** Confirm that this is a substantial goal requiring the full methodology (not a simple task suitable for direct implementation):
 
-- **Simple tasks** (skip full process): visual enhancements, minor fixes, small improvements (e.g., "enhanced header", "fix button color", "add margin")
-- **Complex goals** (use full process): new features with measurable outcomes, system changes, user workflows requiring success metrics
+- **Simple tasks** (use `/goalkit.execute` for direct implementation): visual enhancements, minor fixes, small improvements (e.g., "enhanced header", "fix button color", "add margin", "improve styling")
+- **Complex goals** (use full process): new features with measurable outcomes (%,$,timeframes,user counts), system changes, user workflows requiring success metrics
 
-If this is a simple task, suggest to the user that they might want to implement it directly rather than through the full goal process.
+**If this is a simple task, STOP HERE and suggest to the user that they use `/goalkit.execute` for direct implementation instead.**
+
+## CRITICAL Implementation Details Warning
+
+**IMPORTANT:** Goals must NOT contain implementation details (languages, frameworks, APIs). Focus on measurable user/business outcomes instead.
 
 ## Outline
 
@@ -78,7 +82,7 @@ Given that goal description, do this:
     4. Fill Goal Overview (Goal Statement, Context, Success Level)
        If no clear purpose: ERROR "Cannot determine goal purpose"
     5. Generate Success Metrics
-       Each metric must be testable and measurable
+       Each metric must be testable, measurable with specific targets (%,$,timeframes,user counts)
        Use reasonable defaults for unspecified details (document assumptions in Assumptions section)
     6. Define Target Users & Stakeholders
        Identify who will benefit and who has interest in the goal
@@ -124,6 +128,12 @@ Given that goal description, do this:
       - [ ] Goal hypotheses can be validated through experiments
       - [ ] Goal meets measurable outcomes defined in Success Metrics
       - [ ] No implementation details leak into goal definition
+      
+      ## Next Steps Required
+      
+      - [ ] Use `/goalkit.strategies` to explore multiple approaches to achieve this goal
+      - [ ] Use `/goalkit.milestones` to create measurable progress checkpoints
+      - [ ] Use `/goalkit.execute` to implement with learning and adaptation
       
       ## Notes
       
@@ -181,7 +191,7 @@ Given that goal description, do this:
    
    d. **Update Checklist**: After each validation iteration, update the checklist file with current pass/fail status
 
-7. Report completion with branch name, goal file path, checklist results, and readiness for the next phase (`/goalkit.strategies` or `/goalkit.milestones`).
+7. Report completion with branch name, goal file path, checklist results, and **MANDATORY REMINDER** to user about next steps: `/goalkit.strategies`, `/goalkit.milestones`, and `/goalkit.execute`.
 
 **NOTE:** The script creates and checks out the new branch and initializes the goal file before writing.
 
@@ -191,3 +201,4 @@ Given that goal description, do this:
 - Each goal must include testable hypotheses with validation methods
 - Goal should align with existing project vision in `.goalkit/vision.md`
 - Focus on measurable outcomes rather than implementation details
+- **CRITICAL**: After goal creation, remind user to use `/goalkit.strategies` to explore approaches, then `/goalkit.milestones` to create checkpoints, then `/goalkit.execute` to implement with learning loops

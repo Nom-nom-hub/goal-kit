@@ -18,6 +18,7 @@ function Write-Colored {
         "Blue" = [ConsoleColor]::Blue
         "Cyan" = [ConsoleColor]::Cyan
         "White" = [ConsoleColor]::White
+        "Magenta" = [ConsoleColor]::Magenta
     }
 
     Write-Host $Message -ForegroundColor $colorCodes[$Color]
@@ -41,6 +42,16 @@ function Write-Warning {
 function Write-Error {
     param([string]$Message)
     Write-Colored "[ERROR] $Message" "Red"
+}
+
+function Write-Step {
+    param([string]$Message)
+    Write-Colored "[STEP] $Message" "Cyan"
+}
+
+function Write-Goal {
+    param([string]$Message)
+    Write-Colored "[GOAL] $Message" "Magenta"
 }
 
 # Check if command exists
@@ -183,7 +194,8 @@ $(if (Test-Path "goals") {
                 Where-Object { $_ -like "*Goal Statement*" } |
                 Select-Object -First 1 |
                 ForEach-Object { $_ -replace ".*Goal Statement:\s*", "" }
-            "- **$($_.Name)**: $($goalStatement ?? "Goal definition in progress")"
+            $statement = if ($goalStatement) { $goalStatement } else { "Goal definition in progress" }
+            "- **$($_.Name)**: $statement"
         } | Select-Object -First 3
     } else {
         "No active goals yet. Use /goalkit.goal to create your first goal."
@@ -245,6 +257,101 @@ function Test-GoalContext {
     }
 
     Write-Success "Goal context validated"
+}
+
+# Check if the current goal has completed all required methodology steps
+function Test-GoalMethodologyCompletion {
+    param(
+        [string]$GoalDir = (Get-Location)
+    )
+    
+    $goalFile = Join-Path $GoalDir "goal.md"
+    $strategiesFile = Join-Path $GoalDir "strategies.md"
+    $milestonesFile = Join-Path $GoalDir "milestones.md"
+    $executionFile = Join-Path $GoalDir "execution.md"
+    
+    $completedSteps = 0
+    $totalSteps = 4  # goal, strategies, milestones, execution
+    
+    Write-Info "Checking methodology completion for goal: $(Split-Path $GoalDir -Leaf)"
+    
+    # Check if goal.md exists and has content
+    if (Test-Path $goalFile) {
+        $goalContent = Get-Content $goalFile -Raw
+        # Basic check: does the goal have success metrics defined?
+        if ($goalContent -match "Success Metrics" -and $goalContent -match "Target:") {
+            Write-Success "`u{2714} Goal definition complete with success metrics"
+            $completedSteps++
+        } else {
+            Write-Warning "`u{26A0} Goal definition needs success metrics with specific targets"
+        }
+    } else {
+        Write-Error "Missing goal.md file"
+    }
+    
+    # Check if strategies.md exists and has content
+    if (Test-Path $strategiesFile) {
+        $strategiesContent = Get-Content $strategiesFile -Raw
+        if ($strategiesContent -match "Strategy" -and $strategiesContent -match "Validation") {
+            Write-Success "`u{2714} Strategies defined with validation approaches"
+            $completedSteps++
+        } else {
+            Write-Warning "`u{26A0} Strategies need validation approaches and success criteria"
+        }
+    } else {
+        Write-Warning "`u{26A0} No strategies.md found - consider using /goalkit.strategies"
+    }
+    
+    # Check if milestones.md exists and has content
+    if (Test-Path $milestonesFile) {
+        $milestonesContent = Get-Content $milestonesFile -Raw
+        if ($milestonesContent -match "Milestone" -and $milestonesContent -match "Success Indicators") {
+            Write-Success "`u{2714} Milestones defined with success indicators"
+            $completedSteps++
+        } else {
+            Write-Warning "`u{26A0} Milestones need success indicators and measurement approaches"
+        }
+    } else {
+        Write-Warning "`u{26A0} No milestones.md found - consider using /goalkit.milestones"
+    }
+    
+    # Check if execution.md exists and has content
+    if (Test-Path $executionFile) {
+        $executionContent = Get-Content $executionFile -Raw
+        if ($executionContent -match "Execution" -and $executionContent -match "Strategy") {
+            Write-Success "`u{2714} Execution plan defined with strategy"
+            $completedSteps++
+        } else {
+            Write-Warning "`u{26A0} Execution plan may need more detail"
+        }
+    } else {
+        Write-Warning "`u{26A0} No execution.md found - consider using /goalkit.execute"
+    }
+    
+    $completionPercent = [math]::Round(($completedSteps / $totalSteps) * 100)
+    Write-Info "Methodology completion: $completionPercent% ($completedSteps of $totalSteps steps)"
+    
+    if ($completedSteps -eq $totalSteps) {
+        Write-Success "[CHECK] All methodology steps completed! Ready for execution."
+        return $true
+    } else {
+        Write-Warning "[WARN] Some methodology steps are incomplete. We recommend completing all steps before execution."
+        Write-Info "Consider using the following commands to complete missing steps:"
+        
+        if (!(Test-Path $strategiesFile)) {
+            Write-Step "1. /goalkit.strategies - Explore implementation strategies"
+        }
+        
+        if (!(Test-Path $milestonesFile)) {
+            Write-Step "2. /goalkit.milestones - Create measurable milestones"
+        }
+        
+        if (!(Test-Path $executionFile)) {
+            Write-Step "3. /goalkit.execute - Execute with learning and adaptation"
+        }
+        
+        return $false
+    }
 }
 
 # Get the goal name from current directory

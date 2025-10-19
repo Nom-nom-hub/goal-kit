@@ -104,8 +104,6 @@ This project uses Goal-Driven Development methodology. Focus on:
 - **/goalkit.milestones** - Create measurable milestones
 - **/goalkit.execute** - Execute with learning and adaptation
 
-
-
 ## 🚀 Project Vision
 
 $(if (Test-Path ".goalkit\vision.md") {
@@ -123,7 +121,22 @@ $(if (Test-Path "goals" -and $activeGoalsCount -gt 0) {
             Select-Object -First 1 |
             ForEach-Object { $_ -replace ".*Goal Statement:\s*", "" }
         $statement = if ($goalStatement) { $goalStatement } else { "Goal definition in progress" }
-        "- **$($_.Name)**: $statement"
+        
+        # Check methodology completion for this goal
+        $strategiesPath = Join-Path $goalDir "strategies.md"
+        $milestonesPath = Join-Path $goalDir "milestones.md"
+        $executionPath = Join-Path $goalDir "execution.md"
+        
+        $completedSteps = 0
+        $totalSteps = 3
+        
+        if (Test-Path $strategiesPath) { $completedSteps++ }
+        if (Test-Path $milestonesPath) { $completedSteps++ }
+        if (Test-Path $executionPath) { $completedSteps++ }
+        
+        $completionStatus = [math]::Round(($completedSteps / $totalSteps) * 100)
+        
+        "- **$($_.Name)**: $statement [Methodology Completion: $completionStatus%]"
     } | Select-Object -First 3
 } else {
     "No active goals yet. Use /goalkit.goal to create your first goal."
@@ -138,6 +151,36 @@ Remember these core principles:
 4. **Learning Integration**: Treat implementation as hypothesis testing
 5. **Adaptive Planning**: Change course based on evidence
 
+## 🎯 Methodology Completion Status
+
+$(if ($activeGoalsCount -gt 0) {
+    $overallCompleted = 0
+    $overallTotal = 0
+    
+    Get-ChildItem "goals" -Directory | ForEach-Object {
+        $goalDir = $_.FullName
+        $strategiesPath = Join-Path $goalDir "strategies.md"
+        $milestonesPath = Join-Path $goalDir "milestones.md"
+        $executionPath = Join-Path $goalDir "execution.md"
+        
+        if (Test-Path $strategiesPath) { $overallCompleted++ }
+        if (Test-Path $milestonesPath) { $overallCompleted++ }
+        if (Test-Path $executionPath) { $overallCompleted++ }
+        
+        $overallTotal += 3
+    }
+    
+    $overallPercent = if ($overallTotal -gt 0) { [math]::Round(($overallCompleted / $overallTotal) * 100) } else { 0 }
+    
+    "Overall methodology completion across all goals: $overallPercent% ($overallCompleted of $overallTotal steps completed)"
+    ""
+    "- Goals with strategies defined: $((Get-ChildItem "goals" -Directory | Where-Object { Test-Path (Join-Path $_.FullName "strategies.md") }).Count)"
+    "- Goals with milestones defined: $((Get-ChildItem "goals" -Directory | Where-Object { Test-Path (Join-Path $_.FullName "milestones.md") }).Count)" 
+    "- Goals with execution plans: $((Get-ChildItem "goals" -Directory | Where-Object { Test-Path (Join-Path $_.FullName "execution.md") }).Count)"
+} else {
+    "No active goals to track methodology completion."
+})
+
 ## 🔧 Next Recommended Actions
 
 $(if ($activeGoalsCount -eq 0) {
@@ -145,8 +188,9 @@ $(if ($activeGoalsCount -eq 0) {
     "2. Use /goalkit.goal to define first goal"
 } else {
     "1. Review active goals in goals/ directory"
-    "2. Use /goalkit.strategies to explore implementation approaches"
-    "3. Use /goalkit.milestones to plan measurable progress steps"
+    "2. Use /goalkit.strategies to explore implementation approaches for incomplete goals"
+    "3. Use /goalkit.milestones to plan measurable progress steps for incomplete goals"
+    "4. Use /goalkit.execute to implement with learning and adaptation for complete goals"
 })
 
 ---

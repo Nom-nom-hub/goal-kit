@@ -1,14 +1,45 @@
-# /goalkit.execute Command
+---
+description: Implements goals with continuous learning, measurement, and adaptation. This command ensures agents are following the complete methodology by building on defined goals, strategies, and milestones.
+scripts:
+  # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
+  sh: .goalkit/scripts/bash/setup-strategy.sh --json "{ARGS}"  # Using same script structure as strategies for consistency
+  ps: .goalkit/scripts/powershell/setup-strategy.ps1 -Json "{ARGS}"  # Using same script structure as strategies for consistency
+agent_scripts:
+  # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
+  sh: .goalkit/scripts/bash/update-agent-context.sh __AGENT__
+  ps: .goalkit/scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
+---
 
-## AI AGENT INSTRUCTIONS
+## User Input
 
-### Task Complexity Assessment
+```text
+$ARGUMENTS
+```
+
+You **MUST** consider the user input before proceeding (if not empty).
+
+## CRITICAL Methodology Adherence Check
+
+**BEFORE PROCEEDING:** Verify the user has completed the full methodology sequence:
+
+- **Check if a goal exists**: Search in `.goalkit/goals/` directory for existing goal files
+- **Check if strategies exist**: Verify strategy files in the goal directories
+- **Check if milestones exist**: Verify milestone files in the goal directories
+- **If any step is missing**: Inform user they must complete the full methodology sequence (`/goalkit.goal`, `/goalkit.strategies`, `/goalkit.milestones`) before execution
+
+## Task Complexity Assessment
 Before starting execution, determine if this is a complex goal requiring the full methodology or a simple task for direct implementation:
 
 - **Simple tasks** (direct implementation): visual enhancements, minor fixes, small improvements (e.g., "enhanced header", "better styling", "fix alignment")
 - **Complex goals** (structured execution): features requiring measurable milestones, learning loops, and adaptation
 
-For simple tasks, implement directly without the full goal tracking and learning framework.
+For simple tasks, implement directly but suggest the user consider the full methodology for more substantial changes.
+
+## CRITICAL Implementation Details Warning
+
+**IMPORTANT:** Execution should focus on learning, measurement, and adaptation rather than rigid implementation of specific technologies or frameworks.
+
+## Outline
 
 When processing `/goalkit.execute` requests, follow this structured approach:
 
@@ -18,7 +49,7 @@ When processing `/goalkit.execute` requests, follow this structured approach:
    - Use `list_directory(path="PROJECT_ROOT/.goalkit/goals")` to enumerate goal directories
    - If user specified a goal, locate that specific goal directory
    - If multiple goals exist, ask user to clarify which goal to execute
-   - If no goals exist, inform user that goals must be created first
+   - If no goals exist, inform user that the full methodology sequence must be followed
 
 ### Input Analysis
 1. **Execution Strategy Mapping**: Align execution approach with selected strategies
@@ -134,6 +165,8 @@ When processing `/goalkit.execute` commands, AI agents should:
 - **`/goalkit.milestones`**: Defines what to execute and measure
 
 ### After Using `/goalkit.execute`
+- **`/goalkit.execute`**: Continue execution with adaptation based on learning
+- **Goal Completion**: When all milestones are complete, consider the goal achieved
 
 ## Best Practices
 
@@ -218,3 +251,12 @@ When processing `/goalkit.execute` commands, AI agents should:
 ### Example 3: Process Improvement Execution
 ```
 /goalkit.execute Implement new development process with team feedback collection and productivity measurement. Focus on learning what improves developer experience and code quality. Adapt process based on team input and metric improvements.
+```
+
+## Key rules
+
+- Focus on learning and adaptation rather than rigid plan execution
+- Implement with continuous measurement and validation
+- Establish clear feedback loops for adjustment
+- Document insights and knowledge gained throughout execution
+- **CRITICAL**: After execution begins, continue with adaptation based on results and learning
