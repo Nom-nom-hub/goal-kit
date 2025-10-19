@@ -85,7 +85,7 @@ PROJECT_ROOT=$(get_git_root)
 cd "$PROJECT_ROOT"
 
 # Check if this is a Goal Kit project
-if [[ ! -f ".goalkit/vision.md" ]]; then
+if [[ ! -d ".goalkit" ]]; then
     log_error "Not a Goal Kit project"
     log_info "Please run 'goalkeeper init' first to set up the project"
     exit 1
