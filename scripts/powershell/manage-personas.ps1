@@ -61,8 +61,8 @@ if (-not $ProjectRoot) {
 Set-Location $ProjectRoot
 
 # Check if this is a Goal Kit project
-$VisionFile = Join-Path $ProjectRoot ".goalkit" "vision.md"
-if (-not (Test-Path $VisionFile)) {
+$GoalKitDir = Join-Path $ProjectRoot ".goalkit"
+if (-not (Test-Path $GoalKitDir)) {
     Write-Error "Not a Goal Kit project"
     Write-Info "Please run 'goalkeeper init' first to set up the project"
     exit 1

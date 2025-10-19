@@ -45,7 +45,7 @@ $projectRoot = Get-GitRoot
 Set-Location $projectRoot
 
 # Check if this is a Goal Kit project
-if (-not (Test-Path ".goalkit/vision.md")) {
+if (-not (Test-Path ".goalkit")) {
     Write-Error "Not a Goal Kit project"
     Write-Info "Please run 'goalkeeper init' first to set up the project"
     exit 1
