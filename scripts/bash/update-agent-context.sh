@@ -1,101 +1,64 @@
 #!/bin/bash
-
-# Update AI agent context for Goal Kit development
+# update-agent-context.sh
+# Refreshes AI context files with latest Goal Kit project information.
 
 set -euo pipefail
 
-# Source common utilities
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}") && pwd)"
-source "$SCRIPT_DIR/common.sh"
+# --- Setup ---
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common.sh" || {
+  echo "Missing common.sh. Exiting."; exit 1;
+}
 
-# Function to display usage information
 usage() {
-    cat << EOF
+  cat << EOF
 Usage: $0 [OPTIONS]
 
 Update AI agent context files with current Goal Kit project information.
 
 OPTIONS:
-    -h, --help              Show this help message
-    -v, --verbose          Enable verbose output
-    -f, --force           Force update even if no changes detected
+  -h, --help      Show this help message
+  -v, --verbose   Enable verbose logging
+  -f, --force     Force update even if no changes detected
 
 EXAMPLES:
-    $0
-    $0 --verbose
-    $0 --force
-
+  $0
+  $0 --verbose
+  $0 --force
 EOF
 }
 
-# Parse command line arguments
+# --- Parse Arguments ---
 VERBOSE=false
 FORCE=false
 
 while [[ $# -gt 0 ]]; do
-    case $1 in
-        -h|--help)
-            usage
-            exit 0
-            ;;
-        -v|--verbose)
-            VERBOSE=true
-            shift
-            ;;
-        -f|--force)
-            FORCE=true
-            shift
-            ;;
-        -*)
-            log_error "Unknown option: $1"
-            usage
-            exit 1
-            ;;
-        *)
-            log_error "Unexpected argument: $1"
-            usage
-            exit 1
-            ;;
-    esac
+  case $1 in
+    -h|--help) usage; exit 0 ;;
+    -v|--verbose) VERBOSE=true ;;
+    -f|--force) FORCE=true ;;
+    *) log_error "Unknown option: $1"; usage; exit 1 ;;
+  esac
+  shift
 done
 
-# Validate we're in a git repository
+# --- Validate Repo ---
 if ! is_git_repo; then
-    log_error "Not in a git repository"
-    log_info "Please run this from the root of a Goal Kit project"
-    exit 1
+  log_error "Not in a git repository."
+  log_info "Please run this from the root of a Goal Kit project."
+  exit 1
 fi
 
-# Get project information
 PROJECT_ROOT=$(get_git_root)
 cd "$PROJECT_ROOT"
 
-# Check if this is a Goal Kit project
 if [[ ! -f ".goalkit/vision.md" ]]; then
-    log_error "Not a Goal Kit project"
-    log_info "Please run 'goalkeeper init' first to set up the project"
-    exit 1
+  log_error "Not a Goal Kit project."
+  log_info "Run 'goalkeeper init' first to initialize."
+  exit 1
 fi
 
-if [[ "$VERBOSE" == "true" ]]; then
-    log_info "Updating agent context in $PROJECT_ROOT"
-fi
-
-# Agent context files to update (in order of preference)
-CONTEXT_FILES=(
-    "CLAUDE.md"
-    ".claude/context.md"
-    "GEMINI.md"
-    ".gemini/context.md"
-    "CURSOR.md"
-    ".cursor/context.md"
-    "WINDSURF.md"
-    ".windsurf/context.md"
-    "KILOCODE.md"
-    ".kilocode/context.md"
-)
-
-UPDATED_FILES=()
+# --- Info ---
 PROJECT_NAME=$(basename "$PROJECT_ROOT")
 CURRENT_BRANCH=$(git branch --show-current)
 ACTIVE_GOALS_COUNT=$(find goals -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
@@ -126,9 +89,7 @@ personas_config = {
 print(personas_config['personas'].get('$CURRENT_PERSONA', {}).get('name', '$CURRENT_PERSONA'))
 " 2>/dev/null || echo "Unknown ($CURRENT_PERSONA)")
 
-# Generate context content
-CONTEXT_CONTENT=$(cat << EOF
-# Goal Kit Project Context
+[[ "$VERBOSE" == "true" ]] && log_info "Updating context for project '$PROJECT_NAME' on branch '$CURRENT_BRANCH'."
 
 **Project**: $PROJECT_NAME
 **Branch**: $CURRENT_BRANCH
@@ -152,24 +113,8 @@ CONTEXT_CONTENT=$(cat << EOF
 - **/goalkit.vision**: Establish project foundation and guiding principles
 - **/goalkit.goal**: Create goals with specific success metrics (no implementation details!)
 - **/goalkit.strategies**: Explore 3+ different approaches to achieve goals
-- **/goalkit.milestones**: Create measurable progress checkpoints
-- **/goalkit.execute**: Implement with learning loops and measurement
-
-### ⚠️ CRITICAL ANTI-PATTERNS TO AVOID
-- ✗ Implementing features directly without following methodology
-- ✗ Adding implementation details to goal definitions  
-- ✗ Skipping strategy exploration phase
-- ✗ Creating goals without measurable success criteria
-- ✗ Treating this as traditional requirement-driven development
-
-## 📋 Available Commands
-
-### Core Commands
-- **/goalkit.vision** - Establish project vision and principles
-- **/goalkit.goal** - Define goals and success criteria
-- **/goalkit.strategies** - Explore implementation strategies
-- **/goalkit.milestones** - Create measurable milestones
-- **/goalkit.execute** - Execute with learning and adaptation
+- **/goalkit.milestones**: Create measurable milestones
+- **/goalkit.execute**: Execute with learning and adaptation
 - **/goalkit.collaborate** - Coordinate work between agents or maintain consistency
 
 ### Coordination Commands
@@ -183,22 +128,68 @@ CONTEXT_CONTENT=$(cat << EOF
 
 ## 🚀 Project Vision
 
-$(head -20 .goalkit/vision.md 2>/dev/null | grep -v "^#" | head -10 || echo "Vision document not yet created")
+$(grep -v "^#" .goalkit/vision.md | head -10 2>/dev/null || echo "No vision defined yet.")
 
 ## 🎯 Active Goals
 
-$(if [[ -d "goals" ]] && [[ $ACTIVE_GOALS_COUNT -gt 0 ]]; then
-    echo "Recent goals:"
-    for goal_dir in goals/*/; do
-        if [[ -d "$goal_dir" ]]; then
-            goal_name=$(basename "$goal_dir")
-            goal_statement=$(grep -m 1 "Goal Statement" "$goal_dir/goal.md" 2>/dev/null | sed 's/.*Goal Statement: //' | head -1 || echo "Goal definition in progress")
-            echo "- **$goal_name**: $goal_statement"
-        fi
-    done | head -5
+if [[ $ACTIVE_GOALS_COUNT -gt 0 ]]; then
+  ACTIVE_GOALS_TEXT="Recent goals:"
+  for goal_dir in goals/*/; do
+    [[ -d "$goal_dir" ]] || continue
+    goal_name=$(basename "$goal_dir")
+    goal_statement=$(grep -m 1 "Goal Statement" "$goal_dir/goal.md" 2>/dev/null | sed 's/.*Goal Statement: //' || echo "Goal in progress")
+    ACTIVE_GOALS_TEXT+=
+
+---
+
+*This context file is auto-generated by update-agent-context.sh.*"
+
+# --- Target Context Files ---
+CONTEXT_FILES=(
+  "CLAUDE.md" ".claude/context.md"
+  "GEMINI.md" ".gemini/context.md"
+  "CURSOR.md" ".cursor/context.md"
+  "WINDSURF.md" ".windsurf/context.md"
+  "KILOCODE.md" ".kilocode/context.md"
+)
+
+# --- Write Files ---
+UPDATED_FILES=()
+
+for context_file in "${CONTEXT_FILES[@]}"; do
+  full_path="$PROJECT_ROOT/$context_file"
+  dir=$(dirname "$full_path")
+  [[ -d "$dir" ]] || mkdir -p "$dir"
+
+  if [[ -f "$full_path" || "$FORCE" == "true" ]]; then
+    echo "$CONTEXT_CONTENT" > "$full_path"
+    UPDATED_FILES+=("$context_file")
+    [[ "$VERBOSE" == "true" ]] && log_success "Updated $context_file"
+  fi
+done
+
+# --- Summary ---
+if [[ ${#UPDATED_FILES[@]} -gt 0 ]]; then
+  log_success "Context updated in ${#UPDATED_FILES[@]} files:"
+  for f in "${UPDATED_FILES[@]}"; do echo "  - $f"; done
 else
-    echo "No active goals yet. Use /goalkit.goal to create your first goal."
-fi)
+  log_warning "No context files found."
+  log_info "Supported files:"
+  printf '  - %s\n' "${CONTEXT_FILES[@]}"
+fi
+
+echo
+log_info "✅ Agent context update complete!"
+log_info "Project: $PROJECT_NAME"
+log_info "Branch: $CURRENT_BRANCH"
+log_info "Active Goals: $ACTIVE_GOALS_COUNT"
+\n'"- **$goal_name**: $goal_statement"
+  done
+  ACTIVE_GOALS_TEXT=$(echo "$ACTIVE_GOALS_TEXT" | head -8)
+else
+  ACTIVE_GOALS_TEXT="No active goals yet. Use /goalkit.goal to create your first goal."
+fi
+$ACTIVE_GOALS_TEXT
 
 ## 🤝 Active Collaborations
 
@@ -215,6 +206,13 @@ else
     echo "No active collaborations. Use /goalkit.collaborate to coordinate work."
 fi)
 
+## 📋 Core Commands
+- /goalkit.vision – Define or refine project vision  
+- /goalkit.goal – Create and manage goals  
+- /goalkit.strategies – Explore implementation approaches  
+- /goalkit.milestones – Define measurable steps  
+- /goalkit.execute – Execute and learn iteratively  
+
 ## 📊 Development Principles
 
 Remember these core principles:
@@ -228,68 +226,192 @@ Remember these core principles:
 
 ## 🔧 Next Recommended Actions
 
-$(if [[ $ACTIVE_GOALS_COUNT -eq 0 ]]; then
-    echo "1. Use /goalkit.vision to establish project vision"
-    echo "2. Use /goalkit.goal to define first goal"
-else
-    if [[ $ACTIVE_COLLABORATIONS_COUNT -eq 0 ]]; then
-        echo "1. Review active goals in goals/ directory"
-        echo "2. Use /goalkit.collaborate to coordinate work (if multiple agents)"
-        echo "3. Use /goalkit.strategies to explore implementation approaches"
-        echo "4. Use /goalkit.milestones to plan measurable progress steps"
-    else
-        echo "1. Review active goals in goals/ directory"
-        echo "2. Review active collaborations in collaborations/ directory"
-        echo "3. Use /goalkit.strategies, /goalkit.milestones, and /goalkit.execute as needed"
-    fi
-fi)
+if [[ $ACTIVE_GOALS_COUNT -eq 0 ]]; then
+  RECOMMENDED_ACTIONS=
 
 ---
 
-*This context is automatically updated by update-agent-context.sh. Last updated: $(date)*
-EOF
+*This context file is auto-generated by update-agent-context.sh.*"
+
+# --- Target Context Files ---
+CONTEXT_FILES=(
+  "CLAUDE.md" ".claude/context.md"
+  "GEMINI.md" ".gemini/context.md"
+  "CURSOR.md" ".cursor/context.md"
+  "WINDSURF.md" ".windsurf/context.md"
+  "KILOCODE.md" ".kilocode/context.md"
 )
 
-# Update context files
+# --- Write Files ---
+UPDATED_FILES=()
+
 for context_file in "${CONTEXT_FILES[@]}"; do
-    if [[ -f "$PROJECT_ROOT/$context_file" ]] || [[ "$FORCE" == "true" ]]; then
-        if echo "$CONTEXT_CONTENT" > "$PROJECT_ROOT/$context_file"; then
-            UPDATED_FILES+=("$context_file")
-            if [[ "$VERBOSE" == "true" ]]; then
-                log_success "Updated $context_file"
-            fi
-        else
-            log_error "Failed to update $context_file"
-        fi
-    fi
+  full_path="$PROJECT_ROOT/$context_file"
+  dir=$(dirname "$full_path")
+  [[ -d "$dir" ]] || mkdir -p "$dir"
+
+  if [[ -f "$full_path" || "$FORCE" == "true" ]]; then
+    echo "$CONTEXT_CONTENT" > "$full_path"
+    UPDATED_FILES+=("$context_file")
+    [[ "$VERBOSE" == "true" ]] && log_success "Updated $context_file"
+  fi
 done
 
-# Summary
+# --- Summary ---
 if [[ ${#UPDATED_FILES[@]} -gt 0 ]]; then
-    log_success "Updated agent context in ${#UPDATED_FILES[@]} file(s):"
-    for file in "${UPDATED_FILES[@]}"; do
-        echo "  - $file"
-    done
+  log_success "Context updated in ${#UPDATED_FILES[@]} files:"
+  for f in "${UPDATED_FILES[@]}"; do echo "  - $f"; done
 else
-    log_warning "No agent context files found to update"
-    log_info "Supported files:"
-    for file in "${CONTEXT_FILES[@]}"; do
-        echo "  - $file"
-    done
+  log_warning "No context files found."
+  log_info "Supported files:"
+  printf '  - %s\n' "${CONTEXT_FILES[@]}"
 fi
 
 echo
-log_info "Agent context update completed!"
+log_info "✅ Agent context update complete!"
 log_info "Project: $PROJECT_NAME"
 log_info "Branch: $CURRENT_BRANCH"
 log_info "Active Goals: $ACTIVE_GOALS_COUNT"
+1. Use /goalkit.vision to establish your project vision.\n2. Use /goalkit.goal to define your first goal.'
+else
+  if [[ $ACTIVE_COLLABORATIONS_COUNT -eq 0 ]]; then
+    RECOMMENDED_ACTIONS=
 
-if [[ $ACTIVE_GOALS_COUNT -gt 0 ]]; then
-    log_info "Recent goals:"
-    for goal_dir in goals/*/; do
-        if [[ -d "$goal_dir" ]]; then
-            goal_name=$(basename "$goal_dir")
-            echo "  - $goal_name"
-        fi
-    done | head -3
+---
+
+*This context file is auto-generated by update-agent-context.sh.*"
+
+# --- Target Context Files ---
+CONTEXT_FILES=(
+  "CLAUDE.md" ".claude/context.md"
+  "GEMINI.md" ".gemini/context.md"
+  "CURSOR.md" ".cursor/context.md"
+  "WINDSURF.md" ".windsurf/context.md"
+  "KILOCODE.md" ".kilocode/context.md"
+)
+
+# --- Write Files ---
+UPDATED_FILES=()
+
+for context_file in "${CONTEXT_FILES[@]}"; do
+  full_path="$PROJECT_ROOT/$context_file"
+  dir=$(dirname "$full_path")
+  [[ -d "$dir" ]] || mkdir -p "$dir"
+
+  if [[ -f "$full_path" || "$FORCE" == "true" ]]; then
+    echo "$CONTEXT_CONTENT" > "$full_path"
+    UPDATED_FILES+=("$context_file")
+    [[ "$VERBOSE" == "true" ]] && log_success "Updated $context_file"
+  fi
+done
+
+# --- Summary ---
+if [[ ${#UPDATED_FILES[@]} -gt 0 ]]; then
+  log_success "Context updated in ${#UPDATED_FILES[@]} files:"
+  for f in "${UPDATED_FILES[@]}"; do echo "  - $f"; done
+else
+  log_warning "No context files found."
+  log_info "Supported files:"
+  printf '  - %s\n' "${CONTEXT_FILES[@]}"
 fi
+
+echo
+log_info "✅ Agent context update complete!"
+log_info "Project: $PROJECT_NAME"
+log_info "Branch: $CURRENT_BRANCH"
+log_info "Active Goals: $ACTIVE_GOALS_COUNT"
+1. Review active goals in goals/ directory.\n2. Use /goalkit.collaborate to coordinate work (if multiple agents).\n3. Use /goalkit.strategies to explore implementation approaches.\n4. Use /goalkit.milestones to plan measurable progress steps.'
+  else
+    RECOMMENDED_ACTIONS=
+
+---
+
+*This context file is auto-generated by update-agent-context.sh.*"
+
+# --- Target Context Files ---
+CONTEXT_FILES=(
+  "CLAUDE.md" ".claude/context.md"
+  "GEMINI.md" ".gemini/context.md"
+  "CURSOR.md" ".cursor/context.md"
+  "WINDSURF.md" ".windsurf/context.md"
+  "KILOCODE.md" ".kilocode/context.md"
+)
+
+# --- Write Files ---
+UPDATED_FILES=()
+
+for context_file in "${CONTEXT_FILES[@]}"; do
+  full_path="$PROJECT_ROOT/$context_file"
+  dir=$(dirname "$full_path")
+  [[ -d "$dir" ]] || mkdir -p "$dir"
+
+  if [[ -f "$full_path" || "$FORCE" == "true" ]]; then
+    echo "$CONTEXT_CONTENT" > "$full_path"
+    UPDATED_FILES+=("$context_file")
+    [[ "$VERBOSE" == "true" ]] && log_success "Updated $context_file"
+  fi
+done
+
+# --- Summary ---
+if [[ ${#UPDATED_FILES[@]} -gt 0 ]]; then
+  log_success "Context updated in ${#UPDATED_FILES[@]} files:"
+  for f in "${UPDATED_FILES[@]}"; do echo "  - $f"; done
+else
+  log_warning "No context files found."
+  log_info "Supported files:"
+  printf '  - %s\n' "${CONTEXT_FILES[@]}"
+fi
+
+echo
+log_info "✅ Agent context update complete!"
+log_info "Project: $PROJECT_NAME"
+log_info "Branch: $CURRENT_BRANCH"
+log_info "Active Goals: $ACTIVE_GOALS_COUNT"
+1. Review active goals in goals/ directory.\n2. Review active collaborations in collaborations/ directory.\n3. Use /goalkit.strategies, /goalkit.milestones, and /goalkit.execute as needed.'
+  fi
+fi
+$RECOMMENDED_ACTIONS
+
+---
+
+*This context file is auto-generated by update-agent-context.sh.*"
+
+# --- Target Context Files ---
+CONTEXT_FILES=(
+  "CLAUDE.md" ".claude/context.md"
+  "GEMINI.md" ".gemini/context.md"
+  "CURSOR.md" ".cursor/context.md"
+  "WINDSURF.md" ".windsurf/context.md"
+  "KILOCODE.md" ".kilocode/context.md"
+)
+
+# --- Write Files ---
+UPDATED_FILES=()
+
+for context_file in "${CONTEXT_FILES[@]}"; do
+  full_path="$PROJECT_ROOT/$context_file"
+  dir=$(dirname "$full_path")
+  [[ -d "$dir" ]] || mkdir -p "$dir"
+
+  if [[ -f "$full_path" || "$FORCE" == "true" ]]; then
+    echo "$CONTEXT_CONTENT" > "$full_path"
+    UPDATED_FILES+=("$context_file")
+    [[ "$VERBOSE" == "true" ]] && log_success "Updated $context_file"
+  fi
+done
+
+# --- Summary ---
+if [[ ${#UPDATED_FILES[@]} -gt 0 ]]; then
+  log_success "Context updated in ${#UPDATED_FILES[@]} files:"
+  for f in "${UPDATED_FILES[@]}"; do echo "  - $f"; done
+else
+  log_warning "No context files found."
+  log_info "Supported files:"
+  printf '  - %s\n' "${CONTEXT_FILES[@]}"
+fi
+
+echo
+log_info "✅ Agent context update complete!"
+log_info "Project: $PROJECT_NAME"
+log_info "Branch: $CURRENT_BRANCH"
+log_info "Active Goals: $ACTIVE_GOALS_COUNT"
