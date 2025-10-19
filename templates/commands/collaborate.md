@@ -2,12 +2,12 @@
 description: Coordinate work between agents or maintain consistency for single agent execution using collaboration workflows that track dependencies, communication, and progress across development activities. Includes persona management for specialized agent roles.
 scripts:
   # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
-  sh: .goalkit/scripts/bash/setup-collaboration.sh --json "{ARGS}"
-  ps: .goalkit/scripts/powershell/setup-collaboration.ps1 -Json "{ARGS}"
+  sh: .goalkit/scripts/python/setup_collaboration.py --json "{ARGS}"
+  ps: .goalkit/scripts/python/setup_collaboration.py --json "{ARGS}"
 agent_scripts:
   # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
-  sh: .goalkit/scripts/bash/update-agent-context.sh
-  ps: .goalkit/scripts/powershell/update-agent-context.ps1
+  sh: .goalkit/scripts/python/update-agent-context.sh
+  ps: .goalkit/scripts/python/update-agent-context.py
 ---
 
 ## User Input

@@ -2,12 +2,12 @@
 description: Implements goals with continuous learning, measurement, and adaptation. This command ensures agents are following the complete methodology by building on defined goals, strategies, and milestones.
 scripts:
   # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
-  sh: .goalkit/scripts/bash/setup-strategy.sh --json "{ARGS}"  # Using same script structure as strategies for consistency
-  ps: .goalkit/scripts/powershell/setup-strategy.ps1 -Json "{ARGS}"  # Using same script structure as strategies for consistency
+  sh: .goalkit/scripts/python/setup_strategy.py --json "{ARGS}"
+  ps: .goalkit/scripts/python/setup_strategy.py --json "{ARGS}"
 agent_scripts:
   # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
-  sh: .goalkit/scripts/bash/update-agent-context.sh __AGENT__
-  ps: .goalkit/scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
+  sh: .goalkit/scripts/python/update_agent_context.py __AGENT__
+  ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
 ---
 
 ## User Input

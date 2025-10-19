@@ -2,12 +2,12 @@
 description: Switch between specialized agent personas for different development tasks. Use specific roles like GitHub specialist, milestone planner, or quality assurance expert as needed.
 scripts:
   # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
-  sh: .goalkit/scripts/bash/manage-personas.sh switch "{ARGS}"
-  ps: .goalkit/scripts/powershell/manage-personas.ps1 -Command switch -Persona "{ARGS}"
+  sh: .goalkit/scripts/python/manage_personas.py switch "{ARGS}"
+  ps: .goalkit/scripts/python/manage_personas.py switch "{ARGS}"
 agent_scripts:
   # Paths are relative to PROJECT ROOT (not relative to .goalkit/)
-  sh: .goalkit/scripts/bash/update-agent-context.sh
-  ps: .goalkit/scripts/powershell/update-agent-context.ps1
+  sh: .goalkit/scripts/python/update_agent_context.py
+  ps: .goalkit/scripts/python/update_agent_context.py
 ---
 
 ## User Input
