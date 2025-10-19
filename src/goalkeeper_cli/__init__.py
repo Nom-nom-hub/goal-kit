@@ -785,6 +785,49 @@ Remember these core principles:
 3. Use /goalkit.strategies to explore implementation approaches
 4. Use /goalkit.milestones to plan measurable progress steps
 
+## Agent Development Guidelines
+When working with bash scripts and code in this project, AI agents should follow these critical guidelines to avoid common mistakes:
+
+### 1. Verify Before Modifying
+- Always check current repository state: `git status`, `git diff`
+- Test syntax before making changes: `bash -n script_name.sh`
+- Understand file structure before modifying complex elements like heredocs or multi-line strings
+
+### 2. Safe Editing Practices
+- Use targeted `edit` operations when possible instead of overwriting entire files
+- For complex files with heredocs (`<< EOF`), be especially careful with structure and command substitution
+- Always verify conditional blocks remain properly balanced (`if/fi`, `for/done`, etc.)
+
+### 3. Thorough Validation After Changes
+- Immediately validate syntax after each change: `bash -n script_name.sh`
+- Test functionality before moving on to next tasks
+- Verify all related files (bash and PowerShell equivalents) have consistent changes
+
+### 4. Systematic Conflict Resolution
+- Resolve merge conflicts one at a time, not all at once
+- Verify each conflict resolution before proceeding
+- Look for special characters or encoding issues introduced during merges
+
+### 5. Cross-Platform Consistency
+- When fixing an issue in one language/script type, check for similar patterns in others (bash vs PowerShell)
+- Maintain consistent validation logic across implementations
+
+### 6. Verification Checklist for Bash Scripts
+- [ ] `bash -n script_name.sh` returns no errors
+- [ ] All variables are properly defined before use
+- [ ] All conditional blocks are properly closed
+- [ ] Heredoc structures are intact
+- [ ] No special characters from merge conflicts remain
+
+### 7. Critical Warning Signs
+If you see syntax errors like "unexpected token" or "unexpected EOF", check for:
+- Unbalanced parentheses in command substitutions
+- Special characters from merge conflicts
+- Broken heredoc structures
+- Missing closing brackets or quotes
+
+Following these guidelines will help prevent the syntax errors, merge conflict issues, and validation problems that can occur during development.
+
 ---
 
 *This context is automatically created by goalkeeper init. Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
