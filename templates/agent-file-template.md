@@ -1,131 +1,108 @@
-# [PROJECT NAME] Goal-Driven Development Guidelines
+# [PROJECT NAME] - Goal-Driven Development Guide
 
-Auto-generated from all goals. Last updated: [DATE]
+**Auto-generated for agents. Last updated: [DATE]**
 
-## Active Goal(s)
+## 🎯 Goal-Driven Methodology
+
+### **CRITICAL: Always follow this 5-step sequence:**
+1. **`/goalkit.vision`** - Establish project vision and principles
+2. **`/goalkit.goal`** - Define goals with measurable outcomes
+3. **`/goalkit.strategies`** - Explore multiple implementation approaches
+4. **`/goalkit.milestones`** - Create measurable progress checkpoints
+5. **`/goalkit.execute`** - Implement with learning and adaptation
+
+### **Simple Tasks vs Complex Goals**
+- **Simple tasks** (direct implementation): "fix styling", "update header", "add margin"
+- **Complex goals** (use full methodology): features with measurable outcomes (%,$,timeframes,user counts)
+
+## 📋 Available Commands
+
+| Command | Purpose | When to Use |
+|---------|---------|-------------|
+| `/goalkit.vision` | Establish project foundation | Start of new project |
+| `/goalkit.goal` | Define measurable goals | After vision is set |
+| `/goalkit.strategies` | Explore multiple approaches | After goal is defined |
+| `/goalkit.milestones` | Create progress checkpoints | After strategies chosen |
+| `/goalkit.execute` | Implement with learning | After milestones created |
+
+## 🚨 Critical Rules
+
+### **For Goals:**
+✅ **DO**: Focus on measurable outcomes (%, $, timeframes, user counts)
+✅ **DO**: Include specific success targets
+✅ **DO**: Identify target users and stakeholders
+❌ **DON'T**: Include implementation details (languages, frameworks, APIs)
+
+### **For Strategies:**
+✅ **DO**: Explore 3+ different approaches
+✅ **DO**: Compare feasibility, effort, risk, learning potential
+✅ **DO**: Frame as testable hypotheses
+❌ **DON'T**: Focus on just one "correct" solution
+
+### **For Milestones:**
+✅ **DO**: Create measurable progress indicators
+✅ **DO**: Include clear success criteria
+✅ **DO**: Focus on learning and validation
+❌ **DON'T**: Create implementation task lists
+
+### **For Execution:**
+✅ **DO**: Focus on learning and adaptation
+✅ **DO**: Measure progress continuously
+✅ **DO**: Document insights and knowledge gained
+❌ **DON'T**: Follow rigid, untested plans
+
+## 🎯 Active Goals
 [EXTRACTED FROM ALL GOAL.MD FILES]
 
-## Project Structure
-```
-[ACTUAL STRUCTURE FROM GOALS]
-```
+## 📊 Project Status
+- **Goals Created**: [Number of goals in goals/ directory]
+- **Strategies Defined**: [Number of strategy files]
+- **Milestones Set**: [Number of milestone files]
+- **Current Branch**: [Current git branch]
 
-## Core Methodology Commands
-- **`/goalkit.vision`** - Establish project vision and principles
-- **`/goalkit.goal`** - Define goals and success criteria  
-- **`/goalkit.strategies`** - Explore implementation strategies
-- **`/goalkit.milestones`** - Create measurable milestones
-- **`/goalkit.execute`** - Execute with learning and adaptation
+## 🔧 Next Recommended Actions
 
-## Methodology Adherence Guidelines
+**If no goals exist:**
+1. Use `/goalkit.vision` to establish project vision
+2. Use `/goalkit.goal` to define first goal
 
-### Must Follow the 5-Step Process
-**ALWAYS follow this sequence for complex goals:**
-1. `/goalkit.vision` - Establish vision and principles
-2. `/goalkit.goal` - Define measurable goals with outcomes
-3. `/goalkit.strategies` - Explore multiple approaches
-4. `/goalkit.milestones` - Create measurable progress checkpoints
-5. `/goalkit.execute` - Execute with learning and adaptation
+**If goals exist but no strategies:**
+1. Use `/goalkit.strategies` to explore approaches
 
-### When to Use Each Command
+**If strategies exist but no milestones:**
+1. Use `/goalkit.milestones` to create checkpoints
 
-#### Skip Full Process (Simple Tasks)
-For simple tasks that don't require measurable outcomes, you may implement directly:
-- Visual enhancements (e.g., "enhanced header", "better styling")
-- Minor fixes (e.g., "fix button color", "add margin")
-- Small improvements without measurable success criteria
+**If milestones exist:**
+1. Use `/goalkit.execute` to implement with learning
 
-#### Use Full Process (Complex Goals)
-For complex goals with measurable success criteria, **ALWAYS** follow the complete 5-step methodology:
-- New features with measurable outcomes (%,$,timeframes,user counts)
-- System changes with defined success metrics
-- User workflows requiring success measurements
-- Any goal that impacts multiple parts of the system
+## 💡 Agent Best Practices
 
-### Critical Adherence Rules
+### **Python Script Development:**
+- **Validate syntax**: `python -m py_compile script_name.py` before changes
+- **Check git status**: `git status`, `git diff` before modifying
+- **Safe editing**: Use targeted edits, not full file overwrites
+- **Cross-platform**: Use `os.path` or `pathlib` for file paths
 
-#### For `/goalkit.goal`:
-- All goals must have quantifiable success metrics with specific targets (%,$,timeframes,user counts)
-- No implementation details (languages, frameworks, APIs) allowed in goal definitions
-- Focus on measurable user/business outcomes instead
+### **Goal Kit Workflow:**
+- **Always remind** users of next steps after each command
+- **Follow sequence** - don't skip methodology steps
+- **Focus on outcomes** - not implementation details
+- **Document learnings** - capture insights throughout process
 
-#### For `/goalkit.strategies`:
-- Explore multiple valid approaches (not just one "correct" solution)
-- Each strategy must be testable with clear validation criteria
-- Compare strategies across relevant dimensions (feasibility, effort, risk, learning potential)
+### **Common Pitfalls to Avoid:**
+- ❌ Skipping strategy exploration
+- ❌ Adding implementation details to goals
+- ❌ Creating goals without measurable targets
+- ❌ Treating as traditional requirement-driven development
 
-#### For `/goalkit.milestones`:
-- Create measurable progress checkpoints with specific success indicators
-- Each milestone should validate learning and progress toward the goal
-- Include clear value delivered at each milestone
+## 📚 Key Principles
 
-#### For `/goalkit.execute`:
-- Focus on learning and adaptation rather than rigid plan execution
-- Implement with continuous measurement and validation
-- Document insights and knowledge gained throughout execution
+1. **Outcome-First**: Prioritize user and business outcomes
+2. **Strategy Flexibility**: Multiple valid approaches exist for any goal
+3. **Measurement-Driven**: Progress must be measured and validated
+4. **Learning Integration**: Treat implementation as hypothesis testing
+5. **Adaptive Planning**: Change course based on evidence
 
-### Next Step Reminders
-After completing each command, **ALWAYS** remind the user of the next required step:
+---
 
-- After `/goalkit.goal`: "Now use `/goalkit.strategies` to explore multiple approaches"
-- After `/goalkit.strategies`: "Now use `/goalkit.milestones` to create measurable checkpoints"
-- After `/goalkit.milestones`: "Now use `/goalkit.execute` to implement with learning loops"
-
-## Strategy Principles
-[EXTRACTED FROM STRATEGIES.MD]
-
-## Milestone Tracking
-[EXTRACTED FROM MILESTONES.MD]
-
-## Execution Focus
-[EXTRACTED FROM EXECUTION.MD]
-
-## Recent Progress
-[LAST 3 COMPLETED MILESTONES AND OUTCOMES]
-
-## Agent Development Guidelines
-When working with Python scripts and code in this project, AI agents should follow these critical guidelines to avoid common mistakes:
-
-### 1. Verify Before Modifying
-- Always check current repository state: `git status`, `git diff`
-- Validate syntax before making changes: `python -m py_compile script_name.py`
-- Understand file structure before modifying complex elements like heredocs or multi-line strings
-
-### 2. Safe Editing Practices
-- Use targeted `edit` operations when possible instead of overwriting entire files
-- For complex files with heredocs (`<< EOF`), be especially careful with structure and command substitution
-- Always verify conditional blocks remain properly balanced (`if/fi`, `for/done`, etc.)
-
-### 3. Thorough Validation After Changes
-- Immediately validate syntax after each change: `python -m py_compile script_name.py`
-- Test functionality before moving on to next tasks
-- Verify all related files (Python equivalents) have consistent changes
-
-### 4. Systematic Conflict Resolution
-- Resolve merge conflicts one at a time, not all at once
-- Verify each conflict resolution before proceeding
-- Look for special characters or encoding issues introduced during merges
-
-### 5. Cross-Platform Consistency
-- When fixing an issue in Python scripts, check for similar patterns in other Python scripts
-- Maintain consistent validation logic across implementations
-
-### 6. Verification Checklist for Python Scripts
-- [ ] `python -m py_compile script_name.py` returns no errors
-- [ ] All variables are properly defined before use
-- [ ] All conditional blocks are properly closed
-- [ ] Heredoc structures are intact
-- [ ] No special characters from merge conflicts remain
-
-### 7. Critical Warning Signs
-If you see syntax errors like "unexpected token" or "unexpected EOF", check for:
-- Unbalanced parentheses in command substitutions
-- Special characters from merge conflicts
-- Broken heredoc structures
-- Missing closing brackets or quotes
-
-Following these guidelines will help prevent the syntax errors, merge conflict issues, and validation problems that can occur during development.
-
-<!-- MANUAL ADDITIONS START -->
-<!-- Add any manual context, constraints, or guidelines here -->
-<!-- MANUAL ADDITIONS END -->
+*This guide is automatically created by goalkeeper init. It provides essential guidance for agents working on this Goal Kit project.*
