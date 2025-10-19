@@ -31,6 +31,18 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 **IMPORTANT:** Goals must NOT contain implementation details (languages, frameworks, APIs). Focus on measurable user/business outcomes instead.
 
+## Active Persona Context
+
+**Current Persona**: [Agent determines current active persona]
+
+Consider your specialized role when creating this goal:
+- **General Agent**: Focus on overall goal structure and integration with other goals
+- **Strategy Explorer**: Emphasize multiple approach considerations and technical feasibility
+- **Milestone Planner**: Focus on measurable outcomes and success metrics
+- **QA Specialist**: Consider testing and validation requirements
+- **Documentation Specialist**: Plan for necessary documentation
+- **GitHub Specialist**: Consider version control and repository organization (if applicable)
+
 ## Outline
 
 The text the user typed after `/goalkit.goal` in the triggering message **is** the goal description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
@@ -55,9 +67,8 @@ Given that goal description, do this:
    
    - The goal description argument is passed as the entire user input from $ARGUMENTS
    - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\\''m Groot' (or double-quote if possible: "I'm Groot")
-   - First find the git repository root by looking for `.git` directory or using git command to locate it
-   - Change to the repository root directory before executing the script  
-   - Ensure the script path is resolved from the repository root (path should not contain duplicate `.goalkit/` prefixes.)
+   - Execute the script from the current project directory (no directory change needed)  
+   - Ensure the script path is resolved from the current directory (path should not contain duplicate `.goalkit/` prefixes.)
    - Verify the script file exists at the expected path: `{PROJECT_ROOT}/.goalkit/scripts/[platform]/[script-name]` before executing
    - If the file exists at the expected path but the command fails, double-check path resolution
    - You must only ever run this script once

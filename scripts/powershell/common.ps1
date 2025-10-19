@@ -133,9 +133,6 @@ function New-GoalBranch {
 # Update the agent context file with current goal information
 function Update-AgentContext {
     $projectRoot = Get-GitRoot
-    $currentDir = Get-Location
-    $goalName = Split-Path $currentDir -Leaf
-
     # Look for agent-specific context files
     $contextFiles = @(
         "CLAUDE.md",
@@ -399,7 +396,7 @@ function Set-GoalEnvironment {
 }
 
 # Cleanup function for error handling
-function Cleanup-OnError {
+function Clear-ErrorState {
     $exitCode = $LASTEXITCODE
     if ($exitCode -ne 0) {
         Write-Error "Script failed with exit code $exitCode"
@@ -410,11 +407,11 @@ function Cleanup-OnError {
 
 # Set up error handling
 trap {
-    Cleanup-OnError
+    Clear-ErrorState
 }
 
 # Common function for JSON mode output
-function Output-JsonMode {
+function Write-JsonOutput {
     param([object]$JsonData)
     
     $jsonOutput = $JsonData | ConvertTo-Json -Compress

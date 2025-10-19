@@ -726,13 +726,31 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 **Agent**: {ai_assistant}
 **Updated**: {datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')}
 
-## 🎯 Goal-Driven Development Status
+## 🎯 CRITICAL: Goal-Driven Development Methodology
 
-This project uses Goal-Driven Development methodology. Focus on:
-- Measurable outcomes over feature specifications
-- Multiple strategy exploration before implementation
-- Learning and adaptation during execution
-- Success metrics validation
+**YOU MUST FOLLOW THESE RULES EXACTLY:**
+
+### Core Methodology Rules
+1. **OUTCOMES FIRST**: Always focus on measurable user/business outcomes, NOT implementation details
+2. **NO IMPLEMENTATION DETAILS IN GOALS**: Never put languages, frameworks, APIs, or methods in goal definitions
+3. **USE THE 5-CMD WORKFLOW**: Always follow vision → goal → strategies → milestones → execute sequence
+4. **MEASURABLE SUCCESS**: Every goal must have specific, quantifiable metrics (%, $, time, user counts)
+5. **STRATEGY EXPLORATION**: Before implementing, ALWAYS explore multiple approaches using /goalkit.strategies
+6. **ADAPTIVE EXECUTION**: Be ready to pivot based on learning and evidence during /goalkit.execute
+
+### When to Use Each Command
+- **/goalkit.vision**: Establish project foundation and guiding principles
+- **/goalkit.goal**: Create goals with specific success metrics (no implementation details!)
+- **/goalkit.strategies**: Explore 3+ different approaches to achieve goals
+- **/goalkit.milestones**: Create measurable progress checkpoints
+- **/goalkit.execute**: Implement with learning loops and measurement
+
+### ⚠️ CRITICAL ANTI-PATTERNS TO AVOID
+- ✗ Implementing features directly without following methodology
+- ✗ Adding implementation details to goal definitions  
+- ✗ Skipping strategy exploration phase
+- ✗ Creating goals without measurable success criteria
+- ✗ Treating this as traditional requirement-driven development
 
 ## 📋 Available Commands
 
@@ -985,7 +1003,7 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
 def create_agent_config(project_path: Path, selected_ai: str) -> None:
     """Create agent-specific configuration files and directories."""
     import shutil
-    
+
     # Define the agent folder mapping
     agent_folder_map = {
         "claude": ".claude/",
@@ -1001,20 +1019,25 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
         "roo": ".roo/",
         "q": ".amazonq/"
     }
-    
+
     # Get the agent folder name
     agent_folder = agent_folder_map.get(selected_ai)
     if not agent_folder:
         return  # Skip if agent is not in the map
-    
+
+    # Check if this agent requires CLI (and thus should get commands folder)
+    agent_config = AGENT_CONFIG.get(selected_ai)
+    requires_cli = agent_config and agent_config.get("requires_cli", False) if agent_config else False
+
     # Path to the agent template directory
     agent_template_path = Path(__file__).parent.parent / "agent_templates" / selected_ai
-    
+
+    # Create agent configuration directory
+    agent_config_dir = project_path / agent_folder.strip("/")  # Remove trailing slash
+    agent_config_dir.mkdir(parents=True, exist_ok=True)
+
     # If agent template exists, copy it to the project
     if agent_template_path.exists():
-        agent_config_dir = project_path / agent_folder.strip("/")  # Remove trailing slash
-        agent_config_dir.mkdir(parents=True, exist_ok=True)
-        
         # Copy all files from the agent template directory
         for item in agent_template_path.iterdir():
             dest_path = agent_config_dir / item.name
@@ -1022,6 +1045,58 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
                 shutil.copy2(item, dest_path)
             elif item.is_dir():
                 shutil.copytree(item, dest_path, dirs_exist_ok=True)
+
+    # Create agent-specific command/workflow/prompt folders
+    # Define the correct folder structure for each agent type
+    agent_folder_structure = {
+        "claude": "commands",
+        "gemini": "commands",
+        "cursor": "commands",
+        "qwen": "commands",
+        "opencode": "command",  # Note: singular "command" not "commands"
+        "windsurf": "workflows",
+        "codex": "prompts",
+        "kilocode": "workflows",
+        "auggie": "commands",
+        "roo": "commands",
+        "codebuddy": "commands",
+        "copilot": "prompts",
+        "q": "prompts"
+    }
+
+    # Get the correct folder name for this agent
+    folder_name = agent_folder_structure.get(selected_ai, "commands")
+    agent_commands_dir = agent_config_dir / folder_name
+    agent_commands_dir.mkdir(parents=True, exist_ok=True)
+
+    # Copy templates - ensure all agents get appropriate templates
+    # First, look for agent-specific templates if they exist
+    agent_specific_template_dir = Path(__file__).parent.parent / "templates" / selected_ai / folder_name
+    if agent_specific_template_dir.exists():
+        # Use agent-specific templates for this folder type
+        for template_file in agent_specific_template_dir.iterdir():
+            if template_file.is_file() and template_file.suffix == ".md":
+                dest_path = agent_commands_dir / template_file.name
+                shutil.copy2(template_file, dest_path)
+    else:
+        # Use the commands templates as a fallback for ALL agent types
+        # This ensures that even agents expecting "workflows" or "prompts" 
+        # still get the core command templates if no specific templates exist
+        commands_source_dir = Path(__file__).parent.parent / "templates" / "commands"
+        if commands_source_dir.exists():
+            for command_file in commands_source_dir.iterdir():
+                if command_file.is_file() and command_file.suffix == ".md":
+                    dest_path = agent_commands_dir / command_file.name
+                    shutil.copy2(command_file, dest_path)
+
+        # Special handling for VS Code settings for Copilot
+        if selected_ai == "copilot":
+            vscode_settings_source = Path(__file__).parent.parent / "templates" / "vscode-settings.json"
+            if vscode_settings_source.exists():
+                vscode_dir = project_path / ".vscode"
+                vscode_dir.mkdir(parents=True, exist_ok=True)
+                dest_path = vscode_dir / "settings.json"
+                shutil.copy2(vscode_settings_source, dest_path)
 
 @app.command()
 def init(
@@ -1206,6 +1281,9 @@ def init(
             local_client = httpx.Client(verify=local_ssl_context)
 
             download_and_extract_template(project_path, selected_ai, selected_script, here, verbose=False, tracker=tracker, client=local_client, debug=debug, github_token=github_token)
+
+            # Create agent-specific configuration and commands folders
+            create_agent_config(project_path, selected_ai)
 
             ensure_executable_scripts(project_path, tracker=tracker)
 
