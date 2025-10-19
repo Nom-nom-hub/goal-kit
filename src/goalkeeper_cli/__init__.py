@@ -812,6 +812,12 @@ When working with bash scripts and code in this project, AI agents should follow
 - When fixing an issue in one language/script type, check for similar patterns in others (bash vs PowerShell)
 - Maintain consistent validation logic across implementations
 
+### 6. PowerShell Script Specific Guidelines
+- When working with PowerShell scripts (.ps1), use PowerShell-specific validation: `Test-Path "path"` instead of bash equivalents
+- For PowerShell syntax checking, use PowerShell-specific tools rather than bash -n
+- Be aware that PowerShell uses different escaping and path separators (\\ vs /)
+- Remember PowerShell cmdlets like Get-Content, Join-Path, Split-Path behave differently than bash commands
+
 ### 6. Verification Checklist for Bash Scripts
 - [ ] `bash -n script_name.sh` returns no errors
 - [ ] All variables are properly defined before use
