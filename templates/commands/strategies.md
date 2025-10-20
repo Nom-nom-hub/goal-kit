@@ -11,7 +11,7 @@ agent_scripts:
 ## Quick Prerequisites Check
 
 **BEFORE EXPLORING STRATEGIES**:
-1. **Goal exists**: Check `goals/` directory for goal files
+1. **Goal exists**: Check `.goalkit/goals/` directory for goal files
 2. **Goal is well-defined**: Verify goal has clear success metrics
 
 **If missing**: Tell user to use `/goalkit.goal` first.

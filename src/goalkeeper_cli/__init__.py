@@ -891,13 +891,10 @@ Remember these core principles:
 
 ## 🔧 Next Recommended Actions
 
-**🚨 STRICT WORKFLOW: Run one command at a time**
-
-1. **First**: Use /goalkit.vision to establish project vision → **🛑 STOP**
-2. **Then wait**: User runs /goalkit.goal to define first goal → **🛑 STOP**
-3. **Then wait**: User runs /goalkit.strategies to explore approaches → **🛑 STOP**
-4. **Then wait**: User runs /goalkit.milestones to plan milestones → **🛑 STOP**
-5. **Finally**: User runs /goalkit.execute to implement → Continue
+1. Use /goalkit.vision to establish project vision
+2. Use /goalkit.goal to define first goal
+3. Use /goalkit.strategies to explore implementation approaches
+4. Use /goalkit.milestones to plan measurable progress steps
 
 ## Agent Development Guidelines
 When working with Python scripts and code in this project, AI agents should follow these critical guidelines to avoid common mistakes:
@@ -1585,13 +1582,13 @@ def init(
         steps_lines.append(f"{step_num}. Set [cyan]CODEX_HOME[/cyan] environment variable before running Codex: [cyan]{cmd}[/cyan]")
         step_num += 1
 
-    steps_lines.append(f"{step_num}. Start using slash commands with your AI agent (ONE AT A TIME):")
+    steps_lines.append(f"{step_num}. Start using slash commands with your AI agent:")
 
-    steps_lines.append("   🚨 [cyan]/goalkit.vision[/] - Establish project vision → [red]🛑 STOP[/]")
-    steps_lines.append("   ⏳ Wait for user to run: [cyan]/goalkit.goal[/] - Define goals → [red]🛑 STOP[/]")
-    steps_lines.append("   ⏳ Wait for user to run: [cyan]/goalkit.strategies[/] - Explore strategies → [red]🛑 STOP[/]")
-    steps_lines.append("   ⏳ Wait for user to run: [cyan]/goalkit.milestones[/] - Create milestones → [red]🛑 STOP[/]")
-    steps_lines.append("   ⏳ Wait for user to run: [cyan]/goalkit.execute[/] - Execute with learning → Continue")
+    steps_lines.append("   [cyan]/goalkit.vision[/] - Establish project vision and principles")
+    steps_lines.append("   [cyan]/goalkit.goal[/] - Define goals and success criteria")
+    steps_lines.append("   [cyan]/goalkit.strategies[/] - Explore implementation strategies")
+    steps_lines.append("   [cyan]/goalkit.milestones[/] - Create measurable milestones")
+    steps_lines.append("   [cyan]/goalkit.execute[/] - Execute with learning and adaptation")
 
     steps_panel = Panel("\n".join(steps_lines), title="Next Steps", border_style="cyan", padding=(1,2))
     console.print()

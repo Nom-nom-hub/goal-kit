@@ -8,7 +8,7 @@ agent_scripts:
 ## Quick Prerequisites Check
 
 **BEFORE EXECUTING**:
-1. **Goal exists**: Check `goals/` directory for goal files
+1. **Goal exists**: Check `.goalkit/goals/` directory for goal files
 2. **Strategies defined**: Verify `strategies.md` in goal directory
 3. **Milestones created**: Verify `milestones.md` in goal directory
 
@@ -87,7 +87,7 @@ Use `/goalkit.execute` when:
 ## Output
 
 The command generates:
-- `goals/[###-goal-name]/execution.md` - Adaptive execution guide
+- `.goalkit/goals/[###-goal-name]/execution.md` - Adaptive execution guide
 - Measurement framework for tracking progress
 - Learning capture system for insights
 - Adaptation framework for strategy changes
@@ -95,7 +95,7 @@ The command generates:
 ### Agent File Creation Instructions
 
 When processing `/goalkit.execute` commands, AI agents should:
-1. Locate the appropriate goal directory in the `goals/` folder (the most recently created or specified goal)
+1. Locate the appropriate goal directory in the `.goalkit/goals/` folder (the most recently created or specified goal)
 2. Create the `execution.md` file inside that goal directory
 3. Use the current date in YYYY-MM-DD format for the "Date" field
 4. Write the complete execution plan using the template structure below
@@ -103,8 +103,8 @@ When processing `/goalkit.execute` commands, AI agents should:
 6. After creating the execution file, inform the user that the execution plan has been completed and suggest beginning implementation
 
 ### File Creation Process
-- **Locate Directory**: `goals/[###-goal-name]/` (most recent goal or specified goal)
-- **Create File**: `goals/[###-goal-name]/execution.md` with the execution content
+- **Locate Directory**: `.goalkit/goals/[###-goal-name]/` (most recent goal or specified goal)
+- **Create File**: `.goalkit/goals/[###-goal-name]/execution.md` with the execution content
 - **Template**: Use the structure provided in the "Execution Components" section below
 
 ## Execution Components
