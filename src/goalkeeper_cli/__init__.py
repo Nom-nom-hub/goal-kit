@@ -696,6 +696,31 @@ def create_agent_file(project_path: Path, ai_assistant: str):
     content = content.replace("[EXTRACTED FROM EXECUTION.MD]", "No execution plans yet. Use /goalkit.execute after creating milestones.")
     content = content.replace("[LAST 3 COMPLETED MILESTONES AND OUTCOMES]", "No completed milestones yet.")
 
+    # Add strict workflow enforcement to agent files
+    # Insert after the "## 🔧 Next Recommended Actions" section
+    workflow_enforcement = """
+
+## 🚨 STRICT WORKFLOW ENFORCEMENT
+
+**🛑 STOP AFTER EACH COMMAND - ONE AT A TIME**
+
+**FORBIDDEN AGENT BEHAVIORS:**
+- ❌ Creating goals automatically after vision
+- ❌ Starting coding after vision creation
+- ❌ Chaining commands without user input
+- ❌ Skipping methodology steps
+
+**ALLOWED SEQUENCE:**
+- `/goalkit.vision` → Create vision → **🛑 STOP**
+- User runs `/goalkit.goal` → Create goal → **🛑 STOP**
+- User runs `/goalkit.strategies` → Explore strategies → **🛑 STOP**
+- User runs `/goalkit.milestones` → Create milestones → **🛑 STOP**
+- User runs `/goalkit.execute` → Implement → Continue
+"""
+    # Insert the workflow enforcement before the end of the file
+    content = content.replace("*This guide is automatically created by goalkeeper init. It provides essential guidance for agents working on this Goal Kit project.*",
+                             workflow_enforcement + "\n*This guide is automatically created by goalkeeper init. It provides essential guidance for agents working on this Goal Kit project.*")
+
     # Define agent-specific file names and locations
     agent_file_locations = {
         "claude": [".claude/goal-kit-guide.md"],
@@ -795,6 +820,15 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 
 **YOU MUST FOLLOW THESE RULES EXACTLY:**
 
+### 🚨 STRICT WORKFLOW ENFORCEMENT - ONE COMMAND AT A TIME
+**🛑 STOP AFTER EACH COMMAND - WAIT FOR USER**
+
+1. **`/goalkit.vision`** → Create vision file → **🛑 STOP**
+2. **User runs** `/goalkit.goal`** → Create goal → **🛑 STOP**
+3. **User runs** `/goalkit.strategies`** → Explore strategies → **🛑 STOP**
+4. **User runs** `/goalkit.milestones`** → Create milestones → **🛑 STOP**
+5. **User runs** `/goalkit.execute`** → Implement with learning → **Continue**
+
 ### Core Methodology Rules
 1. **OUTCOMES FIRST**: Always focus on measurable user/business outcomes, NOT implementation details
 2. **NO IMPLEMENTATION DETAILS IN GOALS**: Never put languages, frameworks, APIs, or methods in goal definitions
@@ -809,6 +843,18 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 - **/goalkit.strategies**: Explore 3+ different approaches to achieve goals
 - **/goalkit.milestones**: Create measurable progress checkpoints
 - **/goalkit.execute**: Implement with learning loops and measurement
+
+### 🚨 FORBIDDEN AGENT BEHAVIORS
+**❌ STOP: DO NOT chain commands automatically**
+- ❌ Running `/goalkit.goal` after `/goalkit.vision` without user input
+- ❌ Starting coding or implementation after vision creation
+- ❌ Skipping any methodology steps
+- ❌ Proceeding without explicit user commands
+
+**✅ ALLOWED: Only these specific actions**
+- ✅ Creating vision file after `/goalkit.vision` → **🛑 STOP**
+- ✅ Creating goal files after `/goalkit.goal` → **🛑 STOP**
+- ✅ Starting implementation after `/goalkit.execute` → Continue
 
 ### ⚠️ CRITICAL ANTI-PATTERNS TO AVOID
 - ✗ Implementing features directly without following methodology
@@ -845,10 +891,13 @@ Remember these core principles:
 
 ## 🔧 Next Recommended Actions
 
-1. Use /goalkit.vision to establish project vision
-2. Use /goalkit.goal to define first goal
-3. Use /goalkit.strategies to explore implementation approaches
-4. Use /goalkit.milestones to plan measurable progress steps
+**🚨 STRICT WORKFLOW: Run one command at a time**
+
+1. **First**: Use /goalkit.vision to establish project vision → **🛑 STOP**
+2. **Then wait**: User runs /goalkit.goal to define first goal → **🛑 STOP**
+3. **Then wait**: User runs /goalkit.strategies to explore approaches → **🛑 STOP**
+4. **Then wait**: User runs /goalkit.milestones to plan milestones → **🛑 STOP**
+5. **Finally**: User runs /goalkit.execute to implement → Continue
 
 ## Agent Development Guidelines
 When working with Python scripts and code in this project, AI agents should follow these critical guidelines to avoid common mistakes:
@@ -1536,13 +1585,13 @@ def init(
         steps_lines.append(f"{step_num}. Set [cyan]CODEX_HOME[/cyan] environment variable before running Codex: [cyan]{cmd}[/cyan]")
         step_num += 1
 
-    steps_lines.append(f"{step_num}. Start using slash commands with your AI agent:")
+    steps_lines.append(f"{step_num}. Start using slash commands with your AI agent (ONE AT A TIME):")
 
-    steps_lines.append("   2.1 [cyan]/goalkit.vision[/] - Establish project vision and principles")
-    steps_lines.append("   2.2 [cyan]/goalkit.goal[/] - Define goals and success criteria")
-    steps_lines.append("   2.3 [cyan]/goalkit.strategies[/] - Explore implementation strategies")
-    steps_lines.append("   2.4 [cyan]/goalkit.milestones[/] - Create measurable milestones")
-    steps_lines.append("   2.5 [cyan]/goalkit.execute[/] - Execute with learning and adaptation")
+    steps_lines.append("   🚨 [cyan]/goalkit.vision[/] - Establish project vision → [red]🛑 STOP[/]")
+    steps_lines.append("   ⏳ Wait for user to run: [cyan]/goalkit.goal[/] - Define goals → [red]🛑 STOP[/]")
+    steps_lines.append("   ⏳ Wait for user to run: [cyan]/goalkit.strategies[/] - Explore strategies → [red]🛑 STOP[/]")
+    steps_lines.append("   ⏳ Wait for user to run: [cyan]/goalkit.milestones[/] - Create milestones → [red]🛑 STOP[/]")
+    steps_lines.append("   ⏳ Wait for user to run: [cyan]/goalkit.execute[/] - Execute with learning → Continue")
 
     steps_panel = Panel("\n".join(steps_lines), title="Next Steps", border_style="cyan", padding=(1,2))
     console.print()

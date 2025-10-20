@@ -4,12 +4,19 @@
 
 ## 🎯 Goal-Driven Methodology
 
-### **CRITICAL: Always follow this 5-step sequence:**
-1. **`/goalkit.vision`** - Establish project vision and principles
-2. **`/goalkit.goal`** - Define goals with measurable outcomes
-3. **`/goalkit.strategies`** - Explore multiple implementation approaches
-4. **`/goalkit.milestones`** - Create measurable progress checkpoints
-5. **`/goalkit.execute`** - Implement with learning and adaptation
+### **🚨 CRITICAL: Always follow this 5-step sequence - ONE COMMAND AT A TIME:**
+
+**🛑 AGENTS MUST STOP AFTER EACH COMMAND - WAIT FOR USER**
+
+1. **`/goalkit.vision`** - Establish project vision and principles → **🛑 STOP**
+2. **User runs** `/goalkit.goal`** - Define goals with measurable outcomes → **🛑 STOP**
+3. **User runs** `/goalkit.strategies`** - Explore multiple implementation approaches → **🛑 STOP**
+4. **User runs** `/goalkit.milestones`** - Create measurable progress checkpoints → **🛑 STOP**
+5. **User runs** `/goalkit.execute`** - Implement with learning and adaptation → **🛑 STOP**
+
+**❌ FORBIDDEN: DO NOT chain commands automatically**
+**❌ FORBIDDEN: DO NOT proceed to coding after vision**
+**❌ FORBIDDEN: DO NOT skip steps in the sequence**
 
 ### **Simple Tasks vs Complex Goals**
 - **Simple tasks** (direct implementation): "fix styling", "update header", "add margin"
@@ -105,6 +112,12 @@
 
 ## 💡 Agent Best Practices
 
+### **🚨 CRITICAL Workflow Enforcement:**
+- **🛑 STOP after each command** - Never chain commands automatically
+- **Wait for user input** - Only proceed when user runs next command explicitly
+- **One command at a time** - Complete full methodology sequence step by step
+- **No automatic progression** - User must trigger each methodology step
+
 ### **Python Script Development:**
 - **Validate syntax**: `python -m py_compile script_name.py` before changes
 - **Check git status**: `git status`, `git diff` before modifying
@@ -116,6 +129,31 @@
 - **Follow sequence** - don't skip methodology steps
 - **Focus on outcomes** - not implementation details
 - **Document learnings** - capture insights throughout process
+- **🛑 STOP after completion** - Wait for user's next command
+
+### **🚨 FORBIDDEN AGENT BEHAVIORS - DO NOT DO THESE:**
+
+**❌ STOP: Chaining commands automatically**
+- ❌ Running `/goalkit.goal` after `/goalkit.vision` without user input
+- ❌ Running `/goalkit.strategies` after `/goalkit.goal` automatically
+- ❌ Proceeding through multiple methodology steps in one response
+
+**❌ STOP: Starting implementation too early**
+- ❌ Creating files or code after vision creation
+- ❌ Starting coding without completing full methodology sequence
+- ❌ Implementing features before defining goals and strategies
+
+**❌ STOP: Bypassing methodology steps**
+- ❌ Skipping the goal creation step
+- ❌ Skipping strategy exploration phase
+- ❌ Moving directly from vision to execution
+
+**✅ ALLOWED: Only these specific actions**
+- ✅ Creating vision file after `/goalkit.vision` → **STOP**
+- ✅ Creating goal files after `/goalkit.goal` → **STOP**
+- ✅ Creating strategy files after `/goalkit.strategies` → **STOP**
+- ✅ Creating milestone files after `/goalkit.milestones` → **STOP**
+- ✅ Starting implementation after `/goalkit.execute` → **Continue with learning**
 
 ### **Common Pitfalls to Avoid:**
 - ❌ Skipping strategy exploration

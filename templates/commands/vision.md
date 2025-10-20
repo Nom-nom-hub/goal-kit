@@ -56,17 +56,39 @@ The command generates:
 - Project structure optimized for goal-driven development
 - Foundation for all subsequent goal definitions
 
-### Agent File Creation Instructions
+### ⚠️ CRITICAL: Agent Behavior Instructions
+
+**🚨 AGENTS MUST STOP AFTER VISION CREATION - DO NOT PROCEED TO CODING**
 
 When processing `/goalkit.vision` commands, AI agents should:
-1. Create or update the `.goalkit/vision.md` file in the project root
-2. Use the current date in YYYY-MM-DD format for the "Created" field
-3. Write the complete vision document using the template structure below
-4. After creating the vision file, inform the user that the vision has been established and suggest creating the first goal using `/goalkit.goal`
+
+1. **Create ONLY the vision file** - Create or update the `.goalkit/vision.md` file in the project root
+2. **Use current date** in YYYY-MM-DD format for the "Created" field
+3. **Write complete vision document** using the template structure below
+4. **🛑 STOP HERE** - Do NOT create goals, strategies, milestones, or start coding
+5. **🛑 STOP HERE** - Do NOT proceed to implementation or file creation
+6. **Inform user** that vision is established and suggest next step: `/goalkit.goal`
+7. **🛑 STOP HERE** - Wait for user to explicitly run the next command
+
+### 🚨 STRICT WORKFLOW ENFORCEMENT
+
+**Agents MUST follow this exact sequence:**
+- `/goalkit.vision` → Create vision file → **STOP**
+- **User runs** `/goalkit.goal` → Create goal → **STOP**
+- **User runs** `/goalkit.strategies` → Explore strategies → **STOP**
+- **User runs** `/goalkit.milestones` → Create milestones → **STOP**
+- **User runs** `/goalkit.execute` → Implement with learning → **STOP**
+
+**❌ FORBIDDEN AGENT BEHAVIOR:**
+- ❌ Creating goals automatically after vision
+- ❌ Starting coding or implementation after vision
+- ❌ Skipping the goal creation step
+- ❌ Proceeding through multiple methodology steps automatically
 
 ### File Creation Process
-- **Create/Update File**: `.goalkit/vision.md` with the vision content
+- **Create ONLY**: `.goalkit/vision.md` with the vision content
 - **Template**: Use the structure provided in the "Vision Components" section below
+- **🛑 THEN STOP**
 
 ## Vision Components
 

@@ -245,4 +245,5 @@ When processing `/goalkit.execute` commands, AI agents should:
 - Implement with continuous measurement and validation
 - Establish clear feedback loops for adjustment
 - Document insights and knowledge gained throughout execution
-- **CRITICAL**: After execution begins, continue with adaptation based on results and learning
+- **START**: After `/goalkit.execute`, you may begin implementation with learning loops
+- **CONTINUE**: This is the only command where ongoing work is allowed

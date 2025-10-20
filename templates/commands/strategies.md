@@ -42,6 +42,9 @@ agent_scripts:
 - `/goalkit.milestones` - Create measurable progress checkpoints
 - `/goalkit.execute` - Implement with learning and adaptation
 
+**🛑 STOP HERE** - Do NOT proceed to milestones or implementation automatically
+**🛑 STOP HERE** - Wait for user to explicitly run `/goalkit.milestones`
+
 ## Critical Strategy Rules
 
 ✅ **DO**: Explore multiple valid approaches (3-4 options minimum)
