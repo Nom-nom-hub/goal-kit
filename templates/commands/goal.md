@@ -8,15 +8,22 @@ agent_scripts:
   ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
 ---
 
-## Quick Start
+## ⚠️ CRITICAL: Proper Goal Creation Process
 
 **Goal Description**: `{ARGS}`
 
-**STEP 1**: Run the Python script to create the goal structure:
+**🚨 MANDATORY STEP 1**: Run the Python script to create the goal structure:
 ```bash
 cd "{PROJECT_ROOT}"
 .goalkit/scripts/python/create_new_goal.py --json "{ARGS}"
 ```
+
+**⚠️ DO NOT manually create goal directories** - This bypasses the proper methodology and will cause issues with:
+- Goal numbering (001-, 002-, etc.)
+- Git branch creation and management
+- Goal template structure and validation
+- Agent context updates
+- Methodology compliance
 
 **STEP 2**: Parse the JSON output to get:
 - `GOAL_DIR`: Where the goal files are created

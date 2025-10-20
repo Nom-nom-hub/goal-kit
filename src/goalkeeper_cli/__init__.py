@@ -1071,14 +1071,16 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
     return project_path
 
 def copy_python_scripts_to_goalkit(project_path: Path, tracker: StepTracker | None = None) -> None:
-    """Copy Python scripts from scripts/python/ to .goalkit/scripts/python/"""
-    scripts_source = project_path / "scripts" / "python"
+    """Copy Python scripts from the source location to .goalkit/scripts/python/"""
+    # During init, we need to copy from the CLI source location, not the project
+    cli_source_dir = Path(__file__).parent.parent  # This is the goal-kit/goal-kit directory
+    scripts_source = cli_source_dir / "scripts" / "python"
     scripts_dest = project_path / ".goalkit" / "scripts" / "python"
 
     if not scripts_source.exists() or not scripts_source.is_dir():
         if tracker:
             tracker.add("copy-scripts", "Copy Python scripts")
-            tracker.skip("copy-scripts", "source scripts/python/ not found")
+            tracker.skip("copy-scripts", f"source not found: {scripts_source}")
         return
 
     try:

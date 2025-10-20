@@ -31,7 +31,10 @@
 ✅ **DO**: Focus on measurable outcomes (%, $, timeframes, user counts)
 ✅ **DO**: Include specific success targets
 ✅ **DO**: Identify target users and stakeholders
+✅ **DO**: **ALWAYS** run the Python script first: `.goalkit/scripts/python/create_new_goal.py --json "{ARGS}"`
 ❌ **DON'T**: Include implementation details (languages, frameworks, APIs)
+❌ **DON'T**: Manually create goal directories - this bypasses proper methodology
+❌ **DON'T**: Skip the automated goal creation script
 
 ### **For Strategies:**
 ✅ **DO**: Explore 3+ different approaches
@@ -59,6 +62,31 @@
 - **Strategies Defined**: [Number of strategy files]
 - **Milestones Set**: [Number of milestone files]
 - **Current Branch**: [Current git branch]
+
+## 📋 Goal Creation: Proper Process
+
+**When creating goals, ALWAYS follow this exact sequence:**
+
+1. **Run the Python script FIRST:**
+   ```bash
+   cd "{PROJECT_ROOT}"
+   .goalkit/scripts/python/create_new_goal.py --json "{ARGS}"
+   ```
+
+2. **Parse the JSON output** to get:
+   - `GOAL_DIR`: Goal directory path
+   - `BRANCH_NAME`: Git branch name
+   - `GOAL_FILE`: Path to goal.md file
+
+3. **Complete the goal definition** in the created `GOAL_FILE`
+
+4. **Follow with `/goalkit.strategies`** to explore approaches
+
+**⚠️ NEVER manually create goal directories** - this breaks:
+- Proper numbering (001-, 002-, etc.)
+- Git branch management
+- Template structure
+- Agent context updates
 
 ## 🔧 Next Recommended Actions
 
@@ -94,6 +122,8 @@
 - ❌ Adding implementation details to goals
 - ❌ Creating goals without measurable targets
 - ❌ Treating as traditional requirement-driven development
+- ❌ **Manually creating goal directories** - Always use the Python script first
+- ❌ **Bypassing the automated goal creation process** - This breaks methodology compliance
 
 ## 📚 Key Principles
 
