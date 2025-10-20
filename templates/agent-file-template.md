@@ -65,7 +65,7 @@
 [EXTRACTED FROM ALL GOAL.MD FILES]
 
 ## 📊 Project Status
-- **Goals Created**: [Number of goals in goals/ directory]
+- **Goals Created**: [Number of goals in .goalkit/goals/ directory]
 - **Strategies Defined**: [Number of strategy files]
 - **Milestones Set**: [Number of milestone files]
 - **Current Branch**: [Current git branch]

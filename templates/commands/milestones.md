@@ -11,7 +11,7 @@ agent_scripts:
 ## Quick Prerequisites Check
 
 **BEFORE CREATING MILESTONES**:
-1. **Goal exists**: Check `goals/` directory for goal files
+1. **Goal exists**: Check `.goalkit/goals/` directory for goal files
 2. **Strategies defined**: Verify `strategies.md` in goal directory
 
 **If missing**: Tell user to use `/goalkit.goal` and `/goalkit.strategies` first.
@@ -103,7 +103,7 @@ Focus on learning at each step and measurable progress indicators.
 ## Output
 
 The command generates:
-- `goals/[###-goal-name]/milestones.md` - Comprehensive milestone plan
+- `.goalkit/goals/[###-goal-name]/milestones.md` - Comprehensive milestone plan
 - Measurement framework for tracking progress
 - Learning objectives for each milestone
 - Foundation for adaptive execution
@@ -111,7 +111,7 @@ The command generates:
 ### Agent File Creation Instructions
 
 When processing `/goalkit.milestones` commands, AI agents should:
-1. Locate the appropriate goal directory in the `goals/` folder (the most recently created or specified goal)
+1. Locate the appropriate goal directory in the `.goalkit/goals/` folder (the most recently created or specified goal)
 2. Create the `milestones.md` file inside that goal directory
 3. Use the current date in YYYY-MM-DD format for the "Date" field
 4. Write the complete milestone plan using the template structure below
@@ -119,8 +119,8 @@ When processing `/goalkit.milestones` commands, AI agents should:
 6. After creating the milestones file, inform the user that the milestone plan has been completed and suggest next steps using `/goalkit.execute`
 
 ### File Creation Process
-- **Locate Directory**: `goals/[###-goal-name]/` (most recent goal or specified goal)
-- **Create File**: `goals/[###-goal-name]/milestones.md` with the milestone content
+- **Locate Directory**: `.goalkit/goals/[###-goal-name]/` (most recent goal or specified goal)
+- **Create File**: `.goalkit/goals/[###-goal-name]/milestones.md` with the milestone content
 - **Template**: Use the structure provided in the "Milestone Components" section below
 
 ## Milestone Components

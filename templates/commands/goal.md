@@ -26,7 +26,7 @@ cd "{PROJECT_ROOT}"
 - Methodology compliance
 
 **STEP 2**: Parse the JSON output to get:
-- `GOAL_DIR`: Where the goal files are created
+- `GOAL_DIR`: Where the goal files are created (in `.goalkit/goals/`)
 - `BRANCH_NAME`: The git branch for this goal
 - `GOAL_FILE`: Path to the main goal.md file
 

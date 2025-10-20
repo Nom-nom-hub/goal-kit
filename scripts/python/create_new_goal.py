@@ -54,7 +54,7 @@ def create_goal(goal_description, dry_run=False, force=False, json_mode=False, v
     if json_mode:
         # Find the next goal number
         next_number = 1
-        goals_dir = os.path.join(project_root, "goals")
+        goals_dir = os.path.join(project_root, ".goalkit", "goals")
         
         if os.path.exists(goals_dir):
             goal_dirs = [d for d in os.listdir(goals_dir) 
@@ -72,7 +72,7 @@ def create_goal(goal_description, dry_run=False, force=False, json_mode=False, v
         clean_description = re.sub(r'[^a-zA-Z0-9\s-]', '', goal_description)
         clean_description = re.sub(r'\s+', '-', clean_description).strip('-').lower()
         goal_dir_name = f"{goal_number}-{clean_description}"
-        goal_dir = os.path.join("goals", goal_dir_name)
+        goal_dir = os.path.join(".goalkit", "goals", goal_dir_name)
         goal_file = os.path.join(goal_dir, "goal.md")
 
         # Output JSON with required variables
@@ -87,7 +87,7 @@ def create_goal(goal_description, dry_run=False, force=False, json_mode=False, v
         return
 
     # Check if goals directory exists
-    goals_dir = os.path.join(project_root, "goals")
+    goals_dir = os.path.join(project_root, ".goalkit", "goals")
     if not os.path.exists(goals_dir):
         if dry_run:
             write_info(f"[DRY RUN] Would create goals directory: {goals_dir}")
@@ -113,7 +113,7 @@ def create_goal(goal_description, dry_run=False, force=False, json_mode=False, v
     clean_description = re.sub(r'[^a-zA-Z0-9\s-]', '', goal_description)
     clean_description = re.sub(r'\s+', '-', clean_description).strip('-').lower()
     goal_dir_name = f"{goal_number}-{clean_description}"
-    goal_dir = os.path.join("goals", goal_dir_name)
+    goal_dir = os.path.join(".goalkit", "goals", goal_dir_name)
 
     # Check if goal directory already exists
     full_goal_dir = os.path.join(project_root, goal_dir)
