@@ -1,8 +1,5 @@
 ---
 description: Execute goals with learning, measurement, and adaptation. Requires completed goal, strategies, and milestones.
-scripts:
-  sh: .goalkit/scripts/python/setup_strategy.py --json "{ARGS}"
-  ps: .goalkit/scripts/python/setup_strategy.py --json "{ARGS}"
 agent_scripts:
   sh: .goalkit/scripts/python/update_agent_context.py __AGENT__
   ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
