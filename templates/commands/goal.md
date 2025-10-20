@@ -44,6 +44,9 @@ cd "{PROJECT_ROOT}"
 - `/goalkit.milestones` - Create measurable progress checkpoints
 - `/goalkit.execute` - Implement with learning and adaptation
 
+**🛑 STOP HERE** - Do NOT proceed to strategies or implementation automatically
+**🛑 STOP HERE** - Wait for user to explicitly run `/goalkit.strategies`
+
 ## Critical Rules
 
 ✅ **DO**: Focus on measurable outcomes, not implementation details

@@ -43,6 +43,9 @@ agent_scripts:
 **STEP 6**: Report completion and remind user of next step:
 - `/goalkit.execute` - Implement with learning and adaptation
 
+**🛑 STOP HERE** - Do NOT proceed to execution automatically
+**🛑 STOP HERE** - Wait for user to explicitly run `/goalkit.execute`
+
 ## Critical Milestone Rules
 
 ✅ **DO**: Focus on learning and validation, not just activities
