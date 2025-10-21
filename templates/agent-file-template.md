@@ -24,6 +24,7 @@
 
 ## 📋 Available Commands
 
+### Core Workflow Commands
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
 | `/goalkit.vision` | Establish project foundation | Start of new project |
@@ -31,6 +32,13 @@
 | `/goalkit.strategies` | Explore multiple approaches | After goal is defined |
 | `/goalkit.milestones` | Create progress checkpoints | After strategies chosen |
 | `/goalkit.execute` | Implement with learning | After milestones created |
+
+### Quality & Progress Commands (New!)
+| Command | Purpose | When to Use |
+|---------|---------|-------------|
+| `/goalkit.validate` | Enhanced validation with quality scoring | After creating components, before proceeding |
+| `/goalkit.progress` | Progress tracking and analytics | During execution, stakeholder updates |
+| `/goalkit.context` | Smart context management | After major changes, phase transitions |
 
 ## 🚨 Critical Rules
 
@@ -102,13 +110,21 @@
 2. Use `/goalkit.goal` to define first goal
 
 **If goals exist but no strategies:**
-1. Use `/goalkit.strategies` to explore approaches
+1. Use `/goalkit.validate` to check goal quality (7.0+ score required)
+2. Use `/goalkit.strategies` to explore approaches
 
 **If strategies exist but no milestones:**
-1. Use `/goalkit.milestones` to create checkpoints
+1. Use `/goalkit.validate` to verify strategy quality
+2. Use `/goalkit.milestones` to create checkpoints
 
 **If milestones exist:**
-1. Use `/goalkit.execute` to implement with learning
+1. Use `/goalkit.progress` to check current status
+2. Use `/goalkit.execute` to implement with learning
+
+**For ongoing projects:**
+- Use `/goalkit.validate` regularly to maintain quality
+- Use `/goalkit.progress` to track advancement and identify issues
+- Use `/goalkit.context` to keep agent guidance current
 
 ## 💡 Agent Best Practices
 
@@ -117,6 +133,12 @@
 - **Wait for user input** - Only proceed when user runs next command explicitly
 - **One command at a time** - Complete full methodology sequence step by step
 - **No automatic progression** - User must trigger each methodology step
+
+### **📊 Enhanced Quality & Progress Integration:**
+- **Quality Gates**: Use `/goalkit.validate` to check component quality before proceeding
+- **Progress Tracking**: Use `/goalkit.progress` to monitor advancement and identify issues
+- **Smart Context**: Use `/goalkit.context` to maintain current project intelligence
+- **Learning Capture**: Use `/goalkit.learn` to capture insights and patterns
 
 ### **Python Script Development:**
 - **Validate syntax**: `python -m py_compile script_name.py` before changes
