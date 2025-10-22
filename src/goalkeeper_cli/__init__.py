@@ -810,7 +810,7 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
     project_name = project_path.name
 
     # Create content for the agent context file
-    context_content = f"""# Goal Kit Project Context
+    context_content = """# Goal Kit Project Context
 
 **Project**: {project_name}
 **Agent**: {ai_assistant}
@@ -823,19 +823,33 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 ### 🚨 STRICT WORKFLOW ENFORCEMENT - ONE COMMAND AT A TIME
 **🛑 STOP AFTER EACH COMMAND - WAIT FOR USER**
 
+**⚠️ WHEN YOU RECEIVE A SLASH COMMAND - ALWAYS RUN PYTHON SCRIPT FIRST:**
+
+**`/goalkit.vision`** → Run `python scripts/python/create_vision.py` → Create vision file → **🛑 STOP**
+**`/goalkit.goal`** → Run `python scripts/python/create_new_goal.py --json "ARGS"` → Complete goal.md → **🛑 STOP**
+**`/goalkit.strategies`** → Run `python scripts/python/setup_strategy.py` → Complete strategies.md → **🛑 STOP**
+**`/goalkit.milestones`** → Run `python scripts/python/setup_milestones.py` → Complete milestones.md → **🛑 STOP**
+**`/goalkit.execute`** → Run `python scripts/python/setup_execution.py` → Continue with learning
+
+**🚨 CRITICAL: Never create files manually - ALWAYS run the Python script first!**
+
 1. **`/goalkit.vision`** → Create vision file → **🛑 STOP**
 2. **User runs** `/goalkit.goal`** → Create goal → **🛑 STOP**
 3. **User runs** `/goalkit.strategies`** → Explore strategies → **🛑 STOP**
 4. **User runs** `/goalkit.milestones`** → Create milestones → **🛑 STOP**
 5. **User runs** `/goalkit.execute`** → Implement with learning → **Continue**
-
-### Core Methodology Rules
+""".format(
+        project_name=project_name,
+        ai_assistant=ai_assistant,
+        **locals()
+    ) + """### Core Methodology Rules
 1. **OUTCOMES FIRST**: Always focus on measurable user/business outcomes, NOT implementation details
 2. **NO IMPLEMENTATION DETAILS IN GOALS**: Never put languages, frameworks, APIs, or methods in goal definitions
 3. **USE THE 5-CMD WORKFLOW**: Always follow vision → goal → strategies → milestones → execute sequence
 4. **MEASURABLE SUCCESS**: Every goal must have specific, quantifiable metrics (%, $, time, user counts)
 5. **STRATEGY EXPLORATION**: Before implementing, ALWAYS explore multiple approaches using /goalkit.strategies
 6. **ADAPTIVE EXECUTION**: Be ready to pivot based on learning and evidence during /goalkit.execute
+7. **GOAL DIRECTORY STRUCTURE**: All goal-related files are stored in `.goalkit/goals/` directory, NOT in project root
 
 ### When to Use Each Command
 - **/goalkit.vision**: Establish project foundation and guiding principles
@@ -850,11 +864,12 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 - ❌ Starting coding or implementation after vision creation
 - ❌ Skipping any methodology steps
 - ❌ Proceeding without explicit user commands
+- ❌ Creating multiple goals at once without completing the workflow
 
 **✅ ALLOWED: Only these specific actions**
-- ✅ Creating vision file after `/goalkit.vision` → **🛑 STOP**
-- ✅ Creating goal files after `/goalkit.goal` → **🛑 STOP**
-- ✅ Starting implementation after `/goalkit.execute` → Continue
+- ✅ Creating vision file after `/goalkit.vision` → **🛑 STOP** (Wait for user command)
+- ✅ Creating goal files after `/goalkit.goal` → **🛑 STOP** (Wait for user command)
+- ✅ Starting implementation after `/goalkit.execute` → Continue (No automatic stop)
 
 ### ⚠️ CRITICAL ANTI-PATTERNS TO AVOID
 - ✗ Implementing features directly without following methodology
@@ -863,22 +878,64 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 - ✗ Creating goals without measurable success criteria
 - ✗ Treating this as traditional requirement-driven development
 
-## 📋 Available Commands
+## 📋 Available Commands & Execution Workflow
 
-### Core Commands
-- **/goalkit.vision** - Establish project vision and principles
-- **/goalkit.goal** - Define goals and success criteria
-- **/goalkit.strategies** - Explore implementation strategies
-- **/goalkit.milestones** - Create measurable milestones
-- **/goalkit.execute** - Execute with learning and adaptation
+### Core Commands with Proper Execution Timing
+- **/goalkit.vision** → Run `python scripts/python/create_vision.py` → Create vision file → **🛑 STOP & WAIT**
+  - *Always run Python script first, then wait for user*
+- **/goalkit.goal** → Run `python scripts/python/create_new_goal.py --json "ARGS"` → Complete goal.md → **🛑 STOP & WAIT** 
+  - *Always run Python script first, then wait for user*
+- **/goalkit.strategies** → Run `python scripts/python/setup_strategy.py` → Complete strategies.md → **🛑 STOP & WAIT**
+  - *Always run Python script first, then wait for user*
+- **/goalkit.milestones** → Run `python scripts/python/setup_milestones.py` → Complete milestones.md → **🛑 STOP & WAIT**
+  - *Always run Python script first, then wait for user*
+- **/goalkit.execute** → Run `python scripts/python/setup_execution.py` → Continue with learning
+  - *Execute after setup, no automatic stop*
+
+### Extended Commands (Additional Capabilities)
+- **/goalkit.collaborate** → Run `python scripts/python/setup_collaboration.py` → Set up collaboration → **🛑 STOP & WAIT**
+- **/goalkit.progress** → Run `python scripts/python/progress_tracker.py` → Track progress → **🛑 STOP & WAIT**
+- **/goalkit.validate** → Run `python scripts/python/enhanced_validator.py` → Validate methodology → **🛑 STOP & WAIT**
+- **/goalkit.persona** → Run `python scripts/python/manage_personas.py` → Manage personas → **🛑 STOP & WAIT**
+- **/goalkit.context** → Run `python scripts/python/smart_context_manager.py` → Update context → **🛑 STOP & WAIT**
+- **/goalkit.workflow** → Run `python scripts/python/workflow_enforcer.py` → Enforce workflow → **🛑 STOP & WAIT**
+- **/goalkit.intelligence** → Run `python scripts/python/workflow_intelligence.py` → Analyze workflow intelligence → **🛑 STOP & WAIT**
+- **/goalkit.testing** → Run `python scripts/python/optimization_tester.py` → Run optimization tests → **🛑 STOP & WAIT**
+- **/goalkit.hub** → Run `python scripts/python/collaboration_hub.py` → Manage collaboration hub → **🛑 STOP & WAIT**
+- **/goalkit.learning** → Run `python scripts/python/learning_system.py` → Enable learning → **🛑 STOP & WAIT**
+- **/goalkit.optimize** → Run `python scripts/python/methodology_optimizer.py` → Optimize approach → **🛑 STOP & WAIT**
+- **/goalkit.smart** → Run `python scripts/python/smart_context_manager.py` → Smart context → **🛑 STOP & WAIT**
+- **/goalkit.setup** → Run `python scripts/python/setup_goal.py` → Set up goal structure → **🛑 STOP & WAIT**
+- **/goalkit.check** → Run `python scripts/python/validate_methodology.py` → Check methodology compliance → **🛑 STOP & WAIT**
+
+### Execution Methodology (CRITICAL):
+1. **`/goalkit.vision`** → Python script → Vision file created → **🛑 STOP** (wait for user to run next command)
+2. **`/goalkit.goal`** → Python script → Goal defined → **🛑 STOP** (wait for user to run next command)
+3. **`/goalkit.strategies`** → Python script → Strategies explored → **🛑 STOP** (wait for user to run next command)
+4. **`/goalkit.milestones`** → Python script → Milestones set → **🛑 STOP** (wait for user to run next command)
+5. **`/goalkit.execute`** → Python script → Implementation begins → **Continue** (no automatic stop)
+
+### Python Script Execution Pattern:
+- **NEVER create files manually** - Always run the corresponding Python script first
+- **Each Python script**: `python scripts/python/[script_name].py` 
+- **Each script creates/update appropriate files** in the `.goalkit/` directory structure:
+  - Goals-related: `.goalkit/goals/`
+  - Collaborations: `.goalkit/collaborations/` 
+  - Validation reports: `.goalkit/validation/`
+  - Progress reports: `.goalkit/reports/`
+- **After each script**: **🛑 STOP** and wait for user input for the next command
+- **Exception**: Execute command continues after setup without automatic stop
+- **Note**: Additional commands beyond the core 5 follow the same STOP & WAIT pattern
 
 ## 🚀 Project Vision
 
 Vision document not yet created
+*Note: Vision file will be created in `.goalkit/goals/` directory*
 
 ## 🎯 Active Goals
 
 No active goals yet. Use /goalkit.goal to create your first goal.
+*Note: All goal files are stored in `.goalkit/goals/` directory*
 
 ## 📊 Development Principles
 
@@ -889,12 +946,42 @@ Remember these core principles:
 4. **Learning Integration**: Treat implementation as hypothesis testing
 5. **Adaptive Planning**: Change course based on evidence
 
+## 📁 Directory Structure
+
+**CRITICAL FILE LOCATIONS:**
+- **Goal files**: `.goalkit/goals/` (vision.md, goal.md, strategies.md, milestones.md, execution.md)
+- **Python scripts**: `.goalkit/scripts/python/` 
+- **Agent context files**: `.goalkit/agent-context.md` or agent-specific directories (`.claude/`, `.gemini/`, etc.)
+- **All goal-related files are stored in `.goalkit/` subdirectories - NOT in project root!**
+
 ## 🔧 Next Recommended Actions
 
-1. Use /goalkit.vision to establish project vision
-2. Use /goalkit.goal to define first goal
-3. Use /goalkit.strategies to explore implementation approaches
-4. Use /goalkit.milestones to plan measurable progress steps
+**SEQUENTIAL WORKFLOW (Follow ONE command at a time):**
+1. **`/goalkit.vision`** → Run `python scripts/python/create_vision.py` → **🛑 STOP & WAIT** for user
+2. **`/goalkit.goal`** → Run `python scripts/python/create_new_goal.py` → **🛑 STOP & WAIT** for user  
+3. **`/goalkit.strategies`** → Run `python scripts/python/setup_strategy.py` → **🛑 STOP & WAIT** for user
+4. **`/goalkit.milestones`** → Run `python scripts/python/setup_milestones.py` → **🛑 STOP & WAIT** for user
+5. **`/goalkit.execute`** → Run `python scripts/python/setup_execution.py` → Continue with implementation
+
+**ADDITIONAL COMMANDS (Available after core workflow):**
+- **`/goalkit.collaborate`** → Run `python scripts/python/setup_collaboration.py` → **🛑 STOP & WAIT**
+- **`/goalkit.progress`** → Run `python scripts/python/progress_tracker.py` → **🛑 STOP & WAIT**
+- **`/goalkit.validate`** → Run `python scripts/python/validate_goals.py` → **🛑 STOP & WAIT**
+- **`/goalkit.persona`** → Run `python scripts/python/manage_personas.py` → **🛑 STOP & WAIT**
+- **`/goalkit.context`** → Run `python scripts/python/update_agent_context.py` → **🛑 STOP & WAIT**
+- **`/goalkit.workflow`** → Run `python scripts/python/workflow_enforcer.py` → **🛑 STOP & WAIT**
+- **`/goalkit.intelligence`** → Run `python scripts/python/workflow_intelligence.py` → **🛑 STOP & WAIT**
+- **`/goalkit.testing`** → Run `python scripts/python/optimization_tester.py` → **🛑 STOP & WAIT**
+- **`/goalkit.hub`** → Run `python scripts/python/collaboration_hub.py` → **🛑 STOP & WAIT**
+- **`/goalkit.learning`** → Run `python scripts/python/learning_system.py` → **🛑 STOP & WAIT**
+- **`/goalkit.optimize`** → Run `python scripts/python/methodology_optimizer.py` → **🛑 STOP & WAIT**
+- **`/goalkit.smart`** → Run `python scripts/python/smart_context_manager.py` → **🛑 STOP & WAIT**
+
+**⚠️ CRITICAL: After each command:**
+- The corresponding Python script executes first
+- Files are created/updated in the `.goalkit/` directory structure (NOT in project root!)
+- **🛑 STOP AND WAIT** for explicit user command before proceeding
+- **NEVER chain commands automatically**
 
 ## Agent Development Guidelines
 When working with Python scripts and code in this project, AI agents should follow these critical guidelines to avoid common mistakes:

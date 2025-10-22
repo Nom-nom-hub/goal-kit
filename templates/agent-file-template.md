@@ -18,6 +18,31 @@
 **❌ FORBIDDEN: DO NOT proceed to coding after vision**
 **❌ FORBIDDEN: DO NOT skip steps in the sequence**
 
+### **🔒 WORKFLOW ENFORCEMENT: Script Execution Required**
+
+**🚨 MANDATORY: ALL goal operations MUST use Python scripts FIRST**
+
+**Before ANY goal-related action, you MUST run the appropriate Python script:**
+
+```bash
+# For goal creation (ALWAYS run this first)
+python scripts/python/create_new_goal.py --json "Your goal description"
+
+# For validation (run before proceeding)
+python scripts/python/enhanced_validator.py
+
+# For progress tracking (run during execution)
+python scripts/python/progress_tracker.py
+
+# For workflow compliance checking (run anytime)
+python scripts/python/workflow_enforcer.py --check
+```
+
+**⚠️ CRITICAL VIOLATIONS TO AVOID:**
+- ❌ **NEVER manually create goal directories** - This breaks methodology compliance
+- ❌ **NEVER skip the --json flag** - Required for proper integration
+- ❌ **NEVER bypass script execution** - Scripts handle git branches, file structure, and context updates
+
 ### **Simple Tasks vs Complex Goals**
 - **Simple tasks** (direct implementation): "fix styling", "update header", "add margin"
 - **Complex goals** (use full methodology): features with measurable outcomes (%,$,timeframes,user counts)
@@ -80,28 +105,37 @@
 
 ## 📋 Goal Creation: Proper Process
 
-**When creating goals, ALWAYS follow this exact sequence:**
+**🚨 ENFORCED REQUIREMENT: When creating goals, ALWAYS follow this exact sequence:**
 
-1. **Run the Python script FIRST:**
-   ```bash
-   cd "{PROJECT_ROOT}"
-   .goalkit/scripts/python/create_new_goal.py --json "{ARGS}"
-   ```
+**STEP 1: Run the Python script FIRST (MANDATORY):**
+```bash
+cd "{PROJECT_ROOT}"
+python scripts/python/create_new_goal.py --json "{ARGS}"
+```
 
-2. **Parse the JSON output** to get:
-   - `GOAL_DIR`: Goal directory path
-   - `BRANCH_NAME`: Git branch name
-   - `GOAL_FILE`: Path to goal.md file
+**⚠️ CRITICAL: The --json flag is REQUIRED for proper workflow integration**
 
-3. **Complete the goal definition** in the created `GOAL_FILE`
+**STEP 2: Parse the JSON output** to get:
+- `GOAL_DIR`: Goal directory path (e.g., `.goalkit/goals/001-user-authentication/`)
+- `BRANCH_NAME`: Git branch name (e.g., `001-user-authentication`)
+- `GOAL_FILE`: Path to goal.md file
 
-4. **Follow with `/goalkit.strategies`** to explore approaches
+**STEP 3: Complete the goal definition** in the script-generated `GOAL_FILE`
+
+**STEP 4: Follow with `/goalkit.strategies`** to explore approaches
+
+**🚨 WORKFLOW VIOLATION CHECKS:**
+- **Script Execution Verification**: Workflow enforcer validates script was used
+- **Structure Compliance**: Ensures proper directory and file structure
+- **Branch Management**: Verifies goal-specific git branch creation
+- **Context Updates**: Confirms agent context was properly updated
 
 **⚠️ NEVER manually create goal directories** - this breaks:
 - Proper numbering (001-, 002-, etc.)
 - Git branch management
 - Template structure
 - Agent context updates
+- **Workflow compliance** (will be detected by enforcer)
 
 ## 🔧 Next Recommended Actions
 
@@ -125,6 +159,7 @@
 - Use `/goalkit.validate` regularly to maintain quality
 - Use `/goalkit.progress` to track advancement and identify issues
 - Use `/goalkit.context` to keep agent guidance current
+- **Run workflow compliance checks**: `python scripts/python/workflow_enforcer.py --check`
 
 ## 💡 Agent Best Practices
 
@@ -145,6 +180,7 @@
 - **Check git status**: `git status`, `git diff` before modifying
 - **Safe editing**: Use targeted edits, not full file overwrites
 - **Cross-platform**: Use `os.path` or `pathlib` for file paths
+- **Workflow compliance**: Run `python scripts/python/workflow_enforcer.py --check` after script changes
 
 ### **Goal Kit Workflow:**
 - **Always remind** users of next steps after each command
@@ -170,12 +206,19 @@
 - ❌ Skipping strategy exploration phase
 - ❌ Moving directly from vision to execution
 
+**❌ STOP: Violating script execution requirements**
+- ❌ Manually creating goal directories (ALWAYS use Python scripts)
+- ❌ Skipping the --json flag when running goal creation scripts
+- ❌ Bypassing workflow validation and compliance checks
+- ❌ Ignoring workflow enforcer recommendations and violations
+
 **✅ ALLOWED: Only these specific actions**
 - ✅ Creating vision file after `/goalkit.vision` → **STOP**
-- ✅ Creating goal files after `/goalkit.goal` → **STOP**
+- ✅ Running Python scripts with proper --json flags after `/goalkit.goal` → **STOP**
 - ✅ Creating strategy files after `/goalkit.strategies` → **STOP**
 - ✅ Creating milestone files after `/goalkit.milestones` → **STOP**
 - ✅ Starting implementation after `/goalkit.execute` → **Continue with learning**
+- ✅ Running workflow compliance checks with `python scripts/python/workflow_enforcer.py --check`
 
 ### **Common Pitfalls to Avoid:**
 - ❌ Skipping strategy exploration
@@ -184,6 +227,9 @@
 - ❌ Treating as traditional requirement-driven development
 - ❌ **Manually creating goal directories** - Always use the Python script first
 - ❌ **Bypassing the automated goal creation process** - This breaks methodology compliance
+- ❌ **Skipping the --json flag** - Required for proper workflow integration
+- ❌ **Ignoring workflow enforcer violations** - Address compliance issues promptly
+- ❌ **Bypassing script execution requirements** - Scripts handle critical automation
 
 ## 📚 Key Principles
 
