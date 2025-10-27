@@ -1,40 +1,21 @@
-<div align="center">
-    <h1>🎯 Goal Kit</h1>
-    <h3><em>Build software by focusing on outcomes, not specifications.</em></h3>
-</div>
+# 🎯 Goal Kit
 
-<p align="center">
-    <strong>Original research and development by Goal Kit. Attribution appreciated but not required.</strong>
-</p>
+## *Build software by focusing on outcomes, not specifications.*
 
-<p align="center">
-    <strong>An effort to allow organizations to focus on business outcomes and user goals rather than writing undifferentiated code with the help of Goal-Driven Development.</strong>
-</p>
+**Goal Kit transforms software development from task execution to outcome achievement. DUH!**
 
-<p align="center">
-   <a href="https://github.com/Nom-nom-hub/goal-kit/releases/latest">
-     <img src="https://img.shields.io/github/v/release/Nom-nom-hub/goal-kit?color=brightgreen&sort=semver" alt="GitHub Release">
-   </a>
-   <a href="https://github.com/Nom-nom-hub/goal-kit/actions/workflows/release.yml">
-     <img src="https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/goal-kit/release.yml?branch=main&label=release" alt="Release Workflow">
-   </a>
-   <a href="https://github.com/Nom-nom-hub/goal-kit/actions/workflows/docs.yml">
-     <img src="https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/goal-kit/docs.yml?branch=main&label=docs" alt="Docs Workflow">
-   </a>
-   <a href="https://github.com/Nom-nom-hub/goal-kit/blob/main/LICENSE">
-     <img src="https://img.shields.io/github/license/Nom-nom-hub/goal-kit.svg?color=blue" alt="License">
-   </a>
-   <a href="https://github.com/Nom-nom-hub/goal-kit/stargazers">
-     <img src="https://img.shields.io/github/stars/Nom-nom-hub/goal-kit.svg?color=yellow" alt="GitHub Stars">
-   </a>
-   <a href="https://github.com/Nom-nom-hub/goal-kit/graphs/contributors">
-     <img src="https://img.shields.io/github/contributors/Nom-nom-hub/goal-kit.svg" alt="Contributors">
-   </a>
- </p>
+**Original research and development by Goal Kit. Attribution appreciated but not required.**
 
-<p align="center">
-   <img src="https://img.shields.io/badge/The%20Future-✅%20Goal--Driven%20Development-brightgreen?style=for-the-badge&logo=github" alt="The Future - Goal-Driven Development">
- </p>
+**An effort to allow organizations to focus on business outcomes and user goals rather than writing undifferentiated code with the help of Goal-Driven Development.**
+
+[![GitHub Release](https://img.shields.io/github/v/release/Nom-nom-hub/goal-kit?color=brightgreen&sort=semver)](https://github.com/Nom-nom-hub/goal-kit/releases/latest)
+[![Release Workflow](https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/goal-kit/release.yml?branch=main&label=release)](https://github.com/Nom-nom-hub/goal-kit/actions/workflows/release.yml)
+[![Docs Workflow](https://img.shields.io/github/actions/workflow/status/Nom-nom-hub/goal-kit/docs.yml?branch=main&label=docs)](https://github.com/Nom-nom-hub/goal-kit/actions/workflows/docs.yml)
+[![License](https://img.shields.io/github/license/Nom-nom-hub/goal-kit.svg?color=blue)](https://github.com/Nom-nom-hub/goal-kit/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/Nom-nom-hub/goal-kit.svg?color=yellow)](https://github.com/Nom-nom-hub/goal-kit/stargazers)
+[![Contributors](https://img.shields.io/github/contributors/Nom-nom-hub/goal-kit.svg)](https://github.com/Nom-nom-hub/goal-kit/graphs/contributors)
+
+![The Future - Goal-Driven Development](https://img.shields.io/badge/The%20Future-✅%20Goal--Driven%20Development-brightgreen?style=for-the-badge&logo=github)
 
 ---
 
@@ -42,7 +23,7 @@
 
 Goal-Driven Development **focuses on outcomes over specifications**. While Spec-Driven Development creates detailed specifications that generate specific implementations, Goal-Driven Development starts with high-level goals and explores multiple strategies to achieve them.
 
-### Key Differences from Spec-Driven Development:
+### Key Differences from Spec-Driven Development
 
 | Spec-Driven Development | Goal-Driven Development |
 |------------------------|------------------------|
@@ -143,6 +124,7 @@ Switch between specialized agent personas for different development tasks. The a
 ```
 
 When you switch to a specific persona, the agent will:
+
 - Apply specialized knowledge and best practices for that role
 - Focus on the specific responsibilities of that persona
 - Use role-appropriate terminology and approaches
@@ -164,8 +146,6 @@ Personas help ensure you apply the right expertise at the right time while maint
 
 ## 🤖 Supported AI Agents
 
-## 🤖 Supported AI Agents
-
 | Agent                                                     | Support | Notes                                             |
 |-----------------------------------------------------------|---------|---------------------------------------------------|
 | [Claude Code](https://www.anthropic.com/claude-code)      | ✅ |                                                   |
@@ -181,10 +161,6 @@ Personas help ensure you apply the right expertise at the right time while maint
 | [Codex CLI](https://github.com/openai/codex)              | ✅ |                                                   |
 | [Amazon Q Developer CLI](https://aws.amazon.com/developer/learning/q-developer-cli/) | ⚠️ | Amazon Q Developer CLI [does not support](https://github.com/aws/amazon-q-developer-cli/issues/3064) custom arguments for slash commands. |
 
-## 🔧 Goalkeeper CLI Reference
-
-The `goalkeeper` command supports the following options:
-
 ## 🎯 Goal Discovery for AI Agents
 
 When using Goal Kit with AI coding agents, agents now follow a systematic approach to discover existing goals:
@@ -198,10 +174,6 @@ When using Goal Kit with AI coding agents, agents now follow a systematic approa
 2. **Enhanced Documentation**: For complete details on goal discovery mechanisms, see `templates/agent_goal_discovery.md`
 
 3. **Improved User Experience**: This enhancement ensures AI agents can help users work with existing goals more effectively, even when the `.goalkit/` directory is git-ignored.
-
-## 🔧 Goalkeeper CLI Reference
-
-The `goalkeeper` command supports the following options:
 
 ### Commands
 
@@ -224,10 +196,6 @@ The `goalkeeper` command supports the following options:
 | `--skip-tls`           | Flag     | Skip SSL/TLS verification (not recommended)                                 |
 | `--debug`              | Flag     | Enable detailed debug output for troubleshooting                            |
 | `--github-token`       | Option   | GitHub token for API requests (or set GH_TOKEN/GITHUB_TOKEN env variable)  |
-
-
-
-
 
 ### Available Slash Commands
 
@@ -288,20 +256,25 @@ The system supports specialized agent personas for different development tasks:
 Goal Kit now includes enhanced AI agent integration for more effective slash command processing:
 
 ### Enhanced Command Templates
+
 All slash command templates (`/goalkit.vision`, `/goalkit.goal`, etc.) now include:
+
 - **Clear AI processing instructions** for consistent, high-quality responses
 - **Structured input/output frameworks** for reliable AI agent parsing
 - **Agent-specific optimizations** tailored to different AI capabilities
 - **Built-in validation criteria** ensuring methodology compliance
 
 ### 🎨 Professional UI/UX Guidelines
+
 Goal Kit now includes comprehensive UI/UX design standards to ensure agents create professional, accessible interfaces:
+
 - **Visual Consistency**: Guidelines for typography, spacing, color palettes, and component design
 - **Accessibility Standards**: WCAG 2.1 AA compliance requirements for inclusive design
 - **Professional Aesthetics**: Standards for visual hierarchy, whitespace, and design quality
 - **User Experience**: Guidelines for error handling, form design, and navigation patterns
 
 ### AI Agent Optimization
+
 - **Claude**: Optimized for thoughtful, detailed analysis (4-6 principles)
 - **GitHub Copilot**: Optimized for practical, concise implementation (3-5 principles)
 - **Gemini**: Optimized for creative, exploratory approaches (3-5 principles)
@@ -309,12 +282,14 @@ Goal Kit now includes comprehensive UI/UX design standards to ensure agents crea
 - **Qwen**: Optimized for comprehensive, detailed coverage (4-6 principles)
 
 ### Quality Assurance
+
 - **Response validation** ensures AI outputs meet Goal Kit standards
 - **Methodology compliance** checking for outcome-focused language
 - **Consistency monitoring** across all generated documents
 - **Performance tracking** for continuous improvement
 
 ### ⚡ Smart Task Processing
+
 - **Task Complexity Assessment**: Intelligent evaluation of whether tasks need full methodology or direct implementation
 - **Efficient Handling**: Simple tasks like "enhanced header" now use direct implementation avoiding unnecessary complexity
 - **Smart Workflow**: AI agents determine optimal approach based on task requirements
@@ -323,7 +298,7 @@ Goal Kit now includes comprehensive UI/UX design standards to ensure agents crea
 
 Goal-Driven Development is a structured process that emphasizes:
 
-- **Outcome-driven development** where goals define the "_what_" before exploring "_how_"
+- **Outcome-driven development** where goals define the "*what*" before exploring "*how*"
 - **Flexible strategy exploration** with multiple paths to achieve goals
 - **Measurable success criteria** rather than detailed requirements
 - **Adaptive execution** that learns and adjusts based on results
@@ -333,11 +308,11 @@ Goal-Driven Development is a structured process that emphasizes:
 
 | Phase | Focus | Key Activities |
 |-------|-------|----------------|
-| **Vision Setting** | Establish purpose | <ul><li>Define project vision and values</li><li>Set success criteria and metrics</li><li>Establish guiding principles</li></ul> |
-| **Goal Definition** | Outcomes over specs | <ul><li>Define high-level goals</li><li>Focus on user and business outcomes</li><li>Set measurable success criteria</li></ul> |
-| **Strategy Exploration** | Multiple approaches | <ul><li>Explore diverse implementation strategies</li><li>Consider different technical approaches</li><li>Evaluate trade-offs and risks</li></ul> |
-| **Milestone Planning** | Measurable progress | <ul><li>Break goals into measurable milestones</li><li>Define progress indicators</li><li>Set up tracking and measurement</li></ul> |
-| **Adaptive Execution** | Learning implementation | <ul><li>Implement with flexibility</li><li>Learn from results and feedback</li><li>Adapt strategies as needed</li></ul> |
+| **Vision Setting** | Establish purpose | Define project vision and values; Set success criteria and metrics; Establish guiding principles |
+| **Goal Definition** | Outcomes over specs | Define high-level goals; Focus on user and business outcomes; Set measurable success criteria |
+| **Strategy Exploration** | Multiple approaches | Explore diverse implementation strategies; Consider different technical approaches; Evaluate trade-offs and risks |
+| **Milestone Planning** | Measurable progress | Break goals into measurable milestones; Define progress indicators; Set up tracking and measurement |
+| **Adaptive Execution** | Learning implementation | Implement with flexibility; Learn from results and feedback; Adapt strategies as needed |
 
 ## 🔧 Prerequisites
 
@@ -357,36 +332,37 @@ Goal-Driven Development is a structured process that emphasizes:
 ## 📋 Key Principles
 
 ### Goals over Specifications
+
 - Focus on outcomes and success criteria
 - Define what success looks like before how to achieve it
 - Keep goals high-level and flexible
 
 ### Multiple Strategies
+
 - Explore different approaches to achieve each goal
 - Consider various technical and user experience patterns
 - Evaluate trade-offs and risks openly
 
 ### Measurable Progress
+
 - Define clear success metrics for each goal
 - Set up measurable milestones and indicators
 - Track progress with data and feedback
 
 ### Adaptive Execution
+
 - Implement with flexibility to learn and adjust
 - Be willing to pivot strategies based on results
 - Embrace experimentation and iteration
 
 ### Learning Focus
+
 - Treat implementation as a learning process
 - Use results and feedback to improve approaches
 - Document what works and what doesn't for future goals
 
 ---
 
-<p align="center">
-  <strong>Goal Kit transforms software development from task execution to outcome achievement. DUH!</strong>
-</p>
+**Goal Kit transforms software development from task execution to outcome achievement. DUH!**
 
-<p align="center">
-  <a href="https://github.com/Nom-nom-hub/goal-kit/issues">Report Bug</a> · <a href="https://github.com/Nom-nom-hub/goal-kit/issues">Request Feature</a> · <a href="https://github.com/Nom-nom-hub/goal-kit/discussions">Ask Question</a>
-</p>
+[Report Bug](https://github.com/Nom-nom-hub/goal-kit/issues) · [Request Feature](https://github.com/Nom-nom-hub/goal-kit/issues) · [Ask Question](https://github.com/Nom-nom-hub/goal-kit/discussions)

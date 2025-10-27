@@ -1,4 +1,5 @@
 # Spec-Driven vs Goal-Driven Development
+
 *Original research and development by both methodologies. Attribution appreciated but not required.*
 
 ## Overview
@@ -19,7 +20,7 @@ This document compares Spec-Driven Development (as implemented in Spec Kit) with
 
 ### Spec-Driven Development Workflow
 
-```
+```text
 Specifications → Technical Plans → Task Breakdown → Implementation → Validation
      ↓              ↓              ↓              ↓              ↓
 Detailed        Single          Linear         Rigid         Compliance
@@ -29,7 +30,7 @@ Requirements   Implementation  Task Execution  Plan Following  Focused
 
 ### Goal-Driven Development Workflow
 
-```
+```text
 Vision → Goals → Strategies → Milestones → Execution → Learning → Adaptation
   ↓       ↓        ↓           ↓           ↓           ↓           ↓
 Purpose  Outcomes  Multiple    Measurable  Adaptive    Insights    Evidence-
@@ -73,7 +74,7 @@ Defined  Focused   Approaches  Progress    Implementation  Drive    Based
 
 ### Spec-Driven Project Structure
 
-```
+```text
 project/
 ├── specs/
 │   ├── 001-feature/
@@ -87,7 +88,7 @@ project/
 
 ### Goal-Driven Project Structure
 
-```
+```text
 project/
 ├── goals/
 │   ├── 001-user-onboarding/
@@ -143,12 +144,14 @@ project/
 ### When to Use Spec-Driven Development
 
 **Best For:**
+
 - **Well-Understood Domains**: Clear requirements with known implementation patterns
 - **Compliance-Critical Projects**: Need for strict specification adherence
 - **Large, Structured Teams**: Benefit from detailed upfront planning
 - **Stable Requirements**: Low likelihood of significant changes
 
 **Examples:**
+
 - API implementations with fixed contracts
 - Compliance or regulatory required features
 - Infrastructure projects with clear technical requirements
@@ -157,12 +160,14 @@ project/
 ### When to Use Goal-Driven Development
 
 **Best For:**
+
 - **Exploratory Projects**: Need to discover best approach through experimentation
 - **User-Centric Innovation**: Focus on user outcomes and experience
 - **Learning Organizations**: Want to build knowledge and capability
 - **Dynamic Environments**: High likelihood of change and adaptation
 
 **Examples:**
+
 - New product development with uncertain user needs
 - Innovation projects exploring new market opportunities
 - Process improvement initiatives
@@ -205,12 +210,14 @@ project/
 ### From Spec-Driven to Goal-Driven
 
 **Challenges:**
+
 - **Mindset Shift**: Moving from specification compliance to outcome focus
 - **Process Adaptation**: Changing from linear to adaptive processes
 - **Measurement Changes**: Shifting from activity to outcome metrics
 - **Team Learning**: Helping teams embrace exploration and adaptation
 
 **Benefits:**
+
 - **Increased Innovation**: More space for creative problem-solving
 - **Better User Outcomes**: Focus on what matters to users
 - **Improved Learning**: Building organizational knowledge and capability
@@ -219,6 +226,7 @@ project/
 ### From Goal-Driven to Spec-Driven
 
 **When Appropriate:**
+
 - **Compliance Requirements**: Need for strict specification adherence
 - **Large Scale Coordination**: Benefit from detailed upfront planning
 - **Low Uncertainty Domains**: Well-understood problems with known solutions
@@ -231,12 +239,14 @@ project/
 Both systems use similar architectural patterns:
 
 **Spec-Driven Architecture:**
+
 - YAML frontmatter for script execution metadata
 - Template-based content generation
 - Agent context synchronization
 - Environment variable management
 
 **Goal-Driven Architecture:**
+
 - YAML frontmatter for script execution metadata
 - Template-based content generation
 - Agent context synchronization
@@ -245,12 +255,14 @@ Both systems use similar architectural patterns:
 ### Script Organization
 
 **Similarities:**
+
 - Common utility functions in `common.sh`/`common.py`
 - Feature/goal creation scripts with branching support
 - Agent context update functionality
 - Prerequisite checking capabilities
 
 **Differences:**
+
 - **Spec-kit**: Focuses on specification, plan, and task creation
 - **Goal-kit**: Focuses on goal definition, strategy exploration, and milestone planning
 
@@ -258,7 +270,8 @@ Both systems use similar architectural patterns:
 
 ### Supported AI Agents
 
-Both systems support the same 12+ AI agents:
+**Both systems support the same 12+ AI agents:**
+
 - Claude Code, GitHub Copilot, Gemini CLI, Cursor, Qwen Code, opencode, Codex CLI
 - Windsurf, Kilo Code, Auggie CLI, Roo Code, Amazon Q Developer CLI
 
@@ -274,12 +287,14 @@ Both systems support the same 12+ AI agents:
 Spec-Driven Development and Goal-Driven Development represent two different approaches to software development, each with distinct strengths and appropriate use cases.
 
 **Choose Spec-Driven Development when:**
+
 - Requirements are well-understood and stable
 - Compliance and precision are critical
 - You need detailed upfront planning
 - Working in domains with known solution patterns
 
 **Choose Goal-Driven Development when:**
+
 - Exploring new problem spaces or user needs
 - Innovation and learning are priorities
 - Comfortable with uncertainty and adaptation

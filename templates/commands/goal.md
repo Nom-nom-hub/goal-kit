@@ -8,24 +8,27 @@ agent_scripts:
   ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
 ---
 
-## ⚠️ CRITICAL: Proper Goal Creation Process
+# ⚠️ CRITICAL: Proper Goal Creation Process
 
 **Goal Description**: `{ARGS}`
 
 **🚨 MANDATORY STEP 1**: Run the Python script to create the goal structure:
-```bash
+
+```python
 cd "{PROJECT_ROOT}"
 python scripts/python/create_new_goal.py --json "{ARGS}"
 ```
 
-**⚠️ CRITICAL: The --json flag is REQUIRED for proper workflow integration**
+## **⚠️ CRITICAL: The --json flag is REQUIRED for proper workflow integration**
 
 **🛡️ WORKFLOW ENFORCEMENT**: After running the script, verify compliance:
-```bash
+
+```python
 python scripts/python/workflow_enforcer.py --check
 ```
 
 **⚠️ DO NOT manually create goal directories** - This bypasses the proper methodology and will cause issues with:
+
 - Goal numbering (001-, 002-, etc.)
 - Git branch creation and management
 - Goal template structure and validation
@@ -34,11 +37,13 @@ python scripts/python/workflow_enforcer.py --check
 - **Workflow enforcement detection** (violations will be logged and reported)
 
 **STEP 2**: Parse the JSON output to get:
+
 - `GOAL_DIR`: Where the goal files are created (in `.goalkit/goals/`)
 - `BRANCH_NAME`: The git branch for this goal
 - `GOAL_FILE`: Path to the main goal.md file
 
 **STEP 3**: Write a comprehensive goal definition to `GOAL_FILE` with:
+
 - Clear goal statement and context
 - Specific success metrics with targets (%, $, timeframes, user counts)
 - Target users and stakeholders
@@ -48,11 +53,13 @@ python scripts/python/workflow_enforcer.py --check
 **STEP 4**: Create a quality checklist at `GOALS_DIR/checklists/goal-quality.md`
 
 **STEP 5**: Report completion and remind user of next steps:
+
 - `/goalkit.strategies` - Explore implementation approaches
 - `/goalkit.milestones` - Create measurable progress checkpoints
 - `/goalkit.execute` - Implement with learning and adaptation
 
 **STEP 6**: Verify workflow compliance (recommended):
+
 ```bash
 python scripts/python/workflow_enforcer.py --check
 ```

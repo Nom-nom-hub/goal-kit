@@ -36,14 +36,16 @@
 
 ### Documentation (this goal)
 
-```
-goals/[###-goal-name]/
-├── strategies.md        # This file (/goalkit.strategies command output)
-├── research.md          # Strategy 0 output (/goalkit.strategies command)
-├── data-model.md        # Strategy 1 output (/goalkit.strategies command)
-├── quickstart.md        # Strategy 1 output (/goalkit.strategies command)
-├── contracts/           # Strategy 1 output (/goalkit.strategies command)
-└── actions.md           # Strategy 2 output - detailed implementation tasks
+```markdown
+.goalkit/
+├── goals/
+│   └── [###-goal-name]/
+│       ├── strategies.md        # This file (/goalkit.strategies command output)
+│       ├── research.md          # Strategy 0 output (/goalkit.strategies command)
+│       ├── data-model.md        # Strategy 1 output (/goalkit.strategies command)
+│       ├── quickstart.md        # Strategy 1 output (/goalkit.strategies command)
+│       ├── contracts/           # Strategy 1 output (/goalkit.strategies command)
+│       └── actions.md           # Strategy 2 output - detailed implementation tasks
 ```
 
 ### Strategy Options
@@ -53,7 +55,7 @@ goals/[###-goal-name]/
   real strategic elements. The delivered plan must not include Option labels.
 -->
 
-```
+```markdown
 # [REMOVE IF UNUSED] Option 1: Direct Implementation (DEFAULT)
 - Approach: [Implement goal directly with primary strategy]
 - Resources: [team size and skill requirements]
@@ -73,6 +75,7 @@ goals/[###-goal-name]/
 ```
 
 **UI/UX Strategy Considerations**:
+
 - **Design System**: Establish consistent design patterns, typography, and color palette from the start
 - **User Research**: Validate UI concepts with users before implementation
 - **Accessibility**: Plan for WCAG 2.1 AA compliance from the beginning
@@ -83,7 +86,7 @@ goals/[###-goal-name]/
 
 ## Complexity Tracking
 
-*Fill ONLY if Vision Check has violations that must be justified*
+### **Fill ONLY if Vision Check has violations that must be justified**
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|

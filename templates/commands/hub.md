@@ -8,11 +8,12 @@ agent_scripts:
   ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
 ---
 
-## Collaboration Hub Command
+# Collaboration Hub Command
 
 **Purpose**: Coordinate multi-agent collaboration, synchronize project state across agents, and manage distributed development activities
 
 **When to Use**:
+
 - When coordinating work between multiple agents or AI systems
 - To synchronize project state and progress across different agent sessions
 - When managing dependencies between different development activities
@@ -21,6 +22,7 @@ agent_scripts:
 ## Quick Prerequisites Check
 
 **BEFORE INITIALIZING COLLABORATION HUB**:
+
 1. **Goal Kit project exists**: Verify `.goalkit/` directory structure
 2. **Multiple agents involved**: Have actual need for multi-agent coordination
 3. **Shared project state**: Have components requiring synchronization
@@ -45,12 +47,14 @@ agent_scripts:
 ## Collaboration Hub Features
 
 **Coordination Capabilities**:
+
 - **Multi-Agent Synchronization**: Keep project state consistent across agents
 - **Dependency Management**: Track and manage dependencies between activities
 - **Conflict Resolution**: Handle conflicting changes or decisions
 - **Communication Protocols**: Establish agent-to-agent communication
 
 **Hub Management**:
+
 - **Activity Tracking**: Monitor active development activities
 - **State Consistency**: Ensure project state coherence across sessions
 - **Progress Coordination**: Synchronize progress across different agents
@@ -58,13 +62,13 @@ agent_scripts:
 
 ## Input Format
 
-```
+```text
 /goalkit.hub [options]
 ```
 
 ### Command Options
 
-```
+```text
 /goalkit.hub                      # Initialize or connect to collaboration hub
 /goalkit.hub --status             # Check current hub status and connections
 /goalkit.hub --sync               # Synchronize project state across agents
@@ -77,30 +81,35 @@ agent_scripts:
 **CRITICAL**: When processing `/goalkit.hub` commands, agents MUST:
 
 ### **STEP 1**: Run the collaboration hub script
+
 ```bash
 cd "{PROJECT_ROOT}"
 .goalkit/scripts/python/collaboration_hub.py --format text
 ```
 
 ### **STEP 2**: If status check requested
+
 ```bash
 cd "{PROJECT_ROOT}"
 .goalkit/scripts/python/collaboration_hub.py --status --format text
 ```
 
 ### **STEP 3**: Parse hub results
+
 - **Extract connection status** and active agents
 - **Identify synchronization needs** and coordination requirements
 - **Note coordination conflicts** that need resolution
 - **Document collaboration opportunities** for better coordination
 
 ### **STEP 4**: Assess collaboration readiness
+
 - **Agent Availability**: Which agents are available for coordination
 - **State Consistency**: Current level of synchronization across agents
 - **Dependency Status**: Active dependencies requiring coordination
 - **Conflict Monitoring**: Issues that require resolution
 
 ### **STEP 5**: Update agent context with collaboration state
+
 ```bash
 cd "{PROJECT_ROOT}"
 .goalkit/scripts/python/update_agent_context.py
@@ -109,6 +118,7 @@ cd "{PROJECT_ROOT}"
 ## Output
 
 The command generates:
+
 - **Hub Status**: Current connection and coordination state
 - **Active Agents**: List of connected agents and their roles
 - **Synchronization Report**: Current state of project synchronization
@@ -118,6 +128,7 @@ The command generates:
 ### Hub Management Process
 
 **Collaboration Coordination**:
+
 1. **Agent Discovery**: Identify available agents and their capabilities
 2. **State Synchronization**: Align project state across connected agents
 3. **Activity Coordination**: Coordinate ongoing development activities
@@ -127,24 +138,28 @@ The command generates:
 ## Hub Components
 
 ### 1. Agent Coordination
+
 - **Agent Discovery**: Identify and register connected agents
 - **Role Management**: Track specialized roles and capabilities
 - **Activity Tracking**: Monitor what agents are working on
 - **Status Reporting**: Maintain current status across agents
 
 ### 2. State Synchronization
+
 - **Project State**: Keep project information consistent across agents
 - **Progress Tracking**: Synchronize progress and milestone status
 - **Artifact Management**: Coordinate shared project artifacts
 - **Change Tracking**: Monitor changes across different agent sessions
 
 ### 3. Dependency Management
+
 - **Activity Dependencies**: Track dependencies between development tasks
 - **Resource Coordination**: Manage shared resources and components
 - **Conflict Detection**: Identify potential conflicts between agents
 - **Resolution Protocols**: Handle conflicting changes or decisions
 
 ### 4. Communication Protocols
+
 - **Information Sharing**: Establish agent-to-agent information exchange
 - **Status Updates**: Maintain awareness across connected agents
 - **Coordination Signals**: Protocol for requesting coordination
@@ -153,12 +168,14 @@ The command generates:
 ## Coordination Standards
 
 ### Collaboration Quality
+
 - **Consistency**: Project state remains coherent across agents
 - **Synchronization**: Agents work with current, consistent information
 - **Conflict Prevention**: Proactive management of potential conflicts
 - **Communication**: Clear protocols for agent interaction
 
 ### Hub Management
+
 - **Agent Registration**: Proper registration and role assignment
 - **State Management**: Reliable synchronization mechanisms
 - **Activity Monitoring**: Clear visibility into ongoing work
@@ -167,13 +184,15 @@ The command generates:
 ## Integration with Other Commands
 
 ### Hub in Multi-Agent Workflow
+
 - **Before multi-agent work**: Establish coordination hub connection
 - **During distributed work**: Maintain synchronization and communication
 - **After coordination**: Update project state and document collaboration
 - **For status monitoring**: Check coordination effectiveness
 
 ### Coordination-Enabled Workflow
-```
+
+```text
 /goalkit.hub → Establish coordination hub connection
 [Multiple agents now coordinated] → /goalkit.goal
 [Hub maintains state consistency] → /goalkit.strategies
@@ -182,19 +201,22 @@ The command generates:
 
 ## Best Practices
 
-### Hub Management
+### Hub Management Preferences
+
 - **Clear Protocols**: Establish clear communication and coordination protocols
 - **State Consistency**: Maintain consistent project state across all agents
 - **Conflict Prevention**: Proactively identify and address potential conflicts
 - **Status Visibility**: Maintain clear visibility into coordination status
 
 ### Multi-Agent Coordination
+
 - **Role Clarity**: Ensure each agent understands their coordination role
 - **Change Communication**: Communicate changes that affect other agents
 - **Dependency Awareness**: Track dependencies across different agent work
 - **Synchronization Timing**: Coordinate synchronization at appropriate intervals
 
-### Collaboration Quality
+### Hub Management Preference
+
 - **Consistency First**: Prioritize project state consistency over individual progress
 - **Communication Protocol**: Follow established protocols for agent interaction
 - **Conflict Resolution**: Address conflicts quickly and transparently
@@ -203,18 +225,21 @@ The command generates:
 ## Common Hub Scenarios
 
 ### Multi-Agent Development
+
 - **Role Specialization**: Different agents focus on specialized tasks
 - **Dependency Coordination**: Managing interdependent development activities
 - **State Synchronization**: Keeping project information consistent
 - **Progress Alignment**: Coordinating progress toward common milestones
 
 ### Distributed Work Management
+
 - **Activity Distribution**: Appropriate assignment of tasks across agents
 - **Progress Monitoring**: Tracking distributed development progress
 - **Quality Assurance**: Coordinating quality across different agent work
 - **Integration Coordination**: Managing integration of distributed components
 
 ### State Management
+
 - **Consistency Maintenance**: Keeping project state coherent across agents
 - **Change Propagation**: Ensuring changes propagate to all agents
 - **Version Coordination**: Managing different versions of project artifacts
@@ -223,25 +248,32 @@ The command generates:
 ## Examples
 
 ### Example 1: Hub Initialization
-```
+
+```text
 /goalkit.hub
 ```
+
 **Output**: Establishes collaboration hub and connects available agents
 
 ### Example 2: Status Check
-```
+
+```text
 /goalkit.hub --status
 ```
+
 **Output**: Current hub status, connected agents, and coordination state
 
 ### Example 3: State Synchronization
-```
+
+```text
 /goalkit.hub --sync
 ```
+
 **Output**: Synchronizes project state across all connected agents
 
 ### Example 4: Multi-Agent Workflow with Hub
-```
+
+```text
 /goalkit.hub → Establish coordination hub
 [Agent A]: /goalkit.goal Create user authentication system
 [Agent B]: /goalkit.hub --sync → Gets updated project state
@@ -252,6 +284,7 @@ The command generates:
 ## Agent Integration
 
 ### Hub-Aware Collaboration
+
 **CRITICAL**: Agents should coordinate through the hub for multi-agent work:
 
 1. **Hub Connection**: Connect to collaboration hub before multi-agent work
@@ -260,6 +293,7 @@ The command generates:
 4. **Synchronization**: Keep project state consistent across agents
 
 ### Automated Hub Management
+
 - **Automatic Connection**: Connect to hub when multi-agent work is detected
 - **Status Monitoring**: Continuously monitor coordination status
 - **Conflict Detection**: Automatically detect and report potential conflicts
@@ -268,12 +302,14 @@ The command generates:
 ## Hub Applications
 
 ### Multi-Agent Workflows
+
 - **Specialized Roles**: Different agents handle different specialized tasks
 - **Distributed Development**: Coordinate work across different agents
 - **Quality Assurance**: Coordinate quality checks across different perspectives
 - **Progress Tracking**: Maintain unified progress across distributed work
 
-### State Management
+### State Management Flow
+
 - **Consistency**: Maintain project state consistency across agents
 - **Change Tracking**: Track and coordinate changes across agent sessions
 - **Information Sharing**: Enable effective information sharing
@@ -300,6 +336,7 @@ The command generates:
 ## Next Steps Integration
 
 **After `/goalkit.hub`**:
+
 - **Check Status**: Verify connection and coordination readiness
 - **Synchronize State**: Ensure current project state is consistent
 - **Coordinate Activities**: Plan coordinated activities with other agents

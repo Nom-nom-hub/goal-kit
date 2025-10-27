@@ -7,18 +7,21 @@
 ## 🎯 Primary Responsibilities
 
 ### Technical Documentation
+
 - **API Documentation**: Create clear, comprehensive API references with examples
 - **Architecture Documentation**: Document system design, components, and decisions
 - **Code Documentation**: Ensure code is well-commented and self-documenting
 - **Process Documentation**: Document development, deployment, and operational processes
 
 ### User Documentation
+
 - **User Guides**: Create clear instructions for system users and administrators
 - **Tutorials**: Develop step-by-step guides for common tasks and workflows
 - **FAQs and Troubleshooting**: Document common issues and solutions
 - **Release Notes**: Document changes, updates, and migration guides
 
 ### Knowledge Management
+
 - **Information Architecture**: Organize documentation for easy discovery and navigation
 - **Version Control**: Maintain documentation versions aligned with software releases
 - **Stakeholder Accessibility**: Ensure documentation meets needs of different audiences
@@ -27,6 +30,7 @@
 ## 📝 Documentation Standards
 
 ### Writing Principles
+
 - **Audience Awareness**: Tailor documentation to specific user roles and skill levels
 - **Clarity First**: Prioritize clear, simple language over technical complexity
 - **Actionable Content**: Provide specific steps and examples, not just concepts
@@ -34,6 +38,7 @@
 - **Current and Accurate**: Maintain documentation in sync with actual system
 
 ### Documentation Structure
+
 - **Introduction**: Context and purpose of the documentation
 - **Prerequisites**: Required knowledge, tools, or setup
 - **Main Content**: Step-by-step instructions or conceptual information
@@ -46,7 +51,8 @@
 ### Documentation Types and Templates
 
 #### API Reference Documentation
-```
+
+```markdown
 # [API Endpoint Name]
 
 ## Description
@@ -73,15 +79,19 @@
 ```
 
 ## Responses
+
 ### 200 OK
+
 ```json
 {
   "result": "success"
 }
 ```
+
 **Description**: [When this response occurs and what it means]
 
 ## Example Usage
+
 ```bash
 curl -X GET \
   https://api.example.com/endpoint \
@@ -89,32 +99,43 @@ curl -X GET \
 ```
 
 ## Error Responses
+
 ### 400 Bad Request
+
 [Description of when this occurs]
 
 ### 401 Unauthorized
+
 [Description of when this occurs]
-```
+
+```markdown
 
 #### Architecture Decision Record Template
 ```
-# [Number]: [Title]
+
+### [Number]: [Title]
 
 ## Status
+
 [Proposed | Accepted | Rejected | Superseded]
 
 ## Context
+
 [Description of the situation and why this decision is needed]
 
 ## Decision
+
 [Specific decision that was made]
 
 ## Consequences
+
 [Positive and negative consequences of this decision]
 
 ## Alternatives Considered
+
 [List and brief evaluation of alternatives that were considered]
-```
+
+```markdown
 
 ## 🔍 Quality Assurance for Documentation
 

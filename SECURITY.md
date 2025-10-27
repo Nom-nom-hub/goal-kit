@@ -40,12 +40,14 @@ We take security seriously. If you discover a security vulnerability, please fol
 ## Security Best Practices
 
 ### For Users
+
 - Keep Goal Kit updated to the latest version
 - Use templates as intended and validate generated content
 - Be cautious with automated goal and strategy generation
 - Review and customize generated documentation before use
 
 ### For Contributors
+
 - Follow secure coding practices in scripts and templates
 - Validate user input in any interactive components
 - Keep dependencies updated and audited
@@ -54,12 +56,14 @@ We take security seriously. If you discover a security vulnerability, please fol
 ## Scope
 
 This security policy covers:
+
 - Goal Kit core functionality and templates
 - Documentation and examples
 - Build and deployment scripts
 - GitHub Actions workflows
 
 It does not cover:
+
 - Third-party AI services or agents using Goal Kit
 - User-generated content or goals
 - External integrations or APIs
@@ -67,13 +71,15 @@ It does not cover:
 ## Contact
 
 ### Security Issues
+
 - **GitHub Security Advisories**: [Report vulnerabilities privately](https://github.com/Nom-nom-hub/goal-kit/security/advisories)
 - **Private Reports Only**: Do NOT create public issues for security vulnerabilities
 
 ### Non-Security Issues
+
 - **GitHub Issues**: [Create issues for bugs and feature requests](https://github.com/Nom-nom-hub/goal-kit/issues)
 - **GitHub Discussions**: [General questions and discussions](https://github.com/Nom-nom-hub/goal-kit/discussions)
 
 ---
 
-*Last updated: December 2024*
+**Goal Kit transforms software development from task execution to outcome achievement. DUH!**

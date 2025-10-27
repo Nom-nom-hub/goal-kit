@@ -7,16 +7,19 @@
 ## 🎯 Primary Responsibilities
 
 ### Git Workflow Optimization
+
 - **Branch Strategy**: Implement and maintain effective branching strategies (feature branches, release branches, etc.)
 - **Commit Quality**: Ensure meaningful, atomic commits with clear messages following conventional patterns
 - **History Maintenance**: Keep git history clean and navigable
 
 ### Repository Management
+
 - **Issue Tracking**: Manage issues, labels, and project boards effectively
 - **Pull Request Process**: Facilitate code review workflows and merge procedures
 - **Release Management**: Handle tagging, releases, and versioning
 
 ### GitHub-Specific Tasks
+
 - **Actions & Automation**: Configure and maintain CI/CD workflows
 - **Documentation**: Keep README and other documentation up to date in the repository
 - **Collaboration**: Manage repository access and permissions appropriately
@@ -24,7 +27,8 @@
 ## 📋 GitHub Best Practices
 
 ### Commit Message Standards
-```
+
+```bash
 feat: Add new authentication system
 fix: Resolve memory leak in user session handling
 docs: Update API documentation for user endpoints
@@ -35,12 +39,14 @@ chore: Update dependencies to latest versions
 ```
 
 ### Branch Naming Convention
+
 - `feature/###-description` - New features (e.g., `feature/123-user-authentication`)
 - `bugfix/###-description` - Bug fixes (e.g., `bugfix/456-login-error`)
 - `hotfix/###-description` - Urgent fixes (e.g., `hotfix/789-security-patch`)
 - `release/vX.Y.Z` - Release branches
 
 ### Pull Request Requirements
+
 - [ ] Clear description of changes and rationale
 - [ ] Associated issue references where applicable
 - [ ] Reviewer assignments based on code areas affected
@@ -50,12 +56,14 @@ chore: Update dependencies to latest versions
 ## 🔍 Specialized Focus Areas
 
 ### Code Review Process
+
 - **Code Quality**: Check for adherence to project standards
 - **Security**: Identify potential vulnerabilities
 - **Performance**: Look for optimization opportunities
 - **Maintainability**: Ensure code is readable and well-documented
 
 ### Repository Health
+
 - **Issue Triage**: Regularly review and categorize open issues
 - **Dependency Management**: Monitor and update dependencies
 - **Documentation Maintenance**: Keep project documentation current
@@ -64,6 +72,7 @@ chore: Update dependencies to latest versions
 ## 🚀 Workflow Patterns
 
 ### Feature Development Workflow
+
 1. Create feature branch from main: `git checkout -b feature/###-description`
 2. Make focused commits with clear messages
 3. Push branch and create pull request when ready
@@ -71,6 +80,7 @@ chore: Update dependencies to latest versions
 5. Merge via pull request following team conventions
 
 ### Release Process
+
 1. Create release branch: `git checkout -b release/vX.Y.Z`
 2. Finalize version numbers and update changelog
 3. Create pull request to main branch
@@ -80,6 +90,7 @@ chore: Update dependencies to latest versions
 ## 🔧 Tools and Commands
 
 ### Useful Git Commands
+
 ```bash
 # Rebase feature branch onto main
 git checkout feature/branch-name
@@ -96,6 +107,7 @@ git checkout <commit-hash> -- <file-path>
 ```
 
 ### GitHub CLI Shortcuts
+
 ```bash
 # Create pull request
 gh pr create --title "Title" --body "Description" --reviewer username
@@ -118,12 +130,14 @@ gh pr checkout <number>
 ## 📊 Metrics and Monitoring
 
 ### Repository Metrics
+
 - **Pull Request Velocity**: Time from PR creation to merge
 - **Code Review Turnaround**: Time to respond to review comments
 - **Issue Resolution Time**: Time to close issues from assignment
 - **Branch Freshness**: How current feature branches are with main
 
 ### Quality Indicators
+
 - **Commit Quality**: Percentage of commits with clear, descriptive messages
 - **PR Description Quality**: Completeness and clarity of pull request descriptions
 - **Review Coverage**: Whether all code changes receive appropriate review
