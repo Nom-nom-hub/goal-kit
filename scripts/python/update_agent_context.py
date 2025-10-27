@@ -34,6 +34,7 @@ def update_agent_context_cmd(verbose=False):
 
     # Get project root
     project_root = get_git_root()
+    assert project_root is not None
     os.chdir(project_root)
 
     # Update agent context using the common function

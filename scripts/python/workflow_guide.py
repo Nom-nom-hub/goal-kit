@@ -8,12 +8,12 @@ import os
 import sys
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict, List, Tuple, Any, Optional, cast
 from dataclasses import dataclass, asdict
 from datetime import datetime
 
 # Add the common Python utilities
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.dirname(__file__))
 from common import (
     write_info,
     write_success,
@@ -44,15 +44,15 @@ class WorkflowRecommendation:
 class WorkflowGuide:
     """Intelligent workflow guidance system"""
 
-    def __init__(self, project_root: str = None):
-        self.project_root = project_root or get_git_root()
+    def __init__(self, project_root: Optional[str] = None):
+        self.project_root = cast(str, project_root or get_git_root())
         if not self.project_root:
             raise ValueError("Must be run from a git repository")
 
         self.assessor = TaskAssessor(self.project_root) if TASK_ASSESSOR_AVAILABLE else None
         self.dashboard = StatusDashboard(self.project_root)
 
-    def get_guidance(self, current_command: str = None, task_description: str = None) -> WorkflowRecommendation:
+    def get_guidance(self, current_command: Optional[str] = None, task_description: Optional[str] = None) -> WorkflowRecommendation:
         """
         Get intelligent workflow guidance based on current state and context
 

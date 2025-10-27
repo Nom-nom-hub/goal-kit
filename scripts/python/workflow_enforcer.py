@@ -10,7 +10,7 @@ import json
 import re
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Tuple, Any, Optional, cast
 from dataclasses import dataclass, asdict
 from datetime import datetime
 
@@ -51,8 +51,8 @@ class WorkflowCheck:
 class WorkflowEnforcer:
     """Enforces proper Goal Kit workflow compliance"""
 
-    def __init__(self, project_root: str = None):
-        self.project_root = project_root or get_git_root()
+    def __init__(self, project_root: Optional[str] = None):
+        self.project_root = cast(str, project_root or get_git_root())
         if not self.project_root:
             raise ValueError("Must be run from a git repository")
 

@@ -47,6 +47,9 @@ def create_collaboration_plan(collaboration_description, dry_run=False, verbose=
 
     # Get project root
     project_root = get_git_root()
+    if not project_root:
+        write_error("Could not determine git root directory")
+        sys.exit(1)
     os.chdir(project_root)
 
     # Check if this is a Goal Kit project
@@ -68,9 +71,11 @@ def create_collaboration_plan(collaboration_description, dry_run=False, verbose=
                           if os.path.isdir(os.path.join(collabs_path, d)) and d[0].isdigit()]
             for collab_dir in collab_dirs:
                 try:
-                    num = int(re.match(r'^(\d+)-', collab_dir).group(1))
-                    if num >= next_number:
-                        next_number = num + 1
+                    match = re.match(r'^(\d+)-', collab_dir)
+                    if match:
+                        num = int(match.group(1))
+                        if num >= next_number:
+                            next_number = num + 1
                 except (AttributeError, ValueError):
                     continue
 
@@ -111,9 +116,11 @@ def create_collaboration_plan(collaboration_description, dry_run=False, verbose=
                       if os.path.isdir(os.path.join(collabs_path, d)) and d[0].isdigit()]
         for collab_dir in collab_dirs:
             try:
-                num = int(re.match(r'^(\d+)-', collab_dir).group(1))
-                if num >= next_number:
-                    next_number = num + 1
+                match = re.match(r'^(\d+)-', collab_dir)
+                if match:
+                    num = int(match.group(1))
+                    if num >= next_number:
+                        next_number = num + 1
             except (AttributeError, ValueError):
                 continue
 

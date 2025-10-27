@@ -9,7 +9,7 @@ import sys
 import json
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, asdict
 from datetime import datetime
 
@@ -64,7 +64,7 @@ class IntegrationTestReport:
 class OptimizationTester:
     """Comprehensive testing framework for Goal Kit optimization systems"""
 
-    def __init__(self, project_root: str = None):
+    def __init__(self, project_root: Optional[str] = None):
         self.project_root = project_root or get_git_root()
         if not self.project_root:
             raise ValueError("Must be run from a git repository")
@@ -137,7 +137,7 @@ class OptimizationTester:
 
         return IntegrationTestReport(
             test_timestamp=datetime.now().isoformat(),
-            project_name=os.path.basename(self.project_root),
+            project_name=os.path.basename(self.project_root) if self.project_root else "unknown",
             systems_tested=len(test_suites),
             total_tests=len(all_tests),
             passed_tests=passed_tests,
@@ -562,7 +562,7 @@ def main():
             smoke_results = tester.run_smoke_tests()
 
             print(f"\n🧪 OPTIMIZATION TESTING SUMMARY")
-            print(f"Project: {os.path.basename(tester.project_root)}")
+            print(f"Project: {os.path.basename(tester.project_root) if tester.project_root else 'unknown'}")
             print(f"Test Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
             print(f"Systems Available: {len(tester.systems_to_test)}")
 

@@ -41,6 +41,9 @@ def create_goal(goal_description, dry_run=False, force=False, json_mode=False, v
 
     # Get project root
     project_root = get_git_root()
+    if project_root is None:
+        write_error("Could not determine git root. Not in a git repository.")
+        sys.exit(1)
     os.chdir(project_root)
 
     # Check if this is a Goal Kit project
@@ -61,9 +64,11 @@ def create_goal(goal_description, dry_run=False, force=False, json_mode=False, v
                          if os.path.isdir(os.path.join(goals_dir, d)) and d[0].isdigit()]
             for goal_dir in goal_dirs:
                 try:
-                    num = int(re.match(r'^(\d+)-', goal_dir).group(1))
-                    if num >= next_number:
-                        next_number = num + 1
+                    match = re.match(r'^(\d+)-', goal_dir)
+                    if match:
+                        num = int(match.group(1))
+                        if num >= next_number:
+                            next_number = num + 1
                 except (AttributeError, ValueError):
                     continue
 
@@ -102,9 +107,11 @@ def create_goal(goal_description, dry_run=False, force=False, json_mode=False, v
                      if os.path.isdir(os.path.join(goals_dir, d)) and d[0].isdigit()]
         for goal_dir in goal_dirs:
             try:
-                num = int(re.match(r'^(\d+)-', goal_dir).group(1))
-                if num >= next_number:
-                    next_number = num + 1
+                match = re.match(r'^(\d+)-', goal_dir)
+                if match:
+                    num = int(match.group(1))
+                    if num >= next_number:
+                        next_number = num + 1
             except (AttributeError, ValueError):
                 continue
 

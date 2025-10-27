@@ -9,7 +9,7 @@ import sys
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 from collections import defaultdict
@@ -74,7 +74,7 @@ class PatternAnalysis:
 class LearningSystem:
     """Automated learning loops and retrospective system"""
 
-    def __init__(self, project_root: str = None):
+    def __init__(self, project_root: Optional[str] = None):
         self.project_root = project_root or get_git_root()
         if not self.project_root:
             raise ValueError("Must be run from a git repository")
@@ -87,6 +87,22 @@ class LearningSystem:
 
         # Create learning directory if it doesn't exist
         os.makedirs(self.learning_dir, exist_ok=True)
+
+    def _get_active_goals(self) -> List[str]:
+        """Get list of active goals from the goals directory"""
+        if not os.path.exists(self.goals_dir):
+            return []
+        
+        active_goals = []
+        for item in os.listdir(self.goals_dir):
+            goal_path = os.path.join(self.goals_dir, item)
+            if os.path.isdir(goal_path):
+                # Verify that it's a valid goal by checking for goal.md
+                goal_file = os.path.join(goal_path, "goal.md")
+                if os.path.exists(goal_file):
+                    active_goals.append(item)
+        
+        return active_goals
 
     def capture_learning_insight(self, goal_name: str, insight_text: str,
                                 category: str = 'general', impact: str = 'medium') -> str:
@@ -250,7 +266,7 @@ class LearningSystem:
         except (json.JSONDecodeError, FileNotFoundError):
             return []
 
-    def generate_retrospective(self, goal_name: str = None, time_period: str = 'recent') -> RetrospectiveData:
+    def generate_retrospective(self, goal_name: Optional[str] = None, time_period: str = 'recent') -> RetrospectiveData:
         """Generate automated retrospective for goals"""
         if goal_name:
             goals_to_analyze = [goal_name]
@@ -388,6 +404,8 @@ class LearningSystem:
 
         try:
             # Get recent commits for this goal
+            # Since constructor ensures self.project_root is not None, assert to satisfy type checker
+            assert self.project_root is not None, "Project root should not be None"
             result = os.popen(f"cd {self.project_root} && git log --oneline --grep='{goal_name}' --since='30 days ago'").read()
 
             if result.strip():
@@ -498,7 +516,7 @@ class LearningSystem:
         except (json.JSONDecodeError, FileNotFoundError):
             return {}
 
-    def get_learning_recommendations(self, current_goal: str = None) -> List[str]:
+    def get_learning_recommendations(self, current_goal: Optional[str] = None) -> List[str]:
         """Get learning-based recommendations for current work"""
         recommendations = []
 

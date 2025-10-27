@@ -9,7 +9,7 @@ import sys
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Tuple, Any, Optional, cast
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 from collections import defaultdict
@@ -18,9 +18,7 @@ from collections import defaultdict
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from common import (
     write_info,
-    write_success,
     write_error,
-    write_warning,
     test_git_repo,
     get_git_root
 )
@@ -74,8 +72,8 @@ class IntelligenceReport:
 class WorkflowIntelligence:
     """Smart workflow analysis and optimization system"""
 
-    def __init__(self, project_root: str = None):
-        self.project_root = project_root or get_git_root()
+    def __init__(self, project_root: Optional[str] = None):
+        self.project_root = cast(str, project_root or get_git_root())
         if not self.project_root:
             raise ValueError("Must be run from a git repository")
 
@@ -847,7 +845,7 @@ class WorkflowIntelligence:
             lines.append("-" * 40)
 
             for opt in intelligence.optimizations[:3]:  # Top 3 opportunities
-                effort_icon = {'low': '🟢', 'medium': '🟡', 'high': '🔴'}.get(opt.implementation_effort, '⚪')
+                effort_icon = {'low': '🟢', 'medium': '🟡', 'high': '🔴'}.get(opt.implementation_effort, '⚪')  # type: ignore
                 lines.append(f"{effort_icon} {opt.title}")
                 lines.append(f"   {opt.current_state} → {opt.proposed_state}")
                 lines.append(f"   Confidence: {opt.confidence_score}/10")
@@ -918,7 +916,7 @@ def main():
             else:
                 print("\n💡 OPTIMIZATION OPPORTUNITIES")
                 for opt in intelligence.optimizations:
-                    effort_icon = {'low': '🟢', 'medium': '🟡', 'high': '🔴'}.get(opt.implementation_effort, '⚪')
+                    effort_icon = {'low': '🟢', 'medium': '🟡', 'high': '🔴'}.get(opt.implementation_effort, '⚪')  # type: ignore
                     print(f"{effort_icon} {opt.title}")
                     print(f"   {opt.current_state}")
                     print(f"   → {opt.proposed_state}")

@@ -33,6 +33,9 @@ def manage_personas(command, persona=None, verbose=False):
 
     # Get project root
     project_root = get_git_root()
+    if not project_root:
+        write_error("Could not determine git root directory")
+        sys.exit(1)
     os.chdir(project_root)
 
     # Define persona directory and file paths

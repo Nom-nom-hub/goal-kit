@@ -9,7 +9,7 @@ import sys
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 from collections import defaultdict
@@ -59,7 +59,7 @@ class ProjectAnalytics:
 class ProgressTracker:
     """Progress tracking and analytics system"""
 
-    def __init__(self, project_root: str = None):
+    def __init__(self, project_root: Optional[str] = None):
         self.project_root = project_root or get_git_root()
         if not self.project_root:
             raise ValueError("Must be run from a git repository")
@@ -71,7 +71,7 @@ class ProgressTracker:
         """Analyze overall project progress"""
         if not os.path.exists(self.goals_dir):
             return ProjectAnalytics(
-                project_name=os.path.basename(self.project_root),
+                project_name=os.path.basename(self.project_root) if self.project_root else "unknown",
                 total_goals=0,
                 completed_goals=0,
                 in_progress_goals=0,
@@ -86,7 +86,7 @@ class ProgressTracker:
         goals = self._get_all_goals()
         if not goals:
             return ProjectAnalytics(
-                project_name=os.path.basename(self.project_root),
+                project_name=os.path.basename(self.project_root) if self.project_root else "unknown",
                 total_goals=0,
                 completed_goals=0,
                 in_progress_goals=0,
@@ -120,7 +120,7 @@ class ProgressTracker:
         risk_score = self._calculate_project_risk(goal_metrics)
 
         return ProjectAnalytics(
-            project_name=os.path.basename(self.project_root),
+            project_name=os.path.basename(self.project_root) if self.project_root else "unknown",
             total_goals=total_goals,
             completed_goals=completed_goals,
             in_progress_goals=in_progress_goals,
@@ -199,7 +199,7 @@ class ProgressTracker:
             status=status
         )
 
-    def _get_creation_date(self, goal_file: str) -> datetime:
+    def _get_creation_date(self, goal_file: str) -> Optional[datetime]:
         """Extract creation date from goal file"""
         if not os.path.exists(goal_file):
             return None

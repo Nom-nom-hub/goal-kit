@@ -35,6 +35,7 @@ def setup_goal(verbose=False):
 
     # Get project root
     project_root = get_git_root()
+    assert project_root is not None
     os.chdir(project_root)
 
     # Check if this is a Goal Kit project

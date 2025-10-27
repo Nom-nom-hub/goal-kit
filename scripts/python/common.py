@@ -161,6 +161,9 @@ def update_agent_context():
     Update the agent context file with current goal information
     """
     project_root = get_git_root()
+    if project_root is None:
+        write_error("Could not determine git root. Not in a git repository.")
+        return
     
     # Look for agent-specific context files
     context_files = [
@@ -466,6 +469,10 @@ def set_goal_environment(goal_dir):
     Setup environment variables for goal development
     """
     project_root = get_git_root()
+    if project_root is None:
+        write_error("Could not determine git root. Not in a git repository.")
+        return
+    
     goal_name = os.path.basename(goal_dir)
 
     # Set environment variables

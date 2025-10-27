@@ -401,7 +401,7 @@ def run_command(cmd: list[str], check_return: bool = True, capture: bool = False
             raise
         return None
 
-def check_tool(tool: str, tracker: StepTracker = None) -> bool:
+def check_tool(tool: str, tracker: Optional[StepTracker] = None) -> bool:
     """Check if a tool is installed. Optionally update tracker.
     
     Args:
@@ -412,7 +412,6 @@ def check_tool(tool: str, tracker: StepTracker = None) -> bool:
         True if tool is found, False otherwise
     """
     # Special handling for Claude CLI after `claude migrate-installer`
-    # See: https://github.com/github/spec-kit/issues/123
     # The migrate-installer command REMOVES the original executable from PATH
     # and creates an alias at ~/.claude/local/claude instead
     # This path should be prioritized over other claude executables in PATH
@@ -432,7 +431,7 @@ def check_tool(tool: str, tracker: StepTracker = None) -> bool:
     
     return found
 
-def is_git_repo(path: Path = None) -> bool:
+def is_git_repo(path: Optional[Path] = None) -> bool:
     """Check if the specified path is inside a git repository."""
     if path is None:
         path = Path.cwd()
@@ -554,7 +553,7 @@ def merge_json_files(existing_path: Path, new_content: dict, verbose: bool = Fal
 
     return merged
 
-def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Tuple[Path, dict]:
+def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: Optional[httpx.Client] = None, debug: bool = False, github_token: Optional[str] = None) -> Tuple[Path, dict]:
     repo_owner = "Nom-nom-hub"
     repo_name = "goal-kit"
     if client is None:
@@ -596,10 +595,21 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
     asset = matching_assets[0] if matching_assets else None
 
     if asset is None:
-        console.print(f"[red]No matching release asset found[/red] for [bold]{ai_assistant}[/bold] (expected pattern: [bold]{pattern}[/bold])")
-        asset_names = [a.get('name', '?') for a in assets]
-        console.print(Panel("\n".join(asset_names) or "(no assets)", title="Available Assets", border_style="yellow"))
-        raise typer.Exit(1)
+        # Try fallback to any available template for agents without specific templates
+        # Look for any goal-kit-template-*.zip file
+        fallback_assets = [
+            asset for asset in assets
+            if asset["name"].startswith("goal-kit-template-") and asset["name"].endswith(".zip")
+        ]
+        if fallback_assets:
+            asset = fallback_assets[0]  # Use the first available template
+            if verbose:
+                console.print(f"[yellow]No specific template for {ai_assistant}, using fallback template: {asset['name']}[/yellow]")
+        else:
+            console.print(f"[red]No matching release asset found[/red] for [bold]{ai_assistant}[/bold] (expected pattern: [bold]{pattern}[/bold])")
+            asset_names = [a.get('name', '?') for a in assets]
+            console.print(Panel("\n".join(asset_names) or "(no assets)", title="Available Assets", border_style="yellow"))
+            raise typer.Exit(1)
 
     download_url = asset["browser_download_url"]
     filename = asset["name"]
@@ -1051,7 +1061,7 @@ Following these guidelines will help prevent the syntax errors, merge conflict i
             # If we can't create a specific file, continue - it's not critical for initialization
             continue
 
-def download_and_extract_template(project_path: Path, ai_assistant: str, script_type: str, is_current_dir: bool = False, *, verbose: bool = True, tracker: StepTracker | None = None, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Path:
+def download_and_extract_template(project_path: Path, ai_assistant: str, script_type: str, is_current_dir: bool = False, *, verbose: bool = True, tracker: Optional[StepTracker] = None, client: Optional[httpx.Client] = None, debug: bool = False, github_token: Optional[str] = None) -> Path:
     """Download the latest release and extract it to create a new project.
     Returns project_path. Uses tracker if provided (with keys: fetch, download, extract, cleanup)
     """
@@ -1389,16 +1399,16 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
 
 @app.command()
 def init(
-    project_name: str = typer.Argument(None, help="Name for your new project directory (optional if using --here, or use '.' for current directory)"),
-    ai_assistant: str = typer.Option(None, "--ai", help="AI assistant to use: claude, gemini, copilot, cursor, qwen, opencode, codex, windsurf, kilocode, auggie or q"),
-    script_type: str = typer.Option(None, "--script", help="Script type to use: sh or ps"),
+    project_name: Optional[str] = typer.Argument(None, help="Name for your new project directory (optional if using --here, or use '.' for current directory)"),
+    ai_assistant: Optional[str] = typer.Option(None, "--ai", help="AI assistant to use: claude, gemini, copilot, cursor, qwen, opencode, codex, windsurf, kilocode, auggie or q"),
+    script_type: Optional[str] = typer.Option(None, "--script", help="Script type to use: sh or ps"),
     ignore_agent_tools: bool = typer.Option(False, "--ignore-agent-tools", help="Skip checks for AI agent tools like Claude Code"),
     no_git: bool = typer.Option(False, "--no-git", help="Skip git repository initialization"),
     here: bool = typer.Option(False, "--here", help="Initialize project in the current directory instead of creating a new one"),
     force: bool = typer.Option(False, "--force", help="Force merge/overwrite when using --here (skip confirmation)"),
     skip_tls: bool = typer.Option(False, "--skip-tls", help="Skip SSL/TLS verification (not recommended)"),
     debug: bool = typer.Option(False, "--debug", help="Show verbose diagnostic output for network and extraction failures"),
-    github_token: str = typer.Option(None, "--github-token", help="GitHub token to use for API requests (or set GH_TOKEN or GITHUB_TOKEN environment variable)"),
+    github_token: Optional[str] = typer.Option(None, "--github-token", help="GitHub token to use for API requests (or set GH_TOKEN or GITHUB_TOKEN environment variable)"),
 ):
     """
     Initialize a new Goalkeeper project from the latest template.
@@ -1538,7 +1548,8 @@ def init(
 
     tracker = StepTracker("Initialize Goalkeeper Project")
 
-    sys._goalkeeper_tracker_active = True
+    global _goalkeeper_tracker_active
+    _goalkeeper_tracker_active = True
 
     tracker.add("precheck", "Check required tools")
     tracker.complete("precheck", "ok")

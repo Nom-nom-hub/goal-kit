@@ -9,7 +9,7 @@ import sys
 import json
 import re
 from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 from collections import defaultdict
@@ -74,7 +74,7 @@ class OptimizationProposal:
 class MethodologyOptimizer:
     """Continuous improvement system for Goal Kit methodology"""
 
-    def __init__(self, project_root: str = None):
+    def __init__(self, project_root: Optional[str] = None):
         self.project_root = project_root or get_git_root()
         if not self.project_root:
             raise ValueError("Must be run from a git repository")
@@ -453,7 +453,7 @@ class MethodologyOptimizer:
 
         return proposals
 
-    def _generate_quality_optimization_proposal(self) -> OptimizationProposal:
+    def _generate_quality_optimization_proposal(self) -> Optional[OptimizationProposal]:
         """Generate quality optimization proposal"""
         if not self.methodology_data['validation']:
             return None
@@ -504,7 +504,7 @@ class MethodologyOptimizer:
 
         return proposal
 
-    def _generate_efficiency_optimization_proposal(self) -> OptimizationProposal:
+    def _generate_efficiency_optimization_proposal(self) -> Optional[OptimizationProposal]:
         """Generate efficiency optimization proposal"""
         if not self.methodology_data['progress']:
             return None
@@ -556,7 +556,7 @@ class MethodologyOptimizer:
 
         return proposal
 
-    def _generate_learning_optimization_proposal(self) -> OptimizationProposal:
+    def _generate_learning_optimization_proposal(self) -> Optional[OptimizationProposal]:
         """Generate learning optimization proposal"""
         if not self.methodology_data['learning']:
             return None
@@ -604,7 +604,7 @@ class MethodologyOptimizer:
 
         return proposal
 
-    def _generate_collaboration_optimization_proposal(self) -> OptimizationProposal:
+    def _generate_collaboration_optimization_proposal(self) -> Optional[OptimizationProposal]:
         """Generate collaboration optimization proposal"""
         if not self.methodology_data['collaboration']:
             return None

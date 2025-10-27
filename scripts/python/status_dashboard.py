@@ -8,12 +8,12 @@ import os
 import sys
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict, List, Tuple, Any, Optional, cast
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 
 # Add the common Python utilities
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.dirname(__file__))
 from common import (
     write_info,
     write_success,
@@ -41,8 +41,8 @@ class ProjectStatus:
 class StatusDashboard:
     """Dashboard for monitoring Goal Kit project status"""
 
-    def __init__(self, project_root: str = None):
-        self.project_root = project_root or get_git_root()
+    def __init__(self, project_root: Optional[str] = None):
+        self.project_root = cast(str, project_root or get_git_root())
         if not self.project_root:
             raise ValueError("Must be run from a git repository")
 

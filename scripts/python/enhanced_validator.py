@@ -9,7 +9,7 @@ import sys
 import re
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -53,7 +53,7 @@ class QualityMetrics:
 class EnhancedValidator:
     """Enhanced validation engine with multi-layered analysis"""
 
-    def __init__(self, project_root: str = None):
+    def __init__(self, project_root: Optional[str] = None):
         self.project_root = project_root or get_git_root()
         if not self.project_root:
             raise ValueError("Must be run from a git repository")
@@ -72,8 +72,9 @@ class EnhancedValidator:
 
     def validate_project(self, output_format: str = 'text') -> Dict[str, Any]:
         """Validate entire project methodology"""
+        project_name = os.path.basename(self.project_root) if self.project_root else "unknown"
         results = {
-            'project': os.path.basename(self.project_root),
+            'project': project_name,
             'timestamp': datetime.now().isoformat(),
             'validation_results': [],
             'summary': {}

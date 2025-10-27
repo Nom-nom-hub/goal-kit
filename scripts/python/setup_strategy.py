@@ -151,6 +151,7 @@ def main():
 
     # Get project root
     project_root = get_git_root()
+    assert project_root is not None
     os.chdir(project_root)
 
     # Execute the main function

@@ -9,13 +9,13 @@ import sys
 import json
 import statistics
 from pathlib import Path
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict, List, Tuple, Any, Optional, cast
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 from collections import defaultdict
 
 # Add the common Python utilities
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.dirname(__file__))
 from common import (
     write_info,
     write_success,
@@ -61,8 +61,8 @@ class WorkflowOptimizationReport:
 class WorkflowOptimizer:
     """Workflow optimization and analysis system"""
 
-    def __init__(self, project_root: str = None):
-        self.project_root = project_root or get_git_root()
+    def __init__(self, project_root: Optional[str] = None):
+        self.project_root = cast(str, project_root or get_git_root())
         if not self.project_root:
             raise ValueError("Must be run from a git repository")
 
@@ -250,7 +250,7 @@ class WorkflowOptimizer:
 
         return recommendations
 
-    def get_workflow_guidance(self, task_description: str = None) -> Dict[str, Any]:
+    def get_workflow_guidance(self, task_description: Optional[str] = None) -> Dict[str, Any]:
         """Get intelligent workflow guidance"""
         guidance = {
             'assessment': {},
