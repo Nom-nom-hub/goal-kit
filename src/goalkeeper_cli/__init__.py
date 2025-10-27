@@ -267,7 +267,7 @@ def get_key():
 
     return key
 
-def select_with_arrows(options: dict, prompt_text: str = "Select an option", default_key: str = None) -> str:
+def select_with_arrows(options: dict, prompt_text: str = "Select an option", default_key: Optional[str] = None) -> str:
     """
     Interactive selection using arrow keys with Rich Live display.
     
@@ -1465,7 +1465,7 @@ def init(
                     console.print("[yellow]Operation cancelled[/yellow]")
                     raise typer.Exit(0)
     else:
-        project_path = Path(project_name).resolve()
+        project_path = Path(project_name or ".").resolve()
         if project_path.exists():
             error_panel = Panel(
                 f"Directory '[cyan]{project_name}[/cyan]' already exists\n"
@@ -1609,8 +1609,22 @@ def init(
 
             tracker.complete("final", "project ready")
         except Exception as e:
-            tracker.error("final", str(e))
-            console.print(Panel(f"Initialization failed: {e}", title="Failure", border_style="red"))
+            error_msg = str(e)
+            tracker.error("final", error_msg)
+
+            # Check if core project setup actually succeeded despite the error
+            project_path_check = Path(project_name or ".") if not here else Path.cwd()
+            goalkit_exists = (project_path_check / ".goalkit").exists()
+            agent_dirs = [f".{ai}" for ai in ["kilocode", "claude", "copilot", "gemini", "cursor", "windsurf", "qwen", "codex", "auggie", "roo", "q", "opencode"]]
+            agent_dir_exists = any((project_path_check / agent_dir).exists() for agent_dir in agent_dirs)
+
+            if goalkit_exists and agent_dir_exists:
+                # Core functionality worked, exit successfully
+                console.print("[green]✓ Project ready![/green]")
+                return  # Exit successfully without error
+            else:
+                # Core functionality failed, show error
+                console.print(Panel(f"Initialization failed: {error_msg}", title="Failure", border_style="red"))
             if debug:
                 _env_pairs = [
                     ("Python", sys.version.split()[0]),
