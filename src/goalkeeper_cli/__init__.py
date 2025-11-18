@@ -1290,6 +1290,8 @@ def init(
                 tracker.skip("git", "--no-git flag")
 
             tracker.complete("final", "project ready")
+        except typer.Exit:
+            raise  # Re-raise typer.Exit to let it propagate
         except Exception as e:
             error_msg = str(e)
             tracker.error("final", error_msg)
