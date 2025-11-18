@@ -262,9 +262,9 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
         except ValueError as je:
             raise RuntimeError(f"Failed to parse release JSON: {je}\nRaw (truncated 400): {response.text[:400]}")
     except Exception as e:
-        console.print(f"[red]Error fetching release information[/red]")
-        console.print(Panel(str(e), title="Fetch Error", border_style="red"))
-        raise typer.Exit(1)
+        # Re-raise as RuntimeError to be caught by the caller
+        # Don't call typer.Exit here - let the caller handle display and exit
+        raise RuntimeError(f"Failed to fetch GitHub releases: {str(e)}") from e
 
     assets = release_data.get("assets", [])
     pattern = f"goal-kit-template-{ai_assistant}-{script_type}"
@@ -287,10 +287,9 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
             if verbose:
                 console.print(f"[yellow]No specific template for {ai_assistant}, using fallback template: {asset['name']}[/yellow]")
         else:
-            console.print(f"[red]No matching release asset found[/red] for [bold]{ai_assistant}[/bold] (expected pattern: [bold]{pattern}[/bold])")
             asset_names = [a.get('name', '?') for a in assets]
-            console.print(Panel("\n".join(asset_names) or "(no assets)", title="Available Assets", border_style="yellow"))
-            raise typer.Exit(1)
+            msg = f"No matching release asset found for {ai_assistant} (expected pattern: {pattern})\nAvailable: {', '.join(asset_names)}"
+            raise RuntimeError(msg)
 
     download_url = asset["browser_download_url"]
     filename = asset["name"]
@@ -339,12 +338,10 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
                         for chunk in response.iter_bytes(chunk_size=8192):
                             f.write(chunk)
     except Exception as e:
-        console.print(f"[red]Error downloading template[/red]")
         detail = str(e)
         if zip_path.exists():
             zip_path.unlink()
-        console.print(Panel(detail, title="Download Error", border_style="red"))
-        raise typer.Exit(1)
+        raise RuntimeError(f"Error downloading template: {detail}") from e
     if verbose:
         console.print(f"Downloaded: {filename}")
     metadata = {
@@ -501,39 +498,36 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
     project_name = project_path.name
 
     # Create content for the agent context file
-    context_content = """# Goal Kit Project Context
+    context_content = f"""# Goal Kit Project Context
 
 **Project**: {project_name}
 **Agent**: {ai_assistant}
 **Updated**: {datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')}
 
-## 🎯 CRITICAL: Goal-Driven Development Methodology
+## Goal-Driven Development Methodology
 
 **YOU MUST FOLLOW THESE RULES EXACTLY:**
 
-### 🚨 STRICT WORKFLOW ENFORCEMENT - ONE COMMAND AT A TIME
-**🛑 STOP AFTER EACH COMMAND - WAIT FOR USER**
+### STRICT WORKFLOW ENFORCEMENT - ONE COMMAND AT A TIME
+**STOP AFTER EACH COMMAND - WAIT FOR USER**
 
-**⚠️ WHEN YOU RECEIVE A SLASH COMMAND - ALWAYS RUN PYTHON SCRIPT FIRST:**
+**WHEN YOU RECEIVE A SLASH COMMAND - ALWAYS RUN PYTHON SCRIPT FIRST:**
 
-**`/goalkit.vision`** → Run `python scripts/python/create_vision.py` → Create vision file → **🛑 STOP**
-**`/goalkit.goal`** → Run `python scripts/python/create_new_goal.py --json "ARGS"` → Complete goal.md → **🛑 STOP**
-**`/goalkit.strategies`** → Run `python scripts/python/setup_strategy.py` → Complete strategies.md → **🛑 STOP**
-**`/goalkit.milestones`** → Run `python scripts/python/setup_milestones.py` → Complete milestones.md → **🛑 STOP**
-**`/goalkit.execute`** → Run `python scripts/python/setup_execution.py` → Continue with learning
+**`/goalkit.vision`** -> Run `python scripts/python/create_vision.py` -> Create vision file -> **STOP**
+**`/goalkit.goal`** -> Run `python scripts/python/create_new_goal.py --json "ARGS"` -> Complete goal.md -> **STOP**
+**`/goalkit.strategies`** -> Run `python scripts/python/setup_strategy.py` -> Complete strategies.md -> **STOP**
+**`/goalkit.milestones`** -> Run `python scripts/python/setup_milestones.py` -> Complete milestones.md -> **STOP**
+**`/goalkit.execute`** -> Run `python scripts/python/setup_execution.py` -> Continue with learning
 
-**🚨 CRITICAL: Never create files manually - ALWAYS run the Python script first!**
+**CRITICAL: Never create files manually - ALWAYS run the Python script first!**
 
-1. **`/goalkit.vision`** → Create vision file → **🛑 STOP**
-2. **User runs** `/goalkit.goal`** → Create goal → **🛑 STOP**
-3. **User runs** `/goalkit.strategies`** → Explore strategies → **🛑 STOP**
-4. **User runs** `/goalkit.milestones`** → Create milestones → **🛑 STOP**
-5. **User runs** `/goalkit.execute`** → Implement with learning → **Continue**
-""".format(
-        project_name=project_name,
-        ai_assistant=ai_assistant,
-        **locals()
-    ) + """### Core Methodology Rules
+1. **`/goalkit.vision`** -> Create vision file -> **STOP**
+2. **User runs** `/goalkit.goal` -> Create goal -> **STOP**
+3. **User runs** `/goalkit.strategies` -> Explore strategies -> **STOP**
+4. **User runs** `/goalkit.milestones` -> Create milestones -> **STOP**
+5. **User runs** `/goalkit.execute` -> Implement with learning -> **Continue**
+
+### Core Methodology Rules
 1. **OUTCOMES FIRST**: Always focus on measurable user/business outcomes, NOT implementation details
 2. **NO IMPLEMENTATION DETAILS IN GOALS**: Never put languages, frameworks, APIs, or methods in goal definitions
 3. **USE THE 5-CMD WORKFLOW**: Always follow vision → goal → strategies → milestones → execute sequence
@@ -549,62 +543,62 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 - **/goalkit.milestones**: Create measurable progress checkpoints
 - **/goalkit.execute**: Implement with learning loops and measurement
 
-### 🚨 FORBIDDEN AGENT BEHAVIORS
-**❌ STOP: DO NOT chain commands automatically**
-- ❌ Running `/goalkit.goal` after `/goalkit.vision` without user input
-- ❌ Starting coding or implementation after vision creation
-- ❌ Skipping any methodology steps
-- ❌ Proceeding without explicit user commands
-- ❌ Creating multiple goals at once without completing the workflow
+### FORBIDDEN AGENT BEHAVIORS
+**STOP: DO NOT chain commands automatically**
+- Running `/goalkit.goal` after `/goalkit.vision` without user input
+- Starting coding or implementation after vision creation
+- Skipping any methodology steps
+- Proceeding without explicit user commands
+- Creating multiple goals at once without completing the workflow
 
-**✅ ALLOWED: Only these specific actions**
-- ✅ Creating vision file after `/goalkit.vision` → **🛑 STOP** (Wait for user command)
-- ✅ Creating goal files after `/goalkit.goal` → **🛑 STOP** (Wait for user command)
-- ✅ Starting implementation after `/goalkit.execute` → Continue (No automatic stop)
+**ALLOWED: Only these specific actions**
+- Creating vision file after `/goalkit.vision` (Wait for user command)
+- Creating goal files after `/goalkit.goal` (Wait for user command)
+- Starting implementation after `/goalkit.execute` - Continue (No automatic stop)
 
-### ⚠️ CRITICAL ANTI-PATTERNS TO AVOID
+### CRITICAL ANTI-PATTERNS TO AVOID
 - ✗ Implementing features directly without following methodology
 - ✗ Adding implementation details to goal definitions
 - ✗ Skipping strategy exploration phase
 - ✗ Creating goals without measurable success criteria
 - ✗ Treating this as traditional requirement-driven development
 
-## 📋 Available Commands & Execution Workflow
+## Available Commands & Execution Workflow
 
 ### Core Commands with Proper Execution Timing
-- **/goalkit.vision** → Run `python scripts/python/create_vision.py` → Create vision file → **🛑 STOP & WAIT**
-  - *Always run Python script first, then wait for user*
-- **/goalkit.goal** → Run `python scripts/python/create_new_goal.py --json "ARGS"` → Complete goal.md → **🛑 STOP & WAIT** 
-  - *Always run Python script first, then wait for user*
-- **/goalkit.strategies** → Run `python scripts/python/setup_strategy.py` → Complete strategies.md → **🛑 STOP & WAIT**
-  - *Always run Python script first, then wait for user*
-- **/goalkit.milestones** → Run `python scripts/python/setup_milestones.py` → Complete milestones.md → **🛑 STOP & WAIT**
-  - *Always run Python script first, then wait for user*
-- **/goalkit.execute** → Run `python scripts/python/setup_execution.py` → Continue with learning
-  - *Execute after setup, no automatic stop*
+- **/goalkit.vision** - Run `python scripts/python/create_vision.py` - Create vision file - STOP & WAIT
+  - Always run Python script first, then wait for user
+- **/goalkit.goal** - Run `python scripts/python/create_new_goal.py --json "ARGS"` - Complete goal.md - STOP & WAIT 
+  - Always run Python script first, then wait for user
+- **/goalkit.strategies** - Run `python scripts/python/setup_strategy.py` - Complete strategies.md - STOP & WAIT
+  - Always run Python script first, then wait for user
+- **/goalkit.milestones** - Run `python scripts/python/setup_milestones.py` - Complete milestones.md - STOP & WAIT
+  - Always run Python script first, then wait for user
+- **/goalkit.execute** - Run `python scripts/python/setup_execution.py` - Continue with learning
+  - Execute after setup, no automatic stop
 
 ### Extended Commands (Additional Capabilities)
-- **/goalkit.collaborate** → Run `python scripts/python/setup_collaboration.py` → Set up collaboration → **🛑 STOP & WAIT**
-- **/goalkit.progress** → Run `python scripts/python/progress_tracker.py` → Track progress → **🛑 STOP & WAIT**
-- **/goalkit.validate** → Run `python scripts/python/enhanced_validator.py` → Validate methodology → **🛑 STOP & WAIT**
-- **/goalkit.persona** → Run `python scripts/python/manage_personas.py` → Manage personas → **🛑 STOP & WAIT**
-- **/goalkit.context** → Run `python scripts/python/smart_context_manager.py` → Update context → **🛑 STOP & WAIT**
-- **/goalkit.workflow** → Run `python scripts/python/workflow_enforcer.py` → Enforce workflow → **🛑 STOP & WAIT**
-- **/goalkit.intelligence** → Run `python scripts/python/workflow_intelligence.py` → Analyze workflow intelligence → **🛑 STOP & WAIT**
-- **/goalkit.testing** → Run `python scripts/python/optimization_tester.py` → Run optimization tests → **🛑 STOP & WAIT**
-- **/goalkit.hub** → Run `python scripts/python/collaboration_hub.py` → Manage collaboration hub → **🛑 STOP & WAIT**
-- **/goalkit.learning** → Run `python scripts/python/learning_system.py` → Enable learning → **🛑 STOP & WAIT**
-- **/goalkit.optimize** → Run `python scripts/python/methodology_optimizer.py` → Optimize approach → **🛑 STOP & WAIT**
-- **/goalkit.smart** → Run `python scripts/python/smart_context_manager.py` → Smart context → **🛑 STOP & WAIT**
-- **/goalkit.setup** → Run `python scripts/python/setup_goal.py` → Set up goal structure → **🛑 STOP & WAIT**
-- **/goalkit.check** → Run `python scripts/python/validate_methodology.py` → Check methodology compliance → **🛑 STOP & WAIT**
+- **/goalkit.collaborate** - Run `python scripts/python/setup_collaboration.py` - Set up collaboration - STOP & WAIT
+- **/goalkit.progress** - Run `python scripts/python/progress_tracker.py` - Track progress - STOP & WAIT
+- **/goalkit.validate** - Run `python scripts/python/enhanced_validator.py` - Validate methodology - STOP & WAIT
+- **/goalkit.persona** - Run `python scripts/python/manage_personas.py` - Manage personas - STOP & WAIT
+- **/goalkit.context** - Run `python scripts/python/smart_context_manager.py` - Update context - STOP & WAIT
+- **/goalkit.workflow** - Run `python scripts/python/workflow_enforcer.py` - Enforce workflow - STOP & WAIT
+- **/goalkit.intelligence** - Run `python scripts/python/workflow_intelligence.py` - Analyze workflow intelligence - STOP & WAIT
+- **/goalkit.testing** - Run `python scripts/python/optimization_tester.py` - Run optimization tests - STOP & WAIT
+- **/goalkit.hub** - Run `python scripts/python/collaboration_hub.py` - Manage collaboration hub - STOP & WAIT
+- **/goalkit.learning** - Run `python scripts/python/learning_system.py` - Enable learning - STOP & WAIT
+- **/goalkit.optimize** - Run `python scripts/python/methodology_optimizer.py` - Optimize approach - STOP & WAIT
+- **/goalkit.smart** - Run `python scripts/python/smart_context_manager.py` - Smart context - STOP & WAIT
+- **/goalkit.setup** - Run `python scripts/python/setup_goal.py` - Set up goal structure - STOP & WAIT
+- **/goalkit.check** - Run `python scripts/python/validate_methodology.py` - Check methodology compliance - STOP & WAIT
 
 ### Execution Methodology (CRITICAL):
-1. **`/goalkit.vision`** → Python script → Vision file created → **🛑 STOP** (wait for user to run next command)
-2. **`/goalkit.goal`** → Python script → Goal defined → **🛑 STOP** (wait for user to run next command)
-3. **`/goalkit.strategies`** → Python script → Strategies explored → **🛑 STOP** (wait for user to run next command)
-4. **`/goalkit.milestones`** → Python script → Milestones set → **🛑 STOP** (wait for user to run next command)
-5. **`/goalkit.execute`** → Python script → Implementation begins → **Continue** (no automatic stop)
+1. **/goalkit.vision** - Python script - Vision file created - STOP (wait for user to run next command)
+2. **/goalkit.goal** - Python script - Goal defined - STOP (wait for user to run next command)
+3. **/goalkit.strategies** - Python script - Strategies explored - STOP (wait for user to run next command)
+4. **/goalkit.milestones** - Python script - Milestones set - STOP (wait for user to run next command)
+5. **/goalkit.execute** - Python script - Implementation begins - Continue (no automatic stop)
 
 ### Python Script Execution Pattern:
 - **NEVER create files manually** - Always run the corresponding Python script first
@@ -615,20 +609,20 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
   - Validation reports: `.goalkit/validation/`
   - Progress reports: `.goalkit/reports/`
 - **After each script**: **🛑 STOP** and wait for user input for the next command
-- **Exception**: Execute command continues after setup without automatic stop
-- **Note**: Additional commands beyond the core 5 follow the same STOP & WAIT pattern
+- Exception: Execute command continues after setup without automatic stop
+- Note: Additional commands beyond the core 5 follow the same STOP & WAIT pattern
 
-## 🚀 Project Vision
+## Project Vision
 
 Vision document not yet created
-*Note: Vision file will be created in `.goalkit/goals/` directory*
+Note: Vision file will be created in `.goalkit/goals/` directory
 
-## 🎯 Active Goals
+## Active Goals
 
 No active goals yet. Use /goalkit.goal to create your first goal.
-*Note: All goal files are stored in `.goalkit/goals/` directory*
+Note: All goal files are stored in `.goalkit/goals/` directory
 
-## 📊 Development Principles
+## Development Principles
 
 Remember these core principles:
 1. **Outcome-First**: Prioritize user and business outcomes
@@ -637,42 +631,42 @@ Remember these core principles:
 4. **Learning Integration**: Treat implementation as hypothesis testing
 5. **Adaptive Planning**: Change course based on evidence
 
-## 📁 Directory Structure
+## Directory Structure
 
-**CRITICAL FILE LOCATIONS:**
-- **Goal files**: `.goalkit/goals/` (vision.md, goal.md, strategies.md, milestones.md, execution.md)
-- **Python scripts**: `.goalkit/scripts/python/` 
-- **Agent context files**: `.goalkit/agent-context.md` or agent-specific directories (`.claude/`, `.gemini/`, etc.)
-- **All goal-related files are stored in `.goalkit/` subdirectories - NOT in project root!**
+CRITICAL FILE LOCATIONS:
+- Goal files: `.goalkit/goals/` (vision.md, goal.md, strategies.md, milestones.md, execution.md)
+- Python scripts: `.goalkit/scripts/python/` 
+- Agent context files: `.goalkit/agent-context.md` or agent-specific directories (`.claude/`, `.gemini/`, etc.)
+- All goal-related files are stored in `.goalkit/` subdirectories - NOT in project root!
 
-## 🔧 Next Recommended Actions
+## Next Recommended Actions
 
-**SEQUENTIAL WORKFLOW (Follow ONE command at a time):**
-1. **`/goalkit.vision`** → Run `python scripts/python/create_vision.py` → **🛑 STOP & WAIT** for user
-2. **`/goalkit.goal`** → Run `python scripts/python/create_new_goal.py` → **🛑 STOP & WAIT** for user  
-3. **`/goalkit.strategies`** → Run `python scripts/python/setup_strategy.py` → **🛑 STOP & WAIT** for user
-4. **`/goalkit.milestones`** → Run `python scripts/python/setup_milestones.py` → **🛑 STOP & WAIT** for user
-5. **`/goalkit.execute`** → Run `python scripts/python/setup_execution.py` → Continue with implementation
+SEQUENTIAL WORKFLOW (Follow ONE command at a time):
+1. `/goalkit.vision` - Run `python scripts/python/create_vision.py` - STOP & WAIT for user
+2. `/goalkit.goal` - Run `python scripts/python/create_new_goal.py` - STOP & WAIT for user  
+3. `/goalkit.strategies` - Run `python scripts/python/setup_strategy.py` - STOP & WAIT for user
+4. `/goalkit.milestones` - Run `python scripts/python/setup_milestones.py` - STOP & WAIT for user
+5. `/goalkit.execute` - Run `python scripts/python/setup_execution.py` - Continue with implementation
 
-**ADDITIONAL COMMANDS (Available after core workflow):**
-- **`/goalkit.collaborate`** → Run `python scripts/python/setup_collaboration.py` → **🛑 STOP & WAIT**
-- **`/goalkit.progress`** → Run `python scripts/python/progress_tracker.py` → **🛑 STOP & WAIT**
-- **`/goalkit.validate`** → Run `python scripts/python/validate_goals.py` → **🛑 STOP & WAIT**
-- **`/goalkit.persona`** → Run `python scripts/python/manage_personas.py` → **🛑 STOP & WAIT**
-- **`/goalkit.context`** → Run `python scripts/python/update_agent_context.py` → **🛑 STOP & WAIT**
-- **`/goalkit.workflow`** → Run `python scripts/python/workflow_enforcer.py` → **🛑 STOP & WAIT**
-- **`/goalkit.intelligence`** → Run `python scripts/python/workflow_intelligence.py` → **🛑 STOP & WAIT**
-- **`/goalkit.testing`** → Run `python scripts/python/optimization_tester.py` → **🛑 STOP & WAIT**
-- **`/goalkit.hub`** → Run `python scripts/python/collaboration_hub.py` → **🛑 STOP & WAIT**
-- **`/goalkit.learning`** → Run `python scripts/python/learning_system.py` → **🛑 STOP & WAIT**
-- **`/goalkit.optimize`** → Run `python scripts/python/methodology_optimizer.py` → **🛑 STOP & WAIT**
-- **`/goalkit.smart`** → Run `python scripts/python/smart_context_manager.py` → **🛑 STOP & WAIT**
+ADDITIONAL COMMANDS (Available after core workflow):
+- `/goalkit.collaborate` - Run `python scripts/python/setup_collaboration.py` - STOP & WAIT
+- `/goalkit.progress` - Run `python scripts/python/progress_tracker.py` - STOP & WAIT
+- `/goalkit.validate` - Run `python scripts/python/validate_goals.py` - STOP & WAIT
+- `/goalkit.persona` - Run `python scripts/python/manage_personas.py` - STOP & WAIT
+- `/goalkit.context` - Run `python scripts/python/update_agent_context.py` - STOP & WAIT
+- `/goalkit.workflow` - Run `python scripts/python/workflow_enforcer.py` - STOP & WAIT
+- `/goalkit.intelligence` - Run `python scripts/python/workflow_intelligence.py` - STOP & WAIT
+- `/goalkit.testing` - Run `python scripts/python/optimization_tester.py` - STOP & WAIT
+- `/goalkit.hub` - Run `python scripts/python/collaboration_hub.py` - STOP & WAIT
+- `/goalkit.learning` - Run `python scripts/python/learning_system.py` - STOP & WAIT
+- `/goalkit.optimize` - Run `python scripts/python/methodology_optimizer.py` - STOP & WAIT
+- `/goalkit.smart` - Run `python scripts/python/smart_context_manager.py` - STOP & WAIT
 
-**⚠️ CRITICAL: After each command:**
+CRITICAL: After each command:
 - The corresponding Python script executes first
 - Files are created/updated in the `.goalkit/` directory structure (NOT in project root!)
-- **🛑 STOP AND WAIT** for explicit user command before proceeding
-- **NEVER chain commands automatically**
+- STOP AND WAIT for explicit user command before proceeding
+- NEVER chain commands automatically
 
 ## Agent Development Guidelines
 When working with Python scripts and code in this project, AI agents should follow these critical guidelines to avoid common mistakes:
@@ -1290,25 +1284,9 @@ def init(
                 tracker.skip("git", "--no-git flag")
 
             tracker.complete("final", "project ready")
-        except typer.Exit:
-            raise  # Re-raise typer.Exit to let it propagate
         except Exception as e:
-            error_msg = str(e)
-            tracker.error("final", error_msg)
-
-            # Check if core project setup actually succeeded despite the error
-            project_path_check = Path(project_name or ".") if not here else Path.cwd()
-            goalkit_exists = (project_path_check / ".goalkit").exists()
-            agent_dirs = [f".{ai}" for ai in ["kilocode", "claude", "copilot", "gemini", "cursor", "windsurf", "qwen", "codex", "auggie", "roo", "q", "opencode"]]
-            agent_dir_exists = any((project_path_check / agent_dir).exists() for agent_dir in agent_dirs)
-
-            if goalkit_exists and agent_dir_exists:
-                # Core functionality worked, exit successfully
-                console.print("[green]✓ Project ready![/green]")
-                return  # Exit successfully without error
-            else:
-                # Core functionality failed, show error
-                console.print(Panel(f"Initialization failed: {error_msg}", title="Failure", border_style="red"))
+            tracker.error("final", str(e))
+            console.print(Panel(f"Initialization failed: {e}", title="Failure", border_style="red"))
             if debug:
                 _env_pairs = [
                     ("Python", sys.version.split()[0]),
