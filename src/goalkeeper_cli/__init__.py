@@ -577,22 +577,6 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 - **/goalkit.execute** - Run `python scripts/python/setup_execution.py` - Continue with learning
   - Execute after setup, no automatic stop
 
-### Extended Commands (Additional Capabilities)
-- **/goalkit.collaborate** - Run `python scripts/python/setup_collaboration.py` - Set up collaboration - STOP & WAIT
-- **/goalkit.progress** - Run `python scripts/python/progress_tracker.py` - Track progress - STOP & WAIT
-- **/goalkit.validate** - Run `python scripts/python/enhanced_validator.py` - Validate methodology - STOP & WAIT
-- **/goalkit.persona** - Run `python scripts/python/manage_personas.py` - Manage personas - STOP & WAIT
-- **/goalkit.context** - Run `python scripts/python/smart_context_manager.py` - Update context - STOP & WAIT
-- **/goalkit.workflow** - Run `python scripts/python/workflow_enforcer.py` - Enforce workflow - STOP & WAIT
-- **/goalkit.intelligence** - Run `python scripts/python/workflow_intelligence.py` - Analyze workflow intelligence - STOP & WAIT
-- **/goalkit.testing** - Run `python scripts/python/optimization_tester.py` - Run optimization tests - STOP & WAIT
-- **/goalkit.hub** - Run `python scripts/python/collaboration_hub.py` - Manage collaboration hub - STOP & WAIT
-- **/goalkit.learning** - Run `python scripts/python/learning_system.py` - Enable learning - STOP & WAIT
-- **/goalkit.optimize** - Run `python scripts/python/methodology_optimizer.py` - Optimize approach - STOP & WAIT
-- **/goalkit.smart** - Run `python scripts/python/smart_context_manager.py` - Smart context - STOP & WAIT
-- **/goalkit.setup** - Run `python scripts/python/setup_goal.py` - Set up goal structure - STOP & WAIT
-- **/goalkit.check** - Run `python scripts/python/validate_methodology.py` - Check methodology compliance - STOP & WAIT
-
 ### Execution Methodology (CRITICAL):
 1. **/goalkit.vision** - Python script - Vision file created - STOP (wait for user to run next command)
 2. **/goalkit.goal** - Python script - Goal defined - STOP (wait for user to run next command)
@@ -647,20 +631,6 @@ SEQUENTIAL WORKFLOW (Follow ONE command at a time):
 3. `/goalkit.strategies` - Run `python scripts/python/setup_strategy.py` - STOP & WAIT for user
 4. `/goalkit.milestones` - Run `python scripts/python/setup_milestones.py` - STOP & WAIT for user
 5. `/goalkit.execute` - Run `python scripts/python/setup_execution.py` - Continue with implementation
-
-ADDITIONAL COMMANDS (Available after core workflow):
-- `/goalkit.collaborate` - Run `python scripts/python/setup_collaboration.py` - STOP & WAIT
-- `/goalkit.progress` - Run `python scripts/python/progress_tracker.py` - STOP & WAIT
-- `/goalkit.validate` - Run `python scripts/python/validate_goals.py` - STOP & WAIT
-- `/goalkit.persona` - Run `python scripts/python/manage_personas.py` - STOP & WAIT
-- `/goalkit.context` - Run `python scripts/python/update_agent_context.py` - STOP & WAIT
-- `/goalkit.workflow` - Run `python scripts/python/workflow_enforcer.py` - STOP & WAIT
-- `/goalkit.intelligence` - Run `python scripts/python/workflow_intelligence.py` - STOP & WAIT
-- `/goalkit.testing` - Run `python scripts/python/optimization_tester.py` - STOP & WAIT
-- `/goalkit.hub` - Run `python scripts/python/collaboration_hub.py` - STOP & WAIT
-- `/goalkit.learning` - Run `python scripts/python/learning_system.py` - STOP & WAIT
-- `/goalkit.optimize` - Run `python scripts/python/methodology_optimizer.py` - STOP & WAIT
-- `/goalkit.smart` - Run `python scripts/python/smart_context_manager.py` - STOP & WAIT
 
 CRITICAL: After each command:
 - The corresponding Python script executes first
