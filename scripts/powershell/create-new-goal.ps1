@@ -6,9 +6,7 @@ param(
     
     [switch]$DryRun = $false,
     [switch]$Force = $false,
-    [switch]$Json = $false,
-    [switch]$Verbose = $false
-)
+    [switch]$Json = $false )
 
 # Get the script directory and source common functions
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -19,9 +17,7 @@ function New-Goal {
         [string]$GoalDescription,
         [bool]$DryRun,
         [bool]$Force,
-        [bool]$JsonMode,
-        [bool]$VerboseMode
-    )
+        [bool]$JsonMode )
     
     # Validate arguments
     if ([string]::IsNullOrEmpty($GoalDescription)) {
@@ -131,9 +127,9 @@ function New-Goal {
             Write-Info "Use a different goal description or remove the existing directory"
             exit 1
         } else {
-            if ($VerboseMode) {
+            
                 Write-Info "Overwriting existing goal directory: $goalDir"
-            }
+            
         }
     }
     
@@ -287,9 +283,9 @@ function New-Goal {
     Write-Success "Created goal.md with description: $GoalDescription"
     
     # Create git branch for this goal
-    if ($VerboseMode) {
+    
         Write-Info "Setting up git branch for this goal..."
-    }
+    
     
     Set-Location $projectRoot | Out-Null
     $branchName = New-GoalBranch $goalDirName
@@ -325,4 +321,4 @@ function New-Goal {
 }
 
 # Main execution
-New-Goal -GoalDescription $GoalDescription -DryRun $DryRun -Force $Force -JsonMode $Json -VerboseMode $Verbose
+New-Goal -GoalDescription $GoalDescription -DryRun $DryRun -Force $Force -JsonMode $Json 

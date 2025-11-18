@@ -6,8 +6,7 @@ param(
     
     [switch]$Edit = $false,
     [switch]$Force = $false,
-    [switch]$Json = $false,
-    [switch]$Verbose = $false
+    [switch]$Json = $false
 )
 
 # Get the script directory and source common functions
@@ -19,8 +18,7 @@ function New-Vision {
         [string]$VisionDescription,
         [bool]$Edit,
         [bool]$Force,
-        [bool]$JsonMode,
-        [bool]$VerboseMode
+        [bool]$JsonMode
     )
     
     # Check if we're in a git repository
@@ -54,10 +52,8 @@ function New-Vision {
     
     # Check if vision file already exists
     if (Test-Path $visionFile) {
-        if ($Edit -or $VerboseMode) {
-            if ($VerboseMode) {
-                Write-Info "Opening vision file for editing..."
-            }
+        if ($Edit) {
+            Write-Info "Opening vision file for editing..."
             # Open in default editor (code, notepad, etc.)
             if (Get-Command code -ErrorAction SilentlyContinue) {
                 code $visionFile
@@ -171,4 +167,4 @@ These are the major stepping stones to realize the vision:
 }
 
 # Main execution
-New-Vision -VisionDescription $VisionDescription -Edit $Edit -Force $Force -JsonMode $Json -VerboseMode $Verbose
+New-Vision -VisionDescription $VisionDescription -Edit $Edit -Force $Force -JsonMode $Json

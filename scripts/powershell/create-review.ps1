@@ -5,9 +5,7 @@ param(
     [string]$ReviewType,
     
     [switch]$Force = $false,
-    [switch]$Json = $false,
-    [switch]$Verbose = $false
-)
+    [switch]$Json = $false )
 
 # Get the script directory and source common functions
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -17,9 +15,7 @@ function New-Review {
     param(
         [string]$ReviewType,
         [bool]$Force,
-        [bool]$JsonMode,
-        [bool]$VerboseMode
-    )
+        [bool]$JsonMode )
     
     # Check if we're in a git repository
     if (-not (Test-GitRepo)) {
@@ -273,4 +269,4 @@ function New-Review {
 }
 
 # Main execution
-New-Review -ReviewType $ReviewType -Force $Force -JsonMode $Json -VerboseMode $Verbose
+New-Review -ReviewType $ReviewType -Force $Force -JsonMode $Json 

@@ -6,9 +6,7 @@ param(
     
     [switch]$Edit = $false,
     [switch]$Force = $false,
-    [switch]$Json = $false,
-    [switch]$Verbose = $false
-)
+    [switch]$Json = $false )
 
 # Get the script directory and source common functions
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -19,9 +17,7 @@ function New-Report {
         [string]$GoalDir,
         [bool]$Edit,
         [bool]$Force,
-        [bool]$JsonMode,
-        [bool]$VerboseMode
-    )
+        [bool]$JsonMode )
     
     # Check if we're in a git repository
     if (-not (Test-GitRepo)) {
@@ -80,9 +76,9 @@ function New-Report {
     # Check if report file already exists
     if (Test-Path $reportFile) {
         if ($Edit) {
-            if ($VerboseMode) {
+            
                 Write-Info "Opening report file for editing..."
-            }
+            
             # Open in default editor
             if (Get-Command code -ErrorAction SilentlyContinue) {
                 code $reportFile
@@ -250,4 +246,4 @@ function New-Report {
 }
 
 # Main execution
-New-Report -GoalDir $GoalDir -Edit $Edit -Force $Force -JsonMode $Json -VerboseMode $Verbose
+New-Report -GoalDir $GoalDir -Edit $Edit -Force $Force -JsonMode $Json 

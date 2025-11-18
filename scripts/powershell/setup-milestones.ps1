@@ -6,9 +6,7 @@ param(
     
     [switch]$DryRun = $false,
     [switch]$Force = $false,
-    [switch]$Json = $false,
-    [switch]$Verbose = $false
-)
+    [switch]$Json = $false )
 
 # Get the script directory and source common functions
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -19,9 +17,7 @@ function New-MilestoneFile {
         [string]$GoalDirectory,
         [bool]$DryRun,
         [bool]$Force,
-        [bool]$JsonMode,
-        [bool]$VerboseMode
-    )
+        [bool]$JsonMode )
     
     # Check if we're in a git repository
     if (-not (Test-GitRepo)) {
@@ -138,4 +134,4 @@ Milestone plan for goal: $goalDirName
 }
 
 # Main execution
-New-MilestoneFile -GoalDirectory $GoalDirectory -DryRun $DryRun -Force $Force -JsonMode $Json -VerboseMode $Verbose
+New-MilestoneFile -GoalDirectory $GoalDirectory -DryRun $DryRun -Force $Force -JsonMode $Json 
