@@ -1,6 +1,6 @@
 [project]
 name = "goalkeeper-cli"
-version = "0.0.97"
+version = "0.0.99"
 license = "MIT"
 description = "Goalkeeper CLI, part of Goal Kit. A tool to bootstrap your projects for Goal-Driven Development (GDD)."
 requires-python = ">=3.11"
@@ -11,6 +11,15 @@ dependencies = [
     "platformdirs",
     "readchar",
     "truststore>=0.10.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
 ]
 
 [project.scripts]

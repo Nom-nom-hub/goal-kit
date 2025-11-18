@@ -1,8 +1,11 @@
 ---
 description: Execute goals with learning, measurement, and adaptation. Requires completed goal, strategies, and milestones.
+scripts:
+  sh: scripts/bash/setup-execution.sh "{GOAL_DIR}" --json
+  ps: scripts/powershell/setup-execution.ps1 "{GOAL_DIR}" -Json
 agent_scripts:
-  sh: .goalkit/scripts/python/update_agent_context.py __AGENT__
-  ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
+  sh: scripts/bash/common.sh && update-agent-context
+  ps: . scripts/powershell/common.ps1; Update-AgentContext
 ---
 
 # Quick Prerequisites Check

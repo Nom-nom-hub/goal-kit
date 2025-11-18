@@ -1,11 +1,11 @@
 ---
 description: Explore multiple implementation strategies for goals. Ensures consideration of various approaches before implementation.
 scripts:
-  sh: .goalkit/scripts/python/setup_strategy.py --json "{ARGS}"
-  ps: .goalkit/scripts/python/setup_strategy.py --json "{ARGS}"
+  sh: scripts/bash/setup-strategy.sh "{GOAL_DIR}" --json
+  ps: scripts/powershell/setup-strategy.ps1 "{GOAL_DIR}" -Json
 agent_scripts:
-  sh: .goalkit/scripts/python/update_agent_context.py __AGENT__
-  ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
+  sh: scripts/bash/common.sh && update-agent-context
+  ps: . scripts/powershell/common.ps1; Update-AgentContext
 ---
 
 # Quick Prerequisites Check

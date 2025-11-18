@@ -1,0 +1,1 @@
+"""Goal Kit test suite."""

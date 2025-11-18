@@ -1,31 +1,32 @@
 ---
 description: Create a new goal with measurable outcomes and success criteria. This command ensures proper goal-driven development methodology.
 scripts:
-  sh: .goalkit/scripts/python/create_new_goal.py --json "{ARGS}"
-  ps: .goalkit/scripts/python/create_new_goal.py --json "{ARGS}"
+  sh: scripts/bash/create-new-goal.sh "{ARGS}" --json
+  ps: scripts/powershell/create-new-goal.ps1 "{ARGS}" -Json
 agent_scripts:
-  sh: .goalkit/scripts/python/update_agent_context.py __AGENT__
-  ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
+  sh: scripts/bash/common.sh && update-agent-context
+  ps: . scripts/powershell/common.ps1; Update-AgentContext
 ---
 
 # ⚠️ CRITICAL: Proper Goal Creation Process
 
 **Goal Description**: `{ARGS}`
 
-**🚨 MANDATORY STEP 1**: Run the Python script to create the goal structure:
+**🚨 MANDATORY STEP 1**: Run the script to create the goal structure:
 
-```python
+**On Linux/macOS:**
+```bash
 cd "{PROJECT_ROOT}"
-python scripts/python/create_new_goal.py --json "{ARGS}"
+bash scripts/bash/create-new-goal.sh "{ARGS}" --json
+```
+
+**On Windows:**
+```powershell
+cd "{PROJECT_ROOT}"
+powershell -ExecutionPolicy Bypass -File scripts/powershell/create-new-goal.ps1 "{ARGS}" -Json
 ```
 
 ## **⚠️ CRITICAL: The --json flag is REQUIRED for proper workflow integration**
-
-**🛡️ WORKFLOW ENFORCEMENT**: After running the script, verify compliance:
-
-```python
-python scripts/python/workflow_enforcer.py --check
-```
 
 **⚠️ DO NOT manually create goal directories** - This bypasses the proper methodology and will cause issues with:
 
@@ -58,12 +59,6 @@ python scripts/python/workflow_enforcer.py --check
 - `/goalkit.milestones` - Create measurable progress checkpoints
 - `/goalkit.execute` - Implement with learning and adaptation
 
-**STEP 6**: Verify workflow compliance (recommended):
-
-```bash
-python scripts/python/workflow_enforcer.py --check
-```
-
 **🛑 STOP HERE** - Do NOT proceed to strategies or implementation automatically
 **🛑 STOP HERE** - Wait for user to explicitly run `/goalkit.strategies`
 
@@ -73,17 +68,15 @@ python scripts/python/workflow_enforcer.py --check
 ✅ **DO**: Include specific success metrics with quantifiable targets
 ✅ **DO**: Identify target users and stakeholders
 ✅ **DO**: Document assumptions and validation methods
-✅ **DO**: Run workflow compliance checks after goal creation
 ❌ **DON'T**: Include languages, frameworks, or APIs in goal definition
 ❌ **DON'T**: Skip success metrics or use vague targets
-❌ **DON'T**: Forget to create the quality checklist
+❌ **DON'T**: Forget to complete the goal definition with specific details
 ❌ **DON'T**: Skip the --json flag when running creation scripts
-❌ **DON'T**: Bypass workflow enforcement verification
 
 ## Key Reminders
 
 - **Simple tasks** → Use `/goalkit.execute` for direct implementation
 - **Complex goals** → Use full methodology: goal → strategies → milestones → execute
 - **Always** end with reminder to use `/goalkit.strategies` next
-- **Workflow enforcement** → Run `python scripts/python/workflow_enforcer.py --check` to verify compliance
 - **Script execution** → Always use `--json` flag for proper integration
+- **Cross-platform** → Use bash on Linux/macOS, PowerShell on Windows

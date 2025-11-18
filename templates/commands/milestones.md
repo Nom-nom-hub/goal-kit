@@ -1,11 +1,11 @@
 ---
 description: Create measurable milestones and progress indicators for goals.
 scripts:
-  sh: .goalkit/scripts/python/setup_milestones.py --json "{ARGS}"
-  ps: .goalkit/scripts/python/setup_milestones.py --json "{ARGS}"
+  sh: scripts/bash/setup-milestones.sh "{GOAL_DIR}" --json
+  ps: scripts/powershell/setup-milestones.ps1 "{GOAL_DIR}" -Json
 agent_scripts:
-  sh: .goalkit/scripts/python/update_agent_context.py __AGENT__
-  ps: .goalkit/scripts/python/update_agent_context.py __AGENT__
+  sh: scripts/bash/common.sh && update-agent-context
+  ps: . scripts/powershell/common.ps1; Update-AgentContext
 ---
 
 # Quick Prerequisites Check
