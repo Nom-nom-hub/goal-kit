@@ -1,3 +1,7 @@
+---
+description: Establish project vision, values, and success criteria. Provides foundation for all goal-driven development.
+---
+
 # /goalkit.vision Command
 
 ## AI AGENT INSTRUCTIONS
