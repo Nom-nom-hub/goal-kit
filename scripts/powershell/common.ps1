@@ -176,7 +176,7 @@ function Update-AgentContext {
     }
     
     $activeGoals = 0
-    $goalsPath = Join-Path $projectRoot "goals"
+    $goalsPath = Join-Path -Path $projectRoot -ChildPath "goals"
     if (Test-Path $goalsPath) {
         $activeGoals = @(Get-ChildItem -Path $goalsPath -Directory).Count
     }
@@ -184,7 +184,7 @@ function Update-AgentContext {
     $foundContextFile = $false
     
     foreach ($contextFile in $contextFiles) {
-        $fullPath = Join-Path $projectRoot $contextFile
+        $fullPath = Join-Path -Path $projectRoot -ChildPath $contextFile
         
         if (Test-Path $fullPath) {
             Write-Info "Updating context in $contextFile"
