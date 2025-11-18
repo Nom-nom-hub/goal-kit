@@ -10,7 +10,7 @@ param(
 
 # Get the script directory and source common functions
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $scriptDir "common.ps1")
+. (Join-Path -Path $scriptDir -ChildPath "common.ps1")
 
 function New-ExecutionFile {
     param(
@@ -42,7 +42,7 @@ function New-ExecutionFile {
         }
         
         $goalDirName = Split-Path -Leaf $GoalDirectory
-        $executionFile = Join-Path $GoalDirectory "execution.md"
+        $executionFile = Join-Path -Path $GoalDirectory -ChildPath "execution.md"
         $branchName = $goalDirName
         
         # Output JSON with required variables
@@ -62,7 +62,7 @@ function New-ExecutionFile {
     }
     
     # Check if execution.md already exists
-    $executionFile = Join-Path $GoalDirectory "execution.md"
+    $executionFile = Join-Path -Path $GoalDirectory -ChildPath "execution.md"
     if ((Test-Path $executionFile) -and (-not $DryRun)) {
         Write-Warning "Execution file already exists: $executionFile"
         if (-not $Force) {
@@ -80,7 +80,7 @@ function New-ExecutionFile {
     }
     
     # Check if template exists, otherwise create default execution.md
-    $templatePath = Join-Path $projectRoot ".goalkit" "templates" "execution-template.md"
+    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit" "templates" "execution-template.md"
     if (Test-Path $templatePath) {
         # Read the template
         $templateContent = Get-Content -Path $templatePath -Raw

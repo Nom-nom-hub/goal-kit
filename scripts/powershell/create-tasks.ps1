@@ -9,7 +9,7 @@ param(
 
 # Get the script directory and source common functions
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $scriptDir "common.ps1")
+. (Join-Path -Path $scriptDir -ChildPath "common.ps1")
 
 function New-Tasks {
     param(
@@ -34,7 +34,7 @@ function New-Tasks {
     Set-Location $projectRoot | Out-Null
     
     # Check if this is a Goal Kit project
-    $visionFile = Join-Path ".goalkit" "vision.md"
+    $visionFile = Join-Path -Path ".goalkit" -ChildPath "vision.md"
     if (-not (Test-Path $visionFile)) {
         Write-Error-Custom "Not a Goal Kit project"
         Write-Info "Please run 'goalkeeper init' first to set up the project"
@@ -55,7 +55,7 @@ function New-Tasks {
     }
     
     # Find the goal directory
-    $goalsDir = Join-Path ".goalkit" "goals"
+    $goalsDir = Join-Path -Path ".goalkit" -ChildPath "goals"
     $targetGoalDir = Join-Path $goalsDir $GoalDir
     
     if (-not (Test-Path $targetGoalDir)) {
@@ -64,14 +64,14 @@ function New-Tasks {
     }
     
     # Check for goal.md
-    $goalFile = Join-Path $targetGoalDir "goal.md"
+    $goalFile = Join-Path -Path $targetGoalDir -ChildPath "goal.md"
     if (-not (Test-Path $goalFile)) {
         Write-Error-Custom "goal.md not found in goal directory"
         exit 1
     }
     
     # Define tasks file path
-    $tasksFile = Join-Path $targetGoalDir "tasks.md"
+    $tasksFile = Join-Path -Path $targetGoalDir -ChildPath "tasks.md"
     
     # If JSON mode, output JSON
     if ($JsonMode) {
@@ -101,7 +101,7 @@ function New-Tasks {
     $goalName = Split-Path -Leaf $targetGoalDir
     
     # Check if template exists
-    $templatePath = Join-Path $projectRoot ".goalkit" "templates" "tasks-template.md"
+    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit" "templates" "tasks-template.md"
     if (Test-Path $templatePath) {
         $templateContent = Get-Content -Path $templatePath -Raw
         $tasksContent = $templateContent -replace '\[GOAL\]', $goalName

@@ -10,7 +10,7 @@ param(
 
 # Get the script directory and source common functions
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $scriptDir "common.ps1")
+. (Join-Path -Path $scriptDir -ChildPath "common.ps1")
 
 function New-Report {
     param(
@@ -36,7 +36,7 @@ function New-Report {
     Set-Location $projectRoot | Out-Null
     
     # Check if this is a Goal Kit project
-    $visionFile = Join-Path ".goalkit" "vision.md"
+    $visionFile = Join-Path -Path ".goalkit" -ChildPath "vision.md"
     if (-not (Test-Path $visionFile)) {
         Write-Error-Custom "Not a Goal Kit project"
         Write-Info "Please run 'goalkeeper init' first to set up the project"
@@ -44,7 +44,7 @@ function New-Report {
     }
     
     # Define report directory
-    $reportDir = Join-Path ".goalkit" "reports"
+    $reportDir = Join-Path -Path ".goalkit" -ChildPath "reports"
     if (-not (Test-Path $reportDir)) {
         New-Item -ItemType Directory -Path $reportDir -Force | Out-Null
     }
@@ -94,7 +94,7 @@ function New-Report {
     }
     
     # Check if template exists
-    $templatePath = Join-Path $projectRoot ".goalkit" "templates" "report-template.md"
+    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit" "templates" "report-template.md"
     if (Test-Path $templatePath) {
         $reportContent = Get-Content -Path $templatePath -Raw
         $reportContent = $reportContent -replace '\[DATE\]', $timestamp

@@ -9,7 +9,7 @@ param(
 
 # Get the script directory and source common functions
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $scriptDir "common.ps1")
+. (Join-Path -Path $scriptDir -ChildPath "common.ps1")
 
 function New-Review {
     param(
@@ -34,7 +34,7 @@ function New-Review {
     Set-Location $projectRoot | Out-Null
     
     # Check if this is a Goal Kit project
-    $visionFile = Join-Path ".goalkit" "vision.md"
+    $visionFile = Join-Path -Path ".goalkit" -ChildPath "vision.md"
     if (-not (Test-Path $visionFile)) {
         Write-Error-Custom "Not a Goal Kit project"
         Write-Info "Please run 'goalkeeper init' first to set up the project"
@@ -42,7 +42,7 @@ function New-Review {
     }
     
     # Define review directory
-    $reviewDir = Join-Path ".goalkit" "reviews"
+    $reviewDir = Join-Path -Path ".goalkit" -ChildPath "reviews"
     if (-not (Test-Path $reviewDir)) {
         New-Item -ItemType Directory -Path $reviewDir -Force | Out-Null
     }
@@ -81,7 +81,7 @@ function New-Review {
     }
     
     # Check if template exists
-    $templatePath = Join-Path $projectRoot ".goalkit" "templates" "review-template.md"
+    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit" "templates" "review-template.md"
     if (Test-Path $templatePath) {
         $reviewContent = Get-Content -Path $templatePath -Raw
         $reviewContent = $reviewContent -replace '\[DATE\]', $timestamp

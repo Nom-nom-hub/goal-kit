@@ -10,7 +10,7 @@ param(
 
 # Get the script directory and source common functions
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $scriptDir "common.ps1")
+. (Join-Path -Path $scriptDir -ChildPath "common.ps1")
 
 function New-StrategyFile {
     param(
@@ -42,7 +42,7 @@ function New-StrategyFile {
         }
         
         $goalDirName = Split-Path -Leaf $GoalDirectory
-        $strategyFile = Join-Path $GoalDirectory "strategies.md"
+        $strategyFile = Join-Path -Path $GoalDirectory -ChildPath "strategies.md"
         $branchName = $goalDirName
         
         # Output JSON with required variables
@@ -62,7 +62,7 @@ function New-StrategyFile {
     }
     
     # Check if strategies.md already exists
-    $strategyFile = Join-Path $GoalDirectory "strategies.md"
+    $strategyFile = Join-Path -Path $GoalDirectory -ChildPath "strategies.md"
     if ((Test-Path $strategyFile) -and (-not $DryRun)) {
         Write-Warning "Strategy file already exists: $strategyFile"
         if (-not $Force) {

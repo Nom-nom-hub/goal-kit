@@ -10,7 +10,7 @@ param(
 
 # Get the script directory and source common functions
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $scriptDir "common.ps1")
+. (Join-Path -Path $scriptDir -ChildPath "common.ps1")
 
 function New-Goal {
     param(
@@ -42,7 +42,7 @@ function New-Goal {
     Set-Location $projectRoot | Out-Null
     
     # Check if this is a Goal Kit project
-    $visionFile = Join-Path ".goalkit" "vision.md"
+    $visionFile = Join-Path -Path ".goalkit" -ChildPath "vision.md"
     if (-not (Test-Path $visionFile)) {
         Write-Error-Custom "Not a Goal Kit project"
         Write-Info "Please run 'goalkeeper init' first to set up the project"
@@ -51,7 +51,7 @@ function New-Goal {
     
     # If JSON mode, output JSON and exit early
     if ($JsonMode) {
-        $goalsDir = Join-Path ".goalkit" "goals"
+        $goalsDir = Join-Path -Path ".goalkit" -ChildPath "goals"
         $nextNumber = 1
         
         if (Test-Path $goalsDir) {
@@ -72,8 +72,8 @@ function New-Goal {
         $cleanDescription = $cleanDescription -replace '\s+', '-' -replace '-$', ''
         $cleanDescription = $cleanDescription.ToLower()
         $goalDirName = "$goalNumber-$cleanDescription"
-        $goalDir = Join-Path ".goalkit" "goals" $goalDirName
-        $goalFile = Join-Path $goalDir "goal.md"
+        $goalDir = Join-Path -Path ".goalkit" -ChildPath (Join-Path -Path "goals" -ChildPath $goalDirName)
+        $goalFile = Join-Path -Path $goalDir -ChildPath "goal.md"
         
         # Output JSON with required variables
         $jsonOutput = @{
@@ -87,7 +87,7 @@ function New-Goal {
     }
     
     # Check if goals directory exists
-    $goalsDir = Join-Path ".goalkit" "goals"
+    $goalsDir = Join-Path -Path ".goalkit" -ChildPath "goals"
     if (-not (Test-Path $goalsDir)) {
         if ($DryRun) {
             Write-Info "[DRY RUN] Would create goals directory: $goalsDir"
@@ -117,8 +117,8 @@ function New-Goal {
     $cleanDescription = $cleanDescription -replace '\s+', '-' -replace '-$', ''
     $cleanDescription = $cleanDescription.ToLower()
     $goalDirName = "$goalNumber-$cleanDescription"
-    $goalDir = Join-Path ".goalkit" "goals" $goalDirName
-    $fullGoalDir = Join-Path $projectRoot $goalDir
+    $goalDir = Join-Path -Path ".goalkit" -ChildPath (Join-Path -Path "goals" -ChildPath $goalDirName)
+    $fullGoalDir = Join-Path -Path $projectRoot -ChildPath $goalDir
     
     # Check if goal directory already exists
     if (Test-Path $fullGoalDir) {
@@ -148,7 +148,7 @@ function New-Goal {
     $timestamp = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
     
     # Check if template exists, otherwise create default goal.md
-    $templatePath = Join-Path $projectRoot ".goalkit" "templates" "goal-template.md"
+    $templatePath = Join-Path -Path $projectRoot -ChildPath (Join-Path -Path ".goalkit" -ChildPath (Join-Path -Path "templates" -ChildPath "goal-template.md"))
     if (Test-Path $templatePath) {
         # Read the template
         $templateContent = Get-Content -Path $templatePath -Raw
@@ -277,7 +277,7 @@ function New-Goal {
 "@
     }
 
-    $goalFile = Join-Path $fullGoalDir "goal.md"
+    $goalFile = Join-Path -Path $fullGoalDir -ChildPath "goal.md"
     Set-Content -Path $goalFile -Value $goalContent -Encoding UTF8
     
     Write-Success "Created goal.md with description: $GoalDescription"

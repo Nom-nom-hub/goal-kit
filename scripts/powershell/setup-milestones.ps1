@@ -10,7 +10,7 @@ param(
 
 # Get the script directory and source common functions
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-. (Join-Path $scriptDir "common.ps1")
+. (Join-Path -Path $scriptDir -ChildPath "common.ps1")
 
 function New-MilestoneFile {
     param(
@@ -42,7 +42,7 @@ function New-MilestoneFile {
         }
         
         $goalDirName = Split-Path -Leaf $GoalDirectory
-        $milestoneFile = Join-Path $GoalDirectory "milestones.md"
+        $milestoneFile = Join-Path -Path $GoalDirectory -ChildPath "milestones.md"
         $branchName = $goalDirName
         
         # Output JSON with required variables
@@ -62,7 +62,7 @@ function New-MilestoneFile {
     }
     
     # Check if milestones.md already exists
-    $milestoneFile = Join-Path $GoalDirectory "milestones.md"
+    $milestoneFile = Join-Path -Path $GoalDirectory -ChildPath "milestones.md"
     if ((Test-Path $milestoneFile) -and (-not $DryRun)) {
         Write-Warning "Milestone file already exists: $milestoneFile"
         if (-not $Force) {
