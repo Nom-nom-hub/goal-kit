@@ -497,6 +497,23 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 
     project_name = project_path.name
 
+    # Determine script type based on OS
+    is_windows = os.name == "nt"
+    if is_windows:
+        vision_note = "(create vision.md manually in `.goalkit/goals/`)"
+        goal_script = r".\\.goalkit\\scripts\\powershell\\create-new-goal.ps1"
+        strategies_script = r".\\.goalkit\\scripts\\powershell\\setup-strategy.ps1"
+        milestones_script = r".\\.goalkit\\scripts\\powershell\\setup-milestones.ps1"
+        execute_script = r".\\.goalkit\\scripts\\powershell\\setup-execution.ps1"
+        script_type_name = "PowerShell"
+    else:
+        vision_note = "(create vision.md manually in `.goalkit/goals/`)"
+        goal_script = "./.goalkit/scripts/bash/create-new-goal.sh"
+        strategies_script = "./.goalkit/scripts/bash/setup-strategy.sh"
+        milestones_script = "./.goalkit/scripts/bash/setup-milestones.sh"
+        execute_script = "./.goalkit/scripts/bash/setup-execution.sh"
+        script_type_name = "Bash"
+
     # Create content for the agent context file
     context_content = f"""# Goal Kit Project Context
 
@@ -511,17 +528,17 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 ### STRICT WORKFLOW ENFORCEMENT - ONE COMMAND AT A TIME
 **STOP AFTER EACH COMMAND - WAIT FOR USER**
 
-**WHEN YOU RECEIVE A SLASH COMMAND - ALWAYS RUN PYTHON SCRIPT FIRST:**
+**WHEN YOU RECEIVE A SLASH COMMAND - ALWAYS RUN {script_type_name.upper()} SCRIPT FIRST:**
 
-**`/goalkit.vision`** -> Run `python scripts/python/create_vision.py` -> Create vision file -> **STOP**
-**`/goalkit.goal`** -> Run `python scripts/python/create_new_goal.py --json "ARGS"` -> Complete goal.md -> **STOP**
-**`/goalkit.strategies`** -> Run `python scripts/python/setup_strategy.py` -> Complete strategies.md -> **STOP**
-**`/goalkit.milestones`** -> Run `python scripts/python/setup_milestones.py` -> Complete milestones.md -> **STOP**
-**`/goalkit.execute`** -> Run `python scripts/python/setup_execution.py` -> Continue with learning
+**`/goalkit.vision`** -> Create vision.md {vision_note} -> **STOP**
+**`/goalkit.goal`** -> Run `{goal_script}` -> Complete goal.md -> **STOP**
+**`/goalkit.strategies`** -> Run `{strategies_script}` -> Complete strategies.md -> **STOP**
+**`/goalkit.milestones`** -> Run `{milestones_script}` -> Complete milestones.md -> **STOP**
+**`/goalkit.execute`** -> Run `{execute_script}` -> Continue with learning
 
-**CRITICAL: Never create files manually - ALWAYS run the Python script first!**
+**CRITICAL: Never create files manually - ALWAYS run the {script_type_name} script first (except vision)!**
 
-1. **`/goalkit.vision`** -> Create vision file -> **STOP**
+1. **User runs** `/goalkit.vision` -> Create vision -> **STOP**
 2. **User runs** `/goalkit.goal` -> Create goal -> **STOP**
 3. **User runs** `/goalkit.strategies` -> Explore strategies -> **STOP**
 4. **User runs** `/goalkit.milestones` -> Create milestones -> **STOP**
@@ -566,33 +583,33 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
 ## Available Commands & Execution Workflow
 
 ### Core Commands with Proper Execution Timing
-- **/goalkit.vision** - Run `python scripts/python/create_vision.py` - Create vision file - STOP & WAIT
-  - Always run Python script first, then wait for user
-- **/goalkit.goal** - Run `python scripts/python/create_new_goal.py --json "ARGS"` - Complete goal.md - STOP & WAIT 
-  - Always run Python script first, then wait for user
-- **/goalkit.strategies** - Run `python scripts/python/setup_strategy.py` - Complete strategies.md - STOP & WAIT
-  - Always run Python script first, then wait for user
-- **/goalkit.milestones** - Run `python scripts/python/setup_milestones.py` - Complete milestones.md - STOP & WAIT
-  - Always run Python script first, then wait for user
-- **/goalkit.execute** - Run `python scripts/python/setup_execution.py` - Continue with learning
+- **/goalkit.vision** - Create vision.md {vision_note} - STOP & WAIT
+  - Establish project foundation and guiding principles
+- **/goalkit.goal** - Run `{goal_script}` - Complete goal.md - STOP & WAIT 
+  - Always run {script_type_name} script first, then wait for user
+- **/goalkit.strategies** - Run `{strategies_script}` - Complete strategies.md - STOP & WAIT
+  - Always run {script_type_name} script first, then wait for user
+- **/goalkit.milestones** - Run `{milestones_script}` - Complete milestones.md - STOP & WAIT
+  - Always run {script_type_name} script first, then wait for user
+- **/goalkit.execute** - Run `{execute_script}` - Continue with learning
   - Execute after setup, no automatic stop
 
 ### Execution Methodology (CRITICAL):
-1. **/goalkit.vision** - Python script - Vision file created - STOP (wait for user to run next command)
-2. **/goalkit.goal** - Python script - Goal defined - STOP (wait for user to run next command)
-3. **/goalkit.strategies** - Python script - Strategies explored - STOP (wait for user to run next command)
-4. **/goalkit.milestones** - Python script - Milestones set - STOP (wait for user to run next command)
-5. **/goalkit.execute** - Python script - Implementation begins - Continue (no automatic stop)
+1. **/goalkit.vision** - Vision file - Foundation established - STOP (wait for user to run next command)
+2. **/goalkit.goal** - {script_type_name} script - Goal defined - STOP (wait for user to run next command)
+3. **/goalkit.strategies** - {script_type_name} script - Strategies explored - STOP (wait for user to run next command)
+4. **/goalkit.milestones** - {script_type_name} script - Milestones set - STOP (wait for user to run next command)
+5. **/goalkit.execute** - {script_type_name} script - Implementation begins - Continue (no automatic stop)
 
-### Python Script Execution Pattern:
-- **NEVER create files manually** - Always run the corresponding Python script first
-- **Each Python script**: `python scripts/python/[script_name].py` 
+### {script_type_name} Script Execution Pattern:
+- **NEVER create files manually** - Always run the corresponding {script_type_name} script first (except vision which is manual)
+- **Each {script_type_name} script**: Uses scripts in `.goalkit/scripts/{('powershell' if is_windows else 'bash')}/`
 - **Each script creates/update appropriate files** in the `.goalkit/` directory structure:
   - Goals-related: `.goalkit/goals/`
   - Collaborations: `.goalkit/collaborations/` 
   - Validation reports: `.goalkit/validation/`
   - Progress reports: `.goalkit/reports/`
-- **After each script**: **🛑 STOP** and wait for user input for the next command
+- **After each script**: **STOP** and wait for user input for the next command
 - Exception: Execute command continues after setup without automatic stop
 - Note: Additional commands beyond the core 5 follow the same STOP & WAIT pattern
 
@@ -619,42 +636,42 @@ Remember these core principles:
 
 CRITICAL FILE LOCATIONS:
 - Goal files: `.goalkit/goals/` (vision.md, goal.md, strategies.md, milestones.md, execution.md)
-- Python scripts: `.goalkit/scripts/python/` 
-- Agent context files: `.goalkit/agent-context.md` or agent-specific directories (`.claude/`, `.gemini/`, etc.)
+- {script_type_name} scripts: `.goalkit/scripts/{('powershell' if is_windows else 'bash')}/` 
+- Agent context files: `.goalkit/agent-context.md` or agent-specific directories (`.claude/`, `.gemini/`, `.qwen/`, etc.)
 - All goal-related files are stored in `.goalkit/` subdirectories - NOT in project root!
 
 ## Next Recommended Actions
 
 SEQUENTIAL WORKFLOW (Follow ONE command at a time):
-1. `/goalkit.vision` - Run `python scripts/python/create_vision.py` - STOP & WAIT for user
-2. `/goalkit.goal` - Run `python scripts/python/create_new_goal.py` - STOP & WAIT for user  
-3. `/goalkit.strategies` - Run `python scripts/python/setup_strategy.py` - STOP & WAIT for user
-4. `/goalkit.milestones` - Run `python scripts/python/setup_milestones.py` - STOP & WAIT for user
-5. `/goalkit.execute` - Run `python scripts/python/setup_execution.py` - Continue with implementation
+1. `/goalkit.vision` - Create vision.md {vision_note} - STOP & WAIT for user
+2. `/goalkit.goal` - Run `{goal_script}` - STOP & WAIT for user  
+3. `/goalkit.strategies` - Run `{strategies_script}` - STOP & WAIT for user
+4. `/goalkit.milestones` - Run `{milestones_script}` - STOP & WAIT for user
+5. `/goalkit.execute` - Run `{execute_script}` - Continue with implementation
 
 CRITICAL: After each command:
-- The corresponding Python script executes first
+- The corresponding {script_type_name} script executes first (vision is created manually)
 - Files are created/updated in the `.goalkit/` directory structure (NOT in project root!)
 - STOP AND WAIT for explicit user command before proceeding
 - NEVER chain commands automatically
 
 ## Agent Development Guidelines
-When working with Python scripts and code in this project, AI agents should follow these critical guidelines to avoid common mistakes:
+When working with {script_type_name} scripts and code in this project, AI agents should follow these critical guidelines to avoid common mistakes:
 
 ### 1. Verify Before Modifying
 - Always check current repository state: `git status`, `git diff`
-- Validate syntax before making changes: `python -m py_compile script_name.py`
+- Validate syntax before making changes
 - Understand file structure before modifying complex elements like heredocs or multi-line strings
 
 ### 2. Safe Editing Practices
 - Use targeted `edit` operations when possible instead of overwriting entire files
-- For complex files with heredocs (`<< EOF`), be especially careful with structure and command substitution
-- Always verify conditional blocks remain properly balanced (`if/fi`, `for/done`, etc.)
+- For complex files with heredocs, be especially careful with structure and variable substitution
+- Always verify conditional blocks remain properly balanced
 
 ### 3. Thorough Validation After Changes
-- Immediately validate syntax after each change: `python -m py_compile script_name.py`
+- Immediately validate syntax after each change
 - Test functionality before moving on to next tasks
-- Verify all related files (Python equivalents) have consistent changes
+- Verify all related files have consistent changes
 
 ### 4. Systematic Conflict Resolution
 - Resolve merge conflicts one at a time, not all at once
@@ -662,28 +679,29 @@ When working with Python scripts and code in this project, AI agents should foll
 - Look for special characters or encoding issues introduced during merges
 
 ### 5. Cross-Platform Consistency
-- When fixing an issue in Python scripts, check for similar patterns in other Python scripts
+- When fixing an issue in {script_type_name} scripts, check for similar patterns in other {script_type_name} scripts
 - Maintain consistent validation logic across implementations
 
-### 6. Python Script Specific Guidelines
-- When working with Python scripts (.py), use Python-specific validation: `importlib` or `py_compile` instead of shell equivalents
-- For Python syntax checking, use Python-specific tools like `python -m py_compile` rather than shell commands
-- Be aware of Python-specific escaping and path handling using `os.path` or `pathlib`
-- Remember Python built-in functions and libraries behave differently than shell commands
+### 6. {script_type_name} Script Specific Guidelines
+- When working with {script_type_name} scripts, use {script_type_name}-specific validation
+- Be aware of {script_type_name}-specific escaping and path handling
+- Remember {script_type_name} syntax and behavior specifics
+- Use proper quoting for paths with spaces or special characters
 
-### 6. Verification Checklist for Python Scripts
-- [ ] `python -m py_compile script_name.py` returns no errors
+### 7. Verification Checklist for {script_type_name} Scripts
+- [ ] Script syntax validates in appropriate IDE or validator
 - [ ] All variables are properly defined before use
 - [ ] All conditional blocks are properly closed
-- [ ] Heredoc structures are intact
+- [ ] String interpolation and variable substitution are correct
 - [ ] No special characters from merge conflicts remain
 
-### 7. Critical Warning Signs
+### 8. Critical Warning Signs
 If you see syntax errors like "unexpected token" or "unexpected EOF", check for:
-- Unbalanced parentheses in command substitutions
+- Unbalanced parentheses or brackets
 - Special characters from merge conflicts
 - Broken heredoc structures
 - Missing closing brackets or quotes
+- Incorrect parameter syntax
 
 Following these guidelines will help prevent the syntax errors, merge conflict issues, and validation problems that can occur during development.
 
@@ -858,16 +876,16 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
 
     return project_path
 
-def copy_python_scripts_to_goalkit(project_path: Path, tracker: StepTracker | None = None) -> None:
-    """Copy Python scripts from the source location to .goalkit/scripts/python/"""
+def copy_scripts_to_goalkit(project_path: Path, selected_script: str, tracker: StepTracker | None = None) -> None:
+    """Copy script files from the source location to .goalkit/scripts/ based on selected script type"""
     # During init, we need to copy from the CLI source location, not the project
     cli_source_dir = Path(__file__).parent.parent  # This is the goal-kit/goal-kit directory
-    scripts_source = cli_source_dir / "scripts" / "python"
-    scripts_dest = project_path / ".goalkit" / "scripts" / "python"
+    scripts_source = cli_source_dir / "scripts"
+    scripts_dest = project_path / ".goalkit" / "scripts"
 
     if not scripts_source.exists() or not scripts_source.is_dir():
         if tracker:
-            tracker.add("copy-scripts", "Copy Python scripts")
+            tracker.add("copy-scripts", "Copy scripts")
             tracker.skip("copy-scripts", f"source not found: {scripts_source}")
         return
 
@@ -875,26 +893,68 @@ def copy_python_scripts_to_goalkit(project_path: Path, tracker: StepTracker | No
         # Create destination directory
         scripts_dest.mkdir(parents=True, exist_ok=True)
 
-        # Copy all Python scripts
+        # Copy all script subdirectories
         copied_count = 0
-        for script_file in scripts_source.iterdir():
-            if script_file.is_file() and script_file.suffix == ".py":
-                dest_file = scripts_dest / script_file.name
-                shutil.copy2(script_file, dest_file)
-                copied_count += 1
+        for sub_dir in scripts_source.iterdir():
+            if sub_dir.is_dir():
+                dest_sub_dir = scripts_dest / sub_dir.name
+                if dest_sub_dir.exists():
+                    shutil.rmtree(dest_sub_dir)  # Remove existing to ensure clean copy
+                shutil.copytree(sub_dir, dest_sub_dir)
+                if sub_dir.name in ['bash', 'powershell']:  # Count only the specific script types
+                    copied_count += len(list(sub_dir.glob('*')))
 
         if tracker:
-            tracker.add("copy-scripts", "Copy Python scripts")
+            tracker.add("copy-scripts", "Copy scripts")
             tracker.complete("copy-scripts", f"copied {copied_count} scripts")
         else:
-            console.print(f"[cyan]Copied {copied_count} Python scripts to .goalkit/scripts/python/[/cyan]")
+            console.print(f"[cyan]Copied scripts to .goalkit/scripts/[/cyan]")
 
     except Exception as e:
         if tracker:
-            tracker.add("copy-scripts", "Copy Python scripts")
+            tracker.add("copy-scripts", "Copy scripts")
             tracker.error("copy-scripts", str(e))
         else:
-            console.print(f"[red]Error copying Python scripts: {e}[/red]")
+            console.print(f"[red]Error copying scripts: {e}[/red]")
+
+
+def copy_templates_to_goalkit(project_path: Path, tracker: StepTracker | None = None) -> None:
+    """Copy template files from the source location to .goalkit/templates/"""
+    # During init, we need to copy from the CLI source location, not the project
+    cli_source_dir = Path(__file__).parent.parent  # This is the goal-kit/goal-kit directory
+    templates_source = cli_source_dir / "templates"
+    templates_dest = project_path / ".goalkit" / "templates"
+
+    if not templates_source.exists() or not templates_source.is_dir():
+        if tracker:
+            tracker.add("copy-templates", "Copy templates")
+            tracker.skip("copy-templates", f"source not found: {templates_source}")
+        return
+
+    try:
+        # Create destination directory
+        templates_dest.mkdir(parents=True, exist_ok=True)
+
+        # Copy all template files (but not the commands subdirectory which is handled separately)
+        copied_count = 0
+        for template_file in templates_source.iterdir():
+            if template_file.is_file() and template_file.suffix == ".md" and template_file.name != "agent-file-template.md":
+                dest_file = templates_dest / template_file.name
+                shutil.copy2(template_file, dest_file)
+                copied_count += 1
+
+        if tracker:
+            tracker.add("copy-templates", "Copy templates")
+            tracker.complete("copy-templates", f"copied {copied_count} templates")
+        else:
+            console.print(f"[cyan]Copied {copied_count} templates to .goalkit/templates/[/cyan]")
+
+    except Exception as e:
+        if tracker:
+            tracker.add("copy-templates", "Copy templates")
+            tracker.error("copy-templates", str(e))
+        else:
+            console.print(f"[red]Error copying templates: {e}[/red]")
 
 
 def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = None) -> None:
@@ -1210,6 +1270,8 @@ def init(
         ("zip-list", "Archive contents"),
         ("extracted-summary", "Extraction summary"),
         ("chmod", "Ensure scripts executable"),
+        ("copy-scripts", "Copy scripts"),
+        ("copy-templates", "Copy templates"),
         ("cleanup", "Cleanup"),
         ("git", "Initialize git repository"),
         ("final", "Finalize")
@@ -1231,8 +1293,11 @@ def init(
             # Create agent-specific configuration and commands folders
             create_agent_config(project_path, selected_ai)
 
-            # Copy Python scripts to .goalkit/scripts/python/
-            copy_python_scripts_to_goalkit(project_path, tracker=tracker)
+            # Copy scripts to .goalkit/scripts/
+            copy_scripts_to_goalkit(project_path, selected_script, tracker=tracker)
+
+            # Copy templates to .goalkit/templates/
+            copy_templates_to_goalkit(project_path, tracker=tracker)
 
             # Create the main agent file with project-specific guidance
             create_agent_file(project_path, selected_ai)
@@ -1333,6 +1398,10 @@ def init(
     steps_lines.append("   [cyan]/goalkit.strategies[/] - Explore implementation strategies")
     steps_lines.append("   [cyan]/goalkit.milestones[/] - Create measurable milestones")
     steps_lines.append("   [cyan]/goalkit.execute[/] - Execute with learning and adaptation")
+    steps_lines.append("   [cyan]/goalkit.tasks[/] - Generate detailed implementation tasks")
+    steps_lines.append("   [cyan]/goalkit.taskstoissues[/] - Convert tasks to GitHub issues")
+    steps_lines.append("   [cyan]/goalkit.report[/] - Generate progress reports and insights")
+    steps_lines.append("   [cyan]/goalkit.review[/] - Conduct project reviews and retrospectives")
 
     steps_panel = Panel("\n".join(steps_lines), title="Next Steps", border_style="cyan", padding=(1,2))
     console.print()

@@ -151,102 +151,136 @@ function New-Goal {
     # Get current timestamp
     $timestamp = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
     
-    # Create goal.md file with goal structure
-    $goalContent = @"
+    # Check if template exists, otherwise create default goal.md
+    $templatePath = Join-Path $projectRoot ".goalkit" "templates" "goal-template.md"
+    if (Test-Path $templatePath) {
+        # Read the template
+        $templateContent = Get-Content -Path $templatePath -Raw
+
+        # Replace placeholders in the template
+        $goalContent = $templateContent -replace '\[GOAL DESCRIPTION\]', $GoalDescription
+        $goalContent = $goalContent -replace '\[###-goal-name\]', $goalDirName
+        $goalContent = $goalContent -replace '\[DATE\]', $timestamp
+    } else {
+        # Fallback to default content if template not found
+        $goalContent = @"
 # Goal Statement: $GoalDescription
 
-**Branch**: \`$goalDirName\`
+**Goal Branch**: \`$goalDirName\`
 **Created**: $timestamp
 **Status**: Draft
 **Methodology**: Goal-Driven Development
 
-## 🎯 Goal Definition
+## Beneficiary Scenarios & Validation *(mandatory)*
 
-**Goal Statement**: $GoalDescription
+<!--
+  IMPORTANT: User stories should be PRIORITIZED as beneficiary journeys ordered by importance.
+  Each user story/journey must be INDEPENDENTLY VALIDATABLE - meaning if you implement just ONE of them,
+  you should still have a viable MVP (Minimum Viable Product) that delivers value.
 
-**Context**: [Why is this goal important? What problem does it solve?]
+  Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
+  Think of each story as a standalone slice of functionality that can be:
+  - Developed independently
+  - Validated independently
+  - Demonstrated to users independently
+-->
 
-**Success Level**: [What "successful goal achievement" looks like]
+### Beneficiary Story 1 - [Brief Title] (Priority: P1)
 
-## 📊 Success Metrics
+[Describe this beneficiary journey in plain language]
 
-### Primary Metrics (Must achieve for successful goal completion)
+**Why this priority**: [Explain the value and why it has this priority level]
 
-- **Metric 1**: [Measurable outcome 1] - Target: [specific, quantifiable target]
-- **Metric 2**: [Measurable outcome 2] - Target: [specific, quantifiable target] 
-- **Metric 3**: [Measurable outcome 3] - Target: [specific, quantifiable target]
+**Independent Validation**: [Describe how this can be validated independently - e.g., "Can be fully validated by [specific action] and delivers [specific value]"]
 
-### Secondary Metrics (Valuable but not required)
+**Acceptance Scenarios**:
 
-- **Metric 1**: [Nice-to-have outcome 1] - Target: [aspirational target]
-- **Metric 2**: [Nice-to-have outcome 2] - Target: [aspirational target]
-
-## 🔍 Validation Strategy
-
-### Measurement Approach
-- **Data Sources**: [Where to collect metrics from]
-- **Measurement Frequency**: [How often to measure progress]
-- **Success Thresholds**: [When to consider the goal achieved]
-
-### Learning Objectives
-- **What to Learn**: [Key insights to gain from achieving this goal]
-- **Adaptation Points**: [When to reconsider the approach]
-- **Documentation**: [What information to document for future reference]
-
-## 📝 Goal Breakdown
-
-### Critical Path Activities
-- **Activity 1**: [Key activity 1 to achieve the goal]
-- **Activity 2**: [Key activity 2 to achieve the goal]
-- **Activity 3**: [Key activity 3 to achieve the goal]
-
-### Dependencies
-- **Dependency 1**: [What this goal depends on]
-- **Dependency 2**: [What this goal depends on]
-
-### Risk Assessment
-- **Risk 1**: [Potential risk] - Mitigation: [how to mitigate]
-- **Risk 2**: [Potential risk] - Mitigation: [how to mitigate]
-
-## 🔄 Review Process
-
-### Review Schedule
-- **Check-ins**: [Regular assessment schedule]
-- **Milestone Reviews**: [When to evaluate progress]
-
-### Success Validation
-- **[Validation 1]**: [How to confirm goal is achieved]
-- **[Validation 2]**: [How to confirm goal is achieved]
-
-## 🏁 Completion Criteria
-
-### Success Indicators
-- [ ] Primary metrics achieved at target levels
-- [ ] Goal objectives validated through measurement
-- [ ] Learning objectives accomplished
-- [ ] No major unforeseen issues discovered
-
-### Success Validation
-- **[Validation 1]**: [How to confirm goal was successful]
-- **[Validation 2]**: [How to confirm goal was successful]
-
-## 🔁 Adaptation Framework
-
-### Regular Review Schedule
-- **Weekly**: [Goal effectiveness assessment]
-- **When Metrics Diverge**: [How to adjust approach]
-- **When Learning Occurs**: [How to incorporate new information]
-
-### Adaptation Triggers
-- **Pivot Trigger 1**: [When to change approach]
-- **Pause Trigger**: [When to temporarily adjust]
-- **Realign Trigger**: [When to reconsider entirely]
+1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+2. **Given** [initial state], **When** [action], **Then** [expected outcome]
 
 ---
 
-*This goal definition serves as the foundation for all work related to achieving this objective. All strategies, milestones, and execution should align with these defined success metrics.*
+### Beneficiary Story 2 - [Brief Title] (Priority: P2)
+
+[Describe this beneficiary journey in plain language]
+
+**Why this priority**: [Explain the value and why it has this priority level]
+
+**Independent Validation**: [Describe how this can be validated independently]
+
+**Acceptance Scenarios**:
+
+1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+
+---
+
+### Beneficiary Story 3 - [Brief Title] (Priority: P3)
+
+[Describe this beneficiary journey in plain language]
+
+**Why this priority**: [Explain the value and why it has this priority level]
+
+**Independent Validation**: [Describe how this can be validated independently]
+
+**Acceptance Scenarios**:
+
+1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+
+---
+
+[Add more beneficiary stories as needed, each with an assigned priority]
+
+### Edge Cases
+
+<!--
+  ACTION REQUIRED: The content in this section represents placeholders.
+  Fill them out with the right edge cases.
+-->
+
+- What happens when [boundary condition]?
+- How does system handle [error scenario]?
+
+## Requirements *(mandatory)*
+
+<!--
+  ACTION REQUIRED: The content in this section represents placeholders.
+  Fill them out with the right functional requirements.
+-->
+
+### Functional Requirements
+
+- **FR-001**: System/Process MUST [specific capability, e.g., "allow users to achieve goal"]
+- **FR-002**: System/Process MUST [specific capability, e.g., "validate success metrics"]
+- **FR-003**: Stakeholders MUST be able to [key interaction, e.g., "measure goal progress"]
+- **FR-004**: System/Process MUST [data requirement, e.g., "persist goal progress"]
+- **FR-005**: System/Process MUST [behavior, e.g., "log all validation events"]
+
+*Example of marking unclear requirements:*
+
+- **FR-006**: System/Process MUST support [NEEDS CLARIFICATION: specific support method not specified - validation approach, measurement method, etc?]
+- **FR-007**: System/Process MUST achieve [NEEDS CLARIFICATION: target level not specified - specific metrics not defined]
+
+### Key Entities *(include if goal involves data)*
+
+- **[Entity 1]**: [What it represents, key attributes without implementation]
+- **[Entity 2]**: [What it represents, relationships to other entities]
+
+## Success Criteria *(mandatory)*
+
+<!--
+  ACTION REQUIRED: Define measurable success criteria.
+  These must be technology-agnostic and measurable.
+-->
+
+### Measurable Outcomes
+
+- **SC-001**: [Measurable metric, e.g., "Stakeholders can measure goal progress in under 2 minutes"]
+- **SC-002**: [Measurable metric, e.g., "System handles 1000 measurement requests without degradation"]
+- **SC-003**: [User satisfaction metric, e.g., "90% of stakeholders successfully validate primary goal on first attempt"]
+- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
 "@
-    
+    }
+
     $goalFile = Join-Path $fullGoalDir "goal.md"
     Set-Content -Path $goalFile -Value $goalContent -Encoding UTF8
     

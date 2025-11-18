@@ -96,11 +96,23 @@ EOF
         return
     fi
     
-    # Create execution file with basic template
-    local goal_dir_name=$(basename "$goal_directory")
-    local timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
-    
-    cat > "$execution_file" <<EOF
+    # Check if template exists, otherwise create default execution.md
+    if [ -f "$project_root/.goalkit/templates/execution-template.md" ]; then
+        # Create execution.md file using the template
+        cat "$project_root/.goalkit/templates/execution-template.md" > "$execution_file"
+
+        # Replace placeholders in the template
+        local goal_dir_name=$(basename "$goal_directory")
+        local timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
+        sed -i.bak "s/\[GOAL NAME\]/$goal_dir_name/g" "$execution_file"
+        sed -i.bak "s/\[DATE\]/$timestamp/g" "$execution_file"
+        rm -f "$execution_file.bak"
+    else
+        # Fallback to default content if template not found
+        local goal_dir_name=$(basename "$goal_directory")
+        local timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
+
+        cat > "$execution_file" <<EOF
 # Execution Plan for $goal_dir_name
 
 **Created**: $timestamp
@@ -200,6 +212,7 @@ Execution plan for goal: $goal_dir_name
 
 *This execution plan guides day-to-day work. Review and update regularly based on progress and learning.*
 EOF
+    fi
     
     write_success "Created execution file: $execution_file"
     

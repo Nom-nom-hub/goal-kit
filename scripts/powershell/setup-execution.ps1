@@ -83,11 +83,23 @@ function New-ExecutionFile {
         return
     }
     
-    # Create execution file with basic template
-    $goalDirName = Split-Path -Leaf $GoalDirectory
-    $timestamp = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
-    
-    $executionContent = @"
+    # Check if template exists, otherwise create default execution.md
+    $templatePath = Join-Path $projectRoot ".goalkit" "templates" "execution-template.md"
+    if (Test-Path $templatePath) {
+        # Read the template
+        $templateContent = Get-Content -Path $templatePath -Raw
+
+        # Replace placeholders in the template
+        $goalDirName = Split-Path -Leaf $GoalDirectory
+        $timestamp = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
+        $executionContent = $templateContent -replace '\[GOAL NAME\]', $goalDirName
+        $executionContent = $executionContent -replace '\[DATE\]', $timestamp
+    } else {
+        # Fallback to default content if template not found
+        $goalDirName = Split-Path -Leaf $GoalDirectory
+        $timestamp = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
+
+        $executionContent = @"
 # Execution Plan for $goalDirName
 
 **Created**: $timestamp
@@ -187,7 +199,8 @@ Execution plan for goal: $goalDirName
 
 *This execution plan guides day-to-day work. Review and update regularly based on progress and learning.*
 "@
-    
+    }
+
     Set-Content -Path $executionFile -Value $executionContent -Encoding UTF8
     
     Write-Success "Created execution file: $executionFile"

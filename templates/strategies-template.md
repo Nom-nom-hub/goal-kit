@@ -1,6 +1,6 @@
 # Strategy Plan: [GOAL]
 
-**Branch**: `[###-goal-name]` | **Date**: [DATE] | **Goal**: [link]
+**Goal Branch**: `[###-goal-name]` | **Date**: [DATE] | **Goal**: [link]
 **Input**: Goal definition from `/goals/[###-goal-name]/goal.md`
 
 **Note**: This template is filled in by the `/goalkit.strategies` command. See `.goalkit/templates/commands/strategies.md` for the execution workflow.
@@ -17,13 +17,13 @@
   the strategy exploration process.
 -->
 
-**Goal Priority**: [e.g., P1-Critical, P2-High, P3-Medium or NEEDS CLARIFICATION]  
-**Strategic Alignment**: [e.g., User Experience, Business Growth, Technical Debt or NEEDS CLARIFICATION]  
-**Resource Budget**: [if applicable, e.g., 2 person-months, $50K, 100 hours or N/A]  
-**Success Metrics**: [e.g., user satisfaction, engagement, conversion or NEEDS CLARIFICATION]  
+**Goal Priority**: [e.g., P1-Critical, P2-High, P3-Medium or NEEDS CLARIFICATION]
+**Strategic Alignment**: [e.g., User Experience, Business Growth, Technical Debt or NEEDS CLARIFICATION]
+**Resource Budget**: [if applicable, e.g., 2 person-months, $50K, 100 hours or N/A]
+**Success Metrics**: [e.g., user satisfaction, engagement, conversion or NEEDS CLARIFICATION]
 **Target Timeline**: [e.g., Q1 2024, 3 months, 6 sprints or NEEDS CLARIFICATION]
-**Team Structure**: [single/multi-team - determines collaboration approach]  
-**Risk Tolerance**: [domain-specific, e.g., low-risk conservative, medium-risk balanced, high-risk experimental or NEEDS CLARIFICATION]  
+**Team Structure**: [single/multi-team - determines collaboration approach]
+**Risk Tolerance**: [domain-specific, e.g., low-risk conservative, medium-risk balanced, high-risk experimental or NEEDS CLARIFICATION]
 **Success Thresholds**: [domain-specific, e.g., 80% achievement, 50% improvement, baseline maintenance or NEEDS CLARIFICATION]
 
 ## Vision Check
@@ -49,7 +49,7 @@
 ```
 
 ### Strategy Options
-<!-- 
+<!--
   ACTION REQUIRED: Replace the placeholder options below with the concrete strategic
   approaches for this goal. Delete unused options and expand the chosen approach with
   real strategic elements. The delivered plan must not include Option labels.
@@ -74,13 +74,13 @@
 - Phase 3: [Final milestone with optimization]
 ```
 
-**UI/UX Strategy Considerations**:
+**Strategy Considerations**:
 
-- **Design System**: Establish consistent design patterns, typography, and color palette from the start
-- **User Research**: Validate UI concepts with users before implementation
-- **Accessibility**: Plan for WCAG 2.1 AA compliance from the beginning
-- **Performance**: Consider UI performance implications of each strategy option
-- **Inclusive Design**: Ensure the interface works for users with diverse abilities and assistive technologies
+- **Approach Evaluation**: Assess each strategy option against success criteria and resource constraints
+- **Risk Mitigation**: Plan for potential obstacles and fallback approaches
+- **Learning Opportunities**: Identify which strategy will provide the most valuable insights
+- **Adaptation Framework**: Establish clear checkpoints for strategy adjustment
+- **Stakeholder Alignment**: Ensure chosen strategy aligns with key stakeholder expectations
 
 **Strategy Decision**: [Document the selected strategy and reference the real approach captured above]
 

@@ -1,278 +1,95 @@
 ---
-description: Execute goals with learning, measurement, and adaptation. Requires completed goal, strategies, and milestones.
+description: Execute with learning, measurement, and adaptation using the execution template to generate implementation artifacts.
+handoffs:
+  - label: Create Report
+    agent: goalkit.report
+    prompt: Generate a progress report for the goal execution
+    send: true
+  - label: Create Checklist
+    agent: goalkit.checklist
+    prompt: Create execution checklist for the following domain...
 scripts:
-  sh: scripts/bash/setup-execution.sh "{GOAL_DIR}" --json
-  ps: scripts/powershell/setup-execution.ps1 "{GOAL_DIR}" -Json
+  sh: scripts/bash/setup-execution.sh --json
+  ps: scripts/powershell/setup-execution.ps1 -Json
 agent_scripts:
-  sh: scripts/bash/common.sh && update-agent-context
-  ps: . scripts/powershell/common.ps1; Update-AgentContext
+  sh: scripts/bash/update-agent-context.sh __AGENT__
+  ps: scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
 ---
 
-# Quick Prerequisites Check
-
-**BEFORE EXECUTING**:
-
-1. **Goal exists**: Check `.goalkit/goals/` directory for goal files
-2. **Strategies defined**: Verify `strategies.md` in goal directory
-3. **Milestones created**: Verify `milestones.md` in goal directory
-
-**If missing any**: Tell user to complete full sequence first.
-
-## Simple vs Complex Assessment
-
-- **Simple tasks** (direct implementation): "fix styling", "update header", "add margin"
-- **Complex goals** (use methodology): features with measurable outcomes
-
-## Quick Execution Steps
-
-**STEP 1**: Identify the goal to execute (most recent or specified)
-
-**STEP 2**: Review the goal's strategies and milestones
-
-**STEP 3**: Create `execution.md` in the goal directory with:
-
-- Current milestone focus
-- Measurement framework
-- Learning loop process
-- Adaptation triggers
-
-**STEP 4**: Implement with daily learning and weekly adaptation
-
-**STEP 5**: Document all insights and learnings
-
-## Key Execution Mindset
-
-- **Test hypotheses** rather than follow rigid plans
-- **Measure and adapt** based on real results
-- **Document learnings** for future decisions
-- **Stay flexible** to change approaches when needed
-
-## Critical Rules
-
-✅ **DO**: Focus on learning and adaptation
-✅ **DO**: Measure progress with defined metrics
-✅ **DO**: Document insights and knowledge gained
-✅ **DO**: Be ready to pivot based on evidence
-❌ **DON'T**: Follow rigid, untested plans
-❌ **DON'T**: Ignore measurement and feedback
-❌ **DON'T**: Skip documentation of learnings
-
-## Overview
-
-The `/goalkit.execute` command implements milestones with continuous learning, measurement, and adaptation. Unlike implementation that follows rigid plans, execution focuses on hypothesis testing and flexible adaptation.
-
-## Purpose
-
-This command creates an adaptive execution framework that:
-
-- Implements milestones with learning and measurement focus
-- Provides framework for daily learning loops
-- Enables data-driven adaptation and pivots
-- Documents insights and knowledge gained
-
-## When to Use
-
-Use `/goalkit.execute` when:
-
-- You have defined milestones with clear success criteria
-- You're ready to implement with measurement and learning
-- You want to maintain flexibility to adapt based on results
-- You need structured approach to hypothesis testing
-
-## Input Format
+## User Input
 
 ```text
-/goalkit.execute [description of execution approach and learning focus]
+$ARGUMENTS
 ```
 
-### Example Input
+You **MUST** consider the user input before proceeding (if not empty).
 
-```text
-/goalkit.execute Implement the first milestone with daily measurement and weekly adaptation reviews. Focus on learning from user feedback and being willing to pivot strategies based on results. Document all insights and maintain flexibility for approach changes.
-```
+## Outline
 
-## Output
+1. **Setup**: Run `{SCRIPT}` from repo root and parse JSON for GOAL_SPEC, MILESTONES, STRATEGY_PLAN, EXECUTION_PLAN, GOALS_DIR, BRANCH. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
-The command generates:
+2. **Load context**: Read GOAL_SPEC, MILESTONES, and STRATEGY_PLAN. Load EXECUTION_PLAN template (already copied).
 
-- `.goalkit/goals/[###-goal-name]/execution.md` - Adaptive execution guide
-- Measurement framework for tracking progress
-- Learning capture system for insights
-- Adaptation framework for strategy changes
+3. **Execute implementation workflow**: Follow the structure in EXECUTION_PLAN template to:
+   - Fill Implementation Context (mark unknowns as "NEEDS CLARIFICATION")
+   - Fill Vision Check section from vision
+   - Evaluate gates (ERROR if violations unjustified)
+   - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
+   - Phase 1: Generate data-model.md, contracts/, quickstart.md
+   - Phase 1: Update agent context by running the agent script
+   - Re-evaluate Vision Check post-implementation
 
-### Agent File Creation Instructions
+4. **Stop and report**: Command ends after Phase 2 planning. Report branch, EXECUTION_PLAN path, and generated artifacts.
 
-When processing `/goalkit.execute` commands, AI agents should:
+## Phases
 
-1. Locate the appropriate goal directory in the `.goalkit/goals/` folder (the most recently created or specified goal)
-2. Create the `execution.md` file inside that goal directory
-3. Use the current date in YYYY-MM-DD format for the "Date" field
-4. Write the complete execution plan using the template structure below
-5. Reference the associated goal, strategy, and milestones in the document header
-6. After creating the execution file, inform the user that the execution plan has been completed and suggest beginning implementation
+### Phase 0: Implementation Outline & Research
 
-### File Creation Process
+1. **Extract unknowns from Implementation Context** above:
+   - For each NEEDS CLARIFICATION → research task
+   - For each implementation approach → best practices task
+   - For each integration → patterns task
 
-- **Locate Directory**: `.goalkit/goals/[###-goal-name]/` (most recent goal or specified goal)
-- **Create File**: `.goalkit/goals/[###-goal-name]/execution.md` with the execution content
-- **Template**: Use the structure provided in the "Execution Components" section below
+2. **Generate and dispatch research agents**:
 
-## Execution Components
+   ```text
+   For each unknown in Implementation Context:
+     Task: "Research {unknown} for {goal context}"
+   For each implementation approach:
+     Task: "Find best practices for {approach} in {domain}"
+   ```
 
-### 1. Execution Strategy
+3. **Consolidate findings** in `research.md` using format:
+   - Decision: [what was chosen]
+   - Rationale: [why chosen]
+   - Alternatives considered: [what else evaluated]
 
-- **Current Milestone Focus**: Which milestone is being executed
-- **Hypothesis Testing**: What assumptions are being validated
-- **Success Criteria**: How to know milestone is achieved
-- **Alternative Approaches**: Backup plans if primary approach fails
+**Output**: research.md with all NEEDS CLARIFICATION resolved
 
-### 2. Measurement Framework
+### Phase 1: Implementation Design & Contracts
 
-- **Key Metrics**: What to measure during execution
-- **Measurement Methods**: How to collect data
-- **Success Thresholds**: When milestone is considered successful
-- **Learning Indicators**: Signs of valuable insights
+**Prerequisites:** `research.md` complete
 
-### 3. Learning Loop Process
+1. **Extract key elements from goal spec** → `data-model.md`:
+   - Key deliverables, success metrics, constraints
+   - Validation criteria from requirements
+   - Risk factors and mitigation approaches
 
-- **Daily Learning Loop**: Build-measure-learn cycle
-- **Weekly Learning Loop**: Strategic review and adaptation
-- **Progress Assessment**: Regular evaluation of advancement
-- **Insight Documentation**: Capture of learnings and discoveries
+2. **Generate implementation contracts** from requirements:
+   - For each milestone → acceptance criteria
+   - Use standard implementation patterns
+   - Output approach documentation to `/contracts/`
 
-### 4. Adaptation Framework
+3. **Agent context update**:
+   - Run `{AGENT_SCRIPT}`
+   - These scripts detect which AI agent is in use
+   - Update the appropriate agent-specific context file
+   - Add only new implementation elements from current plan
+   - Preserve manual additions between markers
 
-- **Progress Indicators**: Signs that current approach is working
-- **Warning Indicators**: Early signs of problems
-- **Pivot Decision Process**: Framework for changing approach
-- **Strategy Switch Options**: Alternative approaches available
+**Output**: data-model.md, /contracts/*, quickstart.md, agent-specific file
 
-## Key Differences from Spec-Driven Development
+## Key Rules
 
-| Spec-Driven | Goal-Driven |
-|-------------|-------------|
-| Rigid plan execution | Adaptive hypothesis testing |
-| Implementation compliance focus | Learning and outcome focus |
-| Linear task completion | Flexible milestone progression |
-| Specification-driven changes | Evidence-based adaptations |
-
-## Integration with Other Commands
-
-### Before Using `/goalkit.execute`
-
-- **`/goalkit.vision`**: Provides principles for execution decisions
-- **`/goalkit.goal`**: Defines outcomes to achieve through execution
-- **`/goalkit.strategies`**: Provides approach options for execution
-- **`/goalkit.milestones`**: Defines what to execute and measure
-
-### After Using `/goalkit.execute`
-
-- **`/goalkit.execute`**: Continue execution with adaptation based on learning
-- **Goal Completion**: When all milestones are complete, consider the goal achieved
-
-## Best Practices
-
-### Execution Mindset
-
-- **Hypothesis Testing**: Treat implementation as experiment
-- **Learning Orientation**: Focus on insights over just completion
-- **Adaptation Readiness**: Be willing to change course based on evidence
-- **Documentation Discipline**: Capture all significant learnings
-
-### Daily Execution
-
-- **Structured Days**: Clear goals and measurement for each day
-- **Progress Tracking**: Regular assessment of advancement
-- **Obstacle Management**: Clear process for addressing blockers
-- **Insight Capture**: Document learnings as they occur
-
-### Measurement and Learning
-
-- **Relevant Metrics**: Track what matters for goal achievement
-- **Regular Review**: Assess progress at appropriate intervals
-- **Pattern Recognition**: Identify trends and insights
-- **Knowledge Sharing**: Communicate learnings to stakeholders
-
-## Common Execution Patterns
-
-### Learning-Focused Execution
-
-- **Hypothesis-Driven Development**: Each day tests specific assumptions
-- **Measurement-First**: Define success criteria before implementation
-- **Feedback Integration**: Incorporate user and stakeholder input
-- **Insight Documentation**: Capture all learnings systematically
-
-### Adaptive Execution
-
-- **Progress Monitoring**: Regular assessment of milestone advancement
-- **Pivot Readiness**: Framework for changing approaches when needed
-- **Risk Management**: Active monitoring and mitigation of issues
-- **Stakeholder Communication**: Regular updates on progress and learnings
-
-### Knowledge Capture Patterns
-
-- **Daily Summaries**: Brief documentation of daily progress and insights
-- **Weekly Reviews**: Strategic assessment of progress and direction
-- **Milestone Reflections**: Comprehensive learning capture at milestone completion
-- **Pattern Documentation**: Identification of repeatable insights
-
-## Risk Management During Execution
-
-### Risk Monitoring
-
-- **Daily Risk Check**: Identify new risks as they emerge
-- **Progress Risk Assessment**: Evaluate if current trajectory will achieve goals
-- **External Risk Monitoring**: Track factors outside the project
-- **Risk Documentation**: Maintain current risk register
-
-### Risk Response
-
-- **Mitigation Execution**: Implement planned risk responses
-- **Contingency Planning**: Develop backups for critical risks
-- **Risk Communication**: Keep stakeholders informed of risk status
-- **Risk Review**: Regular reassessment of risk likelihood and impact
-
-## Success Validation
-
-### Milestone Completion
-
-- **Success Criteria Met**: All defined success indicators achieved
-- **Learning Objectives Accomplished**: Key insights documented
-- **Value Delivered**: Clear user or business benefit provided
-- **No Critical Issues**: No significant problems discovered
-
-### Goal Progress
-
-- **Measurable Advancement**: Clear progress toward goal achievement
-- **Learning Integration**: Insights applied to subsequent work
-- **Strategy Validation**: Current approach confirmed as effective
-- **Stakeholder Alignment**: Continued support for the goal
-
-## Examples
-
-### Example 1: Feature Development Execution
-
-```text
-/goalkit.execute Implement user onboarding with daily user feedback measurement and weekly strategy adaptation. Focus on learning what helps users understand and adopt the feature. Be ready to pivot UX approach based on user behavior data.
-```
-
-### Example 2: Platform Migration Execution
-
-```text
-/goalkit.execute Execute data migration with continuous validation and rollback readiness. Measure system stability and user impact daily. Have clear pivot points for reverting to old system if issues arise.
-```
-
-### Example 3: Process Improvement Execution
-
-```text
-/goalkit.execute Implement new development process with team feedback collection and productivity measurement. Focus on learning what improves developer experience and code quality. Adapt process based on team input and metric improvements.
-```
-
-## Key rules
-
-- Focus on learning and adaptation rather than rigid plan execution
-- Implement with continuous measurement and validation
-- Establish clear feedback loops for adjustment
-- Document insights and knowledge gained throughout execution
-- **START**: After `/goalkit.execute`, you may begin implementation with learning loops
-- **CONTINUE**: This is the only command where ongoing work is allowed
+- Use absolute paths
+- ERROR on gate failures or unresolved clarifications

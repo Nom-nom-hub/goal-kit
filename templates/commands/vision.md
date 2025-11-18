@@ -1,191 +1,122 @@
 ---
-description: Establish project vision, values, and success criteria. Provides foundation for all goal-driven development.
+description: Establish project vision, values, and success criteria using the vision template to provide foundation for all goal-driven development.
+handoffs:
+  - label: Create Goal
+    agent: goalkit.goal
+    prompt: Define a goal aligned with the project vision
+    send: true
+scripts:
+  sh: scripts/bash/create-vision.sh --json
+  ps: scripts/powershell/create-vision.ps1 -Json
 ---
 
-# /goalkit.vision Command
-
-## AI AGENT INSTRUCTIONS
-
-When processing `/goalkit.vision` requests, follow this structured approach:
-
-### Input Analysis
-
-1. **Extract Core Purpose**: Identify the fundamental mission and desired outcomes from user input
-2. **Define Success Metrics**: Convert user descriptions into specific, measurable success criteria
-3. **Generate Principles**: Create actionable guiding principles with clear AI application guidance
-4. **Align Goals**: Ensure generated goals support the vision and have measurable outcomes
-
-### Processing Framework
-
-- Focus on outcomes over implementation details
-- Generate specific, quantifiable success metrics (percentages, timeframes, user counts)
-- Create 4-6 actionable principles that guide AI decision-making
-- Ensure vision provides foundation for goal-driven development workflow
-
-### Output Structure
-
-Use the template sections below to structure your response. Maintain consistency with existing project context and ensure all sections are populated with actionable content.
-
----
-
-## Overview
-
-The `/goalkit.vision` command establishes your project's foundational vision, values, and success criteria that will guide all subsequent goal-driven development activities.
-
-## Purpose
-
-This command creates or updates the project's vision document that serves as the foundation for all goal-driven development. Unlike traditional project charters or requirements documents, the vision focuses on outcomes, success metrics, and guiding principles rather than specific features or implementations.
-
-## When to Use
-
-Use `/goalkit.vision` when:
-
-- Starting a new project
-- Major strategic shifts in project direction
-- Need to realign team around core outcomes
-- Establishing principles for goal-driven development
-
-## Input Format
+## User Input
 
 ```text
-/goalkit.vision [description of project vision, values, and success criteria]
+$ARGUMENTS
 ```
 
-### Example Input
+You **MUST** consider the user input before proceeding (if not empty).
 
-```text
-/goalkit.vision Create a vision for a personal productivity application focused on helping users achieve their most important goals with minimal friction. The vision should emphasize user autonomy, measurable progress, and flexible achievement strategies. Include principles for measuring success through user outcomes rather than feature adoption, and establish guidelines for adapting based on user feedback and learning.
-```
+## Outline
 
-## Output
+The text the user typed after `/goalkit.vision` in the triggering message **is** the project description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
 
-The command generates:
+Given that project description, do this:
 
-- `.goalkit/vision.md` - Complete project vision document
-- Project structure optimized for goal-driven development
-- Foundation for all subsequent goal definitions
+1. Run `{SCRIPT}` from repo root and parse JSON for VISION_FILE. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
-### ⚠️ CRITICAL: Agent Behavior Instructions
+2. Load `templates/vision-template.md` to understand required sections.
 
-## **🚨 AGENTS MUST STOP AFTER VISION CREATION - DO NOT PROCEED TO CODING**
+3. Follow this execution flow:
 
-When processing `/goalkit.vision` commands, AI agents should:
+    1. Parse user description from Input
+       If empty: ERROR "No project description provided"
+    2. Extract key concepts from description
+       Identify: core mission, desired outcomes, success measures
+    3. For unclear aspects:
+       - Make informed guesses based on context and industry standards
+       - Only mark with [NEEDS CLARIFICATION: specific question] if:
+         - The choice significantly impacts project scope or user experience
+         - Multiple reasonable interpretations exist with different implications
+         - No reasonable default exists
+       - **LIMIT: Maximum 3 [NEEDS CLARIFICATION] markers total**
+       - Prioritize clarifications by impact: scope > user experience > technical details
+    4. Fill Core Mission section
+       If no clear mission: ERROR "Cannot determine project mission"
+    5. Generate Vision Statement
+       Each statement must be inspiring and outcome-focused
+       Use reasonable defaults for unspecified details (document assumptions in Assumptions section)
+    6. Define Success Criteria
+       Create measurable, outcome-focused success measures
+       Include both quantitative measures (percentages, timeframes, user counts) and qualitative measures (user satisfaction, business impact)
+       Each criterion must be verifiable without knowing implementation details
+    7. Identify Guiding Principles (if relevant)
+    8. Return: SUCCESS (vision ready for goal creation)
 
-1. **Create ONLY the vision file** - Create or update the `.goalkit/vision.md` file in the project root
-2. **Use current date** in YYYY-MM-DD format for the "Created" field
-3. **Write complete vision document** using the template structure below
-4. **🛑 STOP HERE** - Do NOT create goals, strategies, milestones, or start coding
-5. **🛑 STOP HERE** - Do NOT proceed to implementation or file creation
-6. **Inform user** that vision is established and suggest next step: `/goalkit.goal`
-7. **🛑 STOP HERE** - Wait for user to explicitly run the next command
+4. Write the vision to VISION_FILE using the template structure, replacing placeholders with concrete details derived from the project description (arguments) while preserving section order and headings.
 
-### 🚨 STRICT WORKFLOW ENFORCEMENT
+5. Report completion with vision file path and readiness for the next phase (`/goalkit.goal`).
 
-**Agents MUST follow this exact sequence:**
+**NOTE:** The script creates the vision file before writing.
 
-- `/goalkit.vision` → Create vision file → **STOP**
-- **User runs** `/goalkit.goal` → Create goal → **STOP**
-- **User runs** `/goalkit.strategies` → Explore strategies → **STOP**
-- **User runs** `/goalkit.milestones` → Create milestones → **STOP**
-- **User runs** `/goalkit.execute` → Implement with learning → **STOP**
+## General Guidelines
 
-**❌ FORBIDDEN AGENT BEHAVIOR:**
+## Quick Guidelines
 
-- ❌ Creating goals automatically after vision
-- ❌ Starting coding or implementation after vision
-- ❌ Skipping the goal creation step
-- ❌ Proceeding through multiple methodology steps automatically
+- Focus on **WHAT** outcomes users/businesses need and **WHY**.
+- Avoid HOW to implement (no tech stack, APIs, code structure).
+- Written for business stakeholders, not developers.
 
-### File Creation Process
+### Section Requirements
 
-- **Create ONLY**: `.goalkit/vision.md` with the vision content
-- **Template**: Use the structure provided in the "Vision Components" section below
-- **🛑 THEN STOP**
+- **Mandatory sections**: Must be completed for every vision
+- **Optional sections**: Include only when relevant to the vision
+- When a section doesn't apply, remove it entirely (don't leave as "N/A")
 
-## Vision Components
+### For AI Generation
 
-### 1. Project Purpose
+When creating this vision from a user prompt:
 
-- **Core Mission**: Fundamental reason the project exists
-- **Vision Statement**: Inspirational description of desired future state
-- **Target Outcomes**: Specific outcomes the project seeks to achieve
+1. **Make informed guesses**: Use context, industry standards, and common patterns to fill gaps
+2. **Document assumptions**: Record reasonable defaults in the Assumptions section
+3. **Limit clarifications**: Maximum 3 [NEEDS CLARIFICATION] markers - use only for critical decisions that:
+   - Significantly impact project scope or outcomes
+   - Have multiple reasonable interpretations with different implications
+   - Lack any reasonable default
+4. **Prioritize clarifications**: scope > outcomes > implementation details
+5. **Think like a validator**: Every vague vision should fail the "inspiring and outcome-focused" checklist item
+6. **Common areas needing clarification** (only if no reasonable default exists):
+   - Project scope and boundaries (include/exclude specific outcomes)
+   - Target user groups (if multiple conflicting interpretations possible)
+   - Success metrics (when critical for measuring progress)
 
-### 2. Success Metrics
+**Examples of reasonable defaults** (don't ask about these):
 
-- **Primary Indicators**: Must-achieve success measures
-- **Secondary Indicators**: Valuable but not required outcomes
-- **Learning Goals**: What to discover through the project
+- Success metrics: Industry-standard practices for the domain
+- Timeline expectations: Standard project delivery times for similar scope
+- Performance targets: User-friendly goals that align with business value
+- Target user groups: Primary persona that benefits most from the project
 
-### 3. Guiding Principles
+### Success Criteria Guidelines
 
-- **Outcome-First Thinking**: Prioritize user/business outcomes over technical preferences
-- **Measurable Progress**: All work contributes to measurable success metrics
-- **Strategy Flexibility**: Multiple valid approaches exist for any goal
-- **Learning Integration**: Implementation as hypothesis testing
-- **Adaptive Planning**: Plans as hypotheses, not contracts
+Success criteria must be:
 
-### 4. Project Goals
+1. **Measurable**: Include specific metrics (%, $, time, user counts)
+2. **Outcome-focused**: No mention of implementation details or technical approaches
+3. **Business/user-focused**: Describe results from user/business perspective, not system internals
+4. **Verifiable**: Can be validated without knowing implementation details
 
-- High-level goals with clear success criteria
-- Prioritized based on outcome impact
-- Structured for strategy exploration
+**Good examples**:
 
-### 5. Project Scope
+- "Increase user engagement by 25% over 3 months"
+- "Improve customer satisfaction to 90% NPS score"
+- "Reduce task completion time by 50% for primary workflow"
+- "Generate $50K in additional revenue within 6 months"
 
-- What's included and explicitly excluded
-- Outcome-focused boundaries
-- Flexibility for learning-based adjustments
+**Bad examples** (implementation-focused):
 
-## Key Differences from Spec-Driven Development
-
-| Spec-Driven | Goal-Driven |
-|-------------|-------------|
-| Detailed requirements upfront | High-level outcomes and success criteria |
-| Single implementation path | Multiple strategy exploration |
-| Feature-focused planning | Outcome-focused milestones |
-| Implementation precision | Learning and adaptation |
-
-## Integration with Other Commands
-
-The vision created by `/goalkit.vision` serves as the foundation for:
-
-- **`/goalkit.goal`**: Individual goals must align with project vision
-- **`/goalkit.strategies`**: Strategy exploration guided by vision principles
-- **`/goalkit.milestones`**: Milestones measured against vision success criteria
-- **`/goalkit.execute`**: Execution aligned with vision values and principles
-
-## Best Practices
-
-### Vision Creation
-
-- **Collaborative Input**: Involve key stakeholders in vision development
-- **Outcome-Focused Language**: Describe what users achieve, not what features exist
-- **Measurable Success**: Define how you'll know the vision is achieved
-- **Flexible Principles**: Allow for learning and adaptation
-
-### Vision Evolution
-
-- **Regular Review**: Reassess vision relevance quarterly
-- **Learning Integration**: Update based on project learning
-- **Stakeholder Alignment**: Maintain stakeholder support for vision
-- **Documentation**: Keep vision document current and accessible
-
-## Common Patterns
-
-### Startup Projects
-
-- Focus on user acquisition and engagement metrics
-- Emphasize rapid learning and iteration
-- Include innovation and market validation goals
-
-### Enterprise Projects
-
-- Focus on business process improvement and efficiency
-- Emphasize compliance and risk management
-- Include organizational learning objectives
-
-### Open Source Projects
-
-- Focus on community building and contribution quality
-- Emphasize sustainability and maintainer experience
-- Include ecosystem impact goals
+- "Implement React-based UI" (technology-specific)
+- "Database supports 1000 TPS" (implementation detail)
+- "API response time under 200ms" (too technical)
+- "Deploy to AWS" (technology-specific)
