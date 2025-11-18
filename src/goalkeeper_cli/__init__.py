@@ -823,8 +823,8 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                                         dest_file = dest_path / rel_path
                                         dest_file.parent.mkdir(parents=True, exist_ok=True)
                                         # Special handling for .vscode/settings.json - merge instead of overwrite
-                                         if dest_file.name == "settings.json" and dest_file.parent.name == ".vscode":
-                                             handle_vscode_settings(console, sub_item, dest_file, rel_path, verbose, tracker)
+                                        if dest_file.name == "settings.json" and dest_file.parent.name == ".vscode":
+                                            handle_vscode_settings(console, sub_item, dest_file, rel_path, verbose, tracker)
                                         else:
                                             shutil.copy2(sub_item, dest_file)
                             else:
