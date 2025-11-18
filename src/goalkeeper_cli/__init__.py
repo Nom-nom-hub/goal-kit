@@ -43,6 +43,7 @@ from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.text import Text
 from rich.align import Align
+from rich.live import Live
 from typer.core import TyperGroup
 
 import ssl
