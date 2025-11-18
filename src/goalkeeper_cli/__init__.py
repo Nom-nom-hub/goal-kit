@@ -1244,9 +1244,12 @@ def init(
     else:
         default_script = "ps" if os.name == "nt" else "sh"
 
-        if sys.stdin.isatty():
+        # Always attempt interactive selection, don't rely on isatty() check after previous interaction
+        # This ensures script type selection works even after the AI assistant selection
+        try:
             selected_script = select_with_arrows(console, SCRIPT_TYPE_CHOICES, "Choose script type (or press Enter)", default_script)
-        else:
+        except (EOFError, KeyboardInterrupt):
+            # If interactive selection fails, use default
             selected_script = default_script
 
     console.print(f"[cyan]Selected AI assistant:[/cyan] {selected_ai}")
