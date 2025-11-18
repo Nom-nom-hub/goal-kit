@@ -5,8 +5,8 @@ handoffs:
     agent: goalkit.goal
     prompt: Create goals based on review findings to improve future performance. I want to address...
 scripts:
-  sh: scripts/bash/run-review.sh --json "{ARGS}"
-  ps: scripts/powershell/run-review.ps1 -Json "{ARGS}"
+  sh: scripts/bash/create-review.sh --json "{ARGS}"
+  ps: scripts/powershell/create-review.ps1 -Json "{ARGS}"
 ---
 
 ## User Input

@@ -5,8 +5,8 @@ handoffs:
     agent: goalkit.analyze
     prompt: Analyze specific findings from the report. I want to understand...
 scripts:
-  sh: scripts/bash/generate-report.sh --json "{ARGS}"
-  ps: scripts/powershell/generate-report.ps1 -Json "{ARGS}"
+  sh: scripts/bash/create-report.sh --json "{ARGS}"
+  ps: scripts/powershell/create-report.ps1 -Json "{ARGS}"
 ---
 
 ## User Input
