@@ -15,15 +15,13 @@ scripts:
 
 ## User Input
 
-```text
-$ARGUMENTS
-```
+The user's goal description is: **$ARGUMENTS**
 
-You **MUST** consider the user input before proceeding (if not empty).
+You **MUST** consider this user input before proceeding. The text above is the ACTUAL goal description the user provided - do NOT ask them to repeat it.
 
 ## Outline
 
-The text the user typed after `/goalkit.goal` in the triggering message **is** the goal description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
+The text the user typed after `/goalkit.goal` command **IS** the goal description. Use it directly without asking for clarification unless it's truly empty (zero characters).
 
 Given that goal description, do this:
 
@@ -73,9 +71,11 @@ Given that goal description, do this:
 
 4. Follow this execution flow:
 
-    1. Parse user description from Input
-       If empty: ERROR "No goal description provided"
-    2. Extract key concepts from description
+    1. **Parse user description from Input section above**
+        - The goal description is explicitly stated after "The user's goal description is:"
+        - If it's empty or contains no actual text: ERROR "No goal description provided"
+        - Otherwise: PROCEED - you have the goal description
+     2. Extract key concepts from the user's description
        Identify: beneficiaries, desired outcomes, success measures
     3. For unclear aspects:
        - Make informed guesses based on context and industry standards
