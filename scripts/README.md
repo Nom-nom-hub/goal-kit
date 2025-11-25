@@ -1,57 +1,62 @@
 # Goal Kit Scripts
 
-This directory contains Python scripts for the Goal Kit methodology to complement the main CLI.
+This directory contains shell and PowerShell scripts for the Goal Kit methodology to complement the main CLI.
 
-## Python Scripts
+## Available Scripts
 
-- `check-prerequisites.py` - Checks if required tools are installed
-- `common.py` - Common utilities for other scripts
-- `create_new_goal.py` - Creates a new goal in a Goal Kit project
-- `setup_goal.py` - Sets up the environment for a specific goal
-- `setup_milestones.py` - Sets up milestone planning in a Goal Kit project
-- `setup_strategy.py` - Sets up strategy analysis in a Goal Kit project
-- `setup_collaboration.py` - Sets up collaboration planning in a Goal Kit project
-- `manage_personas.py` - Manages agent personas in a Goal Kit project
-- `update_agent_context.py` - Updates agent context files with current goal info
-- `validate_methodology.py` - Validates methodology completion for goals
-- `validate_goals.py` - Goal validation script that checks for:
-  - Required sections in goal files
-  - Filled-out elements (not just placeholders)
-  - Measurable success metrics
-  - Proper structure and content
+### Bash Scripts (bash/)
+- `common.sh` - Common utilities and helper functions
+- `create-new-goal.sh` - Creates a new goal in a Goal Kit project
+- `create-vision.sh` - Creates a project vision document
+- `setup-strategy.sh` - Sets up strategy analysis for a goal
+- `setup-milestones.sh` - Sets up milestone planning for a goal
+- `setup-execution.sh` - Sets up execution planning
+- `create-tasks.sh` - Creates task lists from strategies
+- `create-report.sh` - Generates progress reports
+- `create-review.sh` - Creates project review documents
+- `update-agent-context.sh` - Updates agent context files with current goal info
+
+### PowerShell Scripts (powershell/)
+- `common.ps1` - Common utilities and helper functions
+- `create-new-goal.ps1` - Creates a new goal in a Goal Kit project
+- `create-vision.ps1` - Creates a project vision document
+- `setup-strategy.ps1` - Sets up strategy analysis for a goal
+- `setup-milestones.ps1` - Sets up milestone planning for a goal
+- `setup-execution.ps1` - Sets up execution planning
+- `create-tasks.ps1` - Creates task lists from strategies
+- `create-report.ps1` - Generates progress reports
+- `create-review.ps1` - Creates project review documents
+- `update-agent-context.ps1` - Updates agent context files with current goal info
 
 ## Key Features
 
 1. **Project Automation** - Scripts to automate common Goal Kit tasks
-2. **Environment Setup** - Tools to configure the development environment
-3. **Validation** - Goal validation system for quality assurance
+2. **Cross-platform Support** - Works on Unix/Linux/Mac (bash) and Windows (PowerShell)
+3. **JSON Output** - Scripts output JSON for easy parsing and integration
+4. **Goal Management** - Create, update, and manage goals and related artifacts
 
 ## Usage
 
-The main CLI now includes enhanced UX features that supersede some script functionality:
-
-### Creating a New Goal
+### Creating a New Goal (Bash)
 ```bash
-# Enhanced version with progress indicators (main CLI)
-goalkeeper create-goal "Improve user authentication flow"
-
-# Interactive mode
-goalkeeper create-goal --interactive "Goal description"
-
-# Dry run to see what would be created
-goalkeeper create-goal --dry-run "Add payment system"
-
-# Validate after creation
-goalkeeper validate-goal goals/001-improve-user-authentication/goal.md
+cd .goalkit
+bash scripts/bash/create-new-goal.sh --json "Your goal description"
 ```
 
-### For direct script usage:
-```bash
-# Using Python script directly
-python scripts/python/create_new_goal.py "Standard goal creation"
+### Creating a New Goal (PowerShell)
+```powershell
+cd .goalkit
+& ".\scripts\powershell\create-new-goal.ps1" -Json "Your goal description"
+```
 
-# Or on some systems
-python3 scripts/python/create_new_goal.py "Standard goal creation"
+### Creating Vision (Bash)
+```bash
+bash .goalkit/scripts/bash/create-vision.sh --json
+```
+
+### Creating Vision (PowerShell)
+```powershell
+& ".\.goalkit\scripts\powershell\create-vision.ps1" -Json
 ```
 
 ## Validation Requirements

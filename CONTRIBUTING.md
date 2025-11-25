@@ -25,11 +25,11 @@ git checkout -b fix/bug-fix
 
 ### 4. Test Your Changes
 ```bash
-# Run tests
-./scripts/python/validate_goals.py
+# Test bash scripts
+bash scripts/bash/create-new-goal.sh --json "test-goal"
 
-# Test templates
-python scripts/python/create_new_goal.py "test-goal"
+# Test PowerShell scripts (on Windows)
+& ".\scripts\powershell\create-new-goal.ps1" -Json "test-goal"
 
 # Check formatting
 # (Add formatting checks as needed)
@@ -115,11 +115,11 @@ pip install mkdocs mkdocs-material  # For documentation
 
 ### Testing Changes
 ```bash
-# Validate goal templates
-./scripts/python/validate_goals.py
+# Test bash script functionality
+bash scripts/bash/create-new-goal.sh --json "test-goal"
 
-# Test script functionality
-python scripts/python/setup_goal.py --verbose
+# Test PowerShell script functionality (on Windows)
+& ".\scripts\powershell\create-new-goal.ps1" -Json "test-goal"
 
 # Build documentation
 mkdocs build

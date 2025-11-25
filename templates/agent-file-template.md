@@ -20,22 +20,31 @@
 
 ### **🔒 WORKFLOW ENFORCEMENT: Script Execution Required**
 
-## **🚨 MANDATORY: ALL goal operations MUST use Python scripts FIRST**
+## **🚨 MANDATORY: ALL goal operations MUST use the shell/PowerShell scripts FIRST**
 
-**Before ANY goal-related action, you MUST run the appropriate Python script:**
+**Before ANY goal-related action, you MUST run the appropriate script:**
 
 ```bash
 # For goal creation (ALWAYS run this first)
-python scripts/python/create_new_goal.py --json "Your goal description"
+# On bash/zsh:
+bash .goalkit/scripts/bash/create-new-goal.sh --json "Your goal description"
 
-# For validation (run before proceeding)
-python scripts/python/enhanced_validator.py
+# On PowerShell:
+& ".\.goalkit\scripts\powershell\create-new-goal.ps1" -Json "Your goal description"
 
-# For progress tracking (run during execution)
-python scripts/python/progress_tracker.py
+# For vision creation
+# On bash/zsh:
+bash .goalkit/scripts/bash/create-vision.sh --json
 
-# For workflow compliance checking (run anytime)
-python scripts/python/workflow_enforcer.py --check
+# On PowerShell:
+& ".\.goalkit\scripts\powershell\create-vision.ps1" -Json
+
+# For strategy setup
+# On bash/zsh:
+bash .goalkit/scripts/bash/setup-strategy.sh --json
+
+# On PowerShell:
+& ".\.goalkit\scripts\powershell\setup-strategy.ps1" -Json
 ```
 
 **⚠️ CRITICAL VIOLATIONS TO AVOID:**
@@ -76,7 +85,7 @@ python scripts/python/workflow_enforcer.py --check
 ✅ **DO**: Focus on measurable outcomes (%, $, timeframes, user counts)
 ✅ **DO**: Include specific success targets
 ✅ **DO**: Identify target users and stakeholders
-✅ **DO**: **ALWAYS** run the Python script first: `.goalkit/scripts/python/create_new_goal.py --json "{ARGS}"`
+✅ **DO**: **ALWAYS** run the shell script first: `bash .goalkit/scripts/bash/create-new-goal.sh --json "{ARGS}"` (or the PowerShell equivalent)
 ❌ **DON'T**: Include implementation details (languages, frameworks, APIs)
 ❌ **DON'T**: Manually create goal directories - this bypasses proper methodology
 ❌ **DON'T**: Skip the automated goal creation script
@@ -117,11 +126,16 @@ python scripts/python/workflow_enforcer.py --check
 
 **🚨 ENFORCED REQUIREMENT: When creating goals, ALWAYS follow this exact sequence:**
 
-**STEP 1: Run the Python script FIRST (MANDATORY):**
+**STEP 1: Run the shell/PowerShell script FIRST (MANDATORY):**
 
 ```bash
 cd "{PROJECT_ROOT}"
-python scripts/python/create_new_goal.py --json "{ARGS}"
+
+# On bash/zsh:
+bash .goalkit/scripts/bash/create-new-goal.sh --json "{ARGS}"
+
+# On PowerShell:
+& ".\.goalkit\scripts\powershell\create-new-goal.ps1" -Json "{ARGS}"
 ```
 
 ## **⚠️ CRITICAL: The --json flag is REQUIRED for proper workflow integration**
@@ -178,7 +192,7 @@ python scripts/python/create_new_goal.py --json "{ARGS}"
 - Use `/goalkit.validate` regularly to maintain quality
 - Use `/goalkit.progress` to track advancement and identify issues
 - Use `/goalkit.context` to keep agent guidance current
-- **Run workflow compliance checks**: `python scripts/python/workflow_enforcer.py --check`
+- **Verify goal structure**: Ensure all goals are created using the proper shell/PowerShell scripts
 
 ## 💡 Agent Best Practices
 
@@ -196,13 +210,13 @@ python scripts/python/create_new_goal.py --json "{ARGS}"
 - **Smart Context**: Use `/goalkit.context` to maintain current project intelligence
 - **Learning Capture**: Use `/goalkit.learn` to capture insights and patterns
 
-### **Python Script Development:**
+### **Shell/PowerShell Script Usage:**
 
-- **Validate syntax**: `python -m py_compile script_name.py` before changes
-- **Check git status**: `git status`, `git diff` before modifying
-- **Safe editing**: Use targeted edits, not full file overwrites
-- **Cross-platform**: Use `os.path` or `pathlib` for file paths
-- **Workflow compliance**: Run `python scripts/python/workflow_enforcer.py --check` after script changes
+- **Test execution**: Run scripts with `--json` flag to ensure proper output
+- **Check git status**: `git status`, `git diff` before and after script execution
+- **Understand output**: Each script returns JSON with GOAL_DIR, BRANCH_NAME, and GOAL_FILE paths
+- **Cross-platform**: Use bash for Unix/Mac, PowerShell for Windows
+- **Follow methodology**: Always use scripts for goal/strategy/milestone operations
 
 ### **Goal Kit Workflow:**
 
@@ -234,19 +248,19 @@ python scripts/python/create_new_goal.py --json "{ARGS}"
 
 ## **❌ STOP: Violating script execution requirements**
 
-- ❌ Manually creating goal directories (ALWAYS use Python scripts)
+- ❌ Manually creating goal directories (ALWAYS use shell/PowerShell scripts)
 - ❌ Skipping the --json flag when running goal creation scripts
-- ❌ Bypassing workflow validation and compliance checks
-- ❌ Ignoring workflow enforcer recommendations and violations
+- ❌ Bypassing the provided shell/PowerShell scripts
+- ❌ Trying to run old Python scripts that no longer exist
 
 ## **✅ ALLOWED: Only these specific actions**
 
 - ✅ Creating vision file after `/goalkit.vision` → **STOP**
-- ✅ Running Python scripts with proper --json flags after `/goalkit.goal` → **STOP**
+- ✅ Running shell/PowerShell scripts with proper --json flags after `/goalkit.goal` → **STOP**
 - ✅ Creating strategy files after `/goalkit.strategies` → **STOP**
 - ✅ Creating milestone files after `/goalkit.milestones` → **STOP**
 - ✅ Starting implementation after `/goalkit.execute` → **Continue with learning**
-- ✅ Running workflow compliance checks with `python scripts/python/workflow_enforcer.py --check`
+- ✅ Running context updates with `bash .goalkit/scripts/bash/update-agent-context.sh [AGENT]` or PowerShell equivalent
 
 ### **Common Pitfalls to Avoid:**
 
@@ -254,10 +268,10 @@ python scripts/python/create_new_goal.py --json "{ARGS}"
 - ❌ Adding implementation details to goals
 - ❌ Creating goals without measurable targets
 - ❌ Treating as traditional requirement-driven development
-- ❌ **Manually creating goal directories** - Always use the Python script first
+- ❌ **Manually creating goal directories** - Always use the shell/PowerShell script first
 - ❌ **Bypassing the automated goal creation process** - This breaks methodology compliance
 - ❌ **Skipping the --json flag** - Required for proper workflow integration
-- ❌ **Ignoring workflow enforcer violations** - Address compliance issues promptly
+- ❌ **Trying to run old Python scripts** - They've been replaced with shell/PowerShell scripts
 - ❌ **Bypassing script execution requirements** - Scripts handle critical automation
 
 ## 📚 Key Principles
