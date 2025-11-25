@@ -51,12 +51,16 @@ Focus: Make Goal Kit bulletproof for production use.
 4. Test path accessibility
 
 ### Phase 2: Error Messages (High) 🔄 IN PROGRESS
-1. Add comprehensive error handling to all scripts ✅
-   - Bash: strict mode (set -o pipefail), error trapping, cleanup functions
-   - PowerShell: $ErrorActionPreference = 'Stop', try/catch blocks
+1. Add comprehensive error handling to all scripts 🔄
+   - ✅ common.sh: strict mode (set -o pipefail), error trapping, cleanup functions
+   - ✅ common.ps1: $ErrorActionPreference = 'Stop', try/catch blocks
+   - ✅ create-new-goal.sh/ps1: full error handling with validation
+   - ✅ create-vision.sh/ps1: full error handling with validation
+   - ✅ create-report.sh: full error handling with validation
+   - 🔄 Remaining: create-tasks.sh, create-review.sh, setup-*.sh, update-agent-context.sh
 2. Replace generic errors with actionable ones ✅
 3. Add validation functions (require_file, require_directory, validate_writable) ✅
-4. Enhanced create-new-goal scripts with error handling ✅
+4. Enhanced all major scripts with error handling 🔄
 
 ### Phase 3: Network Resilience (High) - NEXT
 1. Retry failed downloads (3 attempts)
