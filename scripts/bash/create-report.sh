@@ -2,7 +2,9 @@
 
 # Generate progress reports for a project or goal
 
-set -e
+# Get the script directory and source common functions
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
 
 GOAL_DIR="${1:-}"
 EDIT=false
@@ -30,8 +32,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -*)
-            echo "Unknown option: $1"
-            exit 1
+            handle_error "Unknown option: $1"
             ;;
         *)
             GOAL_DIR="$1"
@@ -40,33 +41,25 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Get the script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/common.sh"
-
 # Check if we're in a git repository
-if ! git rev-parse --git-dir > /dev/null 2>&1; then
-    write_error "Not in a git repository"
-    write_info "Please run this from the root of a Goal Kit project"
-    exit 1
+if ! test_git_repo; then
+    handle_error "Not in a git repository. Please run this from the root of a Goal Kit project"
 fi
 
-PROJECT_ROOT="$(git rev-parse --show-toplevel)"
-cd "$PROJECT_ROOT"
+PROJECT_ROOT=$(get_git_root) || handle_error "Could not determine git root"
+cd "$PROJECT_ROOT" || handle_error "Failed to change to project root: $PROJECT_ROOT"
 
 # Check if this is a Goal Kit project
 if [ ! -f ".goalkit/vision.md" ]; then
-    write_error "Not a Goal Kit project"
-    write_info "Please run 'goalkeeper init' first to set up the project"
-    exit 1
+    handle_error "Not a Goal Kit project. Please run 'goalkeeper init' first to set up the project"
 fi
 
 # Define report directory
 REPORT_DIR=".goalkit/reports"
-mkdir -p "$REPORT_DIR"
+mkdir -p "$REPORT_DIR" || handle_error "Failed to create reports directory"
 
 # Get timestamp for report
-TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
 REPORT_DATE=$(date +"%Y-%m-%d")
 
 # Determine report file name
@@ -109,7 +102,7 @@ fi
 # Check if template exists
 TEMPLATE_PATH=".goalkit/templates/report-template.md"
 if [ -f "$TEMPLATE_PATH" ]; then
-    REPORT_CONTENT=$(cat "$TEMPLATE_PATH")
+    REPORT_CONTENT=$(cat "$TEMPLATE_PATH") || handle_error "Failed to read report template"
     REPORT_CONTENT="${REPORT_CONTENT//\[DATE\]/$TIMESTAMP}"
     REPORT_CONTENT="${REPORT_CONTENT//\[REPORT_DATE\]/$REPORT_DATE}"
     if [ -n "$GOAL_DIR" ]; then
@@ -231,15 +224,15 @@ else
 fi
 
 # Write report file
-echo "$REPORT_CONTENT" > "$REPORT_FILE"
+echo "$REPORT_CONTENT" > "$REPORT_FILE" || handle_error "Failed to write report file: $REPORT_FILE"
 write_success "Created progress report: $REPORT_FILE"
 
 # Git operations
-git add "$REPORT_FILE" 2>/dev/null || true
+git add "$REPORT_FILE" 2>/dev/null || write_warning "Failed to stage report in git"
 if [ -z "$GOAL_DIR" ]; then
-    git commit -m "Add progress report for $REPORT_DATE" 2>/dev/null || true
+    git commit -m "Add progress report for $REPORT_DATE" 2>/dev/null || write_warning "Failed to commit report to git"
 else
-    git commit -m "Add progress report for goal $GOAL_DIR on $REPORT_DATE" 2>/dev/null || true
+    git commit -m "Add progress report for goal $GOAL_DIR on $REPORT_DATE" 2>/dev/null || write_warning "Failed to commit report to git"
 fi
 
 write_success "Report committed to repository"
