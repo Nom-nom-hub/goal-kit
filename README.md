@@ -15,7 +15,7 @@ Goal Kit transforms software development from task execution to outcome achievem
 ### 1. Install
 
 ```bash
-uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper
+uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper-cli
 ```
 
 ### 2. Initialize Project
@@ -117,12 +117,12 @@ Works with all major AI coding assistants:
 
 From GitHub:
 ```bash
-uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper
+uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper-cli
 ```
 
 From local repo:
 ```bash
-uv tool install --from . goalkeeper
+uv tool install --from . goalkeeper-cli
 ```
 
 ### Option 2: pip
@@ -139,7 +139,7 @@ pip install -e .
 ### Option 3: One-Time Usage
 
 ```bash
-uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper init my-project
+uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper-cli init my-project
 ```
 
 For detailed installation instructions, see [Installation Guide](./docs/installation.md).
@@ -228,7 +228,7 @@ Treat implementation as hypothesis testing
 
 ## 🚀 Next Steps
 
-1. **Install**: `uv tool install --from . goalkeeper`
+1. **Install**: `uv tool install --from . goalkeeper-cli`
 2. **Initialize**: `goalkeeper init my-project`
 3. **Get Started**: Read [Quick Start Guide](./docs/quickstart.md)
 4. **Learn**: Read [Goal-Driven Development](./docs/goal-driven.md)

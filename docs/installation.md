@@ -33,13 +33,13 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 
 From GitHub (recommended):
 ```bash
-uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper
+uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper-cli
 ```
 
 Or from local repository:
 ```bash
 cd /path/to/goal-kit
-uv tool install --from . goalkeeper
+uv tool install --from . goalkeeper-cli
 ```
 
 After installation, verify:
@@ -74,8 +74,8 @@ goalkeeper --version
 Run Goal Kit without installing to your system.
 
 ```bash
-uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper init my-project
-uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper check
+uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper-cli init my-project
+uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper-cli check
 ```
 
 This is useful for:
@@ -155,7 +155,7 @@ goalkeeper init my-project --agent claude
 brew install uv
 
 # Then install Goal Kit
-uv tool install --from . goalkeeper
+uv tool install --from . goalkeeper-cli
 ```
 
 #### Using Native Python
@@ -188,7 +188,7 @@ sudo apt install python3.11 python3.11-venv git
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install Goal Kit
-uv tool install --from . goalkeeper
+uv tool install --from . goalkeeper-cli
 ```
 
 #### Verify Installation
@@ -220,7 +220,7 @@ goalkeeper --version
 #### Install Goal Kit
 
 ```powershell
-uv tool install --from . goalkeeper
+uv tool install --from . goalkeeper-cli
 ```
 
 #### Verify Installation
@@ -273,7 +273,7 @@ export PATH="$HOME/.cargo/bin:$PATH"  # Add to ~/.bashrc or ~/.zshrc
 
 **Solution 3**: Reinstall with uv
 ```bash
-uv tool install --force --from . goalkeeper
+uv tool install --force --from . goalkeeper-cli
 ```
 
 ### "No module named 'goalkeeper_cli'"
@@ -326,14 +326,14 @@ git --version
 pip install --user -e .
 
 # Or use uv (recommended)
-uv tool install --from . goalkeeper
+uv tool install --from . goalkeeper-cli
 ```
 
 ### Virtual Environment Issues
 
 **Solution**: Use uv which handles environments automatically
 ```bash
-uv tool install --from . goalkeeper
+uv tool install --from . goalkeeper-cli
 ```
 
 Or manually with venv:
