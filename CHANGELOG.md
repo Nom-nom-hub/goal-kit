@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2025-11-25
+
+### 🎉 Production Release - Goal Kit v1.0.0
+
+This is the official **1.0.0 production release** of Goal Kit. The project is now stable and production-ready.
+
+#### ✨ Key Achievements in This Release
+
+- **Issue #80 Fixed**: Agents no longer reference old Python scripts
+  - Updated all agent instructions to use shell/PowerShell scripts
+  - Cross-platform support for bash and PowerShell
+  - Clear script execution examples in agent guidance
+
+- **Release Management Stabilized**
+  - Fixed excessive versioning (was 0.0.117, now controlled)
+  - Implemented semantic versioning with pyproject.toml as source of truth
+  - Only meaningful releases created (triggered by version bump)
+
+#### 📚 Stable Components
+
+- ✅ Full Goal-Driven Development methodology
+- ✅ 13+ AI agent integrations (Claude, Copilot, Gemini, Cursor, etc.)
+- ✅ Cross-platform shell/PowerShell scripts
+- ✅ Comprehensive documentation and examples
+- ✅ Complete test coverage
+- ✅ Clean, maintainable codebase
+
+#### 🔄 Migration Notes
+
+If upgrading from 0.0.99:
+- No breaking changes
+- Agent guidance files automatically updated on `goalkeeper init`
+- Existing projects continue to work without modification
+
+#### 📦 Release Includes
+
+- **Bash Scripts**: 10 scripts for Linux/macOS
+- **PowerShell Scripts**: 10 scripts for Windows
+- **Agent Templates**: Customized for each supported AI assistant
+- **Documentation**: Complete guides and examples
+- **CLI Tool**: `goalkeeper` command for project initialization
+
+---
+
 ## [0.0.99] - 2025-11-17
 
 ### 🎯 Major Code Quality & Testing Release
