@@ -2,7 +2,9 @@
 
 # Generate implementation tasks for a goal
 
-set -e
+# Get the script directory and source common functions
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
 
 GOAL_DIR="${1:-}"
 FORCE=false
@@ -25,8 +27,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -*)
-            echo "Unknown option: $1"
-            exit 1
+            handle_error "Unknown option: $1"
             ;;
         *)
             GOAL_DIR="$1"
@@ -35,25 +36,17 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Get the script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/common.sh"
-
 # Check if we're in a git repository
-if ! git rev-parse --git-dir > /dev/null 2>&1; then
-    write_error "Not in a git repository"
-    write_info "Please run this from the root of a Goal Kit project"
-    exit 1
+if ! test_git_repo; then
+    handle_error "Not in a git repository. Please run this from the root of a Goal Kit project"
 fi
 
-PROJECT_ROOT="$(git rev-parse --show-toplevel)"
-cd "$PROJECT_ROOT"
+PROJECT_ROOT=$(get_git_root) || handle_error "Could not determine git root"
+cd "$PROJECT_ROOT" || handle_error "Failed to change to project root: $PROJECT_ROOT"
 
 # Check if this is a Goal Kit project
 if [ ! -f ".goalkit/vision.md" ]; then
-    write_error "Not a Goal Kit project"
-    write_info "Please run 'goalkeeper init' first to set up the project"
-    exit 1
+    handle_error "Not a Goal Kit project. Please run 'goalkeeper init' first to set up the project"
 fi
 
 # Determine goal directory
@@ -63,9 +56,7 @@ if [ -z "$GOAL_DIR" ]; then
     if [[ "$CURRENT_DIR" == *".goalkit/goals"* ]]; then
         GOAL_DIR=$(basename "$CURRENT_DIR")
     else
-        write_error "Goal directory not specified and not in a goal directory"
-        write_info "Usage: create-tasks.sh [goal-dir-name] or run from a goal directory"
-        exit 1
+        handle_error "Goal directory not specified and not in a goal directory. Usage: create-tasks.sh [goal-dir-name] or run from a goal directory"
     fi
 fi
 
@@ -73,15 +64,13 @@ fi
 TARGET_GOAL_DIR=".goalkit/goals/$GOAL_DIR"
 
 if [ ! -d "$TARGET_GOAL_DIR" ]; then
-    write_error "Goal directory not found: $GOAL_DIR"
-    exit 1
+    handle_error "Goal directory not found: $GOAL_DIR"
 fi
 
 # Check for goal.md
 GOAL_FILE="$TARGET_GOAL_DIR/goal.md"
 if [ ! -f "$GOAL_FILE" ]; then
-    write_error "goal.md not found in goal directory"
-    exit 1
+    handle_error "goal.md not found in goal directory: $TARGET_GOAL_DIR"
 fi
 
 # Define tasks file path
@@ -101,12 +90,12 @@ if [ -f "$TASKS_FILE" ] && [ "$FORCE" = false ]; then
 fi
 
 # Get timestamp
-TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
 
 # Check if template exists
 TEMPLATE_PATH=".goalkit/templates/tasks-template.md"
 if [ -f "$TEMPLATE_PATH" ]; then
-    TASKS_CONTENT=$(cat "$TEMPLATE_PATH")
+    TASKS_CONTENT=$(cat "$TEMPLATE_PATH") || handle_error "Failed to read tasks template"
     TASKS_CONTENT="${TASKS_CONTENT//\[GOAL\]/$GOAL_DIR}"
     TASKS_CONTENT="${TASKS_CONTENT//\[DATE\]/$TIMESTAMP}"
 else
@@ -223,12 +212,12 @@ Tasks should be broken down into:
 fi
 
 # Write tasks file
-echo "$TASKS_CONTENT" > "$TASKS_FILE"
+echo "$TASKS_CONTENT" > "$TASKS_FILE" || handle_error "Failed to write tasks file: $TASKS_FILE"
 write_success "Created tasks.md: $TASKS_FILE"
 
 # Git operations
-git add "$TASKS_FILE" 2>/dev/null || true
-git commit -m "Add implementation tasks for goal: $GOAL_DIR" 2>/dev/null || true
+git add "$TASKS_FILE" 2>/dev/null || write_warning "Failed to stage tasks file in git"
+git commit -m "Add implementation tasks for goal: $GOAL_DIR" 2>/dev/null || write_warning "Failed to commit tasks file to git"
 
 write_success "Tasks committed to repository"
 
