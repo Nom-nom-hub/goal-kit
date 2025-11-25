@@ -2,7 +2,9 @@
 
 # Conduct project reviews and retrospectives
 
-set -e
+# Get the script directory and source common functions
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
 
 REVIEW_TYPE="${1:-}"
 FORCE=false
@@ -25,8 +27,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -*)
-            echo "Unknown option: $1"
-            exit 1
+            handle_error "Unknown option: $1"
             ;;
         *)
             REVIEW_TYPE="$1"
@@ -35,33 +36,25 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Get the script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/common.sh"
-
 # Check if we're in a git repository
-if ! git rev-parse --git-dir > /dev/null 2>&1; then
-    write_error "Not in a git repository"
-    write_info "Please run this from the root of a Goal Kit project"
-    exit 1
+if ! test_git_repo; then
+    handle_error "Not in a git repository. Please run this from the root of a Goal Kit project"
 fi
 
-PROJECT_ROOT="$(git rev-parse --show-toplevel)"
-cd "$PROJECT_ROOT"
+PROJECT_ROOT=$(get_git_root) || handle_error "Could not determine git root"
+cd "$PROJECT_ROOT" || handle_error "Failed to change to project root: $PROJECT_ROOT"
 
 # Check if this is a Goal Kit project
 if [ ! -f ".goalkit/vision.md" ]; then
-    write_error "Not a Goal Kit project"
-    write_info "Please run 'goalkeeper init' first to set up the project"
-    exit 1
+    handle_error "Not a Goal Kit project. Please run 'goalkeeper init' first to set up the project"
 fi
 
 # Define review directory
 REVIEW_DIR=".goalkit/reviews"
-mkdir -p "$REVIEW_DIR"
+mkdir -p "$REVIEW_DIR" || handle_error "Failed to create reviews directory"
 
 # Get timestamp for review
-TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
 REVIEW_DATE=$(date +"%Y-%m-%d")
 
 # Determine review type and file name
@@ -88,7 +81,7 @@ fi
 # Check if template exists
 TEMPLATE_PATH=".goalkit/templates/review-template.md"
 if [ -f "$TEMPLATE_PATH" ]; then
-    REVIEW_CONTENT=$(cat "$TEMPLATE_PATH")
+    REVIEW_CONTENT=$(cat "$TEMPLATE_PATH") || handle_error "Failed to read review template"
     REVIEW_CONTENT="${REVIEW_CONTENT//\[DATE\]/$TIMESTAMP}"
     REVIEW_CONTENT="${REVIEW_CONTENT//\[REVIEW_DATE\]/$REVIEW_DATE}"
     REVIEW_CONTENT="${REVIEW_CONTENT//\[REVIEW_TYPE\]/$REVIEW_TYPE}"
@@ -242,12 +235,12 @@ else
 fi
 
 # Write review file
-echo "$REVIEW_CONTENT" > "$REVIEW_FILE"
+echo "$REVIEW_CONTENT" > "$REVIEW_FILE" || handle_error "Failed to write review file: $REVIEW_FILE"
 write_success "Created review document: $REVIEW_FILE"
 
 # Git operations
-git add "$REVIEW_FILE" 2>/dev/null || true
-git commit -m "Add $REVIEW_TYPE review for $REVIEW_DATE" 2>/dev/null || true
+git add "$REVIEW_FILE" 2>/dev/null || write_warning "Failed to stage review file in git"
+git commit -m "Add $REVIEW_TYPE review for $REVIEW_DATE" 2>/dev/null || write_warning "Failed to commit review file to git"
 
 write_success "Review committed to repository"
 
