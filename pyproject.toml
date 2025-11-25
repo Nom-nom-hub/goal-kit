@@ -26,8 +26,11 @@ dev = [
 goalkeeper = "goalkeeper_cli:main"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/goalkeeper_cli"]
+[tool.setuptools]
+packages = ["goalkeeper_cli"]
+
+[tool.setuptools.package-dir]
+"" = "src"
