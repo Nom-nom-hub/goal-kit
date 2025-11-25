@@ -3,7 +3,9 @@
 # This script updates all agent context files (.claude/context.md, CLAUDE.md, etc.)
 # with current project state, active goals, and vision information
 
-set -e
+# Get the script directory and source common functions
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/common.sh"
 
 # Parse arguments
 JSON_MODE=false
@@ -15,38 +17,28 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         *)
-            echo "Unknown option: $1"
-            exit 1
+            handle_error "Unknown option: $1"
             ;;
     esac
 done
 
-# Get the script directory and source common functions
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${SCRIPT_DIR}/common.sh"
-
 # Check if we're in a git repository
-if ! is_git_repo; then
-    write_error "Not in a git repository"
-    write_info "Please run this from the root of a Goal Kit project"
-    exit 1
+if ! test_git_repo; then
+    handle_error "Not in a git repository. Please run this from the root of a Goal Kit project"
 fi
 
 # Get project root
-PROJECT_ROOT=$(get_git_root)
+PROJECT_ROOT=$(get_git_root) || handle_error "Could not determine git root"
 if [ -z "$PROJECT_ROOT" ]; then
-    write_error "Could not determine git root. Not in a git repository."
-    exit 1
+    handle_error "Could not determine git root. Not in a git repository."
 fi
 
-cd "$PROJECT_ROOT"
+cd "$PROJECT_ROOT" || handle_error "Failed to change to project root: $PROJECT_ROOT"
 
 # Check if this is a Goal Kit project
 VISION_FILE=".goalkit/vision.md"
 if [ ! -f "$VISION_FILE" ]; then
-    write_error "Not a Goal Kit project"
-    write_info "Please run 'goalkeeper init' first to set up the project"
-    exit 1
+    handle_error "Not a Goal Kit project. Please run 'goalkeeper init' first to set up the project"
 fi
 
 # If JSON mode, output JSON and exit early
