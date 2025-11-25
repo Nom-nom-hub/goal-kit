@@ -18,13 +18,13 @@ NEW_VERSION="v$VERSION"
 # Get the latest tag, or use v0.0.0 if no tags exist
 LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 
-# Only proceed if the new version is different from the latest tag
-if [ "$NEW_VERSION" = "$LATEST_TAG" ]; then
-    echo "Version in pyproject.toml ($NEW_VERSION) matches latest tag. No release needed."
-    exit 0
-fi
-
-# Set outputs for GitHub Actions
+# Set outputs for GitHub Actions (always needed downstream)
 echo "latest_tag=$LATEST_TAG" >> "$GITHUB_OUTPUT"
 echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
-echo "New version will be: $NEW_VERSION (from pyproject.toml)"
+
+# Check if new version matches latest tag
+if [ "$NEW_VERSION" = "$LATEST_TAG" ]; then
+    echo "Version in pyproject.toml ($NEW_VERSION) matches latest tag. No release needed."
+else
+    echo "New version will be: $NEW_VERSION (from pyproject.toml)"
+fi
