@@ -4,14 +4,8 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'src/**'
-      - 'memory/**'
-      - 'scripts/**'
-      - 'templates/**'
-      - '.github/workflows/**'
-      - 'SECURITY.md'
-      - 'README.md'
       - 'CHANGELOG.md'
+      - 'pyproject.toml'
   workflow_dispatch:
 
 jobs:
@@ -59,8 +53,3 @@ jobs:
           .github/workflows/scripts/create-github-release.sh ${{ steps.get_tag.outputs.new_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Update version in pyproject.toml (for release artifacts only)
-        if: steps.check_release.outputs.exists == 'false'
-        run: |
-          chmod +x .github/workflows/scripts/update-version.sh
-          .github/workflows/scripts/update-version.sh ${{ steps.get_tag.outputs.new_version }}
