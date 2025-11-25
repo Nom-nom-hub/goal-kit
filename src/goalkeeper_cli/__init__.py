@@ -1005,6 +1005,12 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
     """Create agent-specific configuration files and directories."""
     import shutil
 
+    # Ensure .goalkit/goals directory exists for storing goal files
+    goalkit_dir = project_path / ".goalkit"
+    goalkit_dir.mkdir(parents=True, exist_ok=True)
+    goals_dir = goalkit_dir / "goals"
+    goals_dir.mkdir(parents=True, exist_ok=True)
+
     # Define the agent folder mapping
     agent_folder_map = {
         "claude": ".claude/",
