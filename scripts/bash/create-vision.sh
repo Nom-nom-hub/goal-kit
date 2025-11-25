@@ -2,7 +2,9 @@
 
 # Create or edit the vision document in a Goal Kit project
 
-set -e
+# Get the script directory and source common functions
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
 
 VISION_DESCRIPTION="${1:-}"
 EDIT=false
@@ -30,8 +32,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         -*)
-            echo "Unknown option: $1"
-            exit 1
+            handle_error "Unknown option: $1"
             ;;
         *)
             VISION_DESCRIPTION="$1"
@@ -40,19 +41,13 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Get the script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/common.sh"
-
 # Check if we're in a git repository
-if ! git rev-parse --git-dir > /dev/null 2>&1; then
-    write_error "Not in a git repository"
-    write_info "Please run this from the root of a Goal Kit project"
-    exit 1
+if ! test_git_repo; then
+    handle_error "Not in a git repository. Please run this from the root of a Goal Kit project"
 fi
 
-PROJECT_ROOT="$(git rev-parse --show-toplevel)"
-cd "$PROJECT_ROOT"
+PROJECT_ROOT=$(get_git_root) || handle_error "Could not determine git root"
+cd "$PROJECT_ROOT" || handle_error "Failed to change to project root: $PROJECT_ROOT"
 
 # Check if this is a Goal Kit project
 VISION_FILE=".goalkit/vision.md"
@@ -93,15 +88,15 @@ if [ -f "$VISION_FILE" ]; then
 fi
 
 # Create .goalkit directory if it doesn't exist
-mkdir -p ".goalkit"
+mkdir -p ".goalkit" || handle_error "Failed to create .goalkit directory"
 
 # Get timestamp
-TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
 
 # Check if template exists
 TEMPLATE_PATH=".goalkit/templates/vision-template.md"
 if [ -f "$TEMPLATE_PATH" ]; then
-    VISION_CONTENT=$(cat "$TEMPLATE_PATH")
+    VISION_CONTENT=$(cat "$TEMPLATE_PATH") || handle_error "Failed to read vision template"
     
     # Replace placeholders if description provided
     if [ -n "$VISION_DESCRIPTION" ]; then
@@ -162,12 +157,12 @@ These are the major stepping stones to realize the vision:
 fi
 
 # Write vision file
-echo "$VISION_CONTENT" > "$VISION_FILE"
+echo "$VISION_CONTENT" > "$VISION_FILE" || handle_error "Failed to write vision file: $VISION_FILE"
 write_success "Created vision.md: $VISION_FILE"
 
 # Git operations
-git add "$VISION_FILE" 2>/dev/null || true
-git commit -m "Add project vision" 2>/dev/null || true
+git add "$VISION_FILE" 2>/dev/null || write_warning "Failed to stage vision file in git"
+git commit -m "Add project vision" 2>/dev/null || write_warning "Failed to commit vision file to git"
 
 write_success "Vision committed to repository"
 

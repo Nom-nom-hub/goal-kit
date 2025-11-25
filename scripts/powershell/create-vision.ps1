@@ -23,19 +23,20 @@ function New-Vision {
     
     # Check if we're in a git repository
     if (-not (Test-GitRepo)) {
-        Write-Error-Custom "Not in a git repository"
-        Write-Info "Please run this from the root of a Goal Kit project"
-        exit 1
+        Handle-Error "Not in a git repository. Please run this from the root of a Goal Kit project"
     }
     
     # Get project root
     $projectRoot = Get-GitRoot
     if ([string]::IsNullOrEmpty($projectRoot)) {
-        Write-Error-Custom "Could not determine git root. Not in a git repository."
-        exit 1
+        Handle-Error "Could not determine git root. Not in a git repository."
     }
     
-    Set-Location $projectRoot | Out-Null
+    try {
+        Set-Location $projectRoot -ErrorAction Stop
+    } catch {
+        Handle-Error "Failed to change to project root: $projectRoot"
+    }
     
     # Define vision file path
     $visionFile = Join-Path ".goalkit" "vision.md"
@@ -71,7 +72,11 @@ function New-Vision {
     # Create .goalkit directory if it doesn't exist
     $goalKitDir = Join-Path ".goalkit"
     if (-not (Test-Path $goalKitDir)) {
-        New-Item -ItemType Directory -Path $goalKitDir -Force | Out-Null
+        try {
+            New-Item -ItemType Directory -Path $goalKitDir -Force -ErrorAction Stop | Out-Null
+        } catch {
+            Handle-Error "Failed to create .goalkit directory"
+        }
     }
     
     # Get timestamp
@@ -80,7 +85,11 @@ function New-Vision {
     # Check if template exists
     $templatePath = Join-Path $projectRoot ".goalkit" "templates" "vision-template.md"
     if (Test-Path $templatePath) {
-        $templateContent = Get-Content -Path $templatePath -Raw
+        try {
+            $templateContent = Get-Content -Path $templatePath -Raw -ErrorAction Stop
+        } catch {
+            Handle-Error "Failed to read vision template: $templatePath"
+        }
         
         # Replace placeholders if description provided
         if (-not [string]::IsNullOrEmpty($VisionDescription)) {
@@ -144,12 +153,20 @@ These are the major stepping stones to realize the vision:
     }
     
     # Write vision file
-    Set-Content -Path $visionFile -Value $visionContent -Encoding UTF8
+    try {
+        Set-Content -Path $visionFile -Value $visionContent -Encoding UTF8 -ErrorAction Stop
+    } catch {
+        Handle-Error "Failed to write vision file: $visionFile"
+    }
     Write-Success "Created vision.md: $visionFile"
     
     # Git operations
-    git add $visionFile 2>$null | Out-Null
-    git commit -m "Add project vision" 2>$null | Out-Null
+    try {
+        git add $visionFile 2>$null
+        git commit -m "Add project vision" 2>$null -ErrorAction SilentlyContinue
+    } catch {
+        Write-Warning "Failed to commit vision file to git (continuing anyway)"
+    }
     
     Write-Success "Vision committed to repository"
     
