@@ -5,9 +5,11 @@ Focus: Make Goal Kit bulletproof for production use.
 ## Critical Stability Issues
 
 ### 1. Error Handling & Recovery
+- [x] Bash script error handling (common.sh & create-*.sh) - added strict mode, error trapping, cleanup
+- [x] PowerShell script error handling (common.ps1 & create-*.ps1) - added error handling, try/catch blocks
+- [x] Validation functions (require_command, require_file, require_directory, validate_writable)
 - [ ] Network failures during template download (retry logic)
 - [ ] Corrupted ZIP files (validation)
-- [ ] Disk space checks before operations
 - [ ] Permission errors (clear messaging)
 - [ ] Git not found/misconfigured
 - [ ] Invalid project paths
@@ -48,13 +50,15 @@ Focus: Make Goal Kit bulletproof for production use.
 3. Verify git availability
 4. Test path accessibility
 
-### Phase 2: Error Messages (High)
-1. Replace generic errors with actionable ones
-2. Add troubleshooting links
-3. Show command for recovery
-4. Log detailed errors for debugging
+### Phase 2: Error Messages (High) 🔄 IN PROGRESS
+1. Add comprehensive error handling to all scripts ✅
+   - Bash: strict mode (set -o pipefail), error trapping, cleanup functions
+   - PowerShell: $ErrorActionPreference = 'Stop', try/catch blocks
+2. Replace generic errors with actionable ones ✅
+3. Add validation functions (require_file, require_directory, validate_writable) ✅
+4. Enhanced create-new-goal scripts with error handling ✅
 
-### Phase 3: Network Resilience (High)
+### Phase 3: Network Resilience (High) - NEXT
 1. Retry failed downloads (3 attempts)
 2. Validate downloaded files (checksums)
 3. Timeout handling

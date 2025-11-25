@@ -1,5 +1,9 @@
 # Common utilities for Goal Kit PowerShell scripts
 
+# Strict error handling
+$ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
+
 # Color codes for output
 $Colors = @{
     Red = 'Red'
@@ -9,6 +13,38 @@ $Colors = @{
     Cyan = 'Cyan'
     Magenta = 'Magenta'
     White = 'White'
+}
+
+# Global variables for error handling
+$script:ScriptError = $false
+$script:TempFiles = @()
+
+# Cleanup function
+function Cleanup-TempFiles {
+    foreach ($tempFile in $script:TempFiles) {
+        try {
+            if (Test-Path $tempFile) {
+                Remove-Item -Path $tempFile -Force -Recurse -ErrorAction SilentlyContinue
+            }
+        } catch {
+            # Silently ignore cleanup errors
+        }
+    }
+}
+
+# Register cleanup on exit
+$null = Register-EngineEvent -SourceIdentifier PowerShell.Exiting -Action { Cleanup-TempFiles }
+
+# Handle errors
+function Handle-Error {
+    param(
+        [string]$Message,
+        [int]$ExitCode = 1
+    )
+    
+    $script:ScriptError = $true
+    Write-Error-Custom $Message
+    exit $ExitCode
 }
 
 # Output functions with colors
@@ -82,6 +118,71 @@ function Test-CommandExists {
     } catch {
         return $false
     }
+}
+
+# Require command or exit
+function Require-Command {
+    param(
+        [string]$Command,
+        [string]$InstallHint = ""
+    )
+    
+    if (-not (Test-CommandExists $Command)) {
+        Write-Error-Custom "Required command not found: $Command"
+        if (-not [string]::IsNullOrEmpty($InstallHint)) {
+            Write-Info "Install it using: $InstallHint"
+        }
+        exit 1
+    }
+}
+
+# Require file exists
+function Require-File {
+    param([string]$FilePath)
+    
+    if (-not (Test-Path $FilePath)) {
+        Handle-Error "Required file not found: $FilePath"
+    }
+}
+
+# Require directory exists
+function Require-Directory {
+    param([string]$DirectoryPath)
+    
+    if (-not (Test-Path $DirectoryPath)) {
+        Handle-Error "Required directory not found: $DirectoryPath"
+    }
+}
+
+# Validate path is writable
+function Validate-Writable {
+    param([string]$Path)
+    
+    $parentDir = Split-Path -Parent $Path
+    
+    if (-not (Test-Path $parentDir)) {
+        Write-Error-Custom "Parent directory does not exist: $parentDir"
+        return $false
+    }
+    
+    try {
+        $testFile = [System.IO.Path]::GetTempFileName()
+        Move-Item -Path $testFile -Destination $parentDir -Force -ErrorAction SilentlyContinue
+        if (Test-Path (Join-Path $parentDir (Split-Path -Leaf $testFile))) {
+            Remove-Item (Join-Path $parentDir (Split-Path -Leaf $testFile)) -Force -ErrorAction SilentlyContinue
+        }
+    } catch {
+        Write-Error-Custom "Directory is not writable: $parentDir"
+        return $false
+    }
+    
+    return $true
+}
+
+# Register temporary file for cleanup
+function Register-TempFile {
+    param([string]$FilePath)
+    $script:TempFiles += $FilePath
 }
 
 # Check for required tools

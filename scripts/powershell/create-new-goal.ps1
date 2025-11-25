@@ -27,26 +27,25 @@ function New-Goal {
     
     # Check if we're in a git repository
     if (-not (Test-GitRepo)) {
-        Write-Error-Custom "Not in a git repository"
-        Write-Info "Please run this from the root of a Goal Kit project"
-        exit 1
+        Handle-Error "Not in a git repository. Please run this from the root of a Goal Kit project"
     }
     
     # Get project root
     $projectRoot = Get-GitRoot
     if ([string]::IsNullOrEmpty($projectRoot)) {
-        Write-Error-Custom "Could not determine git root. Not in a git repository."
-        exit 1
+        Handle-Error "Could not determine git root. Not in a git repository."
     }
     
-    Set-Location $projectRoot | Out-Null
+    try {
+        Set-Location $projectRoot -ErrorAction Stop
+    } catch {
+        Handle-Error "Failed to change to project root: $projectRoot"
+    }
     
     # Check if this is a Goal Kit project
     $visionFile = Join-Path -Path ".goalkit" -ChildPath "vision.md"
     if (-not (Test-Path $visionFile)) {
-        Write-Error-Custom "Not a Goal Kit project"
-        Write-Info "Please run 'goalkeeper init' first to set up the project"
-        exit 1
+        Handle-Error "Not a Goal Kit project. Please run 'goalkeeper init' first to set up the project"
     }
     
     # If JSON mode, output JSON and exit early
@@ -92,7 +91,11 @@ function New-Goal {
         if ($DryRun) {
             Write-Info "[DRY RUN] Would create goals directory: $goalsDir"
         } else {
-            New-Item -ItemType Directory -Path $goalsDir -Force | Out-Null
+            try {
+                New-Item -ItemType Directory -Path $goalsDir -Force -ErrorAction Stop | Out-Null
+            } catch {
+                Handle-Error "Failed to create goals directory: $goalsDir"
+            }
             Write-Success "Created goals directory: $goalsDir"
         }
     }
@@ -141,7 +144,11 @@ function New-Goal {
     }
     
     # Create goal directory
-    New-Item -ItemType Directory -Path $fullGoalDir -Force | Out-Null
+    try {
+        New-Item -ItemType Directory -Path $fullGoalDir -Force -ErrorAction Stop | Out-Null
+    } catch {
+        Handle-Error "Failed to create goal directory: $fullGoalDir"
+    }
     Write-Success "Created goal directory: $goalDir"
     
     # Get current timestamp
@@ -151,7 +158,11 @@ function New-Goal {
     $templatePath = Join-Path -Path $projectRoot -ChildPath (Join-Path -Path ".goalkit" -ChildPath (Join-Path -Path "templates" -ChildPath "goal-template.md"))
     if (Test-Path $templatePath) {
         # Read the template
-        $templateContent = Get-Content -Path $templatePath -Raw
+        try {
+            $templateContent = Get-Content -Path $templatePath -Raw -ErrorAction Stop
+        } catch {
+            Handle-Error "Failed to read goal template: $templatePath"
+        }
 
         # Replace placeholders in the template
         $goalContent = $templateContent -replace '\[GOAL DESCRIPTION\]', $GoalDescription
@@ -278,29 +289,48 @@ function New-Goal {
     }
 
     $goalFile = Join-Path -Path $fullGoalDir -ChildPath "goal.md"
-    Set-Content -Path $goalFile -Value $goalContent -Encoding UTF8
+    try {
+        Set-Content -Path $goalFile -Value $goalContent -Encoding UTF8 -ErrorAction Stop
+    } catch {
+        Handle-Error "Failed to create goal.md file"
+    }
     
     Write-Success "Created goal.md with description: $GoalDescription"
     
     # Create git branch for this goal
+    Write-Info "Setting up git branch for this goal..."
     
-        Write-Info "Setting up git branch for this goal..."
+    try {
+        Set-Location $projectRoot -ErrorAction Stop
+    } catch {
+        Handle-Error "Failed to change to project root: $projectRoot"
+    }
     
-    
-    Set-Location $projectRoot | Out-Null
-    $branchName = New-GoalBranch $goalDirName
+    try {
+        $branchName = New-GoalBranch $goalDirName
+    } catch {
+        Handle-Error "Failed to create git branch for goal"
+    }
     
     # Add and commit the new goal
-    git add $goalDir 2>$null | Out-Null
-    git commit -m "Add goal: $GoalDescription
+    try {
+        git add $goalDir 2>$null | Out-Null
+        git commit -m "Add goal: $GoalDescription
 
 - Created goal definition in $goalDir/goal.md
-- Branch: $branchName" 2>$null | Out-Null
+- Branch: $branchName" 2>$null -ErrorAction SilentlyContinue | Out-Null
+    } catch {
+        Write-Warning "Failed to commit goal to git (continuing anyway)"
+    }
     
     Write-Success "Goal committed to branch: $branchName"
     
     # Update agent context
-    Update-AgentContext | Out-Null
+    try {
+        Update-AgentContext | Out-Null
+    } catch {
+        Write-Warning "Failed to update agent context (continuing anyway)"
+    }
     
     # Print summary
     Write-Success "Goal created successfully!"

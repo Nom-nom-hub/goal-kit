@@ -47,26 +47,21 @@ create_goal() {
     
     # Check if we're in a git repository
     if ! test_git_repo; then
-        write_error "Not in a git repository"
-        write_info "Please run this from the root of a Goal Kit project"
-        exit 1
+        handle_error "Not in a git repository. Please run this from the root of a Goal Kit project"
     fi
     
     # Get project root
     local project_root
-    project_root=$(get_git_root)
+    project_root=$(get_git_root) || handle_error "Could not determine git root"
     if [ -z "$project_root" ]; then
-        write_error "Could not determine git root. Not in a git repository."
-        exit 1
+        handle_error "Could not determine git root. Not in a git repository."
     fi
     
-    cd "$project_root" || exit 1
+    cd "$project_root" || handle_error "Failed to change to project root: $project_root"
     
     # Check if this is a Goal Kit project
     if [ ! -f ".goalkit/vision.md" ]; then
-        write_error "Not a Goal Kit project"
-        write_info "Please run 'goalkeeper init' first to set up the project"
-        exit 1
+        handle_error "Not a Goal Kit project. Please run 'goalkeeper init' first to set up the project"
     fi
     
     # If JSON mode, output JSON and exit early
@@ -108,7 +103,7 @@ EOF
         if [ "$dry_run" = true ]; then
             write_info "[DRY RUN] Would create goals directory: $goals_dir"
         else
-            mkdir -p "$goals_dir"
+            mkdir -p "$goals_dir" || handle_error "Failed to create goals directory: $goals_dir"
             write_success "Created goals directory: $goals_dir"
         fi
     fi
@@ -157,7 +152,7 @@ EOF
     fi
     
     # Create goal directory
-    mkdir -p "$full_goal_dir"
+    mkdir -p "$full_goal_dir" || handle_error "Failed to create goal directory: $full_goal_dir"
     write_success "Created goal directory: $goal_dir"
     
     # Get current timestamp
@@ -166,13 +161,13 @@ EOF
     # Check if template exists, otherwise create default goal.md
     if [ -f "$project_root/.goalkit/templates/goal-template.md" ]; then
         # Create goal.md file using the template
-        cat "$project_root/.goalkit/templates/goal-template.md" > "$full_goal_dir/goal.md"
+        cat "$project_root/.goalkit/templates/goal-template.md" > "$full_goal_dir/goal.md" || handle_error "Failed to copy goal template"
 
         # Replace placeholders in the template
-        sed -i.bak "s/\[GOAL DESCRIPTION\]/$goal_description/g" "$full_goal_dir/goal.md"
-        sed -i.bak "s/\[###-goal-name\]/$goal_dir_name/g" "$full_goal_dir/goal.md"
-        sed -i.bak "s/\[DATE\]/$timestamp/g" "$full_goal_dir/goal.md"
-        rm -f "$full_goal_dir/goal.md.bak"
+        sed -i.bak "s/\[GOAL DESCRIPTION\]/$goal_description/g" "$full_goal_dir/goal.md" || handle_error "Failed to replace placeholders in goal.md"
+        sed -i.bak "s/\[###-goal-name\]/$goal_dir_name/g" "$full_goal_dir/goal.md" || handle_error "Failed to replace goal name in goal.md"
+        sed -i.bak "s/\[DATE\]/$timestamp/g" "$full_goal_dir/goal.md" || handle_error "Failed to replace date in goal.md"
+        rm -f "$full_goal_dir/goal.md.bak" 2>/dev/null || true
     else
         # Fallback to default content if template not found
         cat > "$full_goal_dir/goal.md" <<EOF
@@ -300,9 +295,9 @@ EOF
         write_info "Setting up git branch for this goal..."
     fi
     
-    cd "$project_root" || exit 1
+    cd "$project_root" || handle_error "Failed to change to project root: $project_root"
     local branch_name
-    branch_name=$(new_goal_branch "$goal_dir_name")
+    branch_name=$(new_goal_branch "$goal_dir_name") || handle_error "Failed to create git branch for goal"
     
     # Add and commit the new goal
     git add "$goal_dir" > /dev/null 2>&1

@@ -1,6 +1,9 @@
 #!/bin/bash
 # Common utilities for Goal Kit bash scripts
 
+# Strict error handling
+set -o pipefail
+
 # Color codes for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -9,6 +12,42 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
+
+# Global error flag
+SCRIPT_ERROR=0
+TEMP_FILES=()
+
+# Cleanup function
+cleanup() {
+    local exit_code=$?
+    
+    # Remove temporary files
+    for temp_file in "${TEMP_FILES[@]}"; do
+        if [ -f "$temp_file" ] || [ -d "$temp_file" ]; then
+            rm -rf "$temp_file" 2>/dev/null || true
+        fi
+    done
+    
+    if [ $exit_code -ne 0 ] && [ $SCRIPT_ERROR -eq 0 ]; then
+        write_error "Script failed with exit code $exit_code"
+    fi
+    
+    exit $exit_code
+}
+
+# Register cleanup
+trap cleanup EXIT
+
+# Error handling function
+handle_error() {
+    local message="$1"
+    local exit_code="${2:-1}"
+    local line_number="${3:-$LINENO}"
+    
+    SCRIPT_ERROR=1
+    write_error "$message (line $line_number)"
+    exit $exit_code
+}
 
 # Output functions with colors
 write_colored() {
@@ -59,6 +98,63 @@ get_git_root() {
 test_command_exists() {
     command -v "$1" > /dev/null 2>&1
     return $?
+}
+
+# Validate command exists or exit
+require_command() {
+    local command="$1"
+    local install_hint="${2:-}"
+    
+    if ! test_command_exists "$command"; then
+        write_error "Required command not found: $command"
+        if [ -n "$install_hint" ]; then
+            write_info "Install it using: $install_hint"
+        fi
+        exit 1
+    fi
+}
+
+# Validate file exists
+require_file() {
+    local file="$1"
+    
+    if [ ! -f "$file" ]; then
+        handle_error "Required file not found: $file"
+    fi
+}
+
+# Validate directory exists
+require_directory() {
+    local dir="$1"
+    
+    if [ ! -d "$dir" ]; then
+        handle_error "Required directory not found: $dir"
+    fi
+}
+
+# Validate writable path
+validate_writable() {
+    local path="$1"
+    local parent_dir=$(dirname "$path")
+    
+    # Create parent directory if it doesn't exist for validation
+    if [ ! -d "$parent_dir" ]; then
+        write_error "Parent directory does not exist: $parent_dir"
+        return 1
+    fi
+    
+    if [ ! -w "$parent_dir" ]; then
+        write_error "Directory is not writable: $parent_dir"
+        write_info "Check file permissions: ls -ld $parent_dir"
+        return 1
+    fi
+    
+    return 0
+}
+
+# Register temporary file for cleanup
+register_temp_file() {
+    TEMP_FILES+=("$1")
 }
 
 # Check for required tools
