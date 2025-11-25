@@ -222,7 +222,7 @@ This project uses Goal-Driven Development methodology. Focus on:
 "@
             
             # Add vision content if it exists
-            $visionPath = Join-Path $projectRoot ".goalkit" "vision.md"
+            $visionPath = Join-Path (Join-Path $projectRoot ".goalkit") "vision.md"
             if (Test-Path $visionPath) {
                 $visionLines = (Get-Content $visionPath | Where-Object { -not $_.StartsWith("#") }) | Select-Object -First 10
                 $contextContent += ($visionLines -join "`n")
