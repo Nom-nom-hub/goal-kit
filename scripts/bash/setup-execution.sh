@@ -32,33 +32,28 @@ create_execution_file() {
                 shift
                 ;;
             *)
-                write_error "Unknown option: $1"
-                exit 1
+                handle_error "Unknown option: $1"
                 ;;
         esac
     done
     
     # Check if we're in a git repository
     if ! test_git_repo; then
-        write_error "Not in a git repository"
-        write_info "Please run this from the root of a Goal Kit project"
-        exit 1
+        handle_error "Not in a git repository. Please run this from the root of a Goal Kit project"
     fi
     
     # Get project root
     local project_root
-    project_root=$(get_git_root)
+    project_root=$(get_git_root) || handle_error "Could not determine git root"
     if [ -z "$project_root" ]; then
-        write_error "Could not determine git root. Not in a git repository."
-        exit 1
+        handle_error "Could not determine git root. Not in a git repository."
     fi
     
-    cd "$project_root" || exit 1
+    cd "$project_root" || handle_error "Failed to change to project root: $project_root"
     
     if [ "$json_mode" = true ]; then
         if [ ! -d "$goal_directory" ]; then
-            write_error "Goal directory does not exist: $goal_directory"
-            exit 1
+            handle_error "Goal directory does not exist: $goal_directory"
         fi
         
         local goal_dir_name=$(basename "$goal_directory")
@@ -74,8 +69,7 @@ EOF
     
     # Verify goal directory exists
     if [ ! -d "$goal_directory" ]; then
-        write_error "Goal directory does not exist: $goal_directory"
-        exit 1
+        handle_error "Goal directory does not exist: $goal_directory"
     fi
     
     # Check if execution.md already exists
@@ -99,14 +93,14 @@ EOF
     # Check if template exists, otherwise create default execution.md
     if [ -f "$project_root/.goalkit/templates/execution-template.md" ]; then
         # Create execution.md file using the template
-        cat "$project_root/.goalkit/templates/execution-template.md" > "$execution_file"
+        cat "$project_root/.goalkit/templates/execution-template.md" > "$execution_file" || handle_error "Failed to copy execution template"
 
         # Replace placeholders in the template
         local goal_dir_name=$(basename "$goal_directory")
         local timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
-        sed -i.bak "s/\[GOAL NAME\]/$goal_dir_name/g" "$execution_file"
-        sed -i.bak "s/\[DATE\]/$timestamp/g" "$execution_file"
-        rm -f "$execution_file.bak"
+        sed -i.bak "s/\[GOAL NAME\]/$goal_dir_name/g" "$execution_file" || handle_error "Failed to replace placeholders in execution.md"
+        sed -i.bak "s/\[DATE\]/$timestamp/g" "$execution_file" || handle_error "Failed to replace date in execution.md"
+        rm -f "$execution_file.bak" 2>/dev/null || true
     else
         # Fallback to default content if template not found
         local goal_dir_name=$(basename "$goal_directory")
@@ -232,17 +226,14 @@ EOF
     
     # Setup goal environment for immediate development
     if ! set_goal_environment "$goal_directory"; then
-        write_error "Failed to setup goal environment for $goal_directory"
-        exit 1
+        handle_error "Failed to setup goal environment for $goal_directory"
     fi
 }
 
 # Main entry point
 main() {
     if [ $# -lt 1 ]; then
-        write_error "Goal directory is required"
-        echo "Usage: $0 <goal_directory> [--dry-run] [--force] [--json] [--verbose]"
-        exit 1
+        handle_error "Goal directory is required. Usage: $0 <goal_directory> [--dry-run] [--force] [--json] [--verbose]"
     fi
     
     create_execution_file "$@"
