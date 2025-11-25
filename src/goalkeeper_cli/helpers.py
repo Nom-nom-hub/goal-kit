@@ -409,3 +409,104 @@ def check_tool(
             tracker.error(tool, "not found")
 
     return found
+
+
+# ============================================================================
+# Validation Helpers
+# ============================================================================
+
+
+def validate_project_name(project_name: str) -> Tuple[bool, Optional[str]]:
+    """Validate a project name for safety and usability.
+    
+    Args:
+        project_name: The proposed project name
+        
+    Returns:
+        Tuple of (is_valid, error_message)
+    """
+    if not project_name or not project_name.strip():
+        return False, "Project name cannot be empty"
+    
+    # Check for invalid characters
+    invalid_chars = set('<>:"|?*\\/')
+    if any(char in project_name for char in invalid_chars):
+        return False, f"Project name contains invalid characters: {', '.join(invalid_chars)}"
+    
+    # Check for reserved names (Windows)
+    reserved_names = {'con', 'prn', 'aux', 'nul', 'com1', 'com2', 'lpt1', 'lpt2'}
+    if project_name.lower() in reserved_names:
+        return False, f"'{project_name}' is a reserved name on Windows"
+    
+    # Check length
+    if len(project_name) > 255:
+        return False, "Project name is too long (max 255 characters)"
+    
+    return True, None
+
+
+def check_disk_space(path: Path, min_mb: int = 100) -> Tuple[bool, Optional[str]]:
+    """Check if there's enough disk space at the given path.
+    
+    Args:
+        path: Path to check disk space for
+        min_mb: Minimum required space in MB
+        
+    Returns:
+        Tuple of (has_space, error_message)
+    """
+    try:
+        # Get the root of the path
+        root = Path(path).anchor if os.name == 'nt' else '/'
+        
+        # Get disk usage
+        if hasattr(os, 'statvfs'):  # Unix-like systems
+            stat = os.statvfs(root)
+            free_bytes = stat.f_bavail * stat.f_frsize
+        else:  # Windows
+            import shutil as sh
+            _, _, free_bytes = sh.disk_usage(root)
+        
+        free_mb = free_bytes / (1024 * 1024)
+        if free_mb < min_mb:
+            return False, f"Insufficient disk space: {free_mb:.1f}MB available, {min_mb}MB required"
+        
+        return True, None
+    except Exception as e:
+        # Don't fail on disk space check - just warn
+        return True, None
+
+
+def check_path_writable(path: Path) -> Tuple[bool, Optional[str]]:
+    """Check if a path is writable.
+    
+    Args:
+        path: Path to check
+        
+    Returns:
+        Tuple of (is_writable, error_message)
+    """
+    try:
+        # Check if parent exists and is writable
+        if path.exists():
+            test_file = path / ".goalkit_write_test"
+        else:
+            parent = path.parent
+            if not parent.exists():
+                try:
+                    parent.mkdir(parents=True, exist_ok=True)
+                except Exception as e:
+                    return False, f"Cannot create parent directory: {e}"
+            test_file = parent / ".goalkit_write_test"
+        
+        # Try to write a test file
+        try:
+            test_file.write_text("test")
+            test_file.unlink()
+            return True, None
+        except PermissionError:
+            return False, f"Permission denied: cannot write to {test_file.parent}"
+        except Exception as e:
+            return False, f"Cannot write to path: {e}"
+    except Exception as e:
+        return False, f"Cannot check path writeability: {e}"

@@ -59,6 +59,9 @@ from .helpers import (
     is_git_repo,
     init_git_repo,
     check_tool,
+    validate_project_name,
+    check_disk_space,
+    check_path_writable,
 )
 
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
@@ -1160,6 +1163,20 @@ def init(
         console.print("[red]Error:[/red] Must specify either a project name, use '.' for current directory, or use --here flag")
         raise typer.Exit(1)
 
+    # Validate project name before proceeding
+    if not here and project_name:
+        is_valid, error_msg = validate_project_name(project_name)
+        if not is_valid:
+            error_panel = Panel(
+                f"Invalid project name: {error_msg}",
+                title="[red]Invalid Project Name[/red]",
+                border_style="red",
+                padding=(1, 2)
+            )
+            console.print()
+            console.print(error_panel)
+            raise typer.Exit(1)
+
     if here:
         project_name = Path.cwd().name
         project_path = Path.cwd()
@@ -1190,6 +1207,24 @@ def init(
             raise typer.Exit(1)
 
     current_dir = Path.cwd()
+
+    # Check disk space
+    has_space, space_msg = check_disk_space(project_path, min_mb=100)
+    if not has_space:
+        console.print(f"[yellow]Warning:[/yellow] {space_msg}")
+
+    # Check path writeability
+    is_writable, write_msg = check_path_writable(project_path if here else project_path.parent)
+    if not is_writable:
+        error_panel = Panel(
+            write_msg,
+            title="[red]Permission Error[/red]",
+            border_style="red",
+            padding=(1, 2)
+        )
+        console.print()
+        console.print(error_panel)
+        raise typer.Exit(1)
 
     setup_lines = [
         "[cyan]Goalkeeper Project Setup[/cyan]",
