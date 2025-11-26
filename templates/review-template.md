@@ -1,32 +1,35 @@
-# Retrospective Review: [REVIEW SUBJECT]
+# Retrospective Review: [GOAL NAME]
 
-**Goal Branch**: `[###-goal-name]` | **Date**: [DATE] | **Input**: [goal outcomes and execution data]
+**Goal Alignment**: Links to `/goals/[###-goal-name]/goal.md` and success criteria  
+**Goal Branch**: `[###-goal-name]` | **Date**: [DATE] | **Review Type**: Milestone/Final
+
+**⚠️ Note on Learnings vs Review**:
+- **This Template (Review)**: What did we ACHIEVE? Planned vs actual comparison, performance assessment
+- **Learnings Template**: What did we LEARN? Team insights, assumption validation, process improvements
+- Both are needed; use both after each milestone
+
 **Note**: This template is filled in by the `/goalkit.review` command. See `.goalkit/templates/commands/review.md` for the execution workflow.
 
 ## Summary
 
-[Extract from goal outcomes: performance assessment, key learnings, and improvement recommendations]
+Extract from goal and execution: achievement level, what succeeded, what fell short, high-level assessment. Keep to 2-3 sentences.
+
+*Example: "Milestone 2 (Client Real-Time Sync) achieved 2 of 3 success criteria. Latency target exceeded (1.8s vs 2.0s). Adoption target missed (82% vs 85%) due to mobile gap. Overall delivery on-time with high quality (zero P1 bugs)."*
 
 ## Review Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the retrospective details
-  for the goal. The structure here is presented in advisory capacity to guide
-  the review process.
--->
+**Review Period**: [Milestone 1/2/3 or Final]
+**Goals Reviewed**: [Single goal or multi-goal review]
+**Review Type**: [Milestone review, Final retrospective, Interim check]
+**Team Size**: [Who executed - e.g., "2 engineers, 1 PM"]
+**Participants in Review**: [Who conducted review - e.g., "team + stakeholders"]
 
-**Review Period**: [e.g., January 2024, Q1 2024, specific goal lifecycle or NEEDS CLARIFICATION]
-**Goals Reviewed**: [e.g., specific goal or goals during period or N/A]
-**Success Metrics**: [e.g., user satisfaction, engagement, conversion or NEEDS CLARIFICATION]
-**Baseline Performance**: [e.g., previous performance data or NEEDS CLARIFICATION]
-**Review Structure**: [periodic/ad-hoc - determines review approach]
-**Success Thresholds**: [domain-specific, e.g., 80% achievement, 50% improvement, baseline maintenance or NEEDS CLARIFICATION]
+## Learnings Check
 
-## Vision Check
+*GATE: Confirms learnings-template.md was completed separately for future improvement.*
 
-*GATE: Must pass before Review 0 analysis. Re-check after Review 1 completion.*
-
-[Gates determined based on vision alignment]
+Review focuses on past achievement; learnings focus on future improvement.
+Link to learnings template: `/goals/[###-goal-name]/learnings.md`
 
 ## Review Structure
 
@@ -43,48 +46,116 @@
 │       └── action-items.md  # Review 2 output - detailed improvement steps
 ```
 
-### Review Components
-<!--
-  ACTION REQUIRED: Replace the placeholder components below with the concrete retrospective
-  elements for this review. Delete unused components and expand the chosen approach with
-  real review elements. The delivered review must not include Component labels.
--->
+### Goal Achievement Assessment
 
-```markdown
-# [REMOVE IF UNUSED] Option 1: Standard Retrospective (DEFAULT)
-- What Went Well: [Successful approaches and positive outcomes]
-- What Did Not Go Well: [Challenges and areas for improvement]
-- Goal Achievement Analysis: [Planned vs. actual results]
-- Key Learnings: [Insights for future improvement]
+**Success Criteria Comparison**:
 
-# [REMOVE IF UNUSED] Option 2: Process-Focused (when "methodology-improvement" + "efficiency-focused" detected)
-- Strategy Effectiveness: [Assessment of strategy selection and execution]
-- Execution Insights: [Assessment of implementation approach]
-- Measurement & Validation: [Assessment of metrics and validation methods]
-- Process Improvements: [Specific recommendations for methodology]
+| Criterion | Planned | Actual | Status | Notes |
+|-----------|---------|--------|--------|-------|
+| SC-001: <2s latency (p95) | <2000ms | 1800ms | ✅ Exceeded | +200ms better than target |
+| SC-002: 85% adoption | 85% | 82% | ⚠️ Missed | Desktop 90%, mobile 12% (platform gap) |
+| SC-003: Review time reduction | 20m → 12m | 20m → 14m | ⚠️ Partial | 30% improvement vs 40% target |
 
-# [REMOVE IF UNUSED] Option 3: Outcome-Focused (when "impact-driven" detected)
-- Success Metrics Assessment: [Quantitative outcome evaluation]
-- Value Delivered: [Assessment of business/user value created]
-- ROI Analysis: [Return on investment evaluation]
-- Future Recommendations: [Strategic next steps]
-```
+**Overall Assessment**: 
+- 1 of 3 criteria exceeded
+- 2 of 3 criteria partially achieved
+- Quality high (zero P1 bugs)
+- Delivery on-time
 
-**Review Considerations**:
+---
 
-- **Learning Focus**: Extract insights for future improvement, not to assign blame
-- **Evidence-Based**: Ground findings in observed data, not assumptions
-- **Actionable Recommendations**: Every major finding should have a corresponding suggestion for improvement
-- **Forward-Looking**: Focus on how to improve future goal achievement
-- **Comprehensive Coverage**: Address goal definition, strategy, execution, and outcomes
+### Deliverable Quality Assessment
 
-**Review Decision**: [Document the selected review approach and reference the real approach captured above]
+**Code Quality**:
+- All code passed peer review
+- Test coverage: 92% (excellent)
+- Zero critical bugs, 2 minor bugs found and fixed during beta
 
-## Complexity Tracking
+**Architecture Quality**:
+- WebSocket infrastructure performs stably
+- API contracts clear and well-documented
+- Fallback to polling works reliably
 
-> **Fill ONLY if Vision Check has violations that must be justified**
+**User Experience Quality**:
+- Desktop experience intuitive and fast
+- Mobile experience limited (network/battery concerns)
+- Accessibility: WCAG 2.1 AA compliant
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., Complex review structure] | [current need] | [why simple approach insufficient] |
-| [e.g., Multi-dimensional analysis] | [specific problem] | [why single-metric approach insufficient] |
+---
+
+### Process Assessment
+
+**Strategy Effectiveness**:
+- Selected WebSocket strategy was correct for desktop
+- Didn't account for mobile platform needs (lesson for next goal)
+- Trade-off analysis was thorough in hindsight
+
+**Execution Approach**:
+- Phased breakdown worked well
+- Task dependencies clear and managed effectively
+- Team collaboration smooth (no blocking issues)
+
+**Measurement & Validation**:
+- Success criteria were measurable and realistic
+- Built-in power user validation effective
+- SC-003 (review time) should have included mobile separately
+
+**Timeline Performance**:
+- Estimated 6 weeks, delivered in 6 weeks
+- No schedule slip
+- Phase 1 completed early (saved 1 day), reinvested in Phase 2 polish
+
+---
+
+### What We Delivered vs What We Planned
+
+| Aspect | Planned | Delivered | Assessment |
+|--------|---------|-----------|------------|
+| Core functionality | Live comments in editor | ✅ Live comments desktop + polling mobile | Good |
+| Performance | <2s latency | ✅ 1.8s latency desktop; 3.2s p99 mobile | Exceeded for primary platform |
+| Adoption target | 85% | ✅ 90% desktop, 12% mobile | Met for desktop; gap for mobile |
+| Team velocity | 6 weeks | ✅ 6 weeks | On schedule |
+| Bug rate | <5 P1 bugs | ✅ 0 P1 bugs | Better than planned |
+
+**Key Gap**: Desktop/mobile performance difference not anticipated in strategy phase
+
+---
+
+### Recommendations for Next Phase
+
+**For the product**:
+1. Create separate P1 goal for mobile experience (estimated 4-6 weeks)
+2. Implement polling-only mode as interim improvement
+
+**For the process** (detailed in learnings-template.md):
+1. Add "multi-platform" as explicit dimension to vision/goal templates
+2. Require separate acceptance scenarios for major platforms
+3. Validate platform assumptions earlier in strategy phase
+
+---
+
+### Connection to Learnings
+
+**This review answers**: Did we achieve what we planned?
+
+**For deeper analysis**, see learnings-template.md which answers:
+- What did we learn about the problem domain?
+- What assumptions were validated/invalidated?
+- What should we change in future goals?
+- What process improvements are needed?
+
+## Summary Judgment
+
+**Achievement Level**: **2.5/3** (83%)
+- Exceeded on latency (SC-001)
+- Met on desktop adoption, missed on overall adoption (SC-002)
+- Partial on review time reduction (SC-003)
+
+**Quality Level**: **High**
+- Zero P1 bugs
+- 92% test coverage
+- On-time delivery
+- Team rated execution as smooth
+
+**Recommendation**: 
+✅ **Ship to production** with mobile adoption caveat documented. Plan follow-up mobile goal as high priority based on insights from learnings-template.md.

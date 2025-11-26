@@ -54,9 +54,15 @@ Given that project description, do this:
     7. Identify Guiding Principles (if relevant)
     8. Return: SUCCESS (vision ready for goal creation)
 
-4. Write the vision to VISION_FILE using the template structure, replacing placeholders with concrete details derived from the project description (arguments) while preserving section order and headings.
+4. **Validate Vision Check gate**:
+   - Ensure core mission is clear and inspiring (not a feature list)
+   - Verify all success criteria are measurable with specific targets
+   - Confirm guiding principles are actionable (not vague values)
+   - ERROR if vision lacks clarity or success criteria are unmeasurable
 
-5. Report completion with vision file path and readiness for the next phase (`/goalkit.goal`).
+5. Write the vision to VISION_FILE using the template structure, replacing placeholders with concrete details derived from the project description (arguments) while preserving section order and headings.
+
+6. Report completion with vision file path and readiness for the next phase (`/goalkit.goal`).
 
 **NOTE:** The script creates the vision file before writing.
 

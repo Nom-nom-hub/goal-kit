@@ -1,36 +1,31 @@
 # Strategy Plan: [GOAL]
 
-**Goal Branch**: `[###-goal-name]` | **Date**: [DATE] | **Goal**: [link]
-**Input**: Goal definition from `/goals/[###-goal-name]/goal.md`
+**Goal Alignment**: Links to `/goals/[###-goal-name]/goal.md`  
+**Goal Branch**: `[###-goal-name]` | **Date**: [DATE]
 
 **Note**: This template is filled in by the `/goalkit.strategies` command. See `.goalkit/templates/commands/strategies.md` for the execution workflow.
 
 ## Summary
 
-[Extract from goal definition: primary outcome + strategic approach from research]
+Extract from goal definition: primary outcome + strategic approach. Keep to 2-3 sentences.
+
+*Example: "Enable live code review comments in the editor by implementing WebSocket-based comment sync. Risk is network reliability; benefit is 40% faster reviews."*
 
 ## Strategic Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the strategic details
-  for the goal. The structure here is presented in advisory capacity to guide
-  the strategy exploration process.
--->
-
-**Goal Priority**: [e.g., P1-Critical, P2-High, P3-Medium or NEEDS CLARIFICATION]
-**Strategic Alignment**: [e.g., User Experience, Business Growth, Technical Debt or NEEDS CLARIFICATION]
-**Resource Budget**: [if applicable, e.g., 2 person-months, $50K, 100 hours or N/A]
-**Success Metrics**: [e.g., user satisfaction, engagement, conversion or NEEDS CLARIFICATION]
-**Target Timeline**: [e.g., Q1 2024, 3 months, 6 sprints or NEEDS CLARIFICATION]
-**Team Structure**: [single/multi-team - determines collaboration approach]
-**Risk Tolerance**: [domain-specific, e.g., low-risk conservative, medium-risk balanced, high-risk experimental or NEEDS CLARIFICATION]
-**Success Thresholds**: [domain-specific, e.g., 80% achievement, 50% improvement, baseline maintenance or NEEDS CLARIFICATION]
+**Goal Priority**: [e.g., P1-Critical, P2-High, P3-Medium]
+**Strategic Alignment**: [e.g., User Experience, Business Growth, Technical Infrastructure]
+**Resource Budget**: [e.g., 2 person-months, 200 hours or N/A]
+**Target Timeline**: [e.g., 6 weeks, Q1 2024]
+**Team Structure**: [single/multi-person]
+**Risk Tolerance**: [low/medium/high - with specific risks]
 
 ## Vision Check
 
-*GATE: Must pass before Strategy 0 research. Re-check after Strategy 1 planning.*
+*GATE: Must pass before exploring strategies. Validates alignment with project vision.*
 
-[Gates determined based on vision document]
+Link to vision success scenario and confirm this strategy supports it.
+*Example: "Supports Vision Scenario 1 (Code Review Efficiency) by reducing context switching."*
 
 ## Strategy Structure
 
@@ -49,40 +44,50 @@
 ```
 
 ### Strategy Options
-<!--
-  ACTION REQUIRED: Replace the placeholder options below with the concrete strategic
-  approaches for this goal. Delete unused options and expand the chosen approach with
-  real strategic elements. The delivered plan must not include Option labels.
--->
 
-```markdown
-# [REMOVE IF UNUSED] Option 1: Direct Implementation (DEFAULT)
-- Approach: [Implement goal directly with primary strategy]
-- Resources: [team size and skill requirements]
-- Timeline: [estimated implementation period]
-- Risk: [estimated risk level]
+**Option 1: WebSocket-Based Live Comments (SELECTED)**
+- **Approach**: Real-time comment sync via persistent WebSocket connection
+- **Resources**: 2 engineers, 6 weeks (backend + frontend)
+- **Timeline**: 4 weeks dev + 2 weeks testing/refinement
+- **Risk**: Medium - Network reliability, fallback to polling required
+- **Cost**: ~$500/month server infrastructure (WebSocket servers)
+- **Benefit**: <2s latency, best UX, highest adoption potential
 
-# [REMOVE IF UNUSED] Option 2: Iterative Approach (when "learn-first" + "risk mitigation" detected)
-- Approach: [Experiment with multiple strategies before committing]
-- Resources: [research and experimentation time required]
-- Timeline: [research + implementation period]
-- Risk: [reduced risk through learning]
+**Option 2: Polling-Based Comments**
+- **Approach**: Client polls server every 2-3 seconds for new comments
+- **Resources**: 1 engineer, 3 weeks
+- **Timeline**: 2 weeks dev + 1 week testing
+- **Risk**: Low - Simple, battle-tested
+- **Cost**: Minimal infrastructure
+- **Downside**: 2-3s latency, higher server load, worse UX
 
-# [REMOVE IF UNUSED] Option 3: Phased Implementation (when "complex goal" detected)
-- Phase 1: [Initial milestone with core functionality]
-- Phase 2: [Secondary milestone with advanced features]
-- Phase 3: [Final milestone with optimization]
-```
+**Option 3: Hybrid (Polling + WebSocket)**
+- **Approach**: WebSocket for active reviews, polling for background updates
+- **Resources**: 2 engineers, 8 weeks
+- **Timeline**: 5 weeks dev + 3 weeks testing
+- **Risk**: Low-Medium - More complex implementation
+- **Benefit**: Balances UX with reliability
+- **Cost**: $200-300/month server infrastructure
 
-**Strategy Considerations**:
+### Decision Rationale
 
-- **Approach Evaluation**: Assess each strategy option against success criteria and resource constraints
-- **Risk Mitigation**: Plan for potential obstacles and fallback approaches
-- **Learning Opportunities**: Identify which strategy will provide the most valuable insights
-- **Adaptation Framework**: Establish clear checkpoints for strategy adjustment
-- **Stakeholder Alignment**: Ensure chosen strategy aligns with key stakeholder expectations
+**Selected**: Option 1 (WebSocket-Based)
 
-**Strategy Decision**: [Document the selected strategy and reference the real approach captured above]
+**Why this approach**:
+- Goal requires <2s latency; polling can't meet this
+- Research shows reviewers (P1 beneficiary) need instant feedback for flow state
+- Our infrastructure team has WebSocket expertise
+- Customer interviews confirmed <2s is adoption threshold
+
+**Why alternatives rejected**:
+- Polling doesn't meet SC-001 success criteria (2s latency requirement)
+- Hybrid approach adds complexity without proportional benefit for initial launch
+- Vision Scenario 1 explicitly requires "immediate feedback" experience
+
+**Key assumptions**:
+- WebSocket infrastructure is operationally mature in our company
+- Fallback to HTTP polling will be sufficient during outages
+- 2 engineers available for full duration
 
 ## Complexity Tracking
 

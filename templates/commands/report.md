@@ -40,22 +40,28 @@ Given that report specification, do this:
 
 4. Load `templates/report-template.md` to understand required sections.
 
-5. **Generate report content using the template structure**:
+5. **Validate Metrics Check gate**:
+   - Ensure all planned metrics are measured and documented
+   - Verify actual vs. planned comparisons are quantified
+   - Confirm trends are identified from historical data
+   - ERROR if critical metrics are missing or unquantified
 
-    a. Calculate overall goal achievement rates
-    b. Identify trends in success metrics
-    c. Highlight significant outcomes and impacts
-    d. Summarize key learnings from all goals in the period
-    e. Provide insights and recommendations based on patterns
+6. **Generate report content using the template structure**:
 
-6. Write the report to REPORT_FILE using the template structure, replacing placeholders with concrete details derived from the gathered data while preserving section order and headings.
+     a. Calculate overall goal achievement rates
+     b. Identify trends in success metrics
+     c. Highlight significant outcomes and impacts
+     d. Summarize key learnings from all goals in the period
+     e. Provide insights and recommendations based on patterns
 
-7. **Identify key insights** from the pattern of goals and outcomes:
-   - Are there common success factors across goals?
-   - Are there recurring challenges or roadblocks?
-   - Are certain types of goals more likely to succeed?
+7. Write the report to REPORT_FILE using the template structure, replacing placeholders with concrete details derived from the gathered data while preserving section order and headings.
 
-8. Report the findings and suggest next steps based on the insights.
+8. **Identify key insights** from the pattern of goals and outcomes:
+    - Are there common success factors across goals?
+    - Are there recurring challenges or roadblocks?
+    - Are certain types of goals more likely to succeed?
+
+9. Report the findings and suggest next steps based on the insights.
 
 ## Report Focus Areas
 

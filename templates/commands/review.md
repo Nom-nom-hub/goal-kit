@@ -37,9 +37,17 @@ Given that review context, do this:
    - Bash example: `{SCRIPT} --json --scope "recent" "Review of recent goal"`
    - PowerShell example: `{SCRIPT} -Json -Scope "recent" "Review of recent goal"`
 
-4. Load `templates/review-template.md` to understand required sections.
+4. Load `templates/review-template.md` to understand required sections. Differentiate this from `templates/learnings-template.md`:
+   - **Review**: Past achievement assessment (what was accomplished vs. planned)
+   - **Learnings**: Future improvement extraction (what changes for next time)
 
-5. **Conduct review analysis using the template structure**:
+5. **Validate Learnings Check gate**:
+   - Ensure learnings-template.md exists and is completed
+   - Verify key insights are documented with specific examples
+   - Confirm assumptions are tested against actual outcomes
+   - ERROR if learnings are vague or assumptions unvalidated
+
+6. **Conduct review analysis using the template structure**:
 
     a. Review what was planned vs. what was achieved
     b. Identify what went well and what didn't go well
@@ -47,13 +55,13 @@ Given that review context, do this:
     d. Extract key learnings and insights
     e. Document recommendations for future goals
 
-6. Write the review to REVIEW_FILE using the template structure, replacing placeholders with concrete details derived from the gathered information while preserving section order and headings.
+7. Write the review to REVIEW_FILE using the template structure, replacing placeholders with concrete details derived from the gathered information while preserving section order and headings.
 
-7. **Create action items** from the review findings:
-   - Identify 1-3 specific improvement goals that emerge from the review
-   - Note these in the "Next Steps" section
+8. **Create action items** from the review findings:
+    - Identify 1-3 specific improvement goals that emerge from the review
+    - Note these in the "Next Steps" section
 
-8. Report the review summary and suggest next steps, including creating improvement goals with `/goalkit.goal`.
+9. Report the review summary and suggest next steps, including creating improvement goals with `/goalkit.goal`.
 
 ## Review Focus Areas
 

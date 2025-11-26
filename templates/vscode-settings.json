@@ -1,4 +1,5 @@
 {
+    "_comment": "Goal Kit VSCode Settings - Updated 2025-11-26 for improved methodology",
     "goalkit.projectType": "goal-driven",
     "goalkit.visionFile": ".goalkit/vision.md",
     "goalkit.goalsDirectory": "goals",
@@ -8,14 +9,23 @@
         "/goalkit.goal",
         "/goalkit.strategies",
         "/goalkit.milestones",
-        "/goalkit.execute"
+        "/goalkit.execute",
+        "/goalkit.tasks",
+        "/goalkit.report",
+        "/goalkit.review",
+        "/goalkit.taskstoissues"
     ],
     "files.associations": {
         "*.md": "markdown",
+        "vision.md": "markdown",
         "goal.md": "markdown",
         "strategies.md": "markdown",
         "milestones.md": "markdown",
-        "execution.md": "markdown"
+        "execution.md": "markdown",
+        "tasks.md": "markdown",
+        "report.md": "markdown",
+        "review.md": "markdown",
+        "learnings.md": "markdown"
     },
     "markdown.preview.breaks": true,
     "markdown.preview.typographer": true,
@@ -46,9 +56,13 @@
     "explorer.fileNesting.expand": false,
     "explorer.fileNesting.patterns": {
         "*.md": "${capture}.md",
-        "goal.md": "goal.md,strategies.md,milestones.md,execution.md,actions.md",
-        "strategies.md": "goal.md,strategies.md,milestones.md,execution.md",
-        "milestones.md": "goal.md,strategies.md,milestones.md,execution.md",
-        "execution.md": "goal.md,strategies.md,milestones.md,execution.md"
+        "vision.md": "vision.md,goal.md,strategies.md,milestones.md,execution.md,tasks.md,report.md,review.md,learnings.md",
+        "goal.md": "goal.md,strategies.md,milestones.md,execution.md,tasks.md,report.md,review.md,learnings.md",
+        "strategies.md": "goal.md,strategies.md,milestones.md,execution.md,tasks.md,learnings.md",
+        "milestones.md": "goal.md,strategies.md,milestones.md,execution.md,tasks.md,learnings.md",
+        "execution.md": "goal.md,strategies.md,milestones.md,execution.md,tasks.md,report.md,learnings.md",
+        "tasks.md": "tasks.md,execution.md",
+        "report.md": "report.md,goal.md,learnings.md",
+        "review.md": "review.md,learnings.md,goal.md"
     }
 }

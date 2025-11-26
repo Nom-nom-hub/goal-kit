@@ -5,6 +5,192 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2025-11-26
+
+### 🎯 Command & Agent Integration Refinements Release
+
+This release enhances the Goal Kit methodology with improved command structure, agent integration guidance, and VSCode development environment setup. All improvements focus on making Goal Kit more accessible to both AI agents and human developers.
+
+#### ✨ Phase 1: Command Structure Improvement (✅ COMPLETED)
+
+##### **Updated All 9 Command Files** (`templates/commands/`)
+
+- **Consistent Gate Validation**: Added upstream alignment checks and artifact gates to all commands
+  - Vision Check → Vision file validates clarity, measurability
+  - Goal Check → Goal file validates completeness, no implementation details
+  - Strategy Check → Strategies file validates rigor, decision rationale
+  - Milestones Check → Milestones file validates measurable KPIs, dependencies
+  - Execution Check → Tasks file validates completeness, clarity
+  - Metrics Check → Report file validates quantified results, trends
+  - Learnings Check → Review file validates actionable insights
+- **Traceability Headers**: Each command now validates upstream alignment (vision→goal→strategy→milestones→execution→learnings)
+- **Corrected Gate Names**: Fixed references to correct gates
+  - execute.md: Changed "Vision Check" → "Milestones Check"
+  - tasks.md: Changed "Vision Check" → "Execution Check"
+  - strategies.md: Changed "Vision Check" → "Strategy Check"
+  - milestones.md: Changed "Vision Check" → "Milestones Check"
+  - report.md: Added "Metrics Check" validation
+  - review.md: Added "Learnings Check" validation with template differentiation
+- **Enhanced taskstoissues.md**: Expanded from 31 to 49 lines with full validation structure
+  - Added validation for task alignment to execution phases
+  - Added GitHub repository safety validation
+  - Enhanced metadata completeness checks
+
+**Files Updated**:
+- templates/commands/vision.md
+- templates/commands/goal.md
+- templates/commands/strategies.md
+- templates/commands/milestones.md
+- templates/commands/execute.md
+- templates/commands/tasks.md
+- templates/commands/report.md
+- templates/commands/review.md
+- templates/commands/taskstoissues.md
+
+#### ✨ Phase 2: Agent Integration Guidance (✅ COMPLETED)
+
+##### **Agent File Template** (`templates/agent-file-template.md`)
+
+- **Comprehensive Agent Integration Guide** (~450 lines)
+  - Complete overview of Goal Kit methodology for AI agents
+  - Detailed explanation of all 9 slash commands with guides
+  - Core methodology principles (outcome-first, multiple strategies, traceability)
+  - Gate validation checklist for every command
+  - Common tasks and how to handle them with examples
+  - Troubleshooting guide for common issues
+  - Best practices and dos/don'ts for agent execution
+  - Tips for success with agents working on Goal Kit
+
+- **Customizable for All AI Agents**
+  - Claude, Cursor, Copilot, Gemini, Qwen, and others
+  - Instructions to copy template and customize agent name
+  - Ready to share with agents when requesting Goal Kit work
+
+- **Key Sections**
+  - What is Goal Kit and your role as an agent
+  - Quick reference for all 9 commands
+  - Traceability chain showing document connections
+  - Template format standards and quality rules
+  - Concrete vs vague examples
+  - Interaction examples with real workflows
+
+#### ✨ Phase 3: VSCode Development Environment Setup (✅ COMPLETED)
+
+##### **VSCode Settings Template** (`templates/.vscode-settings-template.json`)
+
+- **Optimized Editor Settings**
+  - Auto-formatting for Python (Black), Markdown, JSON
+  - 100-character ruler and word wrap for Goal Kit consistency
+  - Markdown preview with breaks and GitHub-style rendering
+  - Git integration with auto-fetch and GitLens support
+  - Optimized search and file exclusions
+
+- **Python Configuration**
+  - Black formatter with 100-char line length (matches Goal Kit standard)
+  - Ruff linting for fast code quality checks
+  - Type hints support with Pylance
+  - pytest test runner configuration
+
+- **Goal Kit Paths Section**
+  - Documented paths for vision, goals, templates, scripts, docs, memory
+  - Ready for customization per project
+
+- **Recommended Extensions List** (13+ tools)
+  - GitLens for goal milestone tracking
+  - Python tools for script development
+  - Markdown tools for template editing
+  - Shell support for bash/PowerShell
+
+##### **VSCode Extensions Recommendation** (`templates/.vscode-extensions-template.json`)
+
+- **15 Recommended Extensions**
+  - Code quality: GitLens, Ruff, Pylance
+  - Markdown: All in One, Preview GitHub Styles
+  - Scripting: Bash IDE, Shell Format, PowerShell
+  - Utilities: Code Runner, Make Tools, Copilot (optional)
+
+##### **VSCode Settings Update** (`templates/vscode-settings.json`)
+
+- **Fixed Command Names**
+  - `/goalkit.task` → `/goalkit.tasks` (correct plural)
+  - `/goalkit.tasktoissue` → `/goalkit.taskstoissues` (correct command)
+- **Added Missing Associations**
+  - vision.md, tasks.md, report.md, review.md, learnings.md
+- **Enhanced File Nesting**
+  - vision.md shows full traceability chain (all 9 documents grouped)
+  - goal.md shows related documents
+  - strategies.md, milestones.md show dependencies
+  - execution.md shows production flow
+  - tasks.md, report.md, review.md show specific relationships
+  - Helps developers navigate goal structures in VSCode Explorer
+
+#### ✨ Phase 4: Integration Guide (✅ COMPLETED)
+
+##### **Complete Setup Guide** (`AGENT_AND_VSCODE_SETUP.md`)
+
+- **Part 1: Agent Setup**
+  - How to create agent context files (CLAUDE.md, CURSOR.md, etc.)
+  - When and how to share agent files with AI assistants
+  - What agents do with the guidance
+
+- **Part 2: VSCode Setup**
+  - Create .vscode/ directory structure
+  - Copy settings and extensions templates
+  - Understand each setting and extension
+  - Recommended extensions table with purposes
+
+- **Part 3: Team Setup**
+  - Shared settings (commit to Git)
+  - Personal overrides for preferences
+  - Onboarding new team members
+  - Automatic extension installation
+
+- **Part 4: Workflow Integration**
+  - How components work together
+  - Example end-to-end workflow
+  - From agent request through developer review to Git commit
+
+- **Part 5: File Structure Reference**
+  - Complete directory layout
+  - Which files to create from templates
+  - Which files to customize
+
+- **Part 6: Quick Setup Checklist**
+  - For new Goal Kit projects (5 steps)
+  - For joining existing projects (4 steps)
+
+#### 🎯 Key Improvements Summary
+
+| Component | What Changed | Benefit |
+|-----------|-------------|---------|
+| **Commands** | Added upstream alignment + gates | Validation is consistent across all 9 commands |
+| **Agents** | New comprehensive guide | Agents understand methodology before starting |
+| **VSCode** | Settings + extensions + guide | Developers have optimized environment instantly |
+| **Consistency** | All templates follow same patterns | Easier to learn and use Goal Kit |
+
+#### 📋 Quality Assurance
+
+- [x] All 9 command files updated with consistent gates
+- [x] Agent file template created and ready to customize
+- [x] VSCode settings template created with all recommendations
+- [x] Integration guide covers setup for teams and individuals
+- [x] File nesting shows traceability in VSCode Explorer
+- [x] All command names correct (/goalkit.tasks, /goalkit.taskstoissues)
+- [x] Documentation complete with examples
+
+#### 🔄 Breaking Changes
+
+**None** - This release is fully backward compatible.
+
+#### 🚀 Next Steps for Users
+
+1. **AI Agent Users**: Use `templates/agent-file-template.md` to create CLAUDE.md (or other agents)
+2. **VSCode Users**: Copy `templates/.vscode-settings-template.json` to `.vscode/settings.json`
+3. **Teams**: Follow `AGENT_AND_VSCODE_SETUP.md` for complete setup
+4. **Developers**: All 9 commands now have consistent gate validation and clear next steps
+
+---
+
 ## [1.0.0] - 2025-11-25
 
 ### 🎉 Production Release - Goal Kit v1.0.0

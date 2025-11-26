@@ -1,32 +1,30 @@
-# Progress Report: [REPORT PERIOD/TITLE]
+# Progress Report: [GOAL NAME]
 
-**Goal Branch**: `[###-goal-name]` | **Date**: [DATE] | **Input**: [goal outcomes and metrics]
+**Goal Alignment**: Links to `/goals/[###-goal-name]/goal.md` success criteria  
+**Goal Branch**: `[###-goal-name]` | **Date**: [DATE] | **Report Period**: [e.g., Milestone 2, Week 3, Final]
+
 **Note**: This template is filled in by the `/goalkit.report` command. See `.goalkit/templates/commands/report.md` for the execution workflow.
 
 ## Summary
 
-[Extract from goals and outcomes: key achievements, metrics summary, and insights from review]
+Extract from goal and execution: what was planned, what was delivered, how metrics compare. Keep to 2-3 sentences.
+
+*Example: "Milestone 2 (Client Real-Time Sync) completed on Day 20. Achieved SC-001 (1.8s latency p95) and SC-002 (82% reviewer adoption in testing). Currently tracking toward SC-003 (review time reduction) with early indicators positive."*
 
 ## Reporting Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the reporting details
-  for the goal. The structure here is presented in advisory capacity to guide
-  the report generation process.
--->
+**Reporting Period**: [e.g., Milestone 2, Week 3, Mid-project, Final]
+**Goals Being Reported**: [Single goal or multi-goal period]
+**Report Type**: [Progress check, Milestone review, Final assessment]
+**Team Size**: [Who executed this - e.g., "2 engineers, 1 product manager"]
+**Key Stakeholders**: [Who needs this report - e.g., "product lead, customer success"]
 
-**Reporting Period**: [e.g., January 2024, Q1 2024, Project Alpha or NEEDS CLARIFICATION]
-**Goals Analyzed**: [e.g., 5 goals completed, 2 in progress, 1 abandoned or N/A]
-**Success Metrics**: [e.g., user satisfaction, engagement, conversion or NEEDS CLARIFICATION]
-**Performance Baseline**: [e.g., previous period comparison data or NEEDS CLARIFICATION]
-**Reporting Structure**: [periodic/ad-hoc - determines reporting approach]
-**Thresholds**: [domain-specific, e.g., 80% achievement, 50% improvement, baseline maintenance or NEEDS CLARIFICATION]
+## Metrics Check
 
-## Vision Check
+*GATE: Confirms this report validates goal success criteria (SC-001, SC-002, SC-003, etc.)*
 
-*GATE: Must pass before Report 0 analysis. Re-check after Report 1 completion.*
-
-[Gates determined based on vision alignment]
+Report must show achievement against goal metrics, not arbitrary metrics.
+*Example: "Report shows achievement of SC-001 (<2s latency) and SC-002 (85% adoption); SC-003 (review time reduction) pending final measurement."*
 
 ## Report Structure
 
@@ -43,48 +41,89 @@
 │       └── action-items.md  # Report 2 output - detailed next steps
 ```
 
-### Report Components
-<!--
-  ACTION REQUIRED: Replace the placeholder components below with the concrete reporting
-  elements for this period. Delete unused components and expand the chosen approach with
-  real reporting elements. The delivered report must not include Component labels.
--->
+### Success Criteria Achievement
 
-```markdown
-# [REMOVE IF UNUSED] Option 1: Periodic Status Report (DEFAULT)
-- Goal Status Overview: [Status of all goals for the period]
-- Success Metrics Summary: [Quantitative performance analysis]
-- Key Outcomes & Impact: [Qualitative impact assessment]
-- Trends & Insights: [Pattern identification and analysis]
+**Metric Performance Table**:
 
-# [REMOVE IF UNUSED] Option 2: Impact-Focused (when "value-driven" + "stakeholder-focused" detected)
-- Executive Summary: [Key metrics and high-level outcomes]
-- Business Impact: [Quantified business value delivered]
-- User Impact: [User experience and satisfaction changes]
-- ROI Analysis: [Return on investment assessment]
+| Success Criterion | Target | Achieved | Status | Gap | Notes |
+|-------------------|--------|----------|--------|-----|-------|
+| SC-001: <2s latency (p95) | <2000ms | 1800ms | ✅ Pass | -200ms | WebSocket path performs excellently |
+| SC-002: Reviewer adoption | 85% | 82% | ⚠️ Near | -3% | Desktop users 90%; mobile users 12% (expected) |
+| SC-003: Review time reduction | 20m → 12m | 20m → 14m | ⚠️ Partial | +2m | 30% improvement vs 40% target |
 
-# [REMOVE IF UNUSED] Option 3: Learning-Focused (when "improvement-focused" detected)
-- What Worked Well: [Successful approaches and strategies]
-- What Did Not Work: [Areas of challenge or failure]
-- Process Effectiveness: [Methodology assessment]
-- Improvement Recommendations: [Future improvement suggestions]
-```
+**Key Finding**: Desktop experience exceeds expectations; mobile experience is limiting factor for SC-002 and SC-003.
 
-**Reporting Considerations**:
+---
 
-- **Data Accuracy**: Ensure all metrics and figures are based on actual project data
-- **Stakeholder Relevance**: Focus on information that matters to decision makers
-- **Actionable Insights**: Provide insights that can guide future decisions
-- **Pattern Recognition**: Look for trends across multiple goals rather than isolated incidents
-- **Forward-Looking**: Include insights that inform future goal achievement
+### Quantitative Results
 
-**Report Decision**: [Document the selected reporting approach and reference the real approach captured above]
+**Usage & Adoption**:
+- Desktop reviewers using live comments: 90% (9/10 power users)
+- Mobile reviewers using live comments: 12% (1 of 8)
+- Average daily active sessions: 145 (vs. 0 baseline)
 
-## Complexity Tracking
+**Performance Metrics**:
+- Comment latency (p50): 450ms
+- Comment latency (p95): 1800ms
+- Comment latency (p99): 3200ms (mostly due to mobile clients)
+- Server uptime: 99.8% (1 incident, 12 min downtime)
 
-> **Fill ONLY if Vision Check has violations that must be justified**
+**User Satisfaction**:
+- Desktop NPS: +45 (9/10 would recommend)
+- Mobile NPS: -10 (limited usefulness)
+- Overall feature satisfaction: 4.1/5.0
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., Complex reporting structure] | [current need] | [why simple approach insufficient] |
-| [e.g., Multi-metric analysis] | [specific problem] | [why single-metric approach insufficient] |
+---
+
+### Qualitative Insights
+
+**What's Working Well**:
+- Desktop users love the feature; immediate adoption
+- WebSocket infrastructure is stable and scalable
+- Team collaboration improved; fewer context switches
+
+**Challenges Encountered**:
+- Mobile network variability (5G → 4G → 3G transitions)
+- Mobile battery impact from WebSocket connections
+- UX needs optimization for small screens
+
+**Recommendations for Next Phase**:
+1. **Quick win**: Add polling-only mode for mobile users (improves adoption to 50%+)
+2. **Medium-term**: Optimize mobile UX (button placement, gesture controls)
+3. **Follow-up goal**: "Mobile Code Review Experience" (4-6 week effort)
+
+---
+
+### Trend Analysis
+
+**Compared to Previous Milestone** (M1: Backend Infrastructure):
+- Delivery on-time (Days 6-20 as planned)
+- Latency better than estimated (1.8s actual vs 2.0s target)
+- Adoption slightly below target (82% vs 85%) due to mobile gap
+
+**Variance Analysis**:
+- Effort: +2 days on T-005 (comment rendering—more edge cases than expected)
+- Scope: Clean (no scope creep)
+- Quality: High (zero P1 bugs in testing)
+
+---
+
+### Connected to Learnings Template
+
+For detailed reflection on what the team learned, metrics validation, and improvements for next goals, see `/goals/[###-goal-name]/learnings.md`
+
+## Action Items from This Report
+
+**Immediate** (next 1-2 weeks):
+- [ ] Implement polling-only mode toggle for mobile users
+- [ ] Add battery optimization documentation
+- [ ] Schedule retrospective with team
+
+**Short-term** (next 3-4 weeks):
+- [ ] Mobile UX improvements (buttons, gestures)
+- [ ] Load test with mobile clients at scale
+- [ ] Plan "Mobile Code Review Experience" goal
+
+**Follow-up**:
+- [ ] Review learnings-template.md for insights
+- [ ] Plan next goal informed by this report's findings

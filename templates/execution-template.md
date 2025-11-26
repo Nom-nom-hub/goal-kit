@@ -1,34 +1,32 @@
 # Implementation Plan: [GOAL]
 
-**Goal Branch**: `[###-goal-name]` | **Date**: [DATE] | **Input**: [link to goal/milestones]
+**Milestones Alignment**: Links to `/goals/[###-goal-name]/milestones.md`  
+**Goal Branch**: `[###-goal-name]` | **Date**: [DATE]
+
 **Note**: This template is filled in by the `/goalkit.execute` command. See `.goalkit/templates/commands/execute.md` for the execution workflow.
 
 ## Summary
 
-[Extract from goal and milestones: primary outcome + implementation approach from research]
+Extract from goal and milestones: primary outcome + detailed implementation plan. Keep to 2-3 sentences.
+
+*Example: "Implement live code review comments via WebSocket across 3 milestones. Backend API in Weeks 1-2, client integration in Weeks 3-5, user testing and refinement in Week 6. Key risk is network reliability; mitigated with HTTP polling fallback."*
 
 ## Implementation Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the implementation details
-  for the goal. The structure here is presented in advisory capacity to guide
-  the execution process.
--->
+**Goal Priority**: [e.g., P1-Critical, P2-High, P3-Medium]
+**Implementation Approach**: [e.g., Agile 2-week sprints, Waterfall phases, Experimental MVP]
+**Resource Allocation**: [e.g., 2 engineers full-time, 6 weeks total]
+**Success Metrics**: [Key metrics from goal to validate during implementation]
+**Target Timeline**: [Specific dates or sprint numbers for each milestone]
+**Team Structure**: [Who owns what - e.g., "Alice (backend), Bob (frontend)"]
+**Key Risks & Mitigations**: [Specific risks from milestones with concrete mitigations]
 
-**Goal Priority**: [e.g., P1-Critical, P2-High, P3-Medium or NEEDS CLARIFICATION]
-**Implementation Approach**: [e.g., Agile, Waterfall, Experimental or NEEDS CLARIFICATION]
-**Resource Allocation**: [if applicable, e.g., 2 person-weeks, 50 hours or N/A]
-**Success Metrics**: [e.g., user satisfaction, engagement, conversion or NEEDS CLARIFICATION]
-**Target Timeline**: [e.g., Q1 2024, 3 months, 6 sprints or NEEDS CLARIFICATION]
-**Team Structure**: [single/multi-person - determines collaboration approach]
-**Risk Tolerance**: [domain-specific, e.g., low-risk conservative, medium-risk balanced, high-risk experimental or NEEDS CLARIFICATION]
-**Success Thresholds**: [domain-specific, e.g., 80% achievement, 50% improvement, baseline maintenance or NEEDS CLARIFICATION]
+## Milestones Check
 
-## Vision Check
+*GATE: Confirms implementation executes planned milestones without scope creep.*
 
-*GATE: Must pass before Implementation 0 planning. Re-check after Implementation 1 execution.*
-
-[Gates determined based on vision document]
+Link each execution phase to corresponding milestone and validate it delivers expected value.
+*Example: "Week 1-2 executes Milestone 1 (API & infrastructure); Week 3-5 executes Milestone 2 (client sync)."*
 
 ## Implementation Structure
 
@@ -46,42 +44,37 @@
 │       └── tasks.md           # Implementation 2 output - detailed implementation tasks
 ```
 
-### Implementation Phases
-<!--
-  ACTION REQUIRED: Replace the placeholder phases below with the concrete implementation
-  phases for this goal. Delete unused phases and expand the chosen approach with
-  real implementation elements. The delivered plan must not include Phase labels.
--->
+### Implementation Phases (EXECUTING MILESTONES)
 
-```markdown
-# [REMOVE IF UNUSED] Option 1: Iterative Implementation (DEFAULT)
-- Phase 1: [Core validation of key assumptions]
-- Phase 2: [Initial working version or proof of concept]
-- Phase 3: [User validation and refinement]
-- Phase 4: [Full implementation and testing]
+**Phase 1: Backend Infrastructure & API** (Weeks 1-2, Milestone 1)
+- Sprint 1 (Days 1-5): Design WebSocket server architecture, set up database schema
+- Sprint 2 (Days 6-10): Implement comment storage API, build auth/permissions layer, load testing
+- **Responsible**: Backend team (Alice lead)
+- **Deliverables**: `/api/comments`, `/api/comment-threads`, WebSocket server ready for load tests
+- **Definition of Done**: Load tests pass (1000 req/sec), code reviewed, documented API contracts
 
-# [REMOVE IF UNUSED] Option 2: Learning-Focused (when "hypothesis-heavy" + "risk mitigation" detected)
-- Phase 1: [Core concept validation with low-fidelity prototypes]
-- Phase 2: [Technical feasibility with working prototype]
-- Phase 3: [User validation with real users]
-- Phase 4: [Business validation with broader rollout]
+**Phase 2: Client Real-Time Sync** (Weeks 3-5, Milestone 2)
+- Sprint 3 (Days 11-15): Integrate WebSocket client, implement comment rendering in editor
+- Sprint 4 (Days 16-20): Build optimistic UI updates, handle offline states with polling fallback
+- Sprint 5 (Days 21-25): Performance optimization, telemetry for latency monitoring
+- **Responsible**: Frontend team (Bob lead), coordinated with backend on contracts
+- **Deliverables**: Editor integration complete, <2s latency achieved, 10 power users testing
+- **Definition of Done**: SC-001 and SC-002 metrics met in internal testing
 
-# [REMOVE IF UNUSED] Option 3: Value-Delivery (when "incremental value" detected)
-- Phase 1: [Core value phase - deliver fundamental benefit]
-- Phase 2: [Enhancement phase - add incremental improvements]
-- Phase 3: [Scale phase - expand to broader user base]
-- Phase 4: [Optimization phase - improve existing functionality]
-```
+**Phase 3: User Testing & Refinement** (Week 6, Milestone 3)
+- Sprint 6 (Days 26-30): Bug fixes from power user feedback, performance tuning, monitoring setup
+- Sprint 7 (Days 31-35): Beta rollout to 50 users, measure SC-003 (review time reduction)
+- **Responsible**: Full team with product lead coordination
+- **Deliverables**: Production-ready feature, monitoring dashboards, user education materials
+- **Definition of Done**: All success criteria met, zero P1 bugs, rollout plan documented
 
-**Implementation Considerations**:
+### Learning & Adaptation Checkpoints
 
-- **Progressive Validation**: Early phases validate riskiest assumptions
-- **Independent Value**: Each phase delivers standalone value
-- **Adaptive Execution**: Phases can be modified based on learning
-- **Learning Integration**: Each phase builds on insights from previous ones
-- **Stakeholder Communication**: Clear progress indicators for stakeholders
+**End of Milestone 1** (Day 10): Does infrastructure meet load requirements? If not, scale up servers or adjust strategy.
 
-**Implementation Decision**: [Document the selected implementation approach and reference the real approach captured above]
+**End of Milestone 2** (Day 25): Are power users achieving <2s latency? If not, optimize polling fallback or consider alternative strategy.
+
+**End of Milestone 3** (Day 35): Did review time decrease by target amount? Collect feedback for future enhancements.
 
 ## Complexity Tracking
 

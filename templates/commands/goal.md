@@ -69,33 +69,38 @@ Given that goal description, do this:
 
 3. Load `templates/goal-template.md` to understand required sections.
 
-4. Follow this execution flow:
+4. **Validate Vision Alignment**:
+   - Confirm goal maps to at least one success scenario from vision
+   - Verify goal outcomes support vision's strategic direction
+   - ERROR if goal conflicts with or diverges from vision
 
-    1. **Parse user description from Input section above**
-        - The goal description is explicitly stated after "The user's goal description is:"
-        - If it's empty or contains no actual text: ERROR "No goal description provided"
-        - Otherwise: PROCEED - you have the goal description
+5. Follow this execution flow:
+
+     1. **Parse user description from Input section above**
+         - The goal description is explicitly stated after "The user's goal description is:"
+         - If it's empty or contains no actual text: ERROR "No goal description provided"
+         - Otherwise: PROCEED - you have the goal description
      2. Extract key concepts from the user's description
-       Identify: beneficiaries, desired outcomes, success measures
-    3. For unclear aspects:
-       - Make informed guesses based on context and industry standards
-       - Only mark with [NEEDS CLARIFICATION: specific question] if:
-         - The choice significantly impacts goal scope or value
-         - Multiple reasonable interpretations exist with different implications
-         - No reasonable default exists
-       - **LIMIT: Maximum 3 [NEEDS CLARIFICATION] markers total**
-       - Prioritize clarifications by impact: scope > business value > user experience > technical details
-    4. Fill Goal Definition section
-       If no clear outcomes: ERROR "Cannot determine measurable outcomes"
-    5. Generate Success Metrics
-       Each metric must be testable
-       Use reasonable defaults for unspecified details (document assumptions in Assumptions section)
-    6. Define Validation Strategy
-       Create measurable, technology-agnostic outcomes
-       Include both quantitative metrics (time, performance, volume) and qualitative measures (user satisfaction, business impact)
-       Each criterion must be verifiable without implementation details
-    7. Identify Critical Path Activities and Risks (if relevant)
-    8. Return: SUCCESS (goal ready for strategy exploration)
+        - Identify: beneficiaries, desired outcomes, success measures
+     3. For unclear aspects:
+        - Make informed guesses based on context and industry standards
+        - Only mark with [NEEDS CLARIFICATION: specific question] if:
+          - The choice significantly impacts goal scope or value
+          - Multiple reasonable interpretations exist with different implications
+          - No reasonable default exists
+        - **LIMIT: Maximum 3 [NEEDS CLARIFICATION] markers total**
+        - Prioritize clarifications by impact: scope > business value > user experience > technical details
+     4. Fill Goal Definition section
+        - If no clear outcomes: ERROR "Cannot determine measurable outcomes"
+     5. Generate Success Metrics
+        - Each metric must be testable
+        - Use reasonable defaults for unspecified details (document assumptions in Assumptions section)
+     6. Define Validation Strategy
+        - Create measurable, technology-agnostic outcomes
+        - Include both quantitative metrics (time, performance, volume) and qualitative measures (user satisfaction, business impact)
+        - Each criterion must be verifiable without implementation details
+     7. Identify Critical Path Activities and Risks (if relevant)
+     8. Return: SUCCESS (goal ready for strategy exploration)
 
 5. Write the goal to GOAL_FILE using the template structure, replacing placeholders with concrete details derived from the goal description (arguments) while preserving section order and headings.
 
@@ -191,7 +196,13 @@ Given that goal description, do this:
 
    d. **Update Checklist**: After each validation iteration, update the checklist file with current pass/fail status
 
-7. Report completion with branch name, goal file path, checklist results, and readiness for the next phase (`/goalkit.strategies`).
+8. **Validate Goal Check gate**:
+   - Confirm all mandatory sections completed (no [NEEDS CLARIFICATION] markers remain)
+   - Verify success metrics are measurable and outcome-focused
+   - Ensure no implementation details leak into goal
+   - ERROR if goal fails checklist validation
+
+9. Report completion with branch name, goal file path, checklist results, and readiness for the next phase (`/goalkit.strategies`).
 
 **NOTE:** The script creates and checks out the new branch and initializes the goal file before writing.
 

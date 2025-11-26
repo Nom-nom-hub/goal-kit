@@ -30,16 +30,27 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 2. **Load context**: Read GOAL_SPEC and `strategies.md`. Load MILESTONE_PLAN template (already copied).
 
-3. **Execute milestone workflow**: Follow the structure in MILESTONE_PLAN template to:
-   - Fill Progress Tracking Context (mark unknowns as "NEEDS CLARIFICATION")
-   - Fill Vision Check section from vision
-   - Evaluate gates (ERROR if violations unjustified)
-   - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
-   - Phase 1: Generate data-model.md, contracts/, quickstart.md
-   - Phase 1: Update agent context by running the agent script
-   - Re-evaluate Vision Check post-milestone definition
+3. **Validate Strategy Alignment**:
+   - Confirm all milestones are sequenced to deliver selected strategy
+   - Verify each milestone has clear success criteria tied to goal metrics
+   - ERROR if milestones don't trace back to strategy selection
 
-4. **Stop and report**: Command ends after Phase 2 milestone definition. Report branch, MILESTONE_PLAN path, and generated artifacts.
+4. **Execute milestone workflow**: Follow the structure in MILESTONE_PLAN template to:
+    - Fill Progress Tracking Context (mark unknowns as "NEEDS CLARIFICATION")
+    - Fill Milestones Check section with phase gates and KPIs
+    - Evaluate gates (ERROR if violations unjustified)
+    - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
+    - Phase 1: Generate data-model.md, contracts/, quickstart.md
+    - Phase 1: Update agent context by running the agent script
+    - Re-evaluate Milestones Check post-definition
+
+5. **Validate Milestones Check gate**:
+   - Ensure all 3 milestones are measurable with specific KPIs
+   - Confirm deliverables and dependencies are clearly defined
+   - Verify timeline is realistic and resource-constrained
+   - ERROR if milestones lack measurable success criteria
+
+6. **Stop and report**: Command ends after Phase 2 milestone definition. Report branch, MILESTONE_PLAN path, milestone sequence, and generated artifacts.
 
 ## Phases
 

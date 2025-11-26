@@ -30,16 +30,27 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 2. **Load context**: Read GOAL_SPEC and `/memory/vision.md`. Load STRATEGY_PLAN template (already copied).
 
-3. **Execute strategy workflow**: Follow the structure in STRATEGY_PLAN template to:
-   - Fill Strategic Context (mark unknowns as "NEEDS CLARIFICATION")
-   - Fill Vision Check section from vision
-   - Evaluate gates (ERROR if violations unjustified)
-   - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
-   - Phase 1: Generate data-model.md, contracts/, quickstart.md
-   - Phase 1: Update agent context by running the agent script
-   - Re-evaluate Vision Check post-strategy
+3. **Validate Goal Alignment**:
+   - Confirm all 3 strategy options directly address goal's success metrics
+   - Verify each option's assumptions are justified
+   - ERROR if strategies drift from goal scope
 
-4. **Stop and report**: Command ends after Phase 2 planning. Report branch, STRATEGY_PLAN path, and generated artifacts.
+4. **Execute strategy workflow**: Follow the structure in STRATEGY_PLAN template to:
+    - Fill Strategic Context (mark unknowns as "NEEDS CLARIFICATION")
+    - Fill Strategy Check section (evaluation criteria, decision rationale)
+    - Evaluate gates (ERROR if violations unjustified)
+    - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
+    - Phase 1: Generate data-model.md, contracts/, quickstart.md
+    - Phase 1: Update agent context by running the agent script
+    - Re-evaluate Strategy Check post-selection
+
+5. **Validate Strategy Check gate**:
+   - Ensure decision rationale clearly explains why selected strategy was chosen
+   - Verify all 3 options were rigorously evaluated against criteria
+   - Confirm key assumptions are explicit and justified
+   - ERROR if strategy selection lacks clear rationale
+
+6. **Stop and report**: Command ends after Phase 2 planning. Report branch, STRATEGY_PLAN path, selected strategy, and generated artifacts.
 
 ## Phases
 

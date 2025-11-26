@@ -1,34 +1,30 @@
 # Milestone Plan: [GOAL]
 
-**Goal Branch**: `[###-goal-name]` | **Date**: [DATE] | **Strategy**: [link]
-**Input**: Goal definition and selected strategy from `/goals/[###-goal-name]/`
+**Strategy Alignment**: Links to `/goals/[###-goal-name]/strategies.md`  
+**Goal Branch**: `[###-goal-name]` | **Date**: [DATE]
 
 **Note**: This template is filled in by the `/goalkit.milestones` command. See `.goalkit/templates/commands/milestones.md` for the execution workflow.
 
 ## Summary
 
-[Extract from goal and strategy: primary outcome + milestone approach from research]
+Extract from goal and strategy: primary outcome + milestone progression. Keep to 2-3 sentences.
+
+*Example: "Implement live code review comments via WebSocket. Milestones: 1) Backend infrastructure + API, 2) Client real-time sync, 3) User testing & refinement."*
 
 ## Progress Tracking Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the milestone details
-  for the goal. The structure here is presented in advisory capacity to guide
-  the milestone planning process.
--->
+**Goal Priority**: [e.g., P1-Critical, P2-High, P3-Medium]
+**Milestone Focus**: [What is being validated or delivered in each milestone?]
+**Success Metrics**: [Key metrics from goal that milestones must satisfy]
+**Target Timeline**: [Overall timeline and milestone schedule]
+**Team Structure**: [Who is responsible for each milestone?]
 
-**Goal Priority**: [e.g., P1-Critical, P2-High, P3-Medium or NEEDS CLARIFICATION]
-**Milestone Alignment**: [e.g., User Experience, Business Growth, Technical Validation or NEEDS CLARIFICATION]
-**Success Metrics**: [e.g., user satisfaction, engagement, conversion or NEEDS CLARIFICATION]
-**Target Timeline**: [e.g., Q1 2024, 3 months, 6 sprints or NEEDS CLARIFICATION]
-**Milestone Structure**: [single/multi-milestone - determines planning approach]
-**Validation Thresholds**: [domain-specific, e.g., 80% achievement, 50% improvement, baseline maintenance or NEEDS CLARIFICATION]
+## Strategy Check
 
-## Vision Check
+*GATE: Confirms this milestone plan aligns with selected strategy.*
 
-*GATE: Must pass before Milestone 0 planning. Re-check after Milestone 1 definition.*
-
-[Gates determined based on vision document]
+Validate milestones execute selected strategy (from strategies.md) and don't diverge.
+*Example: "Milestones execute WebSocket strategy by 1) building infrastructure, 2) client integration, 3) validation."*
 
 ## Milestone Structure
 
@@ -46,42 +42,37 @@
 │       └── actions.md         # Milestone 2 output - detailed milestone tasks
 ```
 
-### Milestone Options
-<!--
-  ACTION REQUIRED: Replace the placeholder options below with the concrete milestone
-  approaches for this goal. Delete unused options and expand the chosen approach with
-  real milestone elements. The delivered plan must not include Option labels.
--->
+### Milestones (SELECTED APPROACH)
 
-```markdown
-# [REMOVE IF UNUSED] Option 1: Phased Milestones (DEFAULT)
-- Milestone 1: [Core validation of key assumptions]
-- Milestone 2: [Initial working version or proof of concept]
-- Milestone 3: [User validation and refinement]
-- Milestone 4: [Full implementation and testing]
+**Milestone 1: Backend Infrastructure & API** (Weeks 1-2)
+- **Deliverable**: WebSocket server infrastructure, comment storage API, auth/permissions
+- **Value**: Enables backend to support real-time comments; foundation for all future work
+- **Success Criteria**: API serves 1000 req/sec, WebSocket connections stable
+- **Validation**: Internal testing with load tests; infrastructure team sign-off
+- **Risk**: Network reliability - mitigation includes HTTP polling fallback
 
-# [REMOVE IF UNUSED] Option 2: Learning-Focused (when "hypothesis-heavy" + "risk mitigation" detected)
-- Milestone 1: [Core concept validation with low-fidelity prototypes]
-- Milestone 2: [Technical feasibility with working prototype]
-- Milestone 3: [User validation with real users]
-- Milestone 4: [Business validation with broader rollout]
+**Milestone 2: Client Real-Time Sync** (Weeks 3-5)
+- **Deliverable**: Editor integration, live comment rendering, optimistic UI updates
+- **Value**: Reviewers see comments without page refresh; experience meets P1 story
+- **Success Criteria**: Comments appear in <2s (SC-001), 85% of reviewers use feature (SC-002)
+- **Validation**: Internal reviewer testing; 10 power users test for 1 week
+- **Risk**: UX complexity - mitigation includes telemetry to catch issues
 
-# [REMOVE IF UNUSED] Option 3: Value-Delivery (when "incremental value" detected)
-- Milestone 1: [Core value milestone - deliver fundamental benefit]
-- Milestone 2: [Enhancement milestone - add incremental improvements]
-- Milestone 3: [Scale milestone - expand to broader user base]
-- Milestone 4: [Optimization milestone - improve existing functionality]
-```
+**Milestone 3: User Testing & Refinement** (Weeks 6)
+- **Deliverable**: Bug fixes, performance optimization, monitoring dashboards
+- **Value**: Production-ready feature; meets all success criteria
+- **Success Criteria**: 95th percentile latency <2s, zero data loss in testing
+- **Validation**: Beta test with 50 users; measure SC-003 (review time reduction)
+- **Risk**: Adoption slower than expected - mitigation includes user education
 
-**Milestone Considerations**:
+### Milestone Rationale
 
-- **Progressive Validation**: Early milestones validate riskiest assumptions
-- **Independent Value**: Each milestone delivers standalone value
-- **Adaptive Planning**: Milestones can be modified based on learning
-- **Learning Integration**: Each milestone builds on insights from previous ones
-- **Stakeholder Communication**: Clear progress indicators for stakeholders
+Each milestone delivers **standalone value** while building toward the full goal:
+- M1 enables backend team to work in parallel on other features
+- M2 delivers P1 user story (live comments in editor)
+- M3 validates complete feature works at scale
 
-**Milestone Decision**: [Document the selected milestone approach and reference the real approach captured above]
+Sequence matches selected WebSocket strategy and validates riskiest assumption (latency requirement) in M2.
 
 ## Complexity Tracking
 

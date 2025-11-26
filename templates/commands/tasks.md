@@ -31,13 +31,13 @@ You **MUST** consider the user input before proceeding (if not empty).
 2. **Load context**: Read GOAL_SPEC, MILESTONES, STRATEGY_PLAN, and EXECUTION_PLAN. Load TASKS_PLAN template (already copied).
 
 3. **Execute task breakdown workflow**: Follow the structure in TASKS_PLAN template to:
-   - Fill Implementation Context (mark unknowns as "NEEDS CLARIFICATION")
-   - Fill Vision Check section from vision
-   - Evaluate gates (ERROR if violations unjustified)
-   - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
-   - Phase 1: Generate data-model.md, contracts/, quickstart.md
-   - Phase 1: Update agent context by running the agent script
-   - Re-evaluate Vision Check post-task definition
+    - Fill Implementation Context (mark unknowns as "NEEDS CLARIFICATION")
+    - Fill Execution Check section from execution plan
+    - Evaluate gates (ERROR if violations unjustified)
+    - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
+    - Phase 1: Generate data-model.md, contracts/, quickstart.md
+    - Phase 1: Update agent context by running the agent script
+    - Re-evaluate Execution Check post-task definition
 
 4. **Stop and report**: Command ends after Phase 2 planning. Report branch, TASKS_PLAN path, and generated artifacts.
 
