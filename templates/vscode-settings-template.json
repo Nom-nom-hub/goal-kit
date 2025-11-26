@@ -1,0 +1,92 @@
+{
+  "_comment": "Goal Kit VSCode Settings Template - Copy to .vscode/settings.json",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.defaultFormatter": "ms-python.python",
+  "editor.rulers": [100],
+  "editor.wordWrap": "on",
+  "editor.wordWrapColumn": 100,
+  "[markdown]": {
+    "editor.defaultFormatter": "ms-vscode.markdown-language-features",
+    "editor.formatOnSave": true,
+    "editor.wordWrap": "on",
+    "editor.wordWrapColumn": 100
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "[json]": {
+    "editor.defaultFormatter": "ms-vscode.json-language-features",
+    "editor.formatOnSave": true
+  },
+  "[bash]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode",
+    "editor.formatOnSave": true
+  },
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": false,
+  "python.linting.ruffEnabled": true,
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": [
+    "--line-length=100"
+  ],
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/.pytest_cache": true,
+    "**/.git": false,
+    "**/node_modules": true,
+    "**/.venv": true,
+    "**/venv": true,
+    "dist/": true,
+    "build/": true,
+    "*.egg-info/": true
+  },
+  "files.associations": {
+    "*.md": "markdown",
+    "CLAUDE.md": "markdown",
+    "CURSOR.md": "markdown",
+    "COPILOT.md": "markdown",
+    "GEMINI.md": "markdown",
+    ".ps1": "powershell",
+    ".sh": "shellscript",
+    "Makefile": "makefile"
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/.pytest_cache/**": true,
+    "**/__pycache__/**": true,
+    "**/dist/**": true,
+    "**/.venv/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/dist": true,
+    "**/.venv": true,
+    "**/*.egg-info": true
+  },
+  "search.useIgnoreFiles": true,
+  "markdown.preview.breaks": true,
+  "markdown.preview.linkify": true,
+  "markdown.validate.enabled": true,
+  "git.ignoreLimitWarning": true,
+  "gitlens.currentLine.enabled": true,
+  "gitlens.blame.enabled": true,
+  "gitlens.hovers.enabled": true,
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.defaultProfile.osx": "bash",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.fontSize": 12,
+  "terminal.integrated.lineHeight": 1.3
+}
