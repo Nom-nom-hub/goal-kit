@@ -25,23 +25,23 @@ goalkeeper init my-project
 cd my-project
 ```
 
-### 3. Use 5 Core Commands
+### 3. Use 9 Goal Kit Commands
 
+**Core workflow** (vision → goal → strategy → milestones → execution):
 ```bash
-# 1️⃣ Establish vision and principles
-/goalkit.vision
+/goalkit.vision          # Establish vision and principles
+/goalkit.goal            # Define measurable goals
+/goalkit.strategies      # Explore multiple strategies
+/goalkit.milestones      # Create measurable milestones
+/goalkit.execute         # Execute with learning
+```
 
-# 2️⃣ Define measurable goals (outcomes, not tasks)
-/goalkit.goal Build user authentication with measurable success metrics
-
-# 3️⃣ Explore multiple strategies
-/goalkit.strategies
-
-# 4️⃣ Create measurable milestones
-/goalkit.milestones
-
-# 5️⃣ Execute with learning and adaptation
-/goalkit.execute
+**Extended workflow** (execution → tasks → metrics → review):
+```bash
+/goalkit.tasks           # Break down into detailed tasks
+/goalkit.report          # Generate progress reports
+/goalkit.review          # Conduct retrospectives
+/goalkit.taskstoissues   # Convert tasks to GitHub issues
 ```
 
 Done! Your workflow is set up.
@@ -61,7 +61,9 @@ Goal-Driven Development **focuses on outcomes over specifications**:
 | **Strategy** | Single approach | Multiple approaches |
 | **Success** | Specification compliance | Goal achievement |
 
-### The 5 Core Commands
+### The 9 Goal Kit Commands
+
+**Core Workflow** (Always Use):
 
 | # | Command | Purpose | Focus |
 |---|---------|---------|-------|
@@ -70,6 +72,15 @@ Goal-Driven Development **focuses on outcomes over specifications**:
 | 3️⃣ | `/goalkit.strategies` | Multiple approaches | How we might achieve it |
 | 4️⃣ | `/goalkit.milestones` | Progress checkpoints | Breaking into steps |
 | 5️⃣ | `/goalkit.execute` | Adaptive implementation | Building with learning |
+
+**Extended Workflow** (As Needed):
+
+| # | Command | Purpose | Focus |
+|---|---------|---------|-------|
+| 6️⃣ | `/goalkit.tasks` | Task breakdown | Breaking execution into detailed work |
+| 7️⃣ | `/goalkit.report` | Progress metrics | Measuring achievement and trends |
+| 8️⃣ | `/goalkit.review` | Retrospective | Assessing achievement and learning |
+| 9️⃣ | `/goalkit.taskstoissues` | GitHub integration | Converting tasks to issues |
 
 ---
 
@@ -148,12 +159,22 @@ For detailed installation instructions, see [Installation Guide](./docs/installa
 
 ## 📚 Documentation
 
+### Getting Started
 - **[Quick Start Guide](./docs/quickstart.md)** - 5-minute getting started
 - **[Installation Guide](./docs/installation.md)** - Detailed install instructions for all platforms
-- **[Troubleshooting Guide](./docs/troubleshooting.md)** - Solutions for common issues
+- **[Agent & VSCode Setup](./AGENT_AND_VSCODE_SETUP.md)** - Setup AI agents and development environment
+
+### Learning & Reference
 - **[Goal-Driven Development](./docs/goal-driven.md)** - Complete methodology guide
 - **[Comparison with Spec-Driven](./docs/comparison.md)** - Key differences explained
 - **[Practical Examples](./docs/examples.md)** - Real-world use cases
+
+### Guides & Troubleshooting
+- **[Troubleshooting Guide](./docs/troubleshooting.md)** - Solutions for common issues
+- **[Agent File Guide](./templates/agent-file-template.md)** - Guide for AI agents using Goal Kit
+
+### Change History
+- **[Changelog](./CHANGELOG.md)** - Version history and release notes
 
 ---
 
@@ -215,14 +236,49 @@ Treat implementation as hypothesis testing
 
 ## ✨ Key Features
 
-- ✅ **5 focused commands** for complete workflow
-- ✅ **Works with all major AI agents**
+- ✅ **9 commands** for complete workflow (vision → goal → strategies → milestones → execute → tasks → report → review)
+- ✅ **Works with all major AI agents** (Claude, Copilot, Cursor, Gemini, etc.)
 - ✅ **Cross-platform** (Linux, macOS, Windows)
 - ✅ **Git integrated** for branch management
 - ✅ **Measurable outcomes** over tasks
 - ✅ **Multiple strategy exploration** built-in
 - ✅ **Learning-focused** execution
 - ✅ **Easy installation** with uv
+- ✅ **VSCode optimized** with settings templates and recommended extensions
+- ✅ **Agent integration guides** included in box
+
+---
+
+## 🤖 Working with AI Agents
+
+Goal Kit includes built-in support for AI agents like Claude, Cursor, and Copilot:
+
+1. **Copy agent template**: Use `templates/agent-file-template.md` to create `CLAUDE.md` (or other agents)
+2. **Share with agent**: Provide the customized agent file when asking for Goal Kit help
+3. **Agent executes**: The agent follows the methodology guides automatically
+4. **VSCode integration**: Developers review and refine with optimized editor settings
+
+See [Agent & VSCode Setup](./AGENT_AND_VSCODE_SETUP.md) for complete instructions.
+
+---
+
+## 💻 VSCode Integration
+
+Goal Kit provides optimized VSCode configuration:
+
+- **Auto-formatting** for Python (Black), Markdown, JSON
+- **100-character ruler** for consistent code style
+- **GitLens integration** for tracking goal milestones
+- **Recommended extensions** for development (15+ tools)
+- **File nesting** shows goal document relationships in Explorer
+
+Setup in 2 steps:
+```bash
+cp templates/.vscode-settings-template.json .vscode/settings.json
+cp templates/.vscode-extensions-template.json .vscode/extensions.json
+```
+
+VSCode will automatically suggest installing recommended extensions.
 
 ---
 
