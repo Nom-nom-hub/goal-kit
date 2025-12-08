@@ -83,11 +83,16 @@ Thumbs.db
 *.temp
 .cache/
 
-# Development documentation (local only)
-DEVELOPMENT_PLAN_WEEK*.md
+# Development documentation (local only - keep off GitHub)
+DEVELOPMENT_PLAN_*.md
 DEVELOPER_SETUP.md
 DEV_QUICK_REFERENCE.md
-WEEK1_PROGRESS.md
+WEEK*_PROGRESS.md
 WEEK*_STATUS.md
-WEEK*_COMPLETE_STATUS.md
+WEEK*_COMPLETE*.md
 DEVELOPMENT.md
+IMPROVEMENT*.md
+PHASE_*.md
+README_REVIEW.md
+REVIEW_*.md
+TEST_*.md
