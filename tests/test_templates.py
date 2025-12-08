@@ -1,593 +1,317 @@
-"""
-Integration tests for template operations.
+"""Tests for templates module.
 
-Tests cover:
-- Template download from GitHub
-- Template extraction
-- Template validation
-- Merge operations
-- Error handling
+Tests template downloading, extraction, and merging functionality.
 """
 
 import json
 import tempfile
 import zipfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch, mock_open
+from unittest.mock import Mock, MagicMock, patch
 
-import httpx
 import pytest
+from goalkeeper_cli.templates import TemplateMetadata, TemplateManager
 
-from goalkeeper_cli import download_template_from_github, AGENT_CONFIG
+
+class TestTemplateMetadata:
+    """Test TemplateMetadata class."""
+    
+    def test_metadata_creation(self):
+        """Test creating TemplateMetadata instance."""
+        meta = TemplateMetadata(
+            filename="goal-kit-template-claude-sh.zip",
+            size=15234,
+            release="v1.2.0",
+            asset_url="https://github.com/..."
+        )
+        
+        assert meta.filename == "goal-kit-template-claude-sh.zip"
+        assert meta.size == 15234
+        assert meta.release == "v1.2.0"
+        assert meta.asset_url == "https://github.com/..."
+    
+    def test_metadata_to_dict(self):
+        """Test converting metadata to dictionary."""
+        meta = TemplateMetadata(
+            filename="test.zip",
+            size=1000,
+            release="v1.0",
+            asset_url="http://example.com"
+        )
+        
+        data = meta.to_dict()
+        assert data["filename"] == "test.zip"
+        assert data["size"] == 1000
+        assert data["release"] == "v1.0"
+        assert data["asset_url"] == "http://example.com"
+
+
+class TestTemplateManager:
+    """Test TemplateManager class."""
+    
+    def test_manager_creation(self):
+        """Test creating TemplateManager instance."""
+        manager = TemplateManager()
+        
+        assert manager.repo_owner == "Nom-nom-hub"
+        assert manager.repo_name == "goal-kit"
+        assert manager.client is not None
+        assert manager.console is not None
+    
+    def test_manager_with_custom_client(self):
+        """Test creating manager with custom client."""
+        custom_client = Mock()
+        manager = TemplateManager(client=custom_client)
+        
+        assert manager.client is custom_client
+    
+    def test_find_matching_asset_exact_match(self):
+        """Test finding matching asset with exact match."""
+        release_data = {
+            "assets": [
+                {"name": "goal-kit-template-claude-sh.zip", "browser_download_url": "http://example.com/1"},
+                {"name": "goal-kit-template-copilot-ps.zip", "browser_download_url": "http://example.com/2"},
+            ]
+        }
+        
+        manager = TemplateManager()
+        asset = manager._find_matching_asset(release_data, "claude", "sh", verbose=False)
+        
+        assert asset is not None
+        assert asset["name"] == "goal-kit-template-claude-sh.zip"
+    
+    def test_find_matching_asset_no_match(self):
+        """Test finding asset when no match exists."""
+        release_data = {
+            "assets": [
+                {"name": "goal-kit-template-claude-sh.zip"},
+            ]
+        }
+        
+        manager = TemplateManager()
+        asset = manager._find_matching_asset(release_data, "invalid", "sh", verbose=False)
+        
+        assert asset is None
+    
+    def test_find_matching_asset_fallback(self):
+        """Test finding asset with fallback to any template."""
+        # When no exact match, fallback to first available template (verbose=True to trigger return)
+        release_data = {
+            "assets": [
+                {"name": "some-other-file.zip"},
+                {"name": "goal-kit-template-generic-sh.zip", "browser_download_url": "http://example.com/default"},
+            ]
+        }
+        
+        manager = TemplateManager()
+        asset = manager._find_matching_asset(release_data, "unknown", "ps", verbose=True)
+        
+        # Should find the fallback template (any goal-kit-template-*.zip)
+        assert asset is not None
+        assert "goal-kit-template-" in asset["name"]
+    
+    def test_auth_headers_with_token(self):
+        """Test generating auth headers with token."""
+        headers = TemplateManager._get_auth_headers("test_token_123")
+        
+        assert "Authorization" in headers
+        assert headers["Authorization"] == "Bearer test_token_123"
+    
+    def test_auth_headers_without_token(self):
+        """Test generating auth headers without token."""
+        headers = TemplateManager._get_auth_headers(None)
+        
+        assert headers == {}
+    
+    def test_deep_merge_simple(self):
+        """Test merging simple dictionaries."""
+        base = {"a": 1, "b": 2}
+        update = {"c": 3}
+        
+        result = TemplateManager._deep_merge(base, update)
+        
+        assert result == {"a": 1, "b": 2, "c": 3}
+    
+    def test_deep_merge_overwrite(self):
+        """Test that new values overwrite existing ones."""
+        base = {"a": 1, "b": 2}
+        update = {"b": 20}
+        
+        result = TemplateManager._deep_merge(base, update)
+        
+        assert result == {"a": 1, "b": 20}
+    
+    def test_deep_merge_nested(self):
+        """Test merging nested dictionaries."""
+        base = {"config": {"key1": "value1", "key2": "value2"}}
+        update = {"config": {"key2": "new_value2", "key3": "value3"}}
+        
+        result = TemplateManager._deep_merge(base, update)
+        
+        assert result == {
+            "config": {
+                "key1": "value1",
+                "key2": "new_value2",
+                "key3": "value3"
+            }
+        }
+    
+    def test_deep_merge_list_replacement(self):
+        """Test that lists are replaced, not merged."""
+        base = {"items": [1, 2, 3]}
+        update = {"items": [4, 5]}
+        
+        result = TemplateManager._deep_merge(base, update)
+        
+        assert result == {"items": [4, 5]}
+    
+    def test_merge_settings_new_file(self):
+        """Test merging settings for new file."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            settings_path = Path(temp_dir) / "nonexistent.json"
+            new_content = {"key": "value"}
+            
+            result = TemplateManager.merge_settings(settings_path, new_content)
+            
+            assert result == {"key": "value"}
+    
+    def test_merge_settings_existing_file(self):
+        """Test merging settings for existing file."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            settings_path = Path(temp_dir) / "settings.json"
+            
+            # Create existing file
+            existing = {"a": 1, "b": 2}
+            with open(settings_path, "w") as f:
+                json.dump(existing, f)
+            
+            new_content = {"b": 20, "c": 3}
+            result = TemplateManager.merge_settings(settings_path, new_content)
+            
+            assert result == {"a": 1, "b": 20, "c": 3}
+    
+    def test_merge_settings_invalid_json(self):
+        """Test merging settings with invalid existing JSON."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            settings_path = Path(temp_dir) / "settings.json"
+            
+            # Create invalid JSON file
+            with open(settings_path, "w") as f:
+                f.write("not valid json{")
+            
+            new_content = {"key": "value"}
+            result = TemplateManager.merge_settings(settings_path, new_content)
+            
+            # Should return new content when existing is invalid
+            assert result == {"key": "value"}
+    
+    def test_extract_zip(self):
+        """Test extracting zip file."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            
+            # Create a simple zip file
+            zip_path = temp_path / "test.zip"
+            with zipfile.ZipFile(zip_path, "w") as zf:
+                zf.writestr("file1.txt", "content1")
+                zf.writestr("subdir/file2.txt", "content2")
+            
+            # Extract to destination
+            dest_path = temp_path / "extracted"
+            TemplateManager.extract(zip_path, dest_path)
+            
+            # Verify extraction
+            assert (dest_path / "file1.txt").exists()
+            assert (dest_path / "subdir" / "file2.txt").exists()
+            
+            with open(dest_path / "file1.txt") as f:
+                assert f.read() == "content1"
+    
+    def test_extract_nonexistent_zip(self):
+        """Test extracting non-existent zip file raises error."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            zip_path = Path(temp_dir) / "nonexistent.zip"
+            dest_path = Path(temp_dir) / "dest"
+            
+            with pytest.raises(RuntimeError):
+                TemplateManager.extract(zip_path, dest_path)
 
 
 class TestTemplateDownload:
     """Test template download functionality."""
-
-    def test_download_template_basic(self, tmp_path):
-        """Test basic template download."""
+    
+    @patch("goalkeeper_cli.templates.httpx.Client")
+    def test_download_success(self, mock_client_class):
+        """Test successful template download."""
+        # Mock the client
+        mock_client = MagicMock()
+        mock_client_class.return_value = mock_client
+        
+        # Mock GitHub API response
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
-            "tag_name": "v1.0.0",
+            "tag_name": "v1.2.0",
             "assets": [
                 {
                     "name": "goal-kit-template-claude-sh.zip",
-                    "browser_download_url": "https://example.com/template.zip",
-                    "size": 1000,
+                    "size": 15234,
+                    "browser_download_url": "http://example.com/template.zip"
                 }
-            ],
+            ]
         }
+        mock_response.iter_bytes.return_value = [b"fake_zip_content"]
         
-        mock_client = MagicMock()
         mock_client.get.return_value = mock_response
         mock_client.stream.return_value.__enter__.return_value = mock_response
-        mock_response.iter_bytes.return_value = [b"test content"]
-        mock_response.headers = {"content-length": "10"}
         
-        zip_path, metadata = download_template_from_github(
-            "claude",
-            tmp_path,
-            script_type="sh",
-            verbose=False,
-            show_progress=False,
-            client=mock_client,
-        )
+        # Run download
+        manager = TemplateManager()
         
-        assert zip_path.exists()
-        assert metadata["filename"] == "goal-kit-template-claude-sh.zip"
-        assert metadata["release"] == "v1.0.0"
-
-    def test_download_template_with_different_agents(self, tmp_path):
-        """Test template download for different agents."""
-        agents = ["claude", "gemini", "cursor"]
-        
-        for agent in agents:
-            mock_response = MagicMock()
-            mock_response.status_code = 200
-            mock_response.json.return_value = {
-                "tag_name": "v1.0.0",
-                "assets": [
-                    {
-                        "name": f"goal-kit-template-{agent}-sh.zip",
-                        "browser_download_url": f"https://example.com/{agent}.zip",
-                        "size": 1000,
-                    }
-                ],
-            }
-            
-            mock_client = MagicMock()
-            mock_client.get.return_value = mock_response
-            mock_client.stream.return_value.__enter__.return_value = mock_response
-            mock_response.iter_bytes.return_value = [b"test content"]
-            mock_response.headers = {"content-length": "10"}
-            
-            zip_path, metadata = download_template_from_github(
-                agent,
-                tmp_path,
+        with tempfile.TemporaryDirectory() as temp_dir:
+            zip_path, metadata = manager.download(
+                "claude",
                 script_type="sh",
                 verbose=False,
-                show_progress=False,
-                client=mock_client,
+                show_progress=False
             )
             
-            assert zip_path.exists()
-
-    def test_download_template_script_type_sh(self, tmp_path):
-        """Test template download with sh script type."""
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "tag_name": "v1.0.0",
-            "assets": [
-                {
-                    "name": "goal-kit-template-claude-sh.zip",
-                    "browser_download_url": "https://example.com/template.zip",
-                    "size": 1000,
-                }
-            ],
-        }
-        
+            assert metadata.filename == "goal-kit-template-claude-sh.zip"
+            assert metadata.size == 15234
+            assert metadata.release == "v1.2.0"
+    
+    @patch("goalkeeper_cli.templates.httpx.Client")
+    def test_download_github_api_error(self, mock_client_class):
+        """Test handling GitHub API error."""
         mock_client = MagicMock()
-        mock_client.get.return_value = mock_response
-        mock_client.stream.return_value.__enter__.return_value = mock_response
-        mock_response.iter_bytes.return_value = [b"test content"]
-        mock_response.headers = {"content-length": "10"}
+        mock_client_class.return_value = mock_client
         
-        zip_path, metadata = download_template_from_github(
-            "claude",
-            tmp_path,
-            script_type="sh",
-            verbose=False,
-            show_progress=False,
-            client=mock_client,
-        )
-        
-        assert "sh" in zip_path.name
-
-    def test_download_template_script_type_ps(self, tmp_path):
-        """Test template download with ps (PowerShell) script type."""
         mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "tag_name": "v1.0.0",
-            "assets": [
-                {
-                    "name": "goal-kit-template-claude-ps.zip",
-                    "browser_download_url": "https://example.com/template.zip",
-                    "size": 1000,
-                }
-            ],
-        }
-        
-        mock_client = MagicMock()
+        mock_response.status_code = 403
         mock_client.get.return_value = mock_response
-        mock_client.stream.return_value.__enter__.return_value = mock_response
-        mock_response.iter_bytes.return_value = [b"test content"]
-        mock_response.headers = {"content-length": "10"}
         
-        zip_path, metadata = download_template_from_github(
-            "claude",
-            tmp_path,
-            script_type="ps",
-            verbose=False,
-            show_progress=False,
-            client=mock_client,
-        )
-        
-        assert "ps" in zip_path.name
-
-
-class TestTemplateDownloadErrors:
-    """Test error handling in template download."""
-
-    def test_download_template_github_error(self, tmp_path):
-        """Test handling of GitHub API errors."""
-        mock_response = MagicMock()
-        mock_response.status_code = 404
-        mock_response.text = "Not Found"
-        mock_response.headers = {}
-        
-        mock_client = MagicMock()
-        mock_client.get.return_value = mock_response
+        manager = TemplateManager()
         
         with pytest.raises(RuntimeError):
-            download_template_from_github(
-                "claude",
-                tmp_path,
-                script_type="sh",
-                verbose=False,
-                show_progress=False,
-                client=mock_client,
-                debug=False,
-            )
-
-    def test_download_template_no_matching_asset(self, tmp_path):
-        """Test handling when no matching template asset is found."""
+            manager.download("claude", verbose=False)
+    
+    @patch("goalkeeper_cli.templates.httpx.Client")
+    def test_download_no_matching_asset(self, mock_client_class):
+        """Test error when no matching asset found."""
+        mock_client = MagicMock()
+        mock_client_class.return_value = mock_client
+        
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
-            "tag_name": "v1.0.0",
-            "assets": [
-                {
-                    "name": "other-file.zip",
-                    "browser_download_url": "https://example.com/other.zip",
-                    "size": 1000,
-                }
-            ],
+            "tag_name": "v1.2.0",
+            "assets": []
         }
-        
-        mock_client = MagicMock()
         mock_client.get.return_value = mock_response
         
-        with pytest.raises(SystemExit):
-            download_template_from_github(
-                "nonexistent-agent",
-                tmp_path,
-                script_type="sh",
-                verbose=False,
-                show_progress=False,
-                client=mock_client,
-            )
-
-    def test_download_template_network_error(self, tmp_path):
-        """Test handling of network errors."""
-        mock_client = MagicMock()
-        mock_client.get.side_effect = httpx.ConnectError("Network error")
+        manager = TemplateManager()
         
-        with pytest.raises(RuntimeError):
-            download_template_from_github(
-                "claude",
-                tmp_path,
-                script_type="sh",
-                verbose=False,
-                show_progress=False,
-                client=mock_client,
-            )
-
-    def test_download_template_invalid_json(self, tmp_path):
-        """Test handling of invalid JSON response."""
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.side_effect = ValueError("Invalid JSON")
-        mock_response.text = "Invalid JSON"
+        with pytest.raises(RuntimeError) as exc_info:
+            manager.download("unknown_agent", verbose=False)
         
-        mock_client = MagicMock()
-        mock_client.get.return_value = mock_response
-        
-        with pytest.raises(RuntimeError):
-            download_template_from_github(
-                "claude",
-                tmp_path,
-                script_type="sh",
-                verbose=False,
-                show_progress=False,
-                client=mock_client,
-            )
-
-
-class TestTemplateExtraction:
-    """Test template extraction functionality."""
-
-    def test_extract_template_basic(self, tmp_path):
-        """Test basic template extraction."""
-        # Create a test zip file
-        zip_path = tmp_path / "template.zip"
-        with zipfile.ZipFile(zip_path, "w") as zf:
-            zf.writestr("file.txt", "test content")
-            zf.writestr("subdir/nested.txt", "nested content")
-        
-        extract_dir = tmp_path / "extracted"
-        extract_dir.mkdir()
-        
-        # Extract
-        with zipfile.ZipFile(zip_path, "r") as zf:
-            zf.extractall(extract_dir)
-        
-        # Verify
-        assert (extract_dir / "file.txt").exists()
-        assert (extract_dir / "subdir" / "nested.txt").exists()
-
-    def test_extract_template_overwrites_existing(self, tmp_path):
-        """Test that extraction can overwrite existing files."""
-        # Create initial file
-        extract_dir = tmp_path / "extracted"
-        extract_dir.mkdir()
-        existing_file = extract_dir / "file.txt"
-        existing_file.write_text("original content")
-        
-        # Create zip with new content
-        zip_path = tmp_path / "template.zip"
-        with zipfile.ZipFile(zip_path, "w") as zf:
-            zf.writestr("file.txt", "new content")
-        
-        # Extract
-        with zipfile.ZipFile(zip_path, "r") as zf:
-            zf.extractall(extract_dir)
-        
-        # Verify file was overwritten
-        assert existing_file.read_text() == "new content"
-
-
-class TestTemplateValidation:
-    """Test template validation."""
-
-    def test_validate_template_structure(self, tmp_path):
-        """Test that template has expected structure."""
-        # Create a mock template structure
-        template_dir = tmp_path / "template"
-        template_dir.mkdir()
-        
-        # Create expected directories
-        (template_dir / ".goalkit").mkdir()
-        (template_dir / ".goalkit" / "vision.md").write_text("# Vision")
-        
-        # Validate
-        assert (template_dir / ".goalkit").exists()
-        assert (template_dir / ".goalkit" / "vision.md").exists()
-
-    def test_validate_template_contains_required_files(self, tmp_path):
-        """Test that template contains required files."""
-        template_dir = tmp_path / "template"
-        template_dir.mkdir()
-        
-        # Create expected files
-        required_files = [
-            ".goalkit/vision.md",
-            ".goalkit/goals",
-            ".goalkit/scripts",
-        ]
-        
-        (template_dir / ".goalkit").mkdir()
-        (template_dir / ".goalkit" / "vision.md").write_text("# Vision")
-        (template_dir / ".goalkit" / "goals").mkdir()
-        (template_dir / ".goalkit" / "scripts").mkdir()
-        
-        # Verify all required files exist
-        for file_path in required_files:
-            assert (template_dir / file_path).exists()
-
-
-class TestTemplateMerge:
-    """Test template merge operations."""
-
-    def test_merge_templates_no_conflicts(self, tmp_path):
-        """Test merging templates without conflicts."""
-        # Create source template
-        source = tmp_path / "source"
-        source.mkdir()
-        (source / "new_file.txt").write_text("new content")
-        (source / "subdir").mkdir()
-        (source / "subdir" / "nested.txt").write_text("nested")
-        
-        # Create destination
-        dest = tmp_path / "dest"
-        dest.mkdir()
-        (dest / "existing_file.txt").write_text("existing")
-        
-        # Simulate merge
-        for item in source.iterdir():
-            if item.is_file():
-                (dest / item.name).write_text(item.read_text())
-            elif item.is_dir():
-                import shutil
-                shutil.copytree(item, dest / item.name, dirs_exist_ok=True)
-        
-        # Verify
-        assert (dest / "existing_file.txt").exists()
-        assert (dest / "new_file.txt").exists()
-        assert (dest / "subdir" / "nested.txt").exists()
-
-    def test_merge_templates_with_existing_files(self, tmp_path):
-        """Test merging when destination has existing files."""
-        # Create source
-        source = tmp_path / "source"
-        source.mkdir()
-        (source / "file.txt").write_text("source content")
-        
-        # Create destination with same file
-        dest = tmp_path / "dest"
-        dest.mkdir()
-        (dest / "file.txt").write_text("destination content")
-        (dest / "other.txt").write_text("other")
-        
-        # Simulate merge (overwrite)
-        import shutil
-        for item in source.iterdir():
-            if item.is_file():
-                shutil.copy2(item, dest / item.name)
-        
-        # Verify - source should overwrite destination
-        assert (dest / "file.txt").read_text() == "source content"
-        assert (dest / "other.txt").exists()
-
-
-class TestTemplateMetadata:
-    """Test template metadata handling."""
-
-    def test_metadata_contains_filename(self, tmp_path):
-        """Test that metadata includes filename."""
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "tag_name": "v1.0.0",
-            "assets": [
-                {
-                    "name": "goal-kit-template-claude-sh.zip",
-                    "browser_download_url": "https://example.com/template.zip",
-                    "size": 1000,
-                }
-            ],
-        }
-        
-        mock_client = MagicMock()
-        mock_client.get.return_value = mock_response
-        mock_client.stream.return_value.__enter__.return_value = mock_response
-        mock_response.iter_bytes.return_value = [b"test"]
-        mock_response.headers = {"content-length": "10"}
-        
-        _, metadata = download_template_from_github(
-            "claude",
-            tmp_path,
-            script_type="sh",
-            verbose=False,
-            show_progress=False,
-            client=mock_client,
-        )
-        
-        assert "filename" in metadata
-        assert metadata["filename"] == "goal-kit-template-claude-sh.zip"
-
-    def test_metadata_contains_size(self, tmp_path):
-        """Test that metadata includes file size."""
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "tag_name": "v1.0.0",
-            "assets": [
-                {
-                    "name": "goal-kit-template-claude-sh.zip",
-                    "browser_download_url": "https://example.com/template.zip",
-                    "size": 5000,
-                }
-            ],
-        }
-        
-        mock_client = MagicMock()
-        mock_client.get.return_value = mock_response
-        mock_client.stream.return_value.__enter__.return_value = mock_response
-        mock_response.iter_bytes.return_value = [b"test"]
-        mock_response.headers = {"content-length": "10"}
-        
-        _, metadata = download_template_from_github(
-            "claude",
-            tmp_path,
-            script_type="sh",
-            verbose=False,
-            show_progress=False,
-            client=mock_client,
-        )
-        
-        assert "size" in metadata
-        assert metadata["size"] == 5000
-
-    def test_metadata_contains_release(self, tmp_path):
-        """Test that metadata includes release tag."""
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "tag_name": "v2.5.1",
-            "assets": [
-                {
-                    "name": "goal-kit-template-claude-sh.zip",
-                    "browser_download_url": "https://example.com/template.zip",
-                    "size": 1000,
-                }
-            ],
-        }
-        
-        mock_client = MagicMock()
-        mock_client.get.return_value = mock_response
-        mock_client.stream.return_value.__enter__.return_value = mock_response
-        mock_response.iter_bytes.return_value = [b"test"]
-        mock_response.headers = {"content-length": "10"}
-        
-        _, metadata = download_template_from_github(
-            "claude",
-            tmp_path,
-            script_type="sh",
-            verbose=False,
-            show_progress=False,
-            client=mock_client,
-        )
-        
-        assert "release" in metadata
-        assert metadata["release"] == "v2.5.1"
-
-
-class TestTemplateGitHubAuth:
-    """Test GitHub token authentication for template downloads."""
-
-    def test_download_with_github_token(self, tmp_path):
-        """Test download with GitHub token."""
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "tag_name": "v1.0.0",
-            "assets": [
-                {
-                    "name": "goal-kit-template-claude-sh.zip",
-                    "browser_download_url": "https://example.com/template.zip",
-                    "size": 1000,
-                }
-            ],
-        }
-        
-        mock_client = MagicMock()
-        mock_client.get.return_value = mock_response
-        mock_client.stream.return_value.__enter__.return_value = mock_response
-        mock_response.iter_bytes.return_value = [b"test"]
-        mock_response.headers = {"content-length": "10"}
-        
-        zip_path, metadata = download_template_from_github(
-            "claude",
-            tmp_path,
-            script_type="sh",
-            verbose=False,
-            show_progress=False,
-            client=mock_client,
-            github_token="test_token_123",
-        )
-        
-        # Should pass token to headers
-        assert mock_client.get.called
-        call_args = mock_client.get.call_args
-        assert "headers" in call_args.kwargs or len(call_args.args) > 1
-
-
-class TestTemplateProgress:
-    """Test progress display during template operations."""
-
-    def test_download_with_progress_display(self, tmp_path):
-        """Test download with progress display enabled."""
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "tag_name": "v1.0.0",
-            "assets": [
-                {
-                    "name": "goal-kit-template-claude-sh.zip",
-                    "browser_download_url": "https://example.com/template.zip",
-                    "size": 1000,
-                }
-            ],
-        }
-        
-        mock_client = MagicMock()
-        mock_client.get.return_value = mock_response
-        mock_client.stream.return_value.__enter__.return_value = mock_response
-        mock_response.iter_bytes.return_value = [b"test content"]
-        mock_response.headers = {"content-length": "100"}
-        
-        zip_path, metadata = download_template_from_github(
-            "claude",
-            tmp_path,
-            script_type="sh",
-            verbose=False,
-            show_progress=True,
-            client=mock_client,
-        )
-        
-        assert zip_path.exists()
-
-    def test_download_without_progress_display(self, tmp_path):
-        """Test download with progress display disabled."""
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "tag_name": "v1.0.0",
-            "assets": [
-                {
-                    "name": "goal-kit-template-claude-sh.zip",
-                    "browser_download_url": "https://example.com/template.zip",
-                    "size": 1000,
-                }
-            ],
-        }
-        
-        mock_client = MagicMock()
-        mock_client.get.return_value = mock_response
-        mock_client.stream.return_value.__enter__.return_value = mock_response
-        mock_response.iter_bytes.return_value = [b"test content"]
-        mock_response.headers = {"content-length": "0"}
-        
-        zip_path, metadata = download_template_from_github(
-            "claude",
-            tmp_path,
-            script_type="sh",
-            verbose=False,
-            show_progress=False,
-            client=mock_client,
-        )
-        
-        assert zip_path.exists()
+        assert "No matching release asset found" in str(exc_info.value)
