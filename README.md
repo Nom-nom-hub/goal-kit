@@ -161,11 +161,14 @@ For detailed installation instructions, see [Installation Guide](./docs/installa
 
 ### Getting Started
 - **[Quick Start Guide](./docs/quickstart.md)** - 5-minute getting started
+- **[Quick Reference Card](./docs/quick-reference.md)** - 📋 One-page cheat sheet (print and keep handy!)
 - **[Installation Guide](./docs/installation.md)** - Detailed install instructions for all platforms
 - **[Agent & VSCode Setup](./AGENT_AND_VSCODE_SETUP.md)** - Setup AI agents and development environment
 
 ### Learning & Reference
 - **[Goal-Driven Development](./docs/goal-driven.md)** - Complete methodology guide
+- **[Workflow Guide](./docs/workflow-guide.md)** - 🔄 State machine, decision trees, and workflow patterns
+- **[Common Mistakes](./docs/common-mistakes.md)** - ❌ Avoid these pitfalls when starting
 - **[Comparison with Spec-Driven](./docs/comparison.md)** - Key differences explained
 - **[Practical Examples](./docs/examples.md)** - Real-world use cases
 
