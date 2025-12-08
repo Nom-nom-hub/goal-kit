@@ -82,3 +82,12 @@ Thumbs.db
 *.tmp
 *.temp
 .cache/
+
+# Development documentation (local only)
+DEVELOPMENT_PLAN_WEEK*.md
+DEVELOPER_SETUP.md
+DEV_QUICK_REFERENCE.md
+WEEK1_PROGRESS.md
+WEEK*_STATUS.md
+WEEK*_COMPLETE_STATUS.md
+DEVELOPMENT.md
