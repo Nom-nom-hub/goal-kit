@@ -1124,8 +1124,7 @@ def init(
     debug: bool = typer.Option(False, "--debug", help="Show verbose diagnostic output for network and extraction failures"),
     github_token: Optional[str] = typer.Option(None, "--github-token", help="GitHub token to use for API requests (or set GH_TOKEN or GITHUB_TOKEN environment variable)"),
 ):
-    """
-    Initialize a new Goalkeeper project from the latest template.
+    """Initialize a new Goalkeeper project from the latest template.
     
     This command will:
     1. Check that required tools are installed (git is optional)

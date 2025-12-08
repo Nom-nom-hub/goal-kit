@@ -149,3 +149,25 @@ def validate_agent(key: str) -> bool:
         False
     """
     return _default_registry.validate(key)
+
+
+# Legacy AGENT_CONFIG dict for backward compatibility
+# Converts Agent instances back to dict format used in original __init__.py
+def _build_agent_config() -> Dict[str, Dict]:
+    """Build AGENT_CONFIG dict from registry.
+    
+    Returns:
+        Dictionary mapping agent keys to configuration dicts
+    """
+    config = {}
+    for agent in _default_registry.list_all():
+        config[agent.key] = {
+            "name": agent.name,
+            "folder": agent.folder,
+            "install_url": agent.install_url,
+            "requires_cli": agent.requires_cli,
+        }
+    return config
+
+
+AGENT_CONFIG = _build_agent_config()

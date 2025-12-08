@@ -89,3 +89,29 @@ Describe this beneficiary journey in plain language.
 - **SC-001**: Comments appear in editor within 2 seconds of posting (95th percentile latency)
 - **SC-002**: 85% of reviewers use live comments without opening separate review tool
 - **SC-003**: Average review time decreases from 20 min to 12 min per PR
+
+### Metric Quality Validation *(use for each success criterion)*
+
+For each metric above, validate quality using this checklist:
+
+**SC-001 Quality Check**:
+- [ ] **Measurable**: Can collect via APM/monitoring (specific measurement method defined)
+- [ ] **Actionable**: <2s = green (scale), 2-3s = yellow (optimize), >3s = red (pivot)
+- [ ] **Leading**: Predicts user satisfaction (latency impacts adoption)
+- [ ] **Bounded**: Target <2s, baseline 5s, deadline 6 weeks
+- [ ] **Valuable**: Fast feedback improves reviewer experience (links to Vision Scenario 1)
+
+**Baseline Metrics** *(measure before starting work)*:
+| Metric | Current Baseline | Measurement Date | Method |
+|--------|------------------|------------------|--------|
+| SC-001 | 5.2s (p95) | 2024-01-15 | APM dashboard |
+| SC-002 | 45% adoption | 2024-01-15 | Analytics |
+| SC-003 | 20 min avg | 2024-01-15 | Git metadata |
+
+**Measurement Plan** *(how to track progress)*:
+- **Tool**: [Analytics platform, APM, database queries]
+- **Frequency**: [Real-time, daily, weekly]
+- **Dashboard**: [Link to dashboard when created]
+- **Owner**: [Person responsible for tracking]
+
+> **💡 Tip**: Use `/goalkit.metrics` command to create detailed measurement plan. See [Quick Reference](../docs/quick-reference.md) for metric quality guidelines.
