@@ -64,6 +64,9 @@ from .helpers import (
     check_path_writable,
 )
 
+# Import commands
+from .commands.status import status as status_command
+
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
 
@@ -1484,6 +1487,17 @@ def check():
 
     if not any(agent_results.values()):
         console.print("[dim]Tip: Install an AI assistant for the best experience[/dim]")
+
+@app.command()
+def status(
+    project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed analysis"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+):
+    """Display project status and health information."""
+    show_banner()
+    project_path_obj = Path(project_path) if project_path else None
+    status_command(project_path=project_path_obj, verbose=verbose, json_output=json_output)
 
 def main():
     app()
