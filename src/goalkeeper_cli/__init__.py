@@ -67,6 +67,7 @@ from .helpers import (
 # Import commands
 from .commands.status import status as status_command
 from .commands.milestones import milestones as milestones_command
+from .commands.metrics import metrics as metrics_command
 
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
@@ -1515,6 +1516,26 @@ def milestones(
         project_path=project_path_obj,
         goal_id=goal_id,
         completed_only=completed_only,
+        json_output=json_output,
+    )
+
+
+@app.command()
+def metrics(
+    project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
+    goal_id: Optional[str] = typer.Option(None, "--goal", "-g", help="Filter by goal ID"),
+    metric_name: Optional[str] = typer.Option(None, "--metric", "-m", help="Filter by metric name"),
+    days: int = typer.Option(30, "--days", "-d", help="Number of days for trend analysis"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+):
+    """Display project metrics and health trends."""
+    show_banner()
+    project_path_obj = Path(project_path) if project_path else None
+    metrics_command(
+        project_path=project_path_obj,
+        goal_id=goal_id,
+        metric_name=metric_name,
+        days=days,
         json_output=json_output,
     )
 
