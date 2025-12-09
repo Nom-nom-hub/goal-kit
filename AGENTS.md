@@ -35,8 +35,10 @@
 ### Key Subprojects/Modules
 
 - **Goal Management**: Scripts for creating, validating, and tracking goals
-- **Project Analysis**: `src/goalkeeper_cli/analyzer.py` - ProjectAnalyzer for goal extraction and health scoring (98% coverage, 23 tests)
+- **Project Analysis**: `src/goalkeeper_cli/analyzer.py` - ProjectAnalyzer for goal extraction and health scoring (99% coverage, 23 tests)
+- **Execution Tracking**: `src/goalkeeper_cli/execution.py` - ExecutionTracker for milestone tracking and execution metrics (97% coverage, 33 tests)
 - **Status Command**: `src/goalkeeper_cli/commands/status.py` - Project status display with JSON output (100% coverage, 33 tests)
+- **Milestones Command**: `src/goalkeeper_cli/commands/milestones.py` - Milestone progress display with velocity and momentum metrics (99% coverage, 37 tests)
 - **Agent Integration**: Support for Claude, Copilot, Gemini, Cursor, and other AI assistants
 - **Methodology Validation**: Comprehensive testing framework for Goal-Driven Development processes
 - **Documentation System**: MkDocs-based documentation with automated deployment
@@ -45,7 +47,9 @@
 
 - **Agent Configuration API**: `AGENT_CONFIG` dict mapping agents to their settings
 - **ProjectAnalyzer API**: Analysis class with methods for project loading, goal parsing, completion calculation, health scoring, and phase detection
+- **ExecutionTracker API**: Tracker class with methods for milestone tracking, velocity calculation, momentum scoring, and completion estimation
 - **Status Command API**: Command-line interface for displaying project status with formatted text or JSON output
+- **Milestones Command API**: Command-line interface for displaying milestone progress with goal filtering and timeline visualization
 - **StepTracker**: Hierarchical progress tracking with Rich console output
 - **Template System**: Dynamic template downloading and extraction from GitHub releases
 - **Validation Framework**: Comprehensive goal and methodology validation scripts
