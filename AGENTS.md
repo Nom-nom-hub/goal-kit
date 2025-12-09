@@ -39,6 +39,10 @@
 - **Execution Tracking**: `src/goalkeeper_cli/execution.py` - ExecutionTracker for milestone tracking and execution metrics (97% coverage, 33 tests)
 - **Status Command**: `src/goalkeeper_cli/commands/status.py` - Project status display with JSON output (100% coverage, 33 tests)
 - **Milestones Command**: `src/goalkeeper_cli/commands/milestones.py` - Milestone progress display with velocity and momentum metrics (99% coverage, 37 tests)
+- **Metrics Tracking**: `src/goalkeeper_cli/metrics.py` - MetricsTracker for custom metric recording and trend analysis (90% coverage, 22 tests)
+- **Metrics Command**: `src/goalkeeper_cli/commands/metrics.py` - Metrics display with filtering and health scoring (90% coverage, 24 tests)
+- **Task Management**: `src/goalkeeper_cli/tasks.py` - TaskTracker for task creation, status tracking, and aggregation (100% coverage, 37 tests)
+- **Tasks Command**: `src/goalkeeper_cli/commands/tasks.py` - Task display with filtering and statistics (95% coverage, 28 tests)
 - **Agent Integration**: Support for Claude, Copilot, Gemini, Cursor, and other AI assistants
 - **Methodology Validation**: Comprehensive testing framework for Goal-Driven Development processes
 - **Documentation System**: MkDocs-based documentation with automated deployment

@@ -68,6 +68,11 @@ from .helpers import (
 from .commands.status import status as status_command
 from .commands.milestones import milestones as milestones_command
 from .commands.metrics import metrics as metrics_command
+from .commands.tasks import tasks_command
+from .commands.reporting import report_command, insights_command
+from .commands.dependencies import app as dependencies_app
+from .commands.aggregation import app as aggregation_app
+from .commands.export import app as export_app
 
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
@@ -197,6 +202,11 @@ app = typer.Typer(
     invoke_without_command=True,
     cls=BannerGroup,
 )
+
+# Wire in sub-command apps
+app.add_typer(dependencies_app, name="dependencies", help="Manage task dependencies and critical paths")
+app.add_typer(aggregation_app, name="projects", help="Manage multiple projects in a workspace")
+app.add_typer(export_app, name="export", help="Export project data in multiple formats")
 
 def show_banner():
     """Display the ASCII art banner."""
@@ -1536,6 +1546,55 @@ def metrics(
         goal_id=goal_id,
         metric_name=metric_name,
         days=days,
+        json_output=json_output,
+    )
+
+
+@app.command()
+def tasks(
+    project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
+    goal_id: Optional[str] = typer.Option(None, "--goal", "-g", help="Filter by goal ID"),
+    status: Optional[str] = typer.Option(None, "--status", "-s", help="Filter by status (todo, in_progress, completed)"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+):
+    """Display and manage project tasks."""
+    show_banner()
+    tasks_command(
+        path=project_path,
+        goal_id=goal_id,
+        status=status,
+        json_output=json_output,
+    )
+
+
+@app.command()
+def report(
+    project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
+    report_type: str = typer.Option("summary", "--type", "-t", help="Report type (summary, weekly, monthly)"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+):
+    """Display project reports and metrics."""
+    show_banner()
+    report_command(
+        path=project_path,
+        report_type=report_type,
+        json_output=json_output,
+    )
+
+
+@app.command()
+def insights(
+    project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
+    report_type: str = typer.Option("summary", "--type", "-t", help="Report type (summary, weekly, monthly)"),
+    severity: Optional[str] = typer.Option(None, "--severity", "-s", help="Filter by severity (info, warning, alert)"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+):
+    """Display actionable insights based on project data."""
+    show_banner()
+    insights_command(
+        path=project_path,
+        report_type=report_type,
+        severity=severity,
         json_output=json_output,
     )
 
