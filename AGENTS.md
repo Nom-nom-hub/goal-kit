@@ -35,6 +35,8 @@
 ### Key Subprojects/Modules
 
 - **Goal Management**: Scripts for creating, validating, and tracking goals
+- **Project Analysis**: `src/goalkeeper_cli/analyzer.py` - ProjectAnalyzer for goal extraction and health scoring (98% coverage, 23 tests)
+- **Status Command**: `src/goalkeeper_cli/commands/status.py` - Project status display with JSON output (100% coverage, 33 tests)
 - **Agent Integration**: Support for Claude, Copilot, Gemini, Cursor, and other AI assistants
 - **Methodology Validation**: Comprehensive testing framework for Goal-Driven Development processes
 - **Documentation System**: MkDocs-based documentation with automated deployment
@@ -42,6 +44,8 @@
 ### Internal APIs
 
 - **Agent Configuration API**: `AGENT_CONFIG` dict mapping agents to their settings
+- **ProjectAnalyzer API**: Analysis class with methods for project loading, goal parsing, completion calculation, health scoring, and phase detection
+- **Status Command API**: Command-line interface for displaying project status with formatted text or JSON output
 - **StepTracker**: Hierarchical progress tracking with Rich console output
 - **Template System**: Dynamic template downloading and extraction from GitHub releases
 - **Validation Framework**: Comprehensive goal and methodology validation scripts
