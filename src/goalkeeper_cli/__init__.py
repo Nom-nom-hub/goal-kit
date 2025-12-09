@@ -66,6 +66,7 @@ from .helpers import (
 
 # Import commands
 from .commands.status import status as status_command
+from .commands.milestones import milestones as milestones_command
 
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
@@ -1498,6 +1499,24 @@ def status(
     show_banner()
     project_path_obj = Path(project_path) if project_path else None
     status_command(project_path=project_path_obj, verbose=verbose, json_output=json_output)
+
+
+@app.command()
+def milestones(
+    project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
+    goal_id: Optional[str] = typer.Option(None, "--goal", "-g", help="Filter by goal ID"),
+    completed_only: bool = typer.Option(False, "--completed", "-c", help="Show only completed milestones"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+):
+    """Display milestone progress and execution history."""
+    show_banner()
+    project_path_obj = Path(project_path) if project_path else None
+    milestones_command(
+        project_path=project_path_obj,
+        goal_id=goal_id,
+        completed_only=completed_only,
+        json_output=json_output,
+    )
 
 def main():
     app()
