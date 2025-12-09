@@ -18,7 +18,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from goalkeeper_cli.analytics import AnalyticsEngine
-from goalkeeper_cli.models import GoalkitProject
+from goalkeeper_cli.models import Project
 from goalkeeper_cli.prediction import PredictionEngine
 
 app = typer.Typer(help="Analytics, trends, and forecasting")
@@ -47,19 +47,20 @@ def burndown(
         console.print("[red]Error: .goalkit directory not found[/red]")
         raise typer.Exit(1)
 
-    # Load project
-    project = GoalkitProject(goalkit_path)
-
-    # Use first goal if not specified
-    if not goal_id:
-        goals = project.get_goals()
-        if not goals:
-            console.print("[red]Error: No goals found[/red]")
-            raise typer.Exit(1)
-        goal_id = goals[0].id
-
     # Get analytics
     analytics = AnalyticsEngine(goalkit_path)
+    
+    # Use first goal if not specified
+    if not goal_id:
+        goals_path = goalkit_path / "goals.json"
+        if not goals_path.exists():
+            console.print("[red]Error: No goals found[/red]")
+            raise typer.Exit(1)
+        # For now, use the first goal or a simple approach
+        # This is simplified - the actual implementation would load from JSON
+        console.print("[red]Error: Please specify a goal ID[/red]")
+        raise typer.Exit(1)
+    
     burndown_data = analytics.get_burndown_data(goal_id)
 
     if not burndown_data:
@@ -99,16 +100,10 @@ def velocity(
         console.print("[red]Error: .goalkit directory not found[/red]")
         raise typer.Exit(1)
 
-    # Load project
-    project = GoalkitProject(goalkit_path)
-
-    # Use first goal if not specified
+    # Require goal ID for now
     if not goal_id:
-        goals = project.get_goals()
-        if not goals:
-            console.print("[red]Error: No goals found[/red]")
-            raise typer.Exit(1)
-        goal_id = goals[0].id
+        console.print("[red]Error: Please specify a goal ID[/red]")
+        raise typer.Exit(1)
 
     # Get analytics
     analytics = AnalyticsEngine(goalkit_path)
@@ -173,16 +168,10 @@ def trends(
         console.print("[red]Error: .goalkit directory not found[/red]")
         raise typer.Exit(1)
 
-    # Load project
-    project = GoalkitProject(goalkit_path)
-
-    # Use first goal if not specified
+    # Require goal ID for now
     if not goal_id:
-        goals = project.get_goals()
-        if not goals:
-            console.print("[red]Error: No goals found[/red]")
-            raise typer.Exit(1)
-        goal_id = goals[0].id
+        console.print("[red]Error: Please specify a goal ID[/red]")
+        raise typer.Exit(1)
 
     # Get analytics
     analytics = AnalyticsEngine(goalkit_path)
@@ -242,16 +231,10 @@ def forecast(
         console.print("[red]Error: .goalkit directory not found[/red]")
         raise typer.Exit(1)
 
-    # Load project
-    project = GoalkitProject(goalkit_path)
-
-    # Use first goal if not specified
+    # Require goal ID for now
     if not goal_id:
-        goals = project.get_goals()
-        if not goals:
-            console.print("[red]Error: No goals found[/red]")
-            raise typer.Exit(1)
-        goal_id = goals[0].id
+        console.print("[red]Error: Please specify a goal ID[/red]")
+        raise typer.Exit(1)
 
     # Get forecast
     analytics = AnalyticsEngine(goalkit_path)
@@ -318,16 +301,10 @@ def insights(
         console.print("[red]Error: .goalkit directory not found[/red]")
         raise typer.Exit(1)
 
-    # Load project
-    project = GoalkitProject(goalkit_path)
-
-    # Use first goal if not specified
+    # Require goal ID for now
     if not goal_id:
-        goals = project.get_goals()
-        if not goals:
-            console.print("[red]Error: No goals found[/red]")
-            raise typer.Exit(1)
-        goal_id = goals[0].id
+        console.print("[red]Error: Please specify a goal ID[/red]")
+        raise typer.Exit(1)
 
     # Get insights
     analytics = AnalyticsEngine(goalkit_path)
