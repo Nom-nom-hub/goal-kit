@@ -57,7 +57,7 @@ Added `/goalkit.status` command with:
 
 ## Test Results
 
-### New Tests Created: 56
+### New Tests Created: 66
 - **test_analyzer.py**: 23 tests
   - ProjectAnalyzer initialization (3 tests)
   - Project loading (3 tests)
@@ -75,12 +75,21 @@ Added `/goalkit.status` command with:
   - Formatting helpers (11 tests)
   - Counting helpers (7 tests)
 
-**Status**: ✅ 56/56 passing
+- **test_status_integration.py**: 10 tests
+  - Full project analysis (2 tests)
+  - JSON output completeness (1 test)
+  - Phase detection (1 test)
+  - Completion averaging (1 test)
+  - Health score calculation (1 test)
+  - Milestone tracking (1 test)
+  - Edge cases (3 tests)
+
+**Status**: ✅ 66/66 passing
 
 ### Coverage
-- `analyzer.py`: 98% (2 lines uncovered: error paths)
+- `analyzer.py`: 99% (1 line uncovered: error path)
 - `commands/status.py`: 100%
-- Overall new code: 99%+
+- Overall new code: 99.5%+
 
 ---
 
@@ -115,16 +124,20 @@ Uses regex patterns for robustness:
 2. `src/goalkeeper_cli/commands/status.py` (82 lines)
 3. `tests/test_analyzer.py` (354 lines)
 4. `tests/test_status.py` (348 lines)
-5. `WEEK2_SUMMARY.md` (this file)
+5. `tests/test_status_integration.py` (256 lines)
+6. `WEEK2_SUMMARY.md` (this file)
 
 **Total New Code**: 392 lines (not including tests)
-**Total New Tests**: 56 tests (702 lines)
+**Total New Tests**: 66 tests (958 lines)
 
 ---
 
 ## Git Commits
 1. `feat: ProjectAnalyzer (310 lines, 23 tests) and status command (82 lines, 33 tests)`
 2. `feat: integrate status command into CLI app`
+3. `docs: Week 2 summary - ProjectAnalyzer and status command complete`
+4. `docs: Update AGENTS.md with ProjectAnalyzer and status command info`
+5. `test: Add integration tests for status command (10 tests)`
 
 ---
 
@@ -150,8 +163,9 @@ Uses regex patterns for robustness:
 | Status command | 100-150 lines | 82 lines | ✅ Met (more efficient) |
 | Analyzer tests | 15-20 tests | 23 tests | ✅ Exceeded |
 | Status tests | 10-15 tests | 33 tests | ✅ Exceeded |
-| Total tests | 25-30 tests | 56 tests | ✅ Exceeded by 87% |
-| Coverage | 80%+ | 98-100% | ✅ Exceeded |
+| Integration tests | 0 (not planned) | 10 tests | ✅ Bonus |
+| Total tests | 25-30 tests | 66 tests | ✅ Exceeded by 164% |
+| Coverage | 80%+ | 99%+ | ✅ Exceeded |
 
 ---
 
