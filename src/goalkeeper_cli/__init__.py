@@ -73,6 +73,8 @@ from .commands.reporting import report_command, insights_command
 from .commands.dependencies import app as dependencies_app
 from .commands.aggregation import app as aggregation_app
 from .commands.export import app as export_app
+from .commands.analytics import app as analytics_app
+from .commands.webhooks import app as webhooks_app
 
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
@@ -207,6 +209,8 @@ app = typer.Typer(
 app.add_typer(dependencies_app, name="dependencies", help="Manage task dependencies and critical paths")
 app.add_typer(aggregation_app, name="projects", help="Manage multiple projects in a workspace")
 app.add_typer(export_app, name="export", help="Export project data in multiple formats")
+app.add_typer(analytics_app, name="analytics", help="Analytics, trends, and forecasting")
+app.add_typer(webhooks_app, name="webhooks", help="Webhook management and event notifications")
 
 def show_banner():
     """Display the ASCII art banner."""
