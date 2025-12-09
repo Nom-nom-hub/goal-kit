@@ -30,6 +30,7 @@ title: Table of Contents
 - [Learn Command](./learn-command.md)
 - [Measure Command](./measure-command.md)
 - [Methodology Command](./methodology-command.md)
+- [Metrics Command](./metrics-command.md)
 - [Milestones Command](./milestones-command.md)
 - [Onboard Command](./onboard-command.md)
 - [Plan Command](./plan-command.md)
