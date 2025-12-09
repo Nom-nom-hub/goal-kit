@@ -10,20 +10,21 @@ from goalkeeper_cli.execution import ExecutionTracker, MilestoneRecord, Executio
 from goalkeeper_cli.models import Goal
 
 
+@pytest.fixture
+def temp_project():
+    """Create a temporary goal-kit project."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        project_path = Path(tmpdir)
+        goalkit_dir = project_path / ".goalkit"
+        milestones_dir = goalkit_dir / "milestones"
+        goalkit_dir.mkdir(parents=True, exist_ok=True)
+        milestones_dir.mkdir(parents=True, exist_ok=True)
+
+        yield project_path
+
+
 class TestExecutionTracker:
     """Tests for ExecutionTracker class."""
-
-    @pytest.fixture
-    def temp_project(self):
-        """Create a temporary goal-kit project."""
-        with tempfile.TemporaryDirectory() as tmpdir:
-            project_path = Path(tmpdir)
-            goalkit_dir = project_path / ".goalkit"
-            milestones_dir = goalkit_dir / "milestones"
-            goalkit_dir.mkdir(parents=True, exist_ok=True)
-            milestones_dir.mkdir(parents=True, exist_ok=True)
-
-            yield project_path
 
     def test_tracker_init_valid_project(self, temp_project):
         """Test initializing tracker with valid project."""
@@ -305,3 +306,147 @@ class TestExecutionStats:
 
         assert stats.recent_milestones == []
         assert stats.milestone_by_goal == {}
+
+
+class TestExecutionTrackerEnhanced:
+    """Tests for enhanced ExecutionTracker methods."""
+
+    @pytest.fixture
+    def temp_project_with_history(self):
+        """Create a project with execution history."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_path = Path(tmpdir)
+            goalkit_dir = project_path / ".goalkit"
+            milestones_dir = goalkit_dir / "milestones"
+            goalkit_dir.mkdir(parents=True, exist_ok=True)
+            milestones_dir.mkdir(parents=True, exist_ok=True)
+
+            tracker = ExecutionTracker(project_path)
+
+            # Create history over 14 days
+            now = datetime.now()
+            for i in range(10):
+                record = MilestoneRecord(
+                    milestone_id=f"m{i}",
+                    goal_id="goal1" if i < 6 else "goal2",
+                    completed_at=now - timedelta(days=10 - i),
+                    notes=f"Milestone {i}",
+                )
+                tracker._save_milestone_record(record)
+
+            yield project_path, tracker
+
+    def test_get_goal_execution_stats(self, temp_project_with_history):
+        """Test getting execution stats for a specific goal."""
+        _, tracker = temp_project_with_history
+
+        stats = tracker.get_goal_execution_stats("goal1")
+
+        assert stats["goal_id"] == "goal1"
+        assert stats["completed_milestones"] == 6
+        assert "recent_milestones" in stats
+        assert "last_completion" in stats
+
+    def test_get_goal_execution_stats_no_history(self, temp_project):
+        """Test getting stats for goal with no history."""
+        tracker = ExecutionTracker(temp_project)
+
+        stats = tracker.get_goal_execution_stats("nonexistent")
+
+        assert stats["completed_milestones"] == 0
+        assert stats["recent_milestones"] == []
+        assert stats["last_completion"] is None
+
+    def test_get_completion_timeline(self, temp_project_with_history):
+        """Test getting completion timeline."""
+        _, tracker = temp_project_with_history
+
+        timeline = tracker.get_completion_timeline(days=30)
+
+        assert isinstance(timeline, dict)
+        assert len(timeline) > 0
+        # Each day should have at least one completion
+        for count in timeline.values():
+            assert count > 0
+
+    def test_get_completion_timeline_empty(self, temp_project):
+        """Test timeline for project with no completions."""
+        tracker = ExecutionTracker(temp_project)
+
+        timeline = tracker.get_completion_timeline()
+
+        assert len(timeline) == 0
+
+    def test_get_momentum_active(self, temp_project_with_history):
+        """Test momentum calculation for active project."""
+        _, tracker = temp_project_with_history
+
+        momentum = tracker.get_momentum(days=14)
+
+        assert 0 <= momentum <= 100
+        assert isinstance(momentum, float)
+
+    def test_get_momentum_inactive(self, temp_project):
+        """Test momentum for project with no recent activity."""
+        tracker = ExecutionTracker(temp_project)
+
+        momentum = tracker.get_momentum(days=7)
+
+        assert momentum == 0.0
+
+    def test_get_momentum_high_velocity(self, temp_project):
+        """Test momentum with high completion velocity."""
+        tracker = ExecutionTracker(temp_project)
+
+        # Create multiple completions in recent days
+        now = datetime.now()
+        for i in range(5):
+            record = MilestoneRecord(
+                milestone_id=f"m{i}",
+                goal_id="goal1",
+                completed_at=now - timedelta(days=1 - i / 10),
+            )
+            tracker._save_milestone_record(record)
+
+        momentum = tracker.get_momentum(days=7)
+
+        # Should have high momentum due to recent activity
+        assert momentum > 50
+
+    def test_multiple_goal_stats(self, temp_project_with_history):
+        """Test that stats correctly separate goals."""
+        _, tracker = temp_project_with_history
+
+        goal1_stats = tracker.get_goal_execution_stats("goal1")
+        goal2_stats = tracker.get_goal_execution_stats("goal2")
+
+        assert goal1_stats["completed_milestones"] == 6
+        assert goal2_stats["completed_milestones"] == 4
+        assert goal1_stats["completed_milestones"] + goal2_stats["completed_milestones"] == 10
+
+    def test_timeline_date_formatting(self, temp_project_with_history):
+        """Test that timeline dates are properly formatted."""
+        _, tracker = temp_project_with_history
+
+        timeline = tracker.get_completion_timeline(days=30)
+
+        # All keys should be YYYY-MM-DD format
+        for date_key in timeline.keys():
+            parts = date_key.split("-")
+            assert len(parts) == 3
+            assert len(parts[0]) == 4  # Year
+            assert len(parts[1]) == 2  # Month
+            assert len(parts[2]) == 2  # Day
+
+    def test_recent_milestones_order(self, temp_project_with_history):
+        """Test that recent milestones are in correct order."""
+        _, tracker = temp_project_with_history
+
+        stats = tracker.get_goal_execution_stats("goal1")
+        recent = stats["recent_milestones"]
+
+        # Should be in reverse chronological order (most recent first)
+        for i in range(len(recent) - 1):
+            time_i = datetime.fromisoformat(recent[i]["completed_at"])
+            time_i1 = datetime.fromisoformat(recent[i + 1]["completed_at"])
+            assert time_i >= time_i1

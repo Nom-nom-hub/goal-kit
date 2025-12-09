@@ -277,3 +277,75 @@ class ExecutionTracker:
             Dictionary mapping goal ID to milestone count
         """
         return {goal.id: 2 for goal in goals}  # Placeholder: 2 per goal
+
+    def get_goal_execution_stats(self, goal_id: str) -> Dict[str, Any]:
+        """Get execution statistics for a specific goal.
+        
+        Args:
+            goal_id: ID of the goal
+            
+        Returns:
+            Dictionary with goal-specific stats
+        """
+        history = self.get_milestone_history(goal_id=goal_id, limit=100)
+
+        return {
+            "goal_id": goal_id,
+            "completed_milestones": len(history),
+            "recent_milestones": [
+                {
+                    "id": m.milestone_id,
+                    "completed_at": m.completed_at.isoformat(),
+                    "notes": m.notes,
+                }
+                for m in history[:5]
+            ],
+            "last_completion": (
+                history[0].completed_at.isoformat() if history else None
+            ),
+        }
+
+    def get_completion_timeline(self, days: int = 30) -> Dict[str, int]:
+        """Get milestone completion count by day for the past N days.
+        
+        Args:
+            days: Number of days to include (default: 30)
+            
+        Returns:
+            Dictionary mapping date (YYYY-MM-DD) to completion count
+        """
+        history = self.get_milestone_history(limit=1000)
+        now = datetime.now()
+        cutoff_date = now - timedelta(days=days)
+
+        timeline = {}
+        for record in history:
+            if record.completed_at >= cutoff_date:
+                date_key = record.completed_at.strftime("%Y-%m-%d")
+                timeline[date_key] = timeline.get(date_key, 0) + 1
+
+        return timeline
+
+    def get_momentum(self, days: int = 7) -> float:
+        """Calculate project momentum (recent completion rate).
+        
+        Args:
+            days: Number of recent days to analyze
+            
+        Returns:
+            Momentum score (0-100) based on recent completion activity
+        """
+        history = self.get_milestone_history(limit=1000)
+        now = datetime.now()
+        cutoff_date = now - timedelta(days=days)
+
+        recent_count = sum(1 for r in history if r.completed_at >= cutoff_date)
+
+        # Momentum is a score based on recent activity
+        # Max score of 100 if completing one milestone per day on average
+        expected_per_day = 1.0
+        recent_days = min(days, max(1, (now - cutoff_date).days))
+        expected_count = expected_per_day * recent_days
+
+        momentum = min(100.0, (recent_count / expected_count * 100) if expected_count > 0 else 0.0)
+        return round(momentum, 1)
