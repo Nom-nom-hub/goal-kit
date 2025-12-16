@@ -1,0 +1,50 @@
+name: AI Pull Request Review
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  pull-requests: write
+  contents: read
+  actions: read
+
+jobs:
+  analyze_pr:
+    name: AI-Review Pull Request
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Setup Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install openai
+
+    - name: Fetch PR Changes
+      run: |
+        git fetch origin ${{ github.event.pull_request.head.ref }}:pr-changes
+        git checkout pr-changes
+
+    - name: Invoke AI Agent Review
+      run: |
+        chmod +x scripts/review-pr.py
+        python scripts/review-pr.py --pr_number "${{ github.event.pull_request.number }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    - name: Comment on PR
+      uses: marocchino/sticky-pull-request-comment@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        header: "AI Review Summary"
+        path: ai_review_summary.md
