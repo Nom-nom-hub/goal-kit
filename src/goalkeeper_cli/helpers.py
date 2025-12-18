@@ -477,12 +477,78 @@ def check_disk_space(path: Path, min_mb: int = 100) -> Tuple[bool, Optional[str]
         return True, None
 
 
+def is_goal_kit_project(project_path: Optional[Path] = None) -> bool:
+    """Check if the specified path is a Goal Kit project.
+
+    Args:
+        project_path: Path to check. If None, uses current directory.
+
+    Returns:
+        True if the path is a Goal Kit project, False otherwise.
+    """
+    if project_path is None:
+        project_path = Path.cwd()
+
+    goalkit_dir = project_path / ".goalkit"
+    return goalkit_dir.exists() and goalkit_dir.is_dir()
+
+
+def load_project_context(project_path: Optional[Path] = None) -> Optional[dict]:
+    """Load the current project context if in a Goal Kit project.
+
+    Args:
+        project_path: Path to check. If None, uses current directory.
+
+    Returns:
+        Dictionary with project context information, or None if not in a Goal Kit project.
+    """
+    if project_path is None:
+        project_path = Path.cwd()
+
+    if not is_goal_kit_project(project_path):
+        return None
+
+    try:
+        from .analyzer import ProjectAnalyzer
+        analyzer = ProjectAnalyzer(project_path)
+        result = analyzer.analyze()
+
+        # Create a simplified context representation
+        context = {
+            "is_goal_kit_project": True,
+            "project_name": result.project.name,
+            "project_path": str(result.project.path),
+            "phase": result.phase,
+            "health_score": result.health_score,
+            "completion_percent": result.completion_percent,
+            "total_goals": len(result.goals),
+            "total_milestones": result.milestone_count,
+            "completed_milestones": result.completed_milestones,
+            "goals": [
+                {
+                    "id": goal.id,
+                    "name": goal.name,
+                    "phase": goal.phase,
+                    "completion_percent": goal.completion_percent,
+                    "has_metrics": goal.metrics_defined,
+                    "success_criteria_count": goal.success_criteria_count
+                }
+                for goal in result.goals
+            ]
+        }
+        return context
+    except Exception:
+        # If we can't load the context for any reason, return None
+        # This could happen if project files are corrupted or missing
+        return None
+
+
 def check_path_writable(path: Path) -> Tuple[bool, Optional[str]]:
     """Check if a path is writable.
-    
+
     Args:
         path: Path to check
-        
+
     Returns:
         Tuple of (is_writable, error_message)
     """
@@ -498,7 +564,7 @@ def check_path_writable(path: Path) -> Tuple[bool, Optional[str]]:
                 except Exception as e:
                     return False, f"Cannot create parent directory: {e}"
             test_file = parent / ".goalkit_write_test"
-        
+
         # Try to write a test file
         try:
             test_file.write_text("test")

@@ -62,6 +62,7 @@ from .helpers import (
     validate_project_name,
     check_disk_space,
     check_path_writable,
+    load_project_context,
 )
 
 # Import commands
@@ -225,6 +226,8 @@ def show_banner():
     console.print(Align.center(styled_banner))
     console.print(Align.center(Text(TAGLINE, style="italic bright_yellow")))
     console.print()
+    # Also display project context if in a Goal Kit project
+    display_project_context()
 
 @app.callback()
 def callback(ctx: typer.Context):
@@ -251,6 +254,28 @@ def run_command(cmd: list[str], check_return: bool = True, capture: bool = False
                 console.print(f"[red]Error output:[/red] {e.stderr}")
             raise
         return None
+
+
+def display_project_context():
+    """Display project context if in a Goal Kit project."""
+    context = load_project_context()
+    if context:
+        # Create a panel showing project status
+        status_text = f"""
+[bold]Project:[/bold] {context['project_name']}
+[bold]Phase:[/bold] {context['phase'].title()}
+[bold]Health Score:[/bold] {context['health_score']}/100
+[bold]Completion:[/bold] {context['completion_percent']}%
+
+[bold]Goals:[/bold] {context['total_goals']} | [bold]Milestones:[/bold] {context['completed_milestones']}/{context['total_milestones']}
+"""
+        console.print(Panel(status_text, title="[green]Goal Kit Project Detected[/green]", border_style="green"))
+
+        # List goals if available
+        if context['goals']:
+            console.print(f"\n[bold cyan]Active Goals ({len(context['goals'])}):[/bold cyan]")
+            for goal in context['goals']:
+                console.print(f"  • [cyan]{goal['name']}[/cyan] - {goal['phase']} ({goal['completion_percent']}%)")
 
 
 
