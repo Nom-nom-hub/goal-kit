@@ -103,7 +103,7 @@ Link to vision success scenario and confirm this strategy supports it.
 *GATE: Strategy is incomplete without a plan for how users will adopt it. (Mitigates Mistake 11)*
 
 **Discovery Plan**:
-- [ ] How will users find this features? (e.g., In-app tour, email, changelog, auto-redirect)
+- [ ] How will users find this feature? (e.g., In-app tour, email, changelog, auto-redirect)
 - [ ] [Specific item]
 
 **Adoption Plan**:

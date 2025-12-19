@@ -7,8 +7,8 @@
 
 | Metric ID | Description | Target | Current Baseline | Source/Tool |
 |-----------|-------------|--------|------------------|-------------|
-| SC-001 | [What to measure] | [Target] | [Baseline] | [e.g., Google Analytics] |
-| SC-002 | [What to measure] | [Target] | [Baseline] | [e.g., SQL Query] |
+| [Metric ID] | [What to measure] | [Target] | [Baseline] | [e.g., Google Analytics] |
+| [Metric ID] | [What to measure] | [Target] | [Baseline] | [e.g., SQL Query] |
 
 ## Quick Validation Checklist
 - [ ] **Instrumented**: Can we actually see this data right now?
