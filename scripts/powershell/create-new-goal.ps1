@@ -155,13 +155,14 @@ function New-Goal {
     $timestamp = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
     
     # Check if template exists, otherwise create default goal.md
-    $templatePath = Join-Path -Path $projectRoot -ChildPath (Join-Path -Path ".goalkit" -ChildPath (Join-Path -Path "templates" -ChildPath "goal-template.md"))
+    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit/templates/goal-template.md"
     if (Test-Path $templatePath) {
         # Read the template
         try {
             $templateContent = Get-Content -Path $templatePath -Raw -ErrorAction Stop
         } catch {
-            Handle-Error "Failed to read goal template: $templatePath"
+            Write-Warning "Failed to read goal template: $templatePath. Using default content."
+            $templateContent = $null
         }
 
         # Replace placeholders in the template

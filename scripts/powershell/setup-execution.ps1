@@ -80,10 +80,15 @@ function New-ExecutionFile {
     }
     
     # Check if template exists, otherwise create default execution.md
-    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit" "templates" "execution-template.md"
+    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit/templates/execution-template.md"
     if (Test-Path $templatePath) {
         # Read the template
-        $templateContent = Get-Content -Path $templatePath -Raw
+        try {
+            $templateContent = Get-Content -Path $templatePath -Raw -ErrorAction Stop
+        } catch {
+            Write-Warning "Failed to read template file: $templatePath. Using default content."
+            $templateContent = $null
+        }
 
         # Replace placeholders in the template
         $goalDirName = Split-Path -Leaf $GoalDirectory

@@ -94,7 +94,7 @@ mkdir -p ".goalkit" || handle_error "Failed to create .goalkit directory"
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
 
 # Check if template exists
-TEMPLATE_PATH=".goalkit/templates/vision-template.md"
+TEMPLATE_PATH="$project_root/.goalkit/templates/vision-template.md"
 if [ -f "$TEMPLATE_PATH" ]; then
     VISION_CONTENT=$(cat "$TEMPLATE_PATH") || handle_error "Failed to read vision template"
     

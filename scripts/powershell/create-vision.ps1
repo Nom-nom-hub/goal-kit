@@ -83,7 +83,7 @@ function New-Vision {
     $timestamp = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
     
     # Check if template exists
-    $templatePath = Join-Path $projectRoot ".goalkit" "templates" "vision-template.md"
+    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit/templates/vision-template.md"
     if (Test-Path $templatePath) {
         try {
             $templateContent = Get-Content -Path $templatePath -Raw -ErrorAction Stop
