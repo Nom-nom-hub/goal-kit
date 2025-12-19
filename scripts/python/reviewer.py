@@ -3,21 +3,16 @@ import sys
 import subprocess
 import re
 
-def run_command(command):
-    """Run a command safely without shell=True."""
-    try:
-        # command should be a list of arguments
-        result = subprocess.run(command, capture_output=True, text=True, check=False)
-        return result.stdout.strip()
-    except Exception as e:
-        print(f"Error running command {command}: {e}", file=sys.stderr)
-        return ""
-
 def get_changed_files(base_branch="origin/main"):
     """Get list of changed files compared to base branch."""
     # Use 3 dots for merge-base difference
     cmd = ["git", "diff", "--name-only", f"{base_branch}...HEAD"]
-    raw = run_command(cmd)
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False, shell=False)
+        raw = result.stdout.strip()
+    except Exception as e:
+        print(f"Error running git diff: {e}", file=sys.stderr)
+        raw = ""
     return [f for f in raw.split('\n') if f.strip()]
 
 def analyze_complexity(files):
@@ -31,7 +26,12 @@ def analyze_complexity(files):
     # check strict complexity (C or worse)
     # Pass args as list to avoid shell injection
     cmd = [sys.executable, "-m", "radon", "cc", "-s", "-n", "C"] + python_files
-    output = run_command(cmd)
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False, shell=False)
+        output = result.stdout.strip()
+    except Exception as e:
+        print(f"Error running radon: {e}", file=sys.stderr)
+        output = ""
     
     if output:
         for line in output.split('\n'):
@@ -45,7 +45,12 @@ def scan_patterns(base_branch="origin/main"):
     issues = []
     # Get the actual diff content
     cmd = ["git", "diff", f"{base_branch}...HEAD"]
-    diff_output = run_command(cmd)
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False, shell=False)
+        diff_output = result.stdout.strip()
+    except Exception as e:
+        print(f"Error running git diff contents: {e}", file=sys.stderr)
+        diff_output = ""
     
     # Simple regex for patterns
     # 1. TODOs
@@ -60,8 +65,6 @@ def scan_patterns(base_branch="origin/main"):
     secret_matches = re.findall(secret_pattern, diff_output, re.MULTILINE | re.IGNORECASE)
     if secret_matches:
         issues.append("🔒 **Security Warning**: Possible secret key detected in diff. Please verify.")
-
-    return issues
 
     return issues
 
