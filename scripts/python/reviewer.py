@@ -4,8 +4,10 @@ import subprocess
 import re
 
 def run_command(command):
+    """Run a command safely without shell=True."""
     try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True)
+        # command should be a list of arguments
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
         return result.stdout.strip()
     except Exception as e:
         print(f"Error running command {command}: {e}", file=sys.stderr)
@@ -13,7 +15,9 @@ def run_command(command):
 
 def get_changed_files(base_branch="origin/main"):
     """Get list of changed files compared to base branch."""
-    raw = run_command(f"git diff --name-only {base_branch}...HEAD")
+    # Use 3 dots for merge-base difference
+    cmd = ["git", "diff", "--name-only", f"{base_branch}...HEAD"]
+    raw = run_command(cmd)
     return [f for f in raw.split('\n') if f.strip()]
 
 def analyze_complexity(files):
@@ -25,8 +29,8 @@ def analyze_complexity(files):
         return issues
 
     # check strict complexity (C or worse)
-    # Use python -m radon to ensure we find the installed module even if scripts are not in PATH
-    cmd = f"{sys.executable} -m radon cc -s -n C {' '.join(python_files)}"
+    # Pass args as list to avoid shell injection
+    cmd = [sys.executable, "-m", "radon", "cc", "-s", "-n", "C"] + python_files
     output = run_command(cmd)
     
     if output:
@@ -40,7 +44,8 @@ def scan_patterns(base_branch="origin/main"):
     """Scan diff for regex patterns."""
     issues = []
     # Get the actual diff content
-    diff_output = run_command(f"git diff {base_branch}...HEAD")
+    cmd = ["git", "diff", f"{base_branch}...HEAD"]
+    diff_output = run_command(cmd)
     
     # Simple regex for patterns
     # 1. TODOs
@@ -55,6 +60,8 @@ def scan_patterns(base_branch="origin/main"):
     secret_matches = re.findall(secret_pattern, diff_output, re.MULTILINE | re.IGNORECASE)
     if secret_matches:
         issues.append("🔒 **Security Warning**: Possible secret key detected in diff. Please verify.")
+
+    return issues
 
     return issues
 
