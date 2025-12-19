@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.5] - 2025-12-18
+
+### 🔧 Script Reliability & Maintainability
+
+This release resolves critical script execution failures that users experienced after project initialization, significantly improving the reliability of Goal Kit across Windows (PowerShell) and Unix (Bash) environments.
+
+#### 🐛 Fixed Issues
+
+- **Template Path Resolution**: Fixed incorrect path constructions in both PowerShell and Bash scripts that caused "template not found" errors
+- **PowerShell Execution Policy**: Added automatic execution policy detection and bypass handling for smoother Windows script execution
+- **Error Handling**: Enhanced error handling with graceful fallback to default content when templates fail to load
+- **Project Root Detection**: Improved project root finding with fallback to `.goalkit` directory when git commands fail
+- **Variable Scoping**: Fixed global variable contamination in Bash scripts by properly scoping `template_copied` variables
+
+#### 🔍 Code Quality Improvements
+
+- **Readability**: Simplified nested `Join-Path` calls in PowerShell scripts from complex chains to single calls
+- **Reliability**: Fixed recursive function failure handling in `New-DirectorySafe` to properly check parent creation results
+- **Performance**: Eliminated duplicate `Get-GitRoot` calls in `Set-GoalEnvironment` by caching results
+- **Maintainability**: Ensured all variables are properly scoped to prevent cross-function contamination
+
+#### 📚 Documentation Updates
+
+- **Troubleshooting Guide**: Added comprehensive sections for both PowerShell and Bash script execution issues
+- **Debug Steps**: Included specific command examples and testing procedures for both platforms
+- **Common Solutions**: Documented fixes for execution policy, permissions, and template path issues
+
+#### 🔄 GitHub Actions
+
+- **Workflow Fix**: Resolved `marocchino/sticky-pull-request-comment@v3` version error by updating to available `@v2` version
+- **CI Reliability**: Added placeholder for missing review script to prevent workflow failures
+
 ## [2.0.4] - 2025-12-18
 
 ### 🎯 Project Context Awareness Enhancement
