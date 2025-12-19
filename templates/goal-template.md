@@ -8,7 +8,7 @@
 ## User Stories *(mandatory)*
 
 <!--
-  IMPORTANT: User stories should be PRIORITIZED as beneficiary journeys ordered by importance.
+  IMPORTANT: User stories should be PRIORITIZED as user stories ordered by importance.
   Each user story/journey must be STANDALONE DELIVERABLE - meaning if you implement just ONE of them,
   you should still have a viable MVP (Minimum Viable Product) that delivers value.
 
@@ -18,7 +18,7 @@
 
 ### Beneficiary Story 1 - [Brief Title] (Priority: P1)
 
-Describe this beneficiary journey in plain language. Who benefits and how?
+Describe this user story in plain language. Who benefits and how?
 
 *Example: "As an engineer, I can see live updates on code review feedback so I can respond to comments without switching windows."*
 
@@ -39,7 +39,7 @@ Describe this beneficiary journey in plain language. Who benefits and how?
 
 ### Beneficiary Story 2 - [Brief Title] (Priority: P2)
 
-Describe this beneficiary journey in plain language.
+Describe this user story in plain language.
 
 **Why this priority**: Explain the value and why it has this priority level.
 
@@ -53,7 +53,7 @@ Describe this beneficiary journey in plain language.
 
 ### User Story 3 - [Brief Title] (Priority: P3)
 
-Describe this beneficiary journey in plain language.
+Describe this user story in plain language.
 
 **Why this priority**: Explain the value and why it has this priority level.
 
