@@ -5,7 +5,8 @@ import re
 
 def validate_branch_name(branch_name):
     """Ensure branch name contains only safe characters."""
-    if not re.match(r"^[a-zA-Z0-9/_.-]+$", branch_name):
+    allowed = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/_.-")
+    if not all(c in allowed for c in branch_name):
         raise ValueError(f"Invalid branch name: {branch_name}")
     return branch_name
 
