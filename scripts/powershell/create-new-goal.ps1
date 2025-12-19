@@ -161,7 +161,8 @@ function New-Goal {
         try {
             $templateContent = Get-Content -Path $templatePath -Raw -ErrorAction Stop
         } catch {
-            Handle-Error "Failed to read goal template: $templatePath"
+            Write-Warning "Failed to read goal template: $templatePath. Using default content."
+            $templateContent = $null
         }
 
         # Replace placeholders in the template

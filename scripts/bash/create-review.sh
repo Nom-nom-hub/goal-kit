@@ -79,7 +79,7 @@ if [ -f "$REVIEW_FILE" ] && [ "$FORCE" = false ]; then
 fi
 
 # Check if template exists
-TEMPLATE_PATH=".goalkit/templates/review-template.md"
+TEMPLATE_PATH="$project_root/.goalkit/templates/review-template.md"
 if [ -f "$TEMPLATE_PATH" ]; then
     REVIEW_CONTENT=$(cat "$TEMPLATE_PATH") || handle_error "Failed to read review template"
     REVIEW_CONTENT="${REVIEW_CONTENT//\[DATE\]/$TIMESTAMP}"

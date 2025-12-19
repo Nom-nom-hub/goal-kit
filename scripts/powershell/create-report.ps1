@@ -94,7 +94,7 @@ function New-Report {
     }
     
     # Check if template exists
-    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit" "templates" "report-template.md"
+    $templatePath = Join-Path -Path (Join-Path -Path $projectRoot -ChildPath ".goalkit") -ChildPath (Join-Path -Path "templates" -ChildPath "report-template.md")
     if (Test-Path $templatePath) {
         $reportContent = Get-Content -Path $templatePath -Raw
         $reportContent = $reportContent -replace '\[DATE\]', $timestamp

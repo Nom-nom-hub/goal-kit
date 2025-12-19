@@ -160,14 +160,21 @@ EOF
     
     # Check if template exists, otherwise create default goal.md
     if [ -f "$project_root/.goalkit/templates/goal-template.md" ]; then
-        # Create goal.md file using the template
-        cat "$project_root/.goalkit/templates/goal-template.md" > "$full_goal_dir/goal.md" || handle_error "Failed to copy goal template"
-
-        # Replace placeholders in the template
-        sed -i.bak "s/\[GOAL DESCRIPTION\]/$goal_description/g" "$full_goal_dir/goal.md" || handle_error "Failed to replace placeholders in goal.md"
-        sed -i.bak "s/\[###-goal-name\]/$goal_dir_name/g" "$full_goal_dir/goal.md" || handle_error "Failed to replace goal name in goal.md"
-        sed -i.bak "s/\[DATE\]/$timestamp/g" "$full_goal_dir/goal.md" || handle_error "Failed to replace date in goal.md"
-        rm -f "$full_goal_dir/goal.md.bak" 2>/dev/null || true
+        # Create goal.md file using template
+        if ! cat "$project_root/.goalkit/templates/goal-template.md" > "$full_goal_dir/goal.md" 2>/dev/null; then
+            write_warning "Failed to copy goal template, using default content"
+            template_copied=false
+        else
+            template_copied=true
+        fi
+        
+        if [ "$template_copied" = true ]; then
+            # Replace placeholders in the template
+            sed -i.bak "s/\[GOAL DESCRIPTION\]/$goal_description/g" "$full_goal_dir/goal.md" || handle_error "Failed to replace placeholders in goal.md"
+            sed -i.bak "s/\[###-goal-name\]/$goal_dir_name/g" "$full_goal_dir/goal.md" || handle_error "Failed to replace goal name in goal.md"
+            sed -i.bak "s/\[DATE\]/$timestamp/g" "$full_goal_dir/goal.md" || handle_error "Failed to replace date in goal.md"
+            rm -f "$full_goal_dir/goal.md.bak" 2>/dev/null || true
+        fi
     else
         # Fallback to default content if template not found
         cat > "$full_goal_dir/goal.md" <<EOF

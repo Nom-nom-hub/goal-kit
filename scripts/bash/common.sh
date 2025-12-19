@@ -87,11 +87,23 @@ test_git_repo() {
 }
 
 get_git_root() {
+    # First try git command
     if test_git_repo; then
-        git rev-parse --show-toplevel
-    else
-        return 1
+        git rev-parse --show-toplevel 2>/dev/null
+        return $?
     fi
+    
+    # Fallback: look for .goalkit directory
+    local current_dir="$(pwd)"
+    while [ "$current_dir" != "/" ]; do
+        if [ -d "$current_dir/.goalkit" ]; then
+            echo "$current_dir"
+            return 0
+        fi
+        current_dir="$(dirname "$current_dir")"
+    done
+    
+    return 1
 }
 
 # Command existence check
@@ -125,11 +137,34 @@ require_file() {
 
 # Validate directory exists
 require_directory() {
-    local dir="$1"
+    local directory="$1"
     
-    if [ ! -d "$dir" ]; then
-        handle_error "Required directory not found: $dir"
+    if [ ! -d "$directory" ]; then
+        handle_error "Required directory not found: $directory"
     fi
+}
+
+# Create directory with proper error handling
+create_directory_safe() {
+    local directory="$1"
+    
+    if [ -d "$directory" ]; then
+        return 0
+    fi
+    
+    # Create parent directories if needed
+    local parent_dir
+    parent_dir="$(dirname "$directory")"
+    if [ ! -d "$parent_dir" ]; then
+        create_directory_safe "$parent_dir" || return 1
+    fi
+    
+    if ! mkdir -p "$directory" 2>/dev/null; then
+        write_error "Failed to create directory: $directory"
+        return 1
+    fi
+    
+    return 0
 }
 
 # Validate writable path
@@ -390,6 +425,15 @@ set_goal_environment() {
         write_error "Could not determine git root. Not in a git repository."
         return 1
     fi
+    
+    # Resolve goal_dir to absolute path if relative
+    if [[ ! "$goal_dir" = /* ]]; then
+        goal_dir="$project_root/$goal_dir"
+    fi
+    goal_dir="$(cd "$goal_dir" 2>/dev/null && pwd)" || {
+        write_error "Goal directory does not exist: $goal_dir"
+        return 1
+    }
     
     local goal_name
     goal_name=$(basename "$goal_dir")

@@ -269,6 +269,41 @@ powershell -ExecutionPolicy Bypass -File scripts/powershell/create-new-goal.ps1 
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
+### PowerShell Script Fails After Init
+
+**Symptoms**: Scripts fail with "template not found", "path not found", or execution errors after project initialization
+
+**Common Causes**:
+
+1. **Template Path Issues**: Scripts use incorrect path resolution for templates
+2. **Working Directory**: Scripts called from agents may run from different directories
+3. **Missing Error Handling**: Scripts don't gracefully handle missing dependencies
+
+**Solutions**:
+
+```powershell
+# Test script execution from project root
+cd /path/to/your/project
+powershell -ExecutionPolicy Bypass -File ".goalkit\scripts\powershell\create-new-goal.ps1" -Json "test-goal"
+
+# Verify template directory exists
+Test-Path ".goalkit\templates"
+
+# Check all required tools
+powershell -ExecutionPolicy Bypass -Command ". .goalkit\scripts\powershell\common.ps1; Test-Prerequisites"
+
+# Manual context update
+powershell -ExecutionPolicy Bypass -File ".goalkit\scripts\powershell\update-agent-context.ps1" -AgentType claude
+```
+
+**Debug Steps**:
+
+1. Ensure you're in the project root directory
+2. Verify `.goalkit\templates` directory contains template files
+3. Check git repository status (`git status`)
+4. Test with `-DryRun` parameter first when available
+5. Use `-Json` parameter for better error output from agents
+
 ## Agent Context Issues
 
 ### Agent Context Not Updating
@@ -292,11 +327,55 @@ update_agent_context
 . scripts/powershell/common.ps1
 Update-AgentContext
 
+# Manual update on Linux/macOS
+bash scripts/bash/common.sh
+source scripts/bash/common.sh
+update_agent_context
+
 # Verify context file exists
 cat CLAUDE.md        # For Claude
 cat CURSOR.md        # For Cursor
 cat GEMINI.md        # For Gemini
 ```
+
+### Bash Script Fails After Init
+
+**Symptoms**: Scripts fail with "template not found", "command not found", or execution errors after project initialization
+
+**Common Causes**:
+
+1. **Template Path Issues**: Scripts use incorrect path resolution for templates
+2. **Missing Dependencies**: Required tools not installed or not in PATH
+3. **Permission Issues**: Scripts don't have execute permissions
+
+**Solutions**:
+
+```bash
+# Make scripts executable
+chmod +x scripts/bash/*.sh
+
+# Test script execution from project root
+cd /path/to/your/project
+bash scripts/bash/create-new-goal.sh --json "test-goal"
+
+# Verify template directory exists
+test -d ".goalkit/templates"
+
+# Check all required tools
+bash scripts/bash/common.sh -c "source scripts/bash/common.sh; test_prerequisites"
+
+# Manual context update
+bash scripts/bash/update-agent-context.sh claude
+```
+
+**Debug Steps**:
+
+1. Ensure you're in the project root directory
+2. Verify `.goalkit/templates` directory contains template files
+3. Check script permissions: `ls -la scripts/bash/`
+4. Test with `--dry-run` parameter first when available
+5. Use `--json` parameter for better error output from agents
+6. Check for missing tools: `git --version`, `which uv`
 
 ### Context File Not Found
 

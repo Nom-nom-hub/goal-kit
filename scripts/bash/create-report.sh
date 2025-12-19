@@ -100,7 +100,7 @@ if [ -f "$REPORT_FILE" ] && [ "$EDIT" = true ]; then
 fi
 
 # Check if template exists
-TEMPLATE_PATH=".goalkit/templates/report-template.md"
+TEMPLATE_PATH="$project_root/.goalkit/templates/report-template.md"
 if [ -f "$TEMPLATE_PATH" ]; then
     REPORT_CONTENT=$(cat "$TEMPLATE_PATH") || handle_error "Failed to read report template"
     REPORT_CONTENT="${REPORT_CONTENT//\[DATE\]/$TIMESTAMP}"

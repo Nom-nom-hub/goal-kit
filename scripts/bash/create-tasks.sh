@@ -93,7 +93,7 @@ fi
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
 
 # Check if template exists
-TEMPLATE_PATH=".goalkit/templates/tasks-template.md"
+TEMPLATE_PATH="$project_root/.goalkit/templates/tasks-template.md"
 if [ -f "$TEMPLATE_PATH" ]; then
     TASKS_CONTENT=$(cat "$TEMPLATE_PATH") || handle_error "Failed to read tasks template"
     TASKS_CONTENT="${TASKS_CONTENT//\[GOAL\]/$GOAL_DIR}"

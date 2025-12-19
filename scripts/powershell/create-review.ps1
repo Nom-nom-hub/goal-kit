@@ -81,7 +81,7 @@ function New-Review {
     }
     
     # Check if template exists
-    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit" "templates" "review-template.md"
+    $templatePath = Join-Path -Path (Join-Path -Path $projectRoot -ChildPath ".goalkit") -ChildPath (Join-Path -Path "templates" -ChildPath "review-template.md")
     if (Test-Path $templatePath) {
         $reviewContent = Get-Content -Path $templatePath -Raw
         $reviewContent = $reviewContent -replace '\[DATE\]', $timestamp

@@ -4,6 +4,17 @@
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
+# Ensure execution policy allows script execution
+try {
+    $executionPolicy = Get-ExecutionPolicy -Scope Process
+    if ($executionPolicy -eq 'Restricted') {
+        Write-Warning "PowerShell execution policy is Restricted. Attempting to set Bypass for current session..."
+        Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+    }
+} catch {
+    Write-Warning "Could not modify execution policy. Script may fail if policy is too restrictive."
+}
+
 # Color codes for output
 $Colors = @{
     Red = 'Red'
@@ -98,10 +109,26 @@ function Test-GitRepo {
 
 function Get-GitRoot {
     try {
+        # First try git command
         $root = git rev-parse --show-toplevel 2>$null
         if ($?) {
+            # Normalize path for Windows
+            $root = [System.IO.Path]::GetFullPath($root)
             return $root
         }
+        
+        # Fallback: look for .goalkit directory
+        $currentDir = Get-Location
+        while ($currentDir -ne $null) {
+            $goalkitPath = Join-Path -Path $currentDir -ChildPath ".goalkit"
+            if (Test-Path $goalkitPath) {
+                return [System.IO.Path]::GetFullPath($currentDir)
+            }
+            $parent = Split-Path -Path $currentDir -Parent
+            if ($parent -eq $currentDir) { break }
+            $currentDir = $parent
+        }
+        
         return $null
     } catch {
         return $null
@@ -151,6 +178,27 @@ function Require-Directory {
     
     if (-not (Test-Path $DirectoryPath)) {
         Handle-Error "Required directory not found: $DirectoryPath"
+    }
+}
+
+# Create directory with proper error handling
+function New-DirectorySafe {
+    param([string]$DirectoryPath)
+    
+    if (Test-Path $DirectoryPath) {
+        return $true
+    }
+    
+    try {
+        $parentDir = Split-Path -Parent $DirectoryPath
+        if (-not [string]::IsNullOrEmpty($parentDir) -and -not (Test-Path $parentDir)) {
+            New-DirectorySafe -DirectoryPath $parentDir
+        }
+        New-Item -ItemType Directory -Path $DirectoryPath -Force -ErrorAction Stop | Out-Null
+        return $true
+    } catch {
+        Write-Error-Custom "Failed to create directory: $DirectoryPath. Error: $($_.Exception.Message)"
+        return $false
     }
 }
 
@@ -424,10 +472,28 @@ function Test-GoalContext {
 function Set-GoalEnvironment {
     param([string]$GoalDir)
     
+    # Resolve GoalDir to absolute path if relative
+    if (-not [System.IO.Path]::IsPathRooted($GoalDir)) {
+        $projectRoot = Get-GitRoot
+        if ([string]::IsNullOrEmpty($projectRoot)) {
+            $currentDir = Get-Location
+            $GoalDir = Join-Path -Path $currentDir -ChildPath $GoalDir
+        } else {
+            $GoalDir = Join-Path -Path $projectRoot -ChildPath $GoalDir
+        }
+        $GoalDir = [System.IO.Path]::GetFullPath($GoalDir)
+    }
+    
     $projectRoot = Get-GitRoot
     
     if ([string]::IsNullOrEmpty($projectRoot)) {
         Write-Error-Custom "Could not determine git root. Not in a git repository."
+        return $false
+    }
+    
+    # Verify goal directory exists
+    if (-not (Test-Path $GoalDir)) {
+        Write-Error-Custom "Goal directory does not exist: $GoalDir"
         return $false
     }
     
