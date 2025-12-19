@@ -97,3 +97,15 @@ Link to vision success scenario and confirm this strategy supports it.
 |-----------|------------|-------------------------------------|
 | [e.g., High complexity strategy] | [current need] | [why simple approach insufficient] |
 | [e.g., Multi-team coordination] | [specific problem] | [why single-team approach insufficient] |
+
+## Rollout & Onboarding Strategy
+
+*GATE: Strategy is incomplete without a plan for how users will adopt it. (Mitigates Mistake 11)*
+
+**Discovery Plan**:
+- [ ] How will users find this features? (e.g., In-app tour, email, changelog, auto-redirect)
+- [ ] [Specific item]
+
+**Adoption Plan**:
+- [ ] What materials are needed? (e.g., Documentation, training video, FAQ)
+- [ ] [Specific item]

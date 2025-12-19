@@ -82,3 +82,19 @@ Sequence matches selected WebSocket strategy and validates riskiest assumption (
 |-----------|------------|-------------------------------------|
 | [e.g., Complex milestone structure] | [current need] | [why simple approach insufficient] |
 | [e.g., Multi-phase validation] | [specific problem] | [why single-phase approach insufficient] |
+
+## Verification Plan
+
+*For each milestone, how does the team know it's "Done"?*
+
+**Milestone 1 Verification**:
+- [ ] Automated tests: [e.g., Unit tests, Integration tests]
+- [ ] Manual check: [e.g., Demo to stakeholders]
+
+**Milestone 2 Verification**:
+- [ ] Automated tests: [e.g., E2E flow]
+- [ ] Manual check: [e.g., User acceptance test]
+
+**Milestone 3 Verification**:
+- [ ] Automated tests: [e.g., Performance benchmarks]
+- [ ] Manual check: [e.g., Beta feedback review]

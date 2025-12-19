@@ -103,6 +103,11 @@ my-project/
 └── ... (your code)
 ```
 
+### Lite Templates (New!)
+For smaller projects or quick iterations, you can use the Lite templates:
+- `templates/lite-goal-template.md`
+- `templates/lite-metrics-template.md`
+
 ---
 
 ## 🤖 Supported AI Agents

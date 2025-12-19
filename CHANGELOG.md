@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-12-19
+
+### 🚀 Methodology Improvements & Lite Templates
+
+This release introduces "Lite" templates for smaller goals and reinforces best practices in the standard workflow with explicit onboarding and verification steps.
+
+#### ✨ New Features
+
+- **Lite Templates**: Added simplified templates for quick iterations
+  - `templates/lite-goal-template.md`: Streamlined goal definition with 1-2 primary metrics
+  - `templates/lite-metrics-template.md`: Tabular metrics plan for quick validation
+
+#### 🔧 Template Enhancements
+
+- **Strategies Template**: Added "Rollout & Onboarding Strategy" section to ensure user adoption is planned (Mitigates Mistake 11)
+- **Milestones Template**: Added "Verification Plan" section to explicitly define automated and manual checks per milestone
+
+#### 📚 Documentation
+
+- Updated README to reference new Lite templates within the "What Gets Created" section
+
 ## [2.0.5] - 2025-12-18
 
 ### 🔧 Script Reliability & Maintainability
