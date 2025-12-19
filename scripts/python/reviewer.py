@@ -3,12 +3,25 @@ import sys
 import subprocess
 import re
 
+def validate_branch_name(branch_name):
+    """Ensure branch name contains only safe characters."""
+    if not re.match(r"^[a-zA-Z0-9/_.-]+$", branch_name):
+        raise ValueError(f"Invalid branch name: {branch_name}")
+    return branch_name
+
 def get_changed_files(base_branch="origin/main"):
     """Get list of changed files compared to base branch."""
+    # Validate input to prevent injection
+    try:
+        safe_branch = validate_branch_name(base_branch)
+    except ValueError as e:
+        print(f"Security error: {e}", file=sys.stderr)
+        return []
+
     try:
         # Inline list to satisfy security scanner
         result = subprocess.run(
-            ["git", "diff", "--name-only", f"{base_branch}...HEAD"],
+            ["git", "diff", "--name-only", f"{safe_branch}...HEAD"],
             capture_output=True, text=True, check=False, shell=False
         )
         raw = result.stdout.strip()
@@ -47,10 +60,16 @@ def scan_patterns(base_branch="origin/main"):
     """Scan diff for regex patterns."""
     issues = []
     
+    # Validate input
+    try:
+        safe_branch = validate_branch_name(base_branch)
+    except ValueError:
+        return []
+
     try:
         # Inline list construction
         result = subprocess.run(
-            ["git", "diff", f"{base_branch}...HEAD"],
+            ["git", "diff", f"{safe_branch}...HEAD"],
             capture_output=True, text=True, check=False, shell=False
         )
         diff_output = result.stdout.strip()
