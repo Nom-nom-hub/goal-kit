@@ -3,7 +3,9 @@
 **Vision Alignment**: Links to `[###-vision-scenario]` from vision.md  
 **Goal Branch**: `[###-goal-name]` | **Created**: [DATE] | **Status**: Draft
 
-## Beneficiary Scenarios & Validation *(mandatory)*
+> **Need a simpler template?** Use the [Lite Template](./lite-goal-template.md) for quick tasks.
+
+## User Stories *(mandatory)*
 
 <!--
   IMPORTANT: User stories should be PRIORITIZED as beneficiary journeys ordered by importance.
@@ -49,7 +51,7 @@ Describe this beneficiary journey in plain language.
 
 ---
 
-### Beneficiary Story 3 - [Brief Title] (Priority: P3)
+### User Story 3 - [Brief Title] (Priority: P3)
 
 Describe this beneficiary journey in plain language.
 
@@ -67,6 +69,12 @@ Describe this beneficiary journey in plain language.
 
 - What happens when [boundary condition]? *Example: "Network drops during live comment sync?"*
 - How does system handle [error scenario]? *Example: "User's comment fails to post - how does client recover?"*
+
+### Out of Scope *(mandatory)*
+*Explicitly list what we are NOT doing to prevent scope creep.*
+
+- [ ] [Feature or requirement specifically excluded]
+- [ ] [Feature or requirement specifically excluded]
 
 ## Requirements *(mandatory)*
 

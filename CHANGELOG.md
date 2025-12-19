@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-12-19
+
+### 🔄 Phase 2 Template Enhancements (Core Workflow)
+
+This release significantly enhances the core Goal Kit templates (`goal`, `execute`, `report`, `review`) with industry best practices for agile execution, clearer scope management, and better stakeholder communication.
+
+#### ✨ Template Improvements
+
+- **Goal Template** (`templates/goal-template.md`):
+  - Added **Out of Scope** section to explicitly prevent scope creep
+  - Renamed "Beneficiary Scenarios" to "User Stories" for standard industry terminology
+  - Added link to "Lite" templates for easier discovery
+
+- **Execution Template** (`templates/execution-template.md`):
+  - Added **Communication Plan** section to define team rituals
+  - Added **Verification Strategy** to link implementation to testing approach
+
+- **Report Template** (`templates/report-template.md`):
+  - **Risks & Blockers** moved to top for immediate visibility
+  - Added **The Ask** section for explicit stakeholder requests (Decisions, Help, FYI)
+
+- **Review Template** (`templates/review-template.md`):
+  - Added **Start/Stop/Continue** retrospective format for actionable team feedback
+
 ## [2.1.0] - 2025-12-19
 
 ### 🚀 Methodology Improvements & Lite Templates
