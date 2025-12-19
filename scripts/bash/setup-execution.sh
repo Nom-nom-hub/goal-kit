@@ -92,7 +92,8 @@ EOF
     
     # Check if template exists, otherwise create default execution.md
     if [ -f "$project_root/.goalkit/templates/execution-template.md" ]; then
-        # Create execution.md file using the template
+        # Create execution.md file using template
+        local template_copied=false
         if ! cat "$project_root/.goalkit/templates/execution-template.md" > "$execution_file" 2>/dev/null; then
             write_warning "Failed to copy execution template, using default content"
             template_copied=false

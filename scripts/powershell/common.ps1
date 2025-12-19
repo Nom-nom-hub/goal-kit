@@ -192,7 +192,9 @@ function New-DirectorySafe {
     try {
         $parentDir = Split-Path -Parent $DirectoryPath
         if (-not [string]::IsNullOrEmpty($parentDir) -and -not (Test-Path $parentDir)) {
-            New-DirectorySafe -DirectoryPath $parentDir
+            if (-not (New-DirectorySafe -DirectoryPath $parentDir)) {
+                return $false
+            }
         }
         New-Item -ItemType Directory -Path $DirectoryPath -Force -ErrorAction Stop | Out-Null
         return $true
@@ -472,9 +474,11 @@ function Test-GoalContext {
 function Set-GoalEnvironment {
     param([string]$GoalDir)
     
+    # Determine project root once so it can be reused consistently
+    $projectRoot = Get-GitRoot
+    
     # Resolve GoalDir to absolute path if relative
     if (-not [System.IO.Path]::IsPathRooted($GoalDir)) {
-        $projectRoot = Get-GitRoot
         if ([string]::IsNullOrEmpty($projectRoot)) {
             $currentDir = Get-Location
             $GoalDir = Join-Path -Path $currentDir -ChildPath $GoalDir
@@ -483,8 +487,6 @@ function Set-GoalEnvironment {
         }
         $GoalDir = [System.IO.Path]::GetFullPath($GoalDir)
     }
-    
-    $projectRoot = Get-GitRoot
     
     if ([string]::IsNullOrEmpty($projectRoot)) {
         Write-Error-Custom "Could not determine git root. Not in a git repository."

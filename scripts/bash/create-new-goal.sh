@@ -161,6 +161,7 @@ EOF
     # Check if template exists, otherwise create default goal.md
     if [ -f "$project_root/.goalkit/templates/goal-template.md" ]; then
         # Create goal.md file using template
+        local template_copied=false
         if ! cat "$project_root/.goalkit/templates/goal-template.md" > "$full_goal_dir/goal.md" 2>/dev/null; then
             write_warning "Failed to copy goal template, using default content"
             template_copied=false

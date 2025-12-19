@@ -101,7 +101,7 @@ function New-Tasks {
     $goalName = Split-Path -Leaf $targetGoalDir
     
     # Check if template exists
-    $templatePath = Join-Path -Path (Join-Path -Path $projectRoot -ChildPath ".goalkit") -ChildPath (Join-Path -Path "templates" -ChildPath "tasks-template.md")
+    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit/templates/tasks-template.md"
     if (Test-Path $templatePath) {
         $templateContent = Get-Content -Path $templatePath -Raw
         $tasksContent = $templateContent -replace '\[GOAL\]', $goalName

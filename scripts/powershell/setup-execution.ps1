@@ -80,7 +80,7 @@ function New-ExecutionFile {
     }
     
     # Check if template exists, otherwise create default execution.md
-    $templatePath = Join-Path -Path (Join-Path -Path $projectRoot -ChildPath ".goalkit") -ChildPath (Join-Path -Path "templates" -ChildPath "execution-template.md")
+    $templatePath = Join-Path -Path $projectRoot -ChildPath ".goalkit/templates/execution-template.md"
     if (Test-Path $templatePath) {
         # Read the template
         try {

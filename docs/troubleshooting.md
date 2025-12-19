@@ -328,8 +328,8 @@ update_agent_context
 Update-AgentContext
 
 # Manual update on Linux/macOS
-bash scripts/bash/common.sh
-source scripts/bash/common.sh
+# Source the script to load helper functions into current shell
+source scripts/bash/common.sh   # or: . scripts/bash/common.sh
 update_agent_context
 
 # Verify context file exists
