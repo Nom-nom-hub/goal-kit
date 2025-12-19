@@ -19,6 +19,8 @@ Extract from goal and milestones: primary outcome + detailed implementation plan
 **Success Metrics**: [Key metrics from goal to validate during implementation]
 **Target Timeline**: [Specific dates or sprint numbers for each milestone]
 **Team Structure**: [Who owns what - e.g., "Alice (backend), Bob (frontend)"]
+**Communication Plan**: [Rituals - e.g., "Daily async status in #channel, Weekly demo on Fridays"]
+**Verification Strategy**: [How we test - e.g., "Unit tests for logic, Manual QA for UI, E2E for critical flows"]
 **Key Risks & Mitigations**: [Specific risks from milestones with concrete mitigations]
 
 ## Milestones Check

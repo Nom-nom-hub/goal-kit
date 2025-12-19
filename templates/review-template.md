@@ -95,6 +95,12 @@ Link to learnings template: `/goals/[###-goal-name]/learnings.md`
 - Task dependencies clear and managed effectively
 - Team collaboration smooth (no blocking issues)
 
+### Start / Stop / Continue
+*Retrospective actions for the team*
+- **Start**: [New practice to begin]
+- **Stop**: [Bad habit to end]
+- **Continue**: [Good practice to keep]
+
 **Measurement & Validation**:
 - Success criteria were measurable and realistic
 - Built-in power user validation effective

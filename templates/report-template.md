@@ -41,6 +41,17 @@ Report must show achievement against goal metrics, not arbitrary metrics.
 │       └── action-items.md  # Report 2 output - detailed next steps
 ```
 
+### Risks & Blockers
+*Top risks that need attention immediately.*
+- **🔴 Blocker**: [Description]
+- **🟡 Risk**: [Description]
+
+### The Ask *(Executive Summary)*
+*What do you need right now?*
+- [ ] **Decisions**: [e.g., Approve scope change]
+- [ ] **Help**: [e.g., Unblock dependency]
+- [ ] **FYI**: [e.g., We are on track]
+
 ### Success Criteria Achievement
 
 **Metric Performance Table**:

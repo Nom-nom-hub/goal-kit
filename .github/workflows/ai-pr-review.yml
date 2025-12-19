@@ -34,15 +34,13 @@ jobs:
         git fetch origin ${{ github.event.pull_request.head.ref }}:pr-changes
         git checkout pr-changes
 
-    - name: Invoke AI Agent Review
+    - name: Invoke Smart Code Review
       run: |
-        echo "AI PR review step placeholder - review script needs to be implemented"
-        # TODO: Implement review-pr.py or replace with existing review mechanism
-        # For now, create a placeholder summary file
-        echo "# AI Review Summary" > ai_review_summary.md
-        echo "## Review Status" >> ai_review_summary.md
-        echo "- Pull request analysis completed" >> ai_review_summary.md
-        echo "- Review script implementation pending" >> ai_review_summary.md
+        pip install radon
+        # Fetch base branch for diff comparison
+        git fetch origin ${{ github.base_ref || 'main' }}:base-branch
+        export GITHUB_BASE_REF=${{ github.base_ref || 'main' }}
+        python scripts/python/reviewer.py
 
     - name: Comment on PR
       uses: marocchino/sticky-pull-request-comment@v2

@@ -1,6 +1,6 @@
 [project]
 name = "goalkeeper-cli"
-version = "2.1.0"
+version = "2.2.0"
 license = "MIT"
 description = "Goalkeeper CLI, part of Goal Kit. A tool to bootstrap your projects for Goal-Driven Development (GDD)."
 requires-python = ">=3.11"
