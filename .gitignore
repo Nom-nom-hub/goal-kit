@@ -102,3 +102,7 @@ goal-driven.md
 run_tests.py
 .coverage
 htmlcov/
+V3_ROADMAP.md
+PHASE_1_INTEGRATION.md
+PHASE_2_INTEGRATION.md
+PHASE_3_INTEGRATION.md
