@@ -43,7 +43,7 @@ jobs:
         python scripts/python/reviewer.py
 
     - name: Comment on PR
-      uses: marocchino/sticky-pull-request-comment@v2
+      uses: marocchino/sticky-pull-request-comment@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         header: "AI Review Summary"
