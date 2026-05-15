@@ -61,6 +61,9 @@ def _output_json(result: AnalysisResult, console: Console) -> None:
         result: Analysis result to output
         console: Rich console for output
     """
+    analyzer = ProjectAnalyzer(result.project.path)
+    insights = analyzer.get_insights()
+    
     output = {
         "project": {
             "name": result.project.name,
@@ -72,6 +75,12 @@ def _output_json(result: AnalysisResult, console: Console) -> None:
             "phase": result.phase,
             "completion_percent": result.completion_percent,
             "health_score": result.health_score,
+        },
+        "insights": {
+            "summary": insights["summary"],
+            "recommendations": insights["recommendations"],
+            "concerns": insights["concerns"],
+            "strengths": insights["strengths"],
         },
         "milestones": {
             "total": result.milestone_count,
@@ -103,6 +112,10 @@ def _output_formatted(result: AnalysisResult, console: Console, verbose: bool = 
         console: Rich console for output
         verbose: Show detailed information
     """
+    # Get insights for contextual recommendations
+    analyzer = ProjectAnalyzer(result.project.path)
+    insights = analyzer.get_insights()
+    
     # Header with project info
     header = f"[bold blue]{result.project.name}[/bold blue]"
     if result.project.agent != "unknown":
@@ -117,6 +130,22 @@ def _output_formatted(result: AnalysisResult, console: Console, verbose: bool = 
 [bold]Health:[/bold] {_format_health_score(result.health_score)}
 """
     console.print(Panel(status_text, title="Status", expand=False))
+    
+    # Show actionable insights
+    if insights["recommendations"]:
+        console.print("\n[bold cyan]💡 Insights[/bold cyan]")
+        for rec in insights["recommendations"]:
+            console.print(f"  • {rec}")
+    
+    if insights["concerns"]:
+        console.print("\n[bold red]⚠️ Concerns[/bold red]")
+        for concern in insights["concerns"]:
+            console.print(f"  • {concern}")
+    
+    if insights["strengths"]:
+        console.print("\n[bold green]✓ Strengths[/bold green]")
+        for strength in insights["strengths"]:
+            console.print(f"  • {strength}")
     
     # Goals summary
     console.print(f"\n[bold cyan]Goals ({len(result.goals)})[/bold cyan]")
