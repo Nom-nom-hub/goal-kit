@@ -43,9 +43,8 @@ This release adds ShellCheck CI to the pipeline, fixes all ShellCheck warnings a
 
 #### 🔧 Improvements
 
-- **Bash Script Standards**: All 30+ scripts now pass `shellcheck -S style` with zero errors
 - **Better Error Handling**: `update-agent-context.sh` — properly quoted find command substitution
-- **Consistent Patterns**: All scripts use same-line `# shellcheck disable` for unused variables
+- **ShellCheck Compliance**: All 5 target warning types (SC2155, SC2034, SC2086, SC2046, SC2181) clean across all 30+ scripts
 
 ## [2.3.0] - 2026-05-15
 
