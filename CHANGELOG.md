@@ -5,6 +5,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-05-15
+
+### 🎯 Make Goal-Kit More Effective and Smarter
+
+This release improves goal-kit by removing AI drift code, enhancing the analyzer with actionable insights, simplifying templates, and renaming the CLI.
+
+#### ✨ Core Improvements
+
+- **Removed AI Drift Code**:
+  - Deleted `src/goalkeeper_cli/ai/providers.py` (not used, called external APIs)
+  - Deleted `src/goalkeeper_cli/templates.py` (dead code)
+  - Goal-kit now works purely via markdown files and scripts
+
+- **Enhanced Analyzer** (`src/goalkit/analyzer.py`):
+  - Added `get_insights()` method with contextual recommendations
+  - Added `get_insights_from_result()` static method for efficiency
+  - Fixed summary generation for all health score levels
+  - Fixed phase consistency ("execute" vs "execution")
+
+- **Updated Status Command** (`src/goalkit/commands/status.py`):
+  - Shows actionable insights, concerns, and strengths
+  - JSON output includes insights section
+  - Uses existing analysis result (no redundant processing)
+
+#### 📦 Template Simplification
+
+- **Deleted 23 Unused Templates** - Kept only 6 core templates:
+  - `vision-template.md`
+  - `goal-template.md`
+  - `lite-goal-template.md`
+  - `strategies-template.md`
+  - `milestones-template.md`
+  - `execution-template.md`
+
+- **Improved Template Structure**:
+  - Added Summary section (2-3 sentences) to vision & goal
+  - Added Key Stakeholders section
+  - Added Risks section with parseable format
+  - Added Progress field to goal header
+  - Synced `.goalkit/templates/` with `templates/`
+
+#### 🐛 Bug Fixes
+
+- Fixed `create-vision.sh` to create vision file in JSON mode
+- Fixed `update-agent-context.sh` write_host error
+- Fixed phase inconsistency in analyzer
+- Removed `goalkit-test` submodule from repo
+
+#### 🔧 CLI Rename
+
+- **Package**: `goalkeeper-cli` → `goalkit`
+- **Command**: `goalkeeper` → `goalkit`
+- **Usage**: `goalkit init`, `goalkit status`, etc.
+
 ## [2.2.0] - 2025-12-19
 
 ### 🔄 Phase 2 Template Enhancements (Core Workflow)
