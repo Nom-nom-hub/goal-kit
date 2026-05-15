@@ -1,0 +1,19 @@
+{
+  "recommendations": [
+    "eamodio.gitlens",
+    "yzhang.markdown-all-in-one",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "charliermarsh.ruff",
+    "ms-vscode.makefile-tools",
+    "formulahendry.code-runner",
+    "ms-vscode.json-language-features",
+    "ms-vscode.powershell",
+    "foxundermoon.shell-format",
+    "mads-hartmann.bash-ide-vscode",
+    "bierner.markdown-preview-github-styles",
+    "KevinRose.vsc-python-indent",
+    "ms-vscode-remote.remote-containers",
+    "GitHub.copilot"
+  ]
+}
