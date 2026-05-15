@@ -381,3 +381,83 @@ class ProjectAnalyzer:
         # For now, return empty list
         # In future, will parse actual milestone files
         return []
+
+    def get_insights(self) -> Dict[str, Any]:
+        """Generate actionable insights for the project.
+        
+        Returns:
+            Dictionary containing insights and recommendations
+        """
+        result = self.analyze()
+        insights = {
+            "summary": self._generate_summary(result),
+            "recommendations": self._generate_recommendations(result),
+            "concerns": self._identify_concerns(result),
+            "strengths": self._identify_strengths(result),
+        }
+        return insights
+
+    def _generate_summary(self, result: AnalysisResult) -> str:
+        """Generate project summary."""
+        if result.health_score >= 80:
+            status = "healthy"
+        elif result.health_score >= 50:
+            return "needs attention"
+        else:
+            return "requires action"
+        
+        return f"Project is {status} (health: {result.health_score}%, completion: {result.completion_percent}%)"
+
+    def _generate_recommendations(self, result: AnalysisResult) -> List[str]:
+        """Generate actionable recommendations."""
+        recommendations = []
+        
+        if result.completion_percent < 30:
+            recommendations.append("Focus on making progress - break down goals into smaller milestones")
+        
+        if result.health_score < 50:
+            recommendations.append("Define success metrics for goals to improve tracking")
+        
+        if result.milestone_count > 0 and result.completed_milestones == 0:
+            recommendations.append("Complete at least one milestone to build momentum")
+        
+        goals_without_metrics = [g for g in result.goals if not g.metrics_defined]
+        if goals_without_metrics:
+            recommendations.append(f"Add metrics to {len(goals_without_metrics)} goal(s) for better progress visibility")
+        
+        if not recommendations:
+            recommendations.append("Keep up the good work - project is on track")
+        
+        return recommendations
+
+    def _identify_concerns(self, result: AnalysisResult) -> List[str]:
+        """Identify areas of concern."""
+        concerns = []
+        
+        if result.phase == "execution" and result.completion_percent < 20:
+            concerns.append("Low progress in execution phase")
+        
+        if result.health_score < 40:
+            concerns.append("Health score is below critical threshold")
+        
+        stalled_goals = [g for g in result.goals if g.phase == "execute" and g.completion_percent == 0]
+        if stalled_goals:
+            concerns.append(f"{len(stalled_goals)} goal(s) stalled in execution")
+        
+        return concerns
+
+    def _identify_strengths(self, result: AnalysisResult) -> List[str]:
+        """Identify project strengths."""
+        strengths = []
+        
+        if result.health_score >= 70:
+            strengths.append("Strong health score indicates good project management")
+        
+        if result.completion_percent >= 50:
+            strengths.append("Over 50% completion shows solid progress")
+        
+        goals_with_metrics = [g for g in result.goals if g.metrics_defined]
+        if len(goals_with_metrics) >= len(result.goals) * 0.7:
+            strengths.append("Most goals have defined metrics for tracking")
+        
+        return strengths
