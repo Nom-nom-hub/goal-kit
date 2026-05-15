@@ -41,6 +41,27 @@ function New-Vision {
     # Define vision file path
     $visionFile = Join-Path ".goalkit" "vision.md"
     
+    # Create .goalkit directory if it doesn't exist
+    $goalKitDir = Join-Path ".goalkit"
+    if (-not (Test-Path $goalKitDir)) {
+        try {
+            New-Item -ItemType Directory -Path $goalKitDir -Force -ErrorAction Stop | Out-Null
+        } catch {
+            Handle-Error "Failed to create .goalkit directory"
+        }
+    }
+    
+    # If vision file doesn't exist, create it from template
+    if (-not (Test-Path $visionFile)) {
+        $timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+        $templatePath = Join-Path $projectRoot ".goalkit\templates\vision-template.md"
+        if (Test-Path $templatePath) {
+            $visionContent = Get-Content $templatePath -Raw -ErrorAction Stop
+            $visionContent = $visionContent -replace '\[DATE\]', $timestamp
+            $visionContent | Out-File $visionFile -Encoding UTF8 -ErrorAction Stop
+        }
+    }
+    
     # If JSON mode, output JSON with file path
     if ($JsonMode) {
         $jsonOutput = @{
@@ -66,16 +87,6 @@ function New-Vision {
             Write-Warning "Vision file already exists: $visionFile"
             Write-Info "Use --edit to open in editor or --force to overwrite"
             exit 0
-        }
-    }
-    
-    # Create .goalkit directory if it doesn't exist
-    $goalKitDir = Join-Path ".goalkit"
-    if (-not (Test-Path $goalKitDir)) {
-        try {
-            New-Item -ItemType Directory -Path $goalKitDir -Force -ErrorAction Stop | Out-Null
-        } catch {
-            Handle-Error "Failed to create .goalkit directory"
         }
     }
     

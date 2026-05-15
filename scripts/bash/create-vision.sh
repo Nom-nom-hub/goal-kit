@@ -51,11 +51,18 @@ cd "$PROJECT_ROOT" || handle_error "Failed to change to project root: $PROJECT_R
 
 # Check if this is a Goal Kit project
 VISION_FILE=".goalkit/vision.md"
+
+# Create .goalkit directory if it doesn't exist
+mkdir -p ".goalkit" || handle_error "Failed to create .goalkit directory"
+
+# If vision file doesn't exist, create it from template
 if [ ! -f "$VISION_FILE" ]; then
-    # If JSON mode, output JSON even for new project
-    if [ "$JSON" = true ]; then
-        echo '{"VISION_FILE":"'"$VISION_FILE"'","VISION_DIR":".goalkit"}'
-        return 0
+    TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
+    TEMPLATE_PATH="$PROJECT_ROOT/.goalkit/templates/vision-template.md"
+    if [ -f "$TEMPLATE_PATH" ]; then
+        VISION_CONTENT=$(cat "$TEMPLATE_PATH") || handle_error "Failed to read vision template"
+        VISION_CONTENT="${VISION_CONTENT//\[DATE\]/$TIMESTAMP}"
+        echo "$VISION_CONTENT" > "$VISION_FILE" || handle_error "Failed to create vision file"
     fi
 fi
 
@@ -87,14 +94,11 @@ if [ -f "$VISION_FILE" ]; then
     fi
 fi
 
-# Create .goalkit directory if it doesn't exist
-mkdir -p ".goalkit" || handle_error "Failed to create .goalkit directory"
-
 # Get timestamp
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
 
 # Check if template exists
-TEMPLATE_PATH="$project_root/.goalkit/templates/vision-template.md"
+TEMPLATE_PATH="$PROJECT_ROOT/.goalkit/templates/vision-template.md"
 if [ -f "$TEMPLATE_PATH" ]; then
     VISION_CONTENT=$(cat "$TEMPLATE_PATH") || handle_error "Failed to read vision template"
     
