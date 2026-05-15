@@ -389,11 +389,24 @@ class ProjectAnalyzer:
             Dictionary containing insights and recommendations
         """
         result = self.analyze()
+        return self.get_insights_from_result(result)
+    
+    @staticmethod
+    def get_insights_from_result(result: AnalysisResult) -> Dict[str, Any]:
+        """Generate insights from existing analysis result.
+        
+        Args:
+            result: Existing AnalysisResult to generate insights from
+            
+        Returns:
+            Dictionary containing insights and recommendations
+        """
+        analyzer = ProjectAnalyzer.__new__(ProjectAnalyzer)
         insights = {
-            "summary": self._generate_summary(result),
-            "recommendations": self._generate_recommendations(result),
-            "concerns": self._identify_concerns(result),
-            "strengths": self._identify_strengths(result),
+            "summary": analyzer._generate_summary(result),
+            "recommendations": analyzer._generate_recommendations(result),
+            "concerns": analyzer._identify_concerns(result),
+            "strengths": analyzer._identify_strengths(result),
         }
         return insights
 
@@ -402,9 +415,9 @@ class ProjectAnalyzer:
         if result.health_score >= 80:
             status = "healthy"
         elif result.health_score >= 50:
-            return "needs attention"
+            status = "needs attention"
         else:
-            return "requires action"
+            status = "requires action"
         
         return f"Project is {status} (health: {result.health_score}%, completion: {result.completion_percent}%)"
 
@@ -434,7 +447,7 @@ class ProjectAnalyzer:
         """Identify areas of concern."""
         concerns = []
         
-        if result.phase == "execution" and result.completion_percent < 20:
+        if result.phase == "execute" and result.completion_percent < 20:
             concerns.append("Low progress in execution phase")
         
         if result.health_score < 40:

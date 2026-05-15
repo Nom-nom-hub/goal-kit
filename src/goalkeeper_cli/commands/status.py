@@ -61,8 +61,7 @@ def _output_json(result: AnalysisResult, console: Console) -> None:
         result: Analysis result to output
         console: Rich console for output
     """
-    analyzer = ProjectAnalyzer(result.project.path)
-    insights = analyzer.get_insights()
+    insights = ProjectAnalyzer.get_insights_from_result(result)
     
     output = {
         "project": {
@@ -113,8 +112,7 @@ def _output_formatted(result: AnalysisResult, console: Console, verbose: bool = 
         verbose: Show detailed information
     """
     # Get insights for contextual recommendations
-    analyzer = ProjectAnalyzer(result.project.path)
-    insights = analyzer.get_insights()
+    insights = ProjectAnalyzer.get_insights_from_result(result)
     
     # Header with project info
     header = f"[bold blue]{result.project.name}[/bold blue]"
