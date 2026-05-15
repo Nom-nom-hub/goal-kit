@@ -1,8 +1,8 @@
 [project]
-name = "goalkeeper-cli"
+name = "goalkit"
 version = "2.3.0"
 license = "MIT"
-description = "Goalkeeper CLI, part of Goal Kit. A tool to bootstrap your projects for Goal-Driven Development (GDD)."
+description = "Goalkit CLI - Goal-Driven Development tool for AI agents"
 requires-python = ">=3.11"
 dependencies = [
     "typer",
@@ -23,14 +23,14 @@ dev = [
 ]
 
 [project.scripts]
-goalkeeper = "goalkeeper_cli:main"
+goalkit = "goalkit:main"
 
 [build-system]
 requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["goalkeeper_cli", "goalkeeper_cli.commands"]
+packages = ["goalkit", "goalkit.commands"]
 
 [tool.setuptools.package-dir]
 "" = "src"

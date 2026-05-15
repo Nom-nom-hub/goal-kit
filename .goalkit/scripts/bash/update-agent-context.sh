@@ -38,7 +38,7 @@ cd "$PROJECT_ROOT" || handle_error "Failed to change to project root: $PROJECT_R
 # Check if this is a Goal Kit project
 VISION_FILE=".goalkit/vision.md"
 if [ ! -f "$VISION_FILE" ]; then
-    handle_error "Not a Goal Kit project. Please run 'goalkeeper init' first to set up the project"
+    handle_error "Not a Goal Kit project. Please run 'goalkit init' first to set up the project"
 fi
 
 # If JSON mode, output JSON and exit early
