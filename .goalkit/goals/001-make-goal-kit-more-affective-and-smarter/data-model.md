@@ -2,37 +2,35 @@
 
 ## Key Deliverables
 
-1. **Enhanced Analysis Engine** - Pattern detection and contextual recommendations
-2. **Improved CLI Experience** - Smart defaults, reduced complexity
-3. **User Feedback System** - Track insight usefulness and suggestion acceptance
+1. **M1**: Analysis Engine Audit & Improvements
+2. **M2**: Contextual Recommendations
+3. **M3**: Testing & Validation
 
-## Success Metrics
+## Milestone Success Metrics
 
-| Metric | Target | Baseline | Validation |
-|--------|--------|----------|------------|
-| SC-001: Actionable insights | 80% | 40% | User survey |
-| SC-002: Time to understand status | 30 sec | 5 min | Timing study |
-| SC-003: Daily active usage | 85% | 60% | Usage analytics |
-| SC-004: Suggestion acceptance | 70% | N/A | Feedback tracking |
+| Milestone | Target Metric | Interim Target | Validation |
+|-----------|---------------|----------------|------------|
+| M1 | SC-001 reaches 60% | 50% actionable | User survey |
+| M2 | SC-004 reaches 70% | 60% acceptance | Feedback tracking |
+| M3 | All targets met | - | Final measurement |
 
-## Constraints
+## Key Progress Indicators
 
-- No new CLI commands
-- No new platform integrations
-- No mobile/web interfaces
-- Single-person development team
-- 3-month timeline
+- **Insight Actionability**: % users who find insights useful
+- **Suggestion Acceptance**: % of suggestions marked helpful
+- **Time to Status**: Seconds to understand project health
+- **Daily Usage**: % of installed users actively using
 
-## Risk Factors
+## Risk Factors & Mitigation
 
-| Risk | Likelihood | Mitigation |
-|------|------------|------------|
-| Analysis changes break existing behavior | Low | Comprehensive test coverage |
-| User feedback shows no improvement | Medium | Early beta testing |
-| Scope creep to new features | High | Strict adherence to out-of-scope |
+| Risk | Mitigation |
+|------|------------|
+| Breaking changes | Comprehensive test coverage |
+| Suggestions not helpful | Early feedback collection |
+| Metrics not met | Iterate on top issues in M3 |
 
-## Validation Criteria
+## Timeline
 
-- All existing tests pass
-- User satisfaction improves (target 9/10 from 7/10)
-- No regression in command completion rate (target 95%)
+- **M1** (Weeks 1-2): Analysis improvements
+- **M2** (Weeks 3-4): Recommendations
+- **M3** (Weeks 5-6): Testing & validation
