@@ -1,5 +1,5 @@
 {
-  "_comment": "Goal Kit VSCode Settings Template - Copy to .vscode/settings.json",
+  "_comment": "Goal Kit VSCode Settings Template — Copy this file to .vscode/settings.json.\nUnlike templates/vscode-settings.json (full Goal Kit config with file nesting/agent settings), this template provides Python/linting/formatting defaults for Goal Kit contributors.",
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.defaultFormatter": "ms-python.python",

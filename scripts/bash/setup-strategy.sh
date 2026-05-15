@@ -9,6 +9,7 @@ create_strategy_file() {
     local dry_run=false
     local force=false
     local json_mode=false
+    # shellcheck disable=SC2034
     local verbose=false
     
     # Parse remaining arguments
@@ -28,6 +29,7 @@ create_strategy_file() {
                 shift
                 ;;
             --verbose)
+                # shellcheck disable=SC2034
                 verbose=true
                 shift
                 ;;
@@ -56,7 +58,8 @@ create_strategy_file() {
             handle_error "Goal directory does not exist: $goal_directory"
         fi
         
-        local goal_dir_name=$(basename "$goal_directory")
+        local goal_dir_name
+        goal_dir_name=$(basename "$goal_directory")
         local strategy_file="$goal_directory/strategies.md"
         local branch_name="$goal_dir_name"
         
@@ -93,7 +96,8 @@ EOF
     fi
     
     # Create strategy file with basic template
-    local goal_dir_name=$(basename "$goal_directory")
+    local goal_dir_name
+    goal_dir_name=$(basename "$goal_directory")
     
     cat > "$strategy_file" <<EOF || handle_error "Failed to write strategy file: $strategy_file"
 # Strategy Analysis for $goal_dir_name

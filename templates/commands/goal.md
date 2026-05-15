@@ -4,6 +4,9 @@ handoffs:
   - label: Explore Strategy Options
     agent: goalkit.strategies
     prompt: Explore strategies for the goal. I am building with...
+  - label: Goal Alignment
+    agent: goalkit.goal-alignment
+    prompt: Check goal alignment with organizational strategy (see .goalkit/workflows/goal-alignment.md)
   - label: Clarify Goal Requirements
     agent: goalkit.clarify
     prompt: Clarify goal requirements

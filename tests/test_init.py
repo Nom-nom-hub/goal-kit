@@ -1,5 +1,5 @@
 """
-Integration tests for the 'goalkeeper init' command.
+Integration tests for the 'Goalkit init' command.
 
 Tests cover:
 - Basic project initialization
@@ -20,7 +20,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from typer.testing import CliRunner
 
-from goalkeeper_cli import app, AGENT_CONFIG
+from goalkit import app, AGENT_CONFIG
 
 
 class TestInitBasic:
@@ -38,11 +38,11 @@ class TestInitBasic:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -83,11 +83,11 @@ class TestInitBasic:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -128,11 +128,11 @@ class TestInitWithDifferentAgents:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -149,14 +149,14 @@ class TestInitWithDifferentAgents:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             mock_check.return_value = True  # Pretend tool is installed
             
-            with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-                with patch("goalkeeper_cli.create_agent_config"):
-                    with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                        with patch("goalkeeper_cli.create_agent_file"):
-                            with patch("goalkeeper_cli.ensure_executable_scripts"):
+            with patch("goalkit.download_template_from_github") as mock_download:
+                with patch("goalkit.create_agent_config"):
+                    with patch("goalkit.copy_scripts_to_goalkit"):
+                        with patch("goalkit.create_agent_file"):
+                            with patch("goalkit.ensure_executable_scripts"):
                                 mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                                 
                                 result = runner.invoke(
@@ -171,12 +171,12 @@ class TestInitWithDifferentAgents:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
-            with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-                with patch("goalkeeper_cli.create_agent_config"):
-                    with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                        with patch("goalkeeper_cli.create_agent_file"):
-                            with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.check_tool") as mock_check:
+            with patch("goalkit.download_template_from_github") as mock_download:
+                with patch("goalkit.create_agent_config"):
+                    with patch("goalkit.copy_scripts_to_goalkit"):
+                        with patch("goalkit.create_agent_file"):
+                            with patch("goalkit.ensure_executable_scripts"):
                                 mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                                 
                                 result = runner.invoke(
@@ -210,11 +210,11 @@ class TestInitHereFlag:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -251,11 +251,11 @@ class TestInitHereFlag:
         
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -294,11 +294,11 @@ class TestInitForceFlag:
         
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -321,11 +321,11 @@ class TestInitForceFlag:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -391,11 +391,11 @@ class TestInitErrorCases:
         runner = CliRunner()
         
         for script_type in ["sh", "ps"]:
-            with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-                with patch("goalkeeper_cli.create_agent_config"):
-                    with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                        with patch("goalkeeper_cli.create_agent_file"):
-                            with patch("goalkeeper_cli.ensure_executable_scripts"):
+            with patch("goalkit.download_template_from_github") as mock_download:
+                with patch("goalkit.create_agent_config"):
+                    with patch("goalkit.copy_scripts_to_goalkit"):
+                        with patch("goalkit.create_agent_file"):
+                            with patch("goalkit.ensure_executable_scripts"):
                                 mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                                 
                                 result = runner.invoke(
@@ -419,11 +419,11 @@ class TestInitErrorCases:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -458,11 +458,11 @@ class TestInitGitIntegration:
             git_available = False
         
         if git_available:
-            with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-                with patch("goalkeeper_cli.create_agent_config"):
-                    with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                        with patch("goalkeeper_cli.create_agent_file"):
-                            with patch("goalkeeper_cli.ensure_executable_scripts"):
+            with patch("goalkit.download_template_from_github") as mock_download:
+                with patch("goalkit.create_agent_config"):
+                    with patch("goalkit.copy_scripts_to_goalkit"):
+                        with patch("goalkit.create_agent_file"):
+                            with patch("goalkit.ensure_executable_scripts"):
                                 mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                                 
                                 result = runner.invoke(
@@ -480,11 +480,11 @@ class TestInitGitIntegration:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -510,11 +510,11 @@ class TestInitGitHubTokenHandling:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -539,11 +539,11 @@ class TestInitGitHubTokenHandling:
         
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -569,11 +569,11 @@ class TestInitDebugMode:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(
@@ -606,11 +606,11 @@ class TestInitTLSOptions:
         os.chdir(tmp_path)
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.download_template_from_github") as mock_download:
-            with patch("goalkeeper_cli.create_agent_config"):
-                with patch("goalkeeper_cli.copy_scripts_to_goalkit"):
-                    with patch("goalkeeper_cli.create_agent_file"):
-                        with patch("goalkeeper_cli.ensure_executable_scripts"):
+        with patch("goalkit.download_template_from_github") as mock_download:
+            with patch("goalkit.create_agent_config"):
+                with patch("goalkit.copy_scripts_to_goalkit"):
+                    with patch("goalkit.create_agent_file"):
+                        with patch("goalkit.ensure_executable_scripts"):
                             mock_download.return_value = (Path("test.zip"), {"filename": "test.zip"})
                             
                             result = runner.invoke(

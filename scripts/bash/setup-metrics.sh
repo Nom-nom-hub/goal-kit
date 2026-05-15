@@ -9,6 +9,7 @@ create_metrics_file() {
     local dry_run=false
     local force=false
     local json_mode=false
+    # shellcheck disable=SC2034
     local verbose=false
     
     # Parse remaining arguments
@@ -28,6 +29,7 @@ create_metrics_file() {
                 shift
                 ;;
             --verbose)
+                # shellcheck disable=SC2034
                 verbose=true
                 shift
                 ;;
@@ -56,7 +58,8 @@ create_metrics_file() {
             handle_error "Goal directory does not exist: $goal_directory"
         fi
         
-        local goal_dir_name=$(basename "$goal_directory")
+        local goal_dir_name
+        goal_dir_name=$(basename "$goal_directory")
         local metrics_file="$goal_directory/metrics.md"
         local branch_name="$goal_dir_name"
         
@@ -91,7 +94,8 @@ EOF
     fi
     
     # Create metrics file with basic template
-    local goal_dir_name=$(basename "$goal_directory")
+    local goal_dir_name
+    goal_dir_name=$(basename "$goal_directory")
     
     cat > "$metrics_file" <<EOF || handle_error "Failed to write metrics file: $metrics_file"
 # Metrics Plan for $goal_dir_name

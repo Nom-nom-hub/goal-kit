@@ -9,6 +9,7 @@ source "$SCRIPT_DIR/common.sh"
 GOAL_DIR="${1:-}"
 FORCE=false
 JSON=false
+# shellcheck disable=SC2034
 VERBOSE=false
 
 # Parse options
@@ -23,6 +24,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --verbose)
+            # shellcheck disable=SC2034
             VERBOSE=true
             shift
             ;;

@@ -1,4 +1,4 @@
-"""Goalkeeper CLI commands."""
+"""Goalkit CLI commands."""
 
 from .init import init
 from .check import check

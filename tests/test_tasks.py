@@ -5,8 +5,8 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from uuid import uuid4
 
-from src.goalkeeper_cli.tasks import TaskTracker, TaskStats
-from src.goalkeeper_cli.models import Task, TaskStatus
+from goalkit.tasks import TaskTracker, TaskStats
+from goalkit.models import Task, TaskStatus
 
 
 @pytest.fixture

@@ -10,7 +10,7 @@ Provides commands for:
 
 import json
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import typer
 from rich.console import Console
@@ -30,6 +30,46 @@ def _get_goalkit_path() -> Path:
     return Path.cwd() / ".goalkit"
 
 
+def _resolve_goal_id(goal_id: Optional[str]) -> str:
+    """Resolve goal ID, falling back to the first available goal.
+
+    Returns:
+        Resolved goal ID string
+
+    Raises:
+        typer.Exit(1) if no goals found or .goalkit not found
+    """
+    if goal_id:
+        return goal_id
+
+    goalkit_path = _get_goalkit_path()
+    if not goalkit_path.exists():
+        console.print("[red]Error: .goalkit directory not found[/red]")
+        raise typer.Exit(1)
+
+    # Try goals.json first
+    goals_json = goalkit_path / "goals.json"
+    if goals_json.exists():
+        try:
+            with open(goals_json) as f:
+                goals_data = json.load(f)
+            if isinstance(goals_data, list) and goals_data:
+                first = goals_data[0]
+                if isinstance(first, dict) and "id" in first:
+                    return first["id"]
+        except (json.JSONDecodeError, IndexError):
+            pass
+
+    # Try goals directory as fallback
+    goals_dir = goalkit_path / "goals"
+    if goals_dir.exists():
+        goal_files = sorted(goals_dir.glob("*.md"))
+        if goal_files:
+            return goal_files[0].stem
+
+    console.print("[red]Error: No goals found. Please specify a goal ID.[/red]")
+    raise typer.Exit(1)
+
 @app.command()
 def burndown(
     goal_id: Optional[str] = typer.Argument(
@@ -47,19 +87,11 @@ def burndown(
         console.print("[red]Error: .goalkit directory not found[/red]")
         raise typer.Exit(1)
 
+    # Resolve goal ID (fallback to first available goal)
+    goal_id = _resolve_goal_id(goal_id)
+    
     # Get analytics
     analytics = AnalyticsEngine(goalkit_path)
-    
-    # Use first goal if not specified
-    if not goal_id:
-        goals_path = goalkit_path / "goals.json"
-        if not goals_path.exists():
-            console.print("[red]Error: No goals found[/red]")
-            raise typer.Exit(1)
-        # For now, use the first goal or a simple approach
-        # This is simplified - the actual implementation would load from JSON
-        console.print("[red]Error: Please specify a goal ID[/red]")
-        raise typer.Exit(1)
     
     burndown_data = analytics.get_burndown_data(goal_id)
 
@@ -100,10 +132,8 @@ def velocity(
         console.print("[red]Error: .goalkit directory not found[/red]")
         raise typer.Exit(1)
 
-    # Require goal ID for now
-    if not goal_id:
-        console.print("[red]Error: Please specify a goal ID[/red]")
-        raise typer.Exit(1)
+    # Resolve goal ID (fallback to first available goal)
+    goal_id = _resolve_goal_id(goal_id)
 
     # Get analytics
     analytics = AnalyticsEngine(goalkit_path)
@@ -168,10 +198,8 @@ def trends(
         console.print("[red]Error: .goalkit directory not found[/red]")
         raise typer.Exit(1)
 
-    # Require goal ID for now
-    if not goal_id:
-        console.print("[red]Error: Please specify a goal ID[/red]")
-        raise typer.Exit(1)
+    # Resolve goal ID (fallback to first available goal)
+    goal_id = _resolve_goal_id(goal_id)
 
     # Get analytics
     analytics = AnalyticsEngine(goalkit_path)
@@ -231,10 +259,8 @@ def forecast(
         console.print("[red]Error: .goalkit directory not found[/red]")
         raise typer.Exit(1)
 
-    # Require goal ID for now
-    if not goal_id:
-        console.print("[red]Error: Please specify a goal ID[/red]")
-        raise typer.Exit(1)
+    # Resolve goal ID (fallback to first available goal)
+    goal_id = _resolve_goal_id(goal_id)
 
     # Get forecast
     analytics = AnalyticsEngine(goalkit_path)
@@ -301,10 +327,8 @@ def insights(
         console.print("[red]Error: .goalkit directory not found[/red]")
         raise typer.Exit(1)
 
-    # Require goal ID for now
-    if not goal_id:
-        console.print("[red]Error: Please specify a goal ID[/red]")
-        raise typer.Exit(1)
+    # Resolve goal ID (fallback to first available goal)
+    goal_id = _resolve_goal_id(goal_id)
 
     # Get insights
     analytics = AnalyticsEngine(goalkit_path)

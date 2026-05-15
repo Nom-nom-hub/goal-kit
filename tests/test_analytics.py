@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from goalkeeper_cli.analytics import (
+from goalkit.analytics import (
     AnalyticsEngine,
     AnalyticsPoint,
     BurndownData,

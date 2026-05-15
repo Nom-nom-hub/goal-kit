@@ -8,7 +8,7 @@ from datetime import datetime
 from unittest.mock import Mock, patch, MagicMock
 from io import StringIO
 
-from goalkeeper_cli.commands.status import (
+from goalkit.commands.status import (
     status,
     _output_json,
     _output_formatted,
@@ -19,8 +19,8 @@ from goalkeeper_cli.commands.status import (
     _count_with_criteria,
     _avg_phase_score,
 )
-from goalkeeper_cli.analyzer import AnalysisResult
-from goalkeeper_cli.models import Project, Goal
+from goalkit.analyzer import AnalysisResult
+from goalkit.models import Project, Goal
 
 
 class TestStatusCommand:
@@ -55,7 +55,7 @@ class TestStatusCommand:
         """Test status command with None path (uses cwd)."""
         with patch("pathlib.Path.cwd") as mock_cwd:
             mock_cwd.return_value = Path("/tmp")
-            with patch("goalkeeper_cli.commands.status.ProjectAnalyzer") as mock_analyzer:
+            with patch("goalkit.commands.status.ProjectAnalyzer") as mock_analyzer:
                 mock_analyzer.side_effect = FileNotFoundError("Not a goal-kit project")
                 status(None)
                 captured = capsys.readouterr()

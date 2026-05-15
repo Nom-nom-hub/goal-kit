@@ -164,7 +164,7 @@ Remember these core principles:
 
 "
         
-        if [ ! -d "goals" ] || [ $(find goals -maxdepth 1 -type d ! -name "goals" 2>/dev/null | wc -l) -eq 0 ]; then
+        if [ ! -d "goals" ] || [ "$(find goals -maxdepth 1 -type d ! -name "goals" 2>/dev/null | wc -l)" -eq 0 ]; then
             CONTEXT_CONTENT+="1. Use /goalkit.vision to establish project vision
 2. Use /goalkit.goal to define first goal
 "

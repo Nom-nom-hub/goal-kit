@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from unittest.mock import Mock, patch, MagicMock
 from io import StringIO
 
-from goalkeeper_cli.commands.milestones import (
+from goalkit.commands.milestones import (
     milestones,
     _output_json,
     _output_formatted,
@@ -16,9 +16,9 @@ from goalkeeper_cli.commands.milestones import (
     _display_timeline,
     _format_momentum,
 )
-from goalkeeper_cli.execution import ExecutionTracker, MilestoneRecord
-from goalkeeper_cli.analyzer import AnalysisResult, ProjectAnalyzer
-from goalkeeper_cli.models import Project, Goal
+from goalkit.execution import ExecutionTracker, MilestoneRecord
+from goalkit.analyzer import AnalysisResult, ProjectAnalyzer
+from goalkit.models import Project, Goal
 
 
 class TestMilestonesCommand:
@@ -78,7 +78,7 @@ class TestMilestonesCommand:
         """Test milestones command with None path (uses cwd)."""
         with patch("pathlib.Path.cwd") as mock_cwd:
             mock_cwd.return_value = Path("/tmp")
-            with patch("goalkeeper_cli.commands.milestones.ProjectAnalyzer") as mock_analyzer:
+            with patch("goalkit.commands.milestones.ProjectAnalyzer") as mock_analyzer:
                 mock_analyzer.side_effect = FileNotFoundError("Not a goal-kit project")
                 milestones(None)
                 captured = capsys.readouterr()
@@ -239,7 +239,7 @@ class TestOutputFormatted:
             tracker = ExecutionTracker(project_path)
             console = Mock()
             
-            with patch("goalkeeper_cli.commands.milestones._display_milestone_table") as mock_display:
+            with patch("goalkit.commands.milestones._display_milestone_table") as mock_display:
                 _output_formatted(sample_result, tracker, None, console)
                 # Should call display function if there are goals
                 if sample_result.goals:

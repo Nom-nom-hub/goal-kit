@@ -5,10 +5,10 @@ from pathlib import Path
 from uuid import uuid4
 from typer.testing import CliRunner
 
-from src.goalkeeper_cli.dependencies import DependencyTracker
-from src.goalkeeper_cli.commands.dependencies import app
-from src.goalkeeper_cli.tasks import TaskTracker
-from src.goalkeeper_cli.models import TaskStatus
+from goalkit.dependencies import DependencyTracker
+from goalkit.commands.dependencies import app
+from goalkit.tasks import TaskTracker
+from goalkit.models import TaskStatus
 
 
 runner = CliRunner()

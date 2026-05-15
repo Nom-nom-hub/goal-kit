@@ -1,3 +1,13 @@
+---
+description: Visualize project progress with burndown charts, velocity tracking, trend analysis, completion forecasting, and automated insights for data-driven decision making.
+handoffs:
+  - label: Generate Report
+    agent: goalkit.report
+    prompt: Generate a progress report incorporating analytics data
+    send: true
+scripts: {}
+---
+
 # Analytics Command Guide
 
 ## Purpose

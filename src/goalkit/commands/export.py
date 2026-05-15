@@ -20,6 +20,40 @@ def show_banner() -> None:
     console.print()
 
 
+def _load_flat_metrics(project_dir: Path) -> dict:
+    """Load and aggregate metrics from the metrics history file.
+
+    Reads metrics from `.goalkit/metrics_history.json` and returns
+    a flat dict of metric_name -> most_recent_value.
+
+    Args:
+        project_dir: Path to the Goal Kit project
+
+    Returns:
+        Dict of metric name to latest value
+    """
+    flat_metrics = {}
+    history_file = project_dir / ".goalkit" / "metrics_history.json"
+
+    if history_file.exists():
+        try:
+            with open(history_file, "r", encoding="utf-8") as f:
+                records = json.load(f)
+
+            for record in records:
+                metric_name = record.get("metric_name", "unknown")
+                value = record.get("value")
+                if metric_name not in flat_metrics:
+                    flat_metrics[metric_name] = value
+                else:
+                    # Keep the most recent value
+                    flat_metrics[metric_name] = value
+        except Exception:
+            pass
+
+    return flat_metrics
+
+
 app = typer.Typer(help="Export project data in multiple formats")
 
 
@@ -157,30 +191,7 @@ def metrics(
         raise typer.Exit(1)
 
     try:
-        metrics_tracker = MetricsTracker(project_dir)
-        
-        # Get metrics from goals (Goal Kit stores metrics per goal)
-        # For now, try to get all metrics for all goals
-        flat_metrics = {}
-        history_file = project_dir / ".goalkit" / "metrics_history.json"
-        
-        if history_file.exists():
-            try:
-                import json
-                with open(history_file, "r", encoding="utf-8") as f:
-                    records = json.load(f)
-                
-                # Aggregate by metric name
-                for record in records:
-                    metric_name = record.get("metric_name", "unknown")
-                    value = record.get("value")
-                    if metric_name not in flat_metrics:
-                        flat_metrics[metric_name] = value
-                    else:
-                        # Keep the most recent value
-                        flat_metrics[metric_name] = value
-            except Exception:
-                pass
+        flat_metrics = _load_flat_metrics(project_dir)
 
         if not flat_metrics:
             console.print("[yellow]No metrics found in project[/yellow]")
@@ -233,31 +244,14 @@ def all(
     try:
         tracker = TaskTracker(project_dir)
         generator = ReportGenerator(project_dir)
-        metrics_tracker = MetricsTracker(project_dir)
 
         all_tasks = tracker.get_all_tasks()
         try:
             report_obj = generator.generate_summary_report()
         except Exception:
             report_obj = generator.generate_weekly_report()
-        
-        # Get metrics from history file
-        flat_metrics = {}
-        history_file = project_dir / ".goalkit" / "metrics_history.json"
-        if history_file.exists():
-            try:
-                import json
-                with open(history_file, "r", encoding="utf-8") as f:
-                    records = json.load(f)
-                for record in records:
-                    metric_name = record.get("metric_name", "unknown")
-                    value = record.get("value")
-                    if metric_name not in flat_metrics:
-                        flat_metrics[metric_name] = value
-                    else:
-                        flat_metrics[metric_name] = value
-            except Exception:
-                pass
+
+        flat_metrics = _load_flat_metrics(project_dir)
 
         manager = ExportManager()
 

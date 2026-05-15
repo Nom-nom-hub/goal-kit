@@ -10,10 +10,10 @@ from unittest.mock import patch
 
 from typer.testing import CliRunner
 
-from src.goalkeeper_cli.commands.export import app
-from src.goalkeeper_cli.tasks import TaskTracker
-from src.goalkeeper_cli.models import TaskStatus, Task
-from src.goalkeeper_cli.metrics import MetricsTracker
+from goalkit.commands.export import app
+from goalkit.tasks import TaskTracker
+from goalkit.models import TaskStatus, Task
+from goalkit.metrics import MetricsTracker
 
 
 runner = CliRunner()

@@ -5,6 +5,9 @@ handoffs:
     agent: goalkit.report
     prompt: Generate a progress report for the goal execution
     send: true
+  - label: Quality Assurance
+    agent: goalkit.quality-assurance
+    prompt: Set up QA methodology (see .goalkit/workflows/quality-assurance.md)
   - label: Create Checklist
     agent: goalkit.checklist
     prompt: Create execution checklist for the following domain...

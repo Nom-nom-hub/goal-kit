@@ -1,5 +1,5 @@
 """
-Helper functions for Goalkeeper CLI.
+Helper functions for Goal Kit CLI.
 
 This module contains utility functions extracted from the main CLI module
 to improve code organization and maintainability.
@@ -349,7 +349,7 @@ def init_git_repo(
         subprocess.run(["git", "init"], check=True, capture_output=True, text=True)
         subprocess.run(["git", "add", "."], check=True, capture_output=True, text=True)
         subprocess.run(
-            ["git", "commit", "-m", "Initial commit from Goalkeeper template"],
+            ["git", "commit", "-m", "Initial commit from Goal Kit template"],
             check=True,
             capture_output=True,
             text=True,

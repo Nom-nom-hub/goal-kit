@@ -12,8 +12,8 @@ from typing import Dict, List
 
 import pytest
 
-from src.goalkeeper_cli.metrics import MetricsTracker, MetricRecord
-from src.goalkeeper_cli.commands.metrics import metrics
+from goalkit.metrics import MetricsTracker, MetricRecord
+from goalkit.commands.metrics import metrics
 
 
 class TestMetricsMultiGoalWorkflow:
@@ -145,7 +145,7 @@ class TestMetricsMultiGoalWorkflow:
 
     def test_health_score_with_varied_metrics(self, project_with_goals):
         """Test health score calculation with different metric coverage."""
-        from src.goalkeeper_cli.models import Goal
+        from goalkit.models import Goal
 
         tracker = MetricsTracker(project_with_goals)
 
@@ -368,7 +368,7 @@ Goal for {name}
 
     def test_metrics_health_score_aggregation(self, complex_project):
         """Test health score calculation across multiple goals."""
-        from src.goalkeeper_cli.analyzer import ProjectAnalyzer
+        from goalkit.analyzer import ProjectAnalyzer
 
         analyzer = ProjectAnalyzer(complex_project)
         result = analyzer.analyze()
@@ -415,7 +415,7 @@ class TestMetricsEdgeCases:
         tracker = MetricsTracker(minimal_project)
         tracker.track_metric("goal-001", "metric1", 100.0)
 
-        from src.goalkeeper_cli.analyzer import ProjectAnalyzer
+        from goalkit.analyzer import ProjectAnalyzer
 
         analyzer = ProjectAnalyzer(minimal_project)
         result = analyzer.analyze()

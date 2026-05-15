@@ -32,7 +32,7 @@ cleanup() {
         write_error "Script failed with exit code $exit_code"
     fi
     
-    exit $exit_code
+    exit "$exit_code"
 }
 
 # Register cleanup
@@ -46,7 +46,7 @@ handle_error() {
     
     SCRIPT_ERROR=1
     write_error "$message (line $line_number)"
-    exit $exit_code
+    exit "$exit_code"
 }
 
 # Output functions with colors
@@ -94,7 +94,8 @@ get_git_root() {
     fi
     
     # Fallback: look for .goalkit directory
-    local current_dir="$(pwd)"
+    local current_dir
+    current_dir="$(pwd)"
     while [ "$current_dir" != "/" ]; do
         if [ -d "$current_dir/.goalkit" ]; then
             echo "$current_dir"
@@ -170,7 +171,8 @@ create_directory_safe() {
 # Validate writable path
 validate_writable() {
     local path="$1"
-    local parent_dir=$(dirname "$path")
+    local parent_dir
+    parent_dir=$(dirname "$path")
     
     # Create parent directory if it doesn't exist for validation
     if [ ! -d "$parent_dir" ]; then
@@ -239,9 +241,7 @@ new_goal_branch() {
 # Update agent context
 update_agent_context() {
     local project_root
-    project_root=$(get_git_root)
-    
-    if [ $? -ne 0 ] || [ -z "$project_root" ]; then
+    if ! project_root=$(get_git_root) || [ -z "$project_root" ]; then
         write_error "Could not determine git root. Not in a git repository."
         return 1
     fi
@@ -286,6 +286,7 @@ update_agent_context() {
             write_info "Updating context in $context_file"
             found_context_file=1
             
+            # shellcheck disable=SC2155
             local context_content="# Goal Kit Project Context
 
 **Project**: $(basename "$project_root")
@@ -338,7 +339,8 @@ This project uses Goal-Driven Development methodology. Focus on:
                     for goal_path in "${goal_dirs[@]}"; do
                         local goal_file="$goal_path/goal.md"
                         if [ -f "$goal_file" ]; then
-                            local goal_dir_name=$(basename "$goal_path")
+                            local goal_dir_name
+                            goal_dir_name=$(basename "$goal_path")
                             context_content+="- **$goal_dir_name**: Goal definition in progress
 "
                         fi
@@ -365,7 +367,7 @@ Remember these core principles:
 
 "
             
-            if [ ! -d "$goals_dir" ] || [ $(find "$goals_dir" -maxdepth 1 -type d ! -name "goals" | wc -l) -eq 0 ]; then
+            if [ ! -d "$goals_dir" ] || [ "$(find "$goals_dir" -maxdepth 1 -type d ! -name "goals" | wc -l)" -eq 0 ]; then
                 context_content+="1. Use /goalkit.vision to establish project vision
 2. Use /goalkit.goal to define first goal
 "
@@ -419,9 +421,7 @@ test_goal_context() {
 set_goal_environment() {
     local goal_dir="$1"
     local project_root
-    project_root=$(get_git_root)
-    
-    if [ $? -ne 0 ] || [ -z "$project_root" ]; then
+    if ! project_root=$(get_git_root) || [ -z "$project_root" ]; then
         write_error "Could not determine git root. Not in a git repository."
         return 1
     fi

@@ -11,6 +11,7 @@ if [[ $# -ne 2 ]]; then
 fi
 
 NEW_VERSION="$1"
+# shellcheck disable=SC2034
 LAST_TAG="$2"
 
 # Extract the section for the new version from CHANGELOG.md

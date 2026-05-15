@@ -10,7 +10,7 @@ from pathlib import Path
 from unittest.mock import Mock, MagicMock, patch
 
 import pytest
-from goalkeeper_cli.templates import TemplateMetadata, TemplateManager
+from goalkit.templates import TemplateMetadata, TemplateManager
 
 
 class TestTemplateMetadata:
@@ -240,7 +240,7 @@ class TestTemplateManager:
 class TestTemplateDownload:
     """Test template download functionality."""
     
-    @patch("goalkeeper_cli.templates.httpx.Client")
+    @patch("goalkit.templates.httpx.Client")
     def test_download_success(self, mock_client_class):
         """Test successful template download."""
         # Mock the client
@@ -280,7 +280,7 @@ class TestTemplateDownload:
             assert metadata.size == 15234
             assert metadata.release == "v1.2.0"
     
-    @patch("goalkeeper_cli.templates.httpx.Client")
+    @patch("goalkit.templates.httpx.Client")
     def test_download_github_api_error(self, mock_client_class):
         """Test handling GitHub API error."""
         mock_client = MagicMock()
@@ -295,7 +295,7 @@ class TestTemplateDownload:
         with pytest.raises(RuntimeError):
             manager.download("claude", verbose=False)
     
-    @patch("goalkeeper_cli.templates.httpx.Client")
+    @patch("goalkit.templates.httpx.Client")
     def test_download_no_matching_asset(self, mock_client_class):
         """Test error when no matching asset found."""
         mock_client = MagicMock()

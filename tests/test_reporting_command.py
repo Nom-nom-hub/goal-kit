@@ -4,12 +4,12 @@ import pytest
 import json
 from uuid import uuid4
 
-from src.goalkeeper_cli.commands.reporting import (
+from goalkit.commands.reporting import (
     report_command,
     insights_command,
 )
-from src.goalkeeper_cli.tasks import TaskTracker
-from src.goalkeeper_cli.models import TaskStatus
+from goalkit.tasks import TaskTracker
+from goalkit.models import TaskStatus
 
 
 @pytest.fixture

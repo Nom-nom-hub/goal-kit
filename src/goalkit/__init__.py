@@ -400,7 +400,7 @@ def create_agent_file(project_path: Path, ai_assistant: str):
     import datetime
 
     # Read the agent file template
-    template_path = Path(__file__).parent.parent / "templates" / "agent-file-template.md"
+    template_path = Path(__file__).parent.parent.parent / "templates" / "agent-file-template.md"
     if not template_path.exists():
         return  # Skip if template doesn't exist
 
@@ -417,6 +417,7 @@ def create_agent_file(project_path: Path, ai_assistant: str):
     # Basic replacements
     content = template_content.replace("[PROJECT NAME]", project_name)
     content = content.replace("[DATE]", current_date)
+    content = content.replace("[AGENT]", ai_assistant)
 
     # For now, set placeholder content for dynamic sections
     # These would be populated by the update_agent_context.py script later
@@ -426,6 +427,38 @@ def create_agent_file(project_path: Path, ai_assistant: str):
     content = content.replace("[EXTRACTED FROM MILESTONES.MD]", "No milestones defined yet. Use /goalkit.milestones after defining strategies.")
     content = content.replace("[EXTRACTED FROM EXECUTION.MD]", "No execution plans yet. Use /goalkit.execute after creating milestones.")
     content = content.replace("[LAST 3 COMPLETED MILESTONES AND OUTCOMES]", "No completed milestones yet.")
+
+    # Add available scripts section
+    scripts_section = """
+## Available Scripts
+
+The following scripts are available in `.goalkit/scripts/bash/` and `.goalkit/scripts/powershell/`:
+
+| Script | Purpose |
+|--------|---------|
+| `create-new-goal.sh` | Create a new goal branch and initialize goal file |
+| `create-vision.sh` | Initialize vision file structure |
+| `create-tasks.sh` | Generate detailed implementation tasks |
+| `create-report.sh` | Generate progress and insight reports |
+| `create-review.sh` | Conduct project review and retrospective |
+| `setup-strategy.sh` | Explore multiple strategic approaches |
+| `setup-milestones.sh` | Create measurable milestone checkpoints |
+| `setup-execution.sh` | Execute with learning and adaptation |
+| `setup-metrics.sh` | Define and track project metrics |
+| `setup-quality-assurance.sh` | Define quality standards and testing strategy |
+| `setup-security-review.sh` | Conduct security assessment of goal deliverables |
+| `setup-risk-register.sh` | Identify, assess, and track risks |
+| `setup-compliance-checklist.sh` | Regulatory compliance verification |
+| `setup-detailed-retrospective.sh` | Comprehensive retrospective analysis |
+| `update-agent-context.sh` | Update agent-specific context files |
+
+**How to use:** Each script is invoked by its corresponding slash command (`/goalkit.goal` → `create-new-goal.sh`). Do not run scripts manually unless explicitly instructed by a workflow or the user.
+
+**Workflow scripts** (referenced by `.goalkit/workflows/` files): `setup-quality-assurance.sh`, `setup-security-review.sh`, `setup-risk-register.sh`, `setup-compliance-checklist.sh`, `setup-detailed-retrospective.sh` — these are used when a workflow guide mentions them. Follow the workflow instructions step by step.
+
+**Note:** PowerShell equivalents exist with `.ps1` extension in `.goalkit/scripts/powershell/`.
+"""
+    content = content.replace("## 🔧 Next Recommended Actions", scripts_section + "\n## 🔧 Next Recommended Actions")
 
     # Add strict workflow enforcement to agent files
     # Insert after the "## 🔧 Next Recommended Actions" section
@@ -682,6 +715,60 @@ CRITICAL FILE LOCATIONS:
 - {script_type_name} scripts: `.goalkit/scripts/{('powershell' if is_windows else 'bash')}/` 
 - Agent context files: `.goalkit/agent-context.md` or agent-specific directories (`.claude/`, `.gemini/`, `.qwen/`, etc.)
 - All goal-related files are stored in `.goalkit/` subdirectories - NOT in project root!
+- Workflow templates: `.goalkit/workflows/` — specialized process guides for non-core tasks
+
+## Specialized Workflow Templates
+
+Found in `.goalkit/workflows/` — these are **on-demand guides** for specialized tasks that go beyond the core 5-command workflow. When a command handoff or user request mentions one of these workflows, read the corresponding file and follow its instructions.
+
+| Workflow | Purpose |
+|----------|---------|
+| `analytics-report` | Deep-dive analytical reporting beyond standard reports |
+| `async-coordination` | Managing cross-team async communication |
+| `compliance-checklist` | Regulatory compliance verification |
+| `cross-goal-coordination` | Managing dependencies across multiple active goals |
+| `detailed-retrospective` | In-depth post-project learning and improvement |
+| `goal-alignment` | Verifying and realigning goals with organizational strategy |
+| `okr-mapping` | Converting goals to OKR framework |
+| `okrs` | Working with OKRs in the Goal Kit framework |
+| `org-vision` | Organization-level vision beyond single projects |
+| `portfolio` | Multi-project portfolio management |
+| `program` | Program-level coordination across related projects |
+| `quality-assurance` | QA methodology and testing strategy |
+| `risk-register` | Risk identification, tracking, and mitigation |
+| `security-review` | Security audit and threat modeling |
+| `taskstoissues` | Converting tasks to GitHub Issues |
+| `team-roles` | Team role definition and responsibility mapping |
+
+**How to use:** When a command handoff mentions a workflow (e.g., "see `.goalkit/workflows/security-review.md`"), read that file and follow its step-by-step instructions. These are not slash commands — they are process guides the agent reads and executes sequentially. Each workflow file contains:
+1. **User Input** — parameters the agent needs to gather before starting
+2. **Execution Flow** — step-by-step instructions to follow
+3. **Handoffs** — references to related workflows or commands
+4. **Scripts** — shell scripts to run if the workflow requires automation
+
+## Available Scripts
+
+The following scripts are available in `.goalkit/scripts/bash/` (PowerShell equivalents in `.goalkit/scripts/powershell/`):
+
+| Script | Purpose |
+|--------|---------|
+| `create-new-goal.sh` | Create a new goal branch and initialize goal file |
+| `create-vision.sh` | Initialize vision file structure |
+| `create-tasks.sh` | Generate detailed implementation tasks |
+| `create-report.sh` | Generate progress and insight reports |
+| `create-review.sh` | Conduct project review and retrospective |
+| `setup-strategy.sh` | Explore multiple strategic approaches |
+| `setup-milestones.sh` | Create measurable milestone checkpoints |
+| `setup-execution.sh` | Execute with learning and adaptation |
+| `setup-metrics.sh` | Define and track project metrics |
+| `setup-quality-assurance.sh` | Define quality standards and testing strategy |
+| `setup-security-review.sh` | Conduct security assessment of goal deliverables |
+| `setup-risk-register.sh` | Identify, assess, and track risks |
+| `setup-compliance-checklist.sh` | Regulatory compliance verification |
+| `setup-detailed-retrospective.sh` | Comprehensive retrospective analysis |
+| `update-agent-context.sh` | Update agent-specific context files |
+
+**How to use scripts:** Each script is invoked by its corresponding slash command (`/goalkit.goal` → `create-new-goal.sh`). Workflow scripts (e.g., `setup-quality-assurance.sh`) are used when a workflow guide mentions them — follow the workflow instructions step by step. Do not run scripts manually unless explicitly instructed.
 
 ## Next Recommended Actions
 
@@ -922,7 +1009,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
 def copy_scripts_to_goalkit(project_path: Path, selected_script: str, tracker: StepTracker | None = None) -> None:
     """Copy script files from the source location to .goalkit/scripts/ based on selected script type"""
     # During init, we need to copy from the CLI source location, not the project
-    cli_source_dir = Path(__file__).parent.parent  # This is the goal-kit/goal-kit directory
+    cli_source_dir = Path(__file__).parent.parent.parent  # project root (goal-kit/goal-kit)
     scripts_source = cli_source_dir / "scripts"
     scripts_dest = project_path / ".goalkit" / "scripts"
 
@@ -964,7 +1051,7 @@ def copy_scripts_to_goalkit(project_path: Path, selected_script: str, tracker: S
 def copy_templates_to_goalkit(project_path: Path, tracker: StepTracker | None = None) -> None:
     """Copy template files from the source location to .goalkit/templates/"""
     # During init, we need to copy from the CLI source location, not the project
-    cli_source_dir = Path(__file__).parent.parent  # This is the goal-kit/goal-kit directory
+    cli_source_dir = Path(__file__).parent.parent.parent  # project root (goal-kit/goal-kit)
     templates_source = cli_source_dir / "templates"
     templates_dest = project_path / ".goalkit" / "templates"
 
@@ -998,6 +1085,36 @@ def copy_templates_to_goalkit(project_path: Path, tracker: StepTracker | None = 
             tracker.error("copy-templates", str(e))
         else:
             console.print(f"[red]Error copying templates: {e}[/red]")
+
+
+def copy_workflows_to_goalkit(project_path: Path, tracker: StepTracker | None = None) -> None:
+    """Copy workflow template files from the source location to .goalkit/workflows/"""
+    cli_source_dir = Path(__file__).parent.parent.parent  # project root (goal-kit/goal-kit)
+    workflows_source = cli_source_dir / "templates" / "workflows"
+    workflows_dest = project_path / ".goalkit" / "workflows"
+
+    if not workflows_source.exists() or not workflows_source.is_dir():
+        if tracker:
+            tracker.add("copy-workflows", "Copy workflow templates")
+            tracker.skip("copy-workflows", f"source not found: {workflows_source}")
+        return
+
+    try:
+        workflows_dest.mkdir(parents=True, exist_ok=True)
+        copied_count = 0
+        for wf_file in workflows_source.iterdir():
+            if wf_file.is_file() and wf_file.suffix == ".md":
+                dest_file = workflows_dest / wf_file.name
+                shutil.copy2(wf_file, dest_file)
+                copied_count += 1
+
+        if tracker:
+            tracker.add("copy-workflows", "Copy workflow templates")
+            tracker.complete("copy-workflows", f"copied {copied_count} workflows")
+    except Exception as e:
+        if tracker:
+            tracker.add("copy-workflows", "Copy workflow templates")
+            tracker.error("copy-workflows", str(e))
 
 
 def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = None) -> None:
@@ -1080,7 +1197,7 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
     requires_cli = agent_config and agent_config.get("requires_cli", False) if agent_config else False
 
     # Path to the agent template directory
-    agent_template_path = Path(__file__).parent.parent / "agent_templates" / selected_ai
+    agent_template_path = Path(__file__).parent.parent.parent / "agent_templates" / selected_ai
 
     # Create agent configuration directory
     agent_config_dir = project_path / agent_folder.strip("/")  # Remove trailing slash
@@ -1121,7 +1238,7 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
 
     # Copy templates - ensure all agents get appropriate templates
     # First, look for agent-specific templates if they exist
-    agent_specific_template_dir = Path(__file__).parent.parent / "templates" / selected_ai / folder_name
+    agent_specific_template_dir = Path(__file__).parent.parent.parent / "templates" / selected_ai / folder_name
     if agent_specific_template_dir.exists():
         # Use agent-specific templates for this folder type
         for template_file in agent_specific_template_dir.iterdir():
@@ -1132,7 +1249,7 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
         # Use the commands templates as a fallback for ALL agent types
         # This ensures that even agents expecting "workflows" or "prompts"
         # still get the core command templates if no specific templates exist
-        commands_source_dir = Path(__file__).parent.parent / "templates" / "commands"
+        commands_source_dir = Path(__file__).parent.parent.parent / "templates" / "commands"
         if commands_source_dir.exists():
             for command_file in commands_source_dir.iterdir():
                 if command_file.is_file() and command_file.suffix == ".md":
@@ -1141,7 +1258,7 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
 
         # Special handling for VS Code settings for Copilot
         if selected_ai == "copilot":
-            vscode_settings_source = Path(__file__).parent.parent / "templates" / "vscode-settings.json"
+            vscode_settings_source = Path(__file__).parent.parent.parent / "templates" / "vscode-settings.json"
             if vscode_settings_source.exists():
                 vscode_dir = project_path / ".vscode"
                 vscode_dir.mkdir(parents=True, exist_ok=True)
@@ -1164,8 +1281,8 @@ def init(
     debug: bool = typer.Option(False, "--debug", help="Show verbose diagnostic output for network and extraction failures"),
     github_token: Optional[str] = typer.Option(None, "--github-token", help="GitHub token to use for API requests (or set GH_TOKEN or GITHUB_TOKEN environment variable)"),
 ):
-    """Initialize a new Goalkeeper project from the latest template.
-    
+    """Initialize a new Goalkit project from the latest template.
+
     This command will:
     1. Check that required tools are installed (git is optional)
     2. Let you choose your AI assistant
@@ -1173,7 +1290,7 @@ def init(
     4. Extract the template to a new project directory or current directory
     5. Initialize a fresh git repository (if not --no-git and no existing repo)
     6. Optionally set up AI assistant commands
-    
+
     Examples:
 goalkit init my-project
 
@@ -1276,7 +1393,7 @@ goalkit init my-project
         raise typer.Exit(1)
 
     setup_lines = [
-        "[cyan]Goalkeeper Project Setup[/cyan]",
+        "[cyan]Goalkit Project Setup[/cyan]",
         "",
         f"{'Project':<15} [green]{project_path.name}[/green]",
         f"{'Working Path':<15} [dim]{current_dir}[/dim]",
@@ -1345,10 +1462,10 @@ goalkit init my-project
     console.print(f"[cyan]Selected AI assistant:[/cyan] {selected_ai}")
     console.print(f"[cyan]Selected script type:[/cyan] {selected_script}")
 
-    tracker = StepTracker("Initialize Goalkeeper Project")
+    tracker = StepTracker("Initialize Goalkit Project")
 
-    global _goalkeeper_tracker_active
-    _goalkeeper_tracker_active = True
+    global _goalkit_tracker_active
+    _goalkit_tracker_active = True
 
     tracker.add("precheck", "Check required tools")
     tracker.complete("precheck", "ok")
@@ -1365,6 +1482,7 @@ goalkit init my-project
         ("chmod", "Ensure scripts executable"),
         ("copy-scripts", "Copy scripts"),
         ("copy-templates", "Copy templates"),
+        ("copy-workflows", "Copy workflow templates"),
         ("cleanup", "Cleanup"),
         ("git", "Initialize git repository"),
         ("final", "Finalize")
@@ -1391,6 +1509,9 @@ goalkit init my-project
 
             # Copy templates to .goalkit/templates/
             copy_templates_to_goalkit(project_path, tracker=tracker)
+
+            # Copy workflow templates to .goalkit/workflows/
+            copy_workflows_to_goalkit(project_path, tracker=tracker)
 
             # Create the main agent file with project-specific guidance
             create_agent_file(project_path, selected_ai)
@@ -1492,7 +1613,7 @@ goalkit init my-project
     steps_lines.append("   [cyan]/goalkit.milestones[/] - Create measurable milestones")
     steps_lines.append("   [cyan]/goalkit.execute[/] - Execute with learning and adaptation")
     steps_lines.append("   [cyan]/goalkit.tasks[/] - Generate detailed implementation tasks")
-    steps_lines.append("   [cyan]/goalkit.taskstoissues[/] - Convert tasks to GitHub issues")
+    steps_lines.append("   [cyan]/goalkit.taskstoissues[/] - Convert tasks to GitHub issues (see .goalkit/workflows/taskstoissues.md)")
     steps_lines.append("   [cyan]/goalkit.report[/] - Generate progress reports and insights")
     steps_lines.append("   [cyan]/goalkit.review[/] - Conduct project reviews and retrospectives")
 
@@ -1527,7 +1648,7 @@ def check():
 
     console.print(tracker.render())
 
-    console.print("\n[bold green]Goalkeeper CLI is ready to use![/bold green]")
+    console.print("\n[bold green]Goalkit CLI is ready to use![/bold green]")
 
     if not git_ok:
         console.print("[dim]Tip: Install git for repository management[/dim]")

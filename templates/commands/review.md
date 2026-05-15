@@ -1,6 +1,9 @@
 ---
 description: Conduct project review and retrospective to capture learnings and improve future goal achievement.
 handoffs:
+  - label: Detailed Retrospective
+    agent: goalkit.detailed-retrospective
+    prompt: Conduct a detailed retrospective (see .goalkit/workflows/detailed-retrospective.md)
   - label: Create Improvement Goals
     agent: goalkit.goal
     prompt: Create goals based on review findings to improve future performance. I want to address...

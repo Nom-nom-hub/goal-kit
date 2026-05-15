@@ -1,4 +1,4 @@
-"""Tool detection command."""
+"""Tool detection command for Goalkit CLI."""
 
 from pathlib import Path
 from rich.console import Console
@@ -14,7 +14,7 @@ CLAUDE_LOCAL_PATH = Path.home() / ".claude" / "local" / "claude"
 
 def check() -> None:
     """Check that all required tools are installed.
-    
+
     This command verifies:
     1. Git version control system
     2. All configured AI assistants
@@ -48,7 +48,7 @@ def check() -> None:
 
     console.print(tracker.render())
 
-    console.print("\n[bold green]Goalkeeper CLI is ready to use![/bold green]")
+    console.print("\n[bold green]Goalkit CLI is ready to use![/bold green]")
 
     if not git_ok:
         console.print("[dim]Tip: Install git for repository management[/dim]")

@@ -16,7 +16,7 @@ from unittest.mock import MagicMock, patch, mock_open
 import pytest
 from typer.testing import CliRunner
 
-from goalkeeper_cli import (
+from goalkit import (
     app,
     AGENT_CONFIG,
     SCRIPT_TYPE_CHOICES,
@@ -123,7 +123,7 @@ class TestAgentConfiguration:
         project_path = tmp_path / "test-project"
         project_path.mkdir()
         
-        with patch("goalkeeper_cli.create_agent_file"):
+        with patch("goalkit.create_agent_file"):
             create_agent_config(project_path, "claude")
         
         # Should create .claude directory
@@ -134,7 +134,7 @@ class TestAgentConfiguration:
         project_path = tmp_path / "test-project"
         project_path.mkdir()
         
-        with patch("goalkeeper_cli.create_agent_file"):
+        with patch("goalkit.create_agent_file"):
             create_agent_config(project_path, "copilot")
         
         # Should create .github directory
@@ -153,7 +153,7 @@ class TestAgentConfiguration:
         project_path = tmp_path / "test-project"
         project_path.mkdir()
         
-        with patch("goalkeeper_cli.create_agent_file"):
+        with patch("goalkit.create_agent_file"):
             create_agent_config(project_path, "claude")
         
         # Should create commands directory
@@ -271,8 +271,8 @@ class TestBannerFunctionality:
         """Test show_banner displays without error."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.console") as mock_console:
-            from goalkeeper_cli import show_banner
+        with patch("goalkit.console") as mock_console:
+            from goalkit import show_banner
             show_banner()
             
             # Should call console.print
@@ -313,13 +313,13 @@ class TestConsoleOutput:
 
     def test_console_is_available(self):
         """Test that Rich console is available."""
-        from goalkeeper_cli import console
+        from goalkit import console
         from rich.console import Console
         assert isinstance(console, Console)
 
     def test_banner_constants_defined(self):
         """Test banner constants are defined."""
-        from goalkeeper_cli import BANNER, TAGLINE
+        from goalkit import BANNER, TAGLINE
         assert BANNER
         assert TAGLINE
         assert "Goal" in BANNER or "Goalkeeper" in BANNER
@@ -330,27 +330,27 @@ class TestHelperFunctions:
 
     def test_step_tracker_import(self):
         """Test StepTracker is properly imported."""
-        from goalkeeper_cli.helpers import StepTracker
+        from goalkit.helpers import StepTracker
         assert StepTracker is not None
 
     def test_select_with_arrows_import(self):
         """Test select_with_arrows is properly imported."""
-        from goalkeeper_cli.helpers import select_with_arrows
+        from goalkit.helpers import select_with_arrows
         assert select_with_arrows is not None
 
     def test_check_tool_import(self):
         """Test check_tool is properly imported."""
-        from goalkeeper_cli.helpers import check_tool
+        from goalkit.helpers import check_tool
         assert check_tool is not None
 
     def test_is_git_repo_import(self):
         """Test is_git_repo is properly imported."""
-        from goalkeeper_cli.helpers import is_git_repo
+        from goalkit.helpers import is_git_repo
         assert is_git_repo is not None
 
     def test_init_git_repo_import(self):
         """Test init_git_repo is properly imported."""
-        from goalkeeper_cli.helpers import init_git_repo
+        from goalkit.helpers import init_git_repo
         assert init_git_repo is not None
 
 
@@ -396,7 +396,7 @@ class TestEnvironmentVariables:
 
     def test_claude_local_path_constant(self):
         """Test CLAUDE_LOCAL_PATH is properly set."""
-        from goalkeeper_cli import CLAUDE_LOCAL_PATH
+        from goalkit import CLAUDE_LOCAL_PATH
         assert CLAUDE_LOCAL_PATH is not None
 
 

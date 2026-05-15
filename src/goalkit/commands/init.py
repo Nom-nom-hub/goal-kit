@@ -12,8 +12,6 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.live import Live
 
-from ..agents import AgentRegistry, get_agent
-from ..templates import TemplateManager
 from ..helpers import (
     StepTracker,
     select_with_arrows,
@@ -41,7 +39,7 @@ def create_agent_file(project_path: Path, ai_assistant: str) -> None:
     import datetime
 
     # Read the agent file template
-    template_path = Path(__file__).parent.parent.parent / "templates" / "agent-file-template.md"
+    template_path = Path(__file__).parent.parent.parent.parent / "templates" / "agent-file-template.md"
     if not template_path.exists():
         return  # Skip if template doesn't exist
 
@@ -58,6 +56,7 @@ def create_agent_file(project_path: Path, ai_assistant: str) -> None:
     # Basic replacements
     content = template_content.replace("[PROJECT NAME]", project_name)
     content = content.replace("[DATE]", current_date)
+    content = content.replace("[AGENT]", ai_assistant)
 
     # For now, set placeholder content for dynamic sections
     content = content.replace(
@@ -106,9 +105,9 @@ def create_agent_file(project_path: Path, ai_assistant: str) -> None:
 - User runs `/goalkit.execute` → Implement → Continue
 """
     content = content.replace(
-        "*This guide is automatically created by goalkeeper init. It provides essential guidance for agents working on this Goal Kit project.*",
+        "*This guide is automatically created by goalkit init. It provides essential guidance for agents working on this Goal Kit project.*",
         workflow_enforcement
-        + "\n*This guide is automatically created by goalkeeper init. It provides essential guidance for agents working on this Goal Kit project.*",
+        + "\n*This guide is automatically created by goalkit init. It provides essential guidance for agents working on this Goal Kit project.*",
     )
 
     # Define agent-specific file names and locations
@@ -175,7 +174,7 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
     requires_cli = agent_config and agent_config.get("requires_cli", False)
 
     # Path to agent template directory
-    agent_template_path = Path(__file__).parent.parent.parent / "agent_templates" / selected_ai
+    agent_template_path = Path(__file__).parent.parent.parent.parent / "agent_templates" / selected_ai
 
     # Create agent config directory
     agent_config_dir = project_path / agent_folder.strip("/")
@@ -213,7 +212,7 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
 
     # Copy templates - look for agent-specific first, fallback to generic
     agent_specific_template_dir = (
-        Path(__file__).parent.parent.parent / "templates" / selected_ai / folder_name
+        Path(__file__).parent.parent.parent.parent / "templates" / selected_ai / folder_name
     )
     if agent_specific_template_dir.exists():
         for template_file in agent_specific_template_dir.iterdir():
@@ -222,7 +221,7 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
                 shutil.copy2(template_file, dest_path)
     else:
         # Fallback to generic commands templates
-        commands_source_dir = Path(__file__).parent.parent.parent / "templates" / "commands"
+        commands_source_dir = Path(__file__).parent.parent.parent.parent / "templates" / "commands"
         if commands_source_dir.exists():
             for command_file in commands_source_dir.iterdir():
                 if command_file.is_file() and command_file.suffix == ".md":
@@ -232,7 +231,7 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
         # Special handling for Copilot
         if selected_ai == "copilot":
             vscode_settings_source = (
-                Path(__file__).parent.parent.parent / "templates" / "vscode-settings.json"
+                Path(__file__).parent.parent.parent.parent / "templates" / "vscode-settings.json"
             )
             if vscode_settings_source.exists():
                 vscode_dir = project_path / ".vscode"
@@ -279,8 +278,8 @@ def init(
         help="GitHub token to use for API requests (or set GH_TOKEN or GITHUB_TOKEN environment variable)",
     ),
 ) -> None:
-    """Initialize a new Goalkeeper project from the latest template.
-    
+    """Initialize a new Goalkit project from the latest template.
+
     This command will:
     1. Check that required tools are installed (git is optional)
     2. Let you choose your AI assistant
@@ -288,19 +287,19 @@ def init(
     4. Extract the template to a new project directory or current directory
     5. Initialize a fresh git repository (if not --no-git and no existing repo)
     6. Optionally set up AI assistant commands
-    
+
     Examples:
-        goalkeeper init my-project
-        goalkeeper init my-project --ai claude
-        goalkeeper init my-project --ai copilot --no-git
-        goalkeeper init --ignore-agent-tools my-project
-        goalkeeper init . --ai claude
-        goalkeeper init .
-        goalkeeper init --here --ai claude
-        goalkeeper init --here
-        goalkeeper init --here --force
+        goalkit init my-project
+        goalkit init my-project --ai claude
+        goalkit init my-project --ai copilot --no-git
+        goalkit init --ignore-agent-tools my-project
+        goalkit init . --ai claude
+        goalkit init .
+        goalkit init --here --ai claude
+        goalkit init --here
+        goalkit init --here --force
     """
-    from .. import show_banner, AGENT_CONFIG, download_and_extract_template, copy_scripts_to_goalkit, copy_templates_to_goalkit, ensure_executable_scripts
+    from .. import show_banner, AGENT_CONFIG, download_and_extract_template, copy_scripts_to_goalkit, copy_templates_to_goalkit, copy_workflows_to_goalkit, ensure_executable_scripts
     import httpx
     import ssl
     import truststore
@@ -391,7 +390,7 @@ def init(
         raise typer.Exit(1)
 
     setup_lines = [
-        "[cyan]Goalkeeper Project Setup[/cyan]",
+        "[cyan]Goalkit Project Setup[/cyan]",
         "",
         f"{'Project':<15} [green]{project_path.name}[/green]",
         f"{'Working Path':<15} [dim]{current_dir}[/dim]",
@@ -461,7 +460,7 @@ def init(
     console.print(f"[cyan]Selected script type:[/cyan] {selected_script}")
 
     # Create tracker
-    tracker = StepTracker("Initialize Goalkeeper Project")
+    tracker = StepTracker("Initialize Goalkit Project")
 
     tracker.add("precheck", "Check required tools")
     tracker.complete("precheck", "ok")
@@ -478,6 +477,7 @@ def init(
         ("chmod", "Ensure scripts executable"),
         ("copy-scripts", "Copy scripts"),
         ("copy-templates", "Copy templates"),
+        ("copy-workflows", "Copy workflow templates"),
         ("cleanup", "Cleanup"),
         ("git", "Initialize git repository"),
         ("final", "Finalize"),
@@ -511,6 +511,9 @@ def init(
             # Copy scripts and templates
             copy_scripts_to_goalkit(project_path, selected_script, tracker=tracker)
             copy_templates_to_goalkit(project_path, tracker=tracker)
+
+            # Copy workflow templates to .goalkit/workflows/
+            copy_workflows_to_goalkit(project_path, tracker=tracker)
 
             # Create agent file
             create_agent_file(project_path, selected_ai)

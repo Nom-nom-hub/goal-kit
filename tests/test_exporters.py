@@ -7,16 +7,16 @@ from io import StringIO
 from uuid import uuid4
 from datetime import datetime, timedelta
 
-from src.goalkeeper_cli.exporters import (
+from goalkit.exporters import (
     ExportManager,
     CSVExporter,
     JSONExporter,
     MarkdownExporter,
     TextExporter,
 )
-from src.goalkeeper_cli.tasks import TaskTracker
-from src.goalkeeper_cli.reporting import ReportGenerator, Report, ReportType, Insight, InsightType, InsightSeverity
-from src.goalkeeper_cli.models import TaskStatus
+from goalkit.tasks import TaskTracker
+from goalkit.reporting import ReportGenerator, Report, ReportType, Insight, InsightType, InsightSeverity
+from goalkit.models import TaskStatus
 
 
 @pytest.fixture

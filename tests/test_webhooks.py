@@ -15,7 +15,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from goalkeeper_cli.webhooks import (
+from goalkit.webhooks import (
     Webhook,
     WebhookEvent,
     WebhookManager,
@@ -517,7 +517,7 @@ class TestTestWebhook:
 class TestRetryLogic:
     """Test retry logic for webhook delivery."""
 
-    @patch("goalkeeper_cli.webhooks.httpx.post")
+    @patch("goalkit.webhooks.httpx.post")
     def test_delivery_success_first_try(self, mock_post, sample_webhook, webhook_manager):
         """Test successful delivery on first attempt."""
         mock_post.return_value.status_code = 200
@@ -533,8 +533,8 @@ class TestRetryLogic:
         assert result is True
         assert mock_post.call_count == 1
 
-    @patch("goalkeeper_cli.webhooks.time.sleep")
-    @patch("goalkeeper_cli.webhooks.httpx.post")
+    @patch("goalkit.webhooks.time.sleep")
+    @patch("goalkit.webhooks.httpx.post")
     def test_delivery_retry_on_failure(self, mock_post, mock_sleep, sample_webhook, webhook_manager):
         """Test retry on delivery failure."""
         # Fail first 2 times, succeed on 3rd
@@ -555,7 +555,7 @@ class TestRetryLogic:
         assert result is True
         assert mock_post.call_count == 3
 
-    @patch("goalkeeper_cli.webhooks.httpx.post")
+    @patch("goalkit.webhooks.httpx.post")
     def test_delivery_max_retries(self, mock_post, sample_webhook, webhook_manager):
         """Test max retry limit."""
         mock_post.side_effect = Exception("Connection error")
@@ -572,7 +572,7 @@ class TestRetryLogic:
         # Should attempt initial + max retries
         assert mock_post.call_count == 6  # 1 + 5 retries
 
-    @patch("goalkeeper_cli.webhooks.httpx.post")
+    @patch("goalkit.webhooks.httpx.post")
     def test_failure_count_incremented(self, mock_post, sample_webhook, webhook_manager):
         """Test that failure count is incremented."""
         mock_post.side_effect = Exception("Connection error")
@@ -588,7 +588,7 @@ class TestRetryLogic:
         updated = webhook_manager.get_webhook(sample_webhook.id)
         assert updated.failure_count > 0
 
-    @patch("goalkeeper_cli.webhooks.httpx.post")
+    @patch("goalkit.webhooks.httpx.post")
     def test_webhook_disabled_on_too_many_failures(
         self, mock_post, sample_webhook, webhook_manager
     ):

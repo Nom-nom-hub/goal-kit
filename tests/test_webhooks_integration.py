@@ -13,8 +13,8 @@ from unittest.mock import patch, MagicMock
 import pytest
 from typer.testing import CliRunner
 
-from goalkeeper_cli.commands.webhooks import app
-from goalkeeper_cli.webhooks import WebhookManager
+from goalkit.commands.webhooks import app
+from goalkit.webhooks import WebhookManager
 
 
 runner = CliRunner()
@@ -207,7 +207,7 @@ class TestTestCommand:
 
         assert result.exit_code == 1
 
-    @patch("goalkeeper_cli.webhooks.httpx.post")
+    @patch("goalkit.webhooks.httpx.post")
     def test_test_webhook_success(self, mock_post, cli_runner):
         """Test successful webhook test."""
         mock_post.return_value = MagicMock(status_code=200)
@@ -234,7 +234,7 @@ class TestTestCommand:
             assert result.exit_code == 0
             assert "successful" in result.stdout.lower() or "✓" in result.stdout
 
-    @patch("goalkeeper_cli.webhooks.httpx.post")
+    @patch("goalkit.webhooks.httpx.post")
     def test_test_webhook_failure(self, mock_post, cli_runner):
         """Test failed webhook test."""
         mock_post.side_effect = Exception("Connection error")

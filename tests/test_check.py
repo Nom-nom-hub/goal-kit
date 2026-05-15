@@ -1,5 +1,5 @@
 """
-Integration tests for the 'goalkeeper check' command.
+Integration tests for the 'Goalkit check' command.
 
 Tests cover:
 - Tool detection and reporting
@@ -17,7 +17,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from typer.testing import CliRunner
 
-from goalkeeper_cli import app, AGENT_CONFIG
+from goalkit import app, AGENT_CONFIG
 
 
 class TestCheckBasic:
@@ -37,7 +37,7 @@ class TestCheckBasic:
         result = runner.invoke(app, ["check"])
         
         # Should display banner
-        assert "Goal Kit" in result.stdout or "Goalkeeper" in result.stdout
+        assert "Goal Kit" in result.stdout or "Goalkit" in result.stdout
 
     def test_check_lists_tools(self):
         """Test that check lists available tools."""
@@ -55,7 +55,7 @@ class TestCheckGitDetection:
         """Test that check detects git when installed."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             mock_check.return_value = True
             result = runner.invoke(app, ["check"])
         
@@ -66,7 +66,7 @@ class TestCheckGitDetection:
         """Test that check handles missing git gracefully."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             # First call for git returns False, rest return True/False as needed
             mock_check.side_effect = [False] + [True] * 20
             result = runner.invoke(app, ["check"])
@@ -83,7 +83,7 @@ class TestCheckAgentDetection:
         """Test that check includes agent detection."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             mock_check.return_value = True
             result = runner.invoke(app, ["check"])
         
@@ -94,7 +94,7 @@ class TestCheckAgentDetection:
         """Test that check detects multiple agents."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             # Mock all tools as installed
             mock_check.return_value = True
             result = runner.invoke(app, ["check"])
@@ -106,7 +106,7 @@ class TestCheckAgentDetection:
         """Test check output when no agents are found."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             # Mock all tools as not installed
             mock_check.return_value = False
             result = runner.invoke(app, ["check"])
@@ -122,7 +122,7 @@ class TestCheckVSCodeDetection:
         """Test that check detects VS Code."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             # Mock VS Code as installed
             def side_effect(tool, *args, **kwargs):
                 return tool == "code"
@@ -136,7 +136,7 @@ class TestCheckVSCodeDetection:
         """Test that check detects VS Code Insiders."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             # Mock VS Code Insiders as installed
             def side_effect(tool, *args, **kwargs):
                 return tool == "code-insiders"
@@ -170,7 +170,7 @@ class TestCheckOutputFormatting:
         """Test that check groups tools properly."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             mock_check.return_value = True
             result = runner.invoke(app, ["check"])
         
@@ -185,7 +185,7 @@ class TestCheckWithMockedTools:
         """Test check when all tools are available."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             mock_check.return_value = True
             result = runner.invoke(app, ["check"])
         
@@ -195,7 +195,7 @@ class TestCheckWithMockedTools:
         """Test check when no tools are available."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             mock_check.return_value = False
             result = runner.invoke(app, ["check"])
         
@@ -206,7 +206,7 @@ class TestCheckWithMockedTools:
         """Test check when only git is available."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             def side_effect(tool, *args, **kwargs):
                 return tool == "git"
             
@@ -219,7 +219,7 @@ class TestCheckWithMockedTools:
         """Test check when only agents are available."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             def side_effect(tool, *args, **kwargs):
                 return tool in AGENT_CONFIG
             
@@ -236,8 +236,8 @@ class TestCheckStepTracking:
         """Test that check uses StepTracker for output."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.StepTracker") as mock_tracker:
-            with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.StepTracker") as mock_tracker:
+            with patch("goalkit.check_tool") as mock_check:
                 mock_check.return_value = True
                 mock_tracker_instance = MagicMock()
                 mock_tracker.return_value = mock_tracker_instance
@@ -251,8 +251,8 @@ class TestCheckStepTracking:
         """Test that check adds steps to tracker."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.StepTracker") as mock_tracker:
-            with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.StepTracker") as mock_tracker:
+            with patch("goalkit.check_tool") as mock_check:
                 mock_check.return_value = True
                 mock_tracker_instance = MagicMock()
                 mock_tracker.return_value = mock_tracker_instance
@@ -270,7 +270,7 @@ class TestCheckToolChecking:
         """Test that check_tool function is called."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             mock_check.return_value = True
             result = runner.invoke(app, ["check"])
         
@@ -281,7 +281,7 @@ class TestCheckToolChecking:
         """Test that check handles errors from check_tool gracefully."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.check_tool") as mock_check:
             mock_check.side_effect = RuntimeError("Tool check failed")
             result = runner.invoke(app, ["check"])
         
@@ -318,8 +318,8 @@ class TestCheckEdgeCases:
         """Test check with invalid Claude local path."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.CLAUDE_LOCAL_PATH", Path("/invalid/path")):
-            with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.CLAUDE_LOCAL_PATH", Path("/invalid/path")):
+            with patch("goalkit.check_tool") as mock_check:
                 mock_check.return_value = False
                 result = runner.invoke(app, ["check"])
         
@@ -349,8 +349,8 @@ class TestCheckConsoleOutput:
         """Test that check uses Rich console for output."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.console") as mock_console:
-            with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.console") as mock_console:
+            with patch("goalkit.check_tool") as mock_check:
                 mock_check.return_value = True
                 result = runner.invoke(app, ["check"])
         
@@ -361,8 +361,8 @@ class TestCheckConsoleOutput:
         """Test that check renders StepTracker output."""
         runner = CliRunner()
         
-        with patch("goalkeeper_cli.StepTracker") as mock_tracker:
-            with patch("goalkeeper_cli.check_tool") as mock_check:
+        with patch("goalkit.StepTracker") as mock_tracker:
+            with patch("goalkit.check_tool") as mock_check:
                 mock_check.return_value = True
                 mock_tracker_instance = MagicMock()
                 mock_tracker_instance.render.return_value = "mock render output"

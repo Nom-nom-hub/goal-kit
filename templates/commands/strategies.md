@@ -5,6 +5,9 @@ handoffs:
     agent: goalkit.milestones
     prompt: Create measurable progress checkpoints for the selected strategy
     send: true
+  - label: Risk Assessment
+    agent: goalkit.risk-register
+    prompt: Assess risks for the selected strategy (see .goalkit/workflows/risk-register.md)
   - label: Create Checklist
     agent: goalkit.checklist
     prompt: Create a checklist for the following domain...

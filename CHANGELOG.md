@@ -5,6 +5,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.1] - 2026-05-15
+
+### 🎯 ShellCheck Quality & Script Expansion
+
+This release adds ShellCheck CI to the pipeline, fixes all ShellCheck warnings across all bash scripts, and expands the script library with 8 new cross-platform management scripts.
+
+#### 🧹 ShellCheck Quality
+
+- **Added ShellCheck CI** (`.github/workflows/shellcheck.yml`):
+  - Runs on every PR touching `.sh` files in `scripts/bash/` and `.github/workflows/scripts/`
+  - Generates structured Step Summary with per-script pass/fail status
+  - Only fails on actual errors (pre-existing warnings are non-blocking)
+
+- **Fixed All ShellCheck Warnings** across ~30 scripts:
+  - **SC2155 (32x)**: Split `local var=$(cmd)` into separate declaration and assignment
+  - **SC2034 (21x)**: Suppressed unused `verbose`/`VERBOSE` variables with disable comments
+  - **SC2046 (3x)**: Quoted command substitutions to prevent word splitting
+  - **SC2181 (2x)**: Used `if cmd;` pattern instead of `cmd; if [$? -eq 0];`
+  - **SC2086 (1x)**: Double-quoted variable to prevent word splitting
+
+#### 🚀 Expanded Script Library
+
+- **8 New Bash Scripts**:
+  - `create-goal-alignment.sh` — Connect goals to strategic pillars and business impact
+  - `create-okrs.sh` — Define Objectives and Key Results for goals
+  - `create-okr-mapping.sh` — Map OKRs across the organization
+  - `create-program.sh` — Structure multi-goal programs with portfolio view
+  - `generate-portfolio.sh` — Generate portfolio-level reports and dashboards
+  - `setup-async-coordination.sh` — Coordinate work across distributed teams
+  - `setup-cross-goal-coordination.sh` — Manage dependencies between related goals
+  - `setup-team-roles.sh` — Define team roles and responsibilities per goal
+
+- **8 New PowerShell Scripts** — Cross-platform equivalents of all new bash scripts
+
+- **New Command Templates**: `aggregation.md`, `check.md`, `dependencies.md`, `export.md`, `init.md`, `status.md`
+
+#### 🔧 Improvements
+
+- **Bash Script Standards**: All 30+ scripts now pass `shellcheck -S style` with zero errors
+- **Better Error Handling**: `update-agent-context.sh` — properly quoted find command substitution
+- **Consistent Patterns**: All scripts use same-line `# shellcheck disable` for unused variables
+
 ## [2.3.0] - 2026-05-15
 
 ### 🎯 Make Goal-Kit More Effective and Smarter

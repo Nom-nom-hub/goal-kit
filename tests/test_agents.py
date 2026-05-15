@@ -4,7 +4,7 @@ Tests the Agent dataclass, AgentRegistry class, and helper functions.
 """
 
 import pytest
-from goalkeeper_cli.agents import Agent, AgentRegistry, get_agent, list_agents, validate_agent
+from goalkit.agents import Agent, AgentRegistry, get_agent, list_agents, validate_agent
 
 
 class TestAgent:

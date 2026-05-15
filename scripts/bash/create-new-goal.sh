@@ -72,7 +72,8 @@ create_goal() {
         if [ -d "$goals_dir" ]; then
             for dir in "$goals_dir"/*-*/; do
                 if [ -d "$dir" ]; then
-                    local dir_name=$(basename "$dir")
+                    local dir_name
+                dir_name=$(basename "$dir")
                     if [[ "$dir_name" =~ ^([0-9]+)- ]]; then
                         local num=${BASH_REMATCH[1]}
                         if [ "$num" -ge "$next_number" ]; then
@@ -84,8 +85,10 @@ create_goal() {
         fi
         
         # Create goal directory name
-        local goal_number=$(printf "%03d" "$next_number")
-        local clean_description=$(echo "$goal_description" | sed 's/[^a-zA-Z0-9 -]//g' | sed 's/  */-/g' | sed 's/-$//' | tr '[:upper:]' '[:lower:]')
+        local goal_number
+        goal_number=$(printf "%03d" "$next_number")
+        local clean_description
+        clean_description=$(echo "$goal_description" | sed 's/[^a-zA-Z0-9 -]//g' | sed 's/  */-/g' | sed 's/-$//' | tr '[:upper:]' '[:lower:]')
         local goal_dir_name="${goal_number}-${clean_description}"
         local goal_dir=".goalkit/goals/$goal_dir_name"
         local goal_file="$goal_dir/goal.md"
@@ -113,7 +116,8 @@ EOF
     if [ -d "$goals_dir" ]; then
         for dir in "$goals_dir"/*-*/; do
             if [ -d "$dir" ]; then
-                local dir_name=$(basename "$dir")
+                local dir_name
+                dir_name=$(basename "$dir")
                 if [[ "$dir_name" =~ ^([0-9]+)- ]]; then
                     local num=${BASH_REMATCH[1]}
                     if [ "$num" -ge "$next_number" ]; then
@@ -125,8 +129,10 @@ EOF
     fi
     
     # Create goal directory name
-    local goal_number=$(printf "%03d" "$next_number")
-    local clean_description=$(echo "$goal_description" | sed 's/[^a-zA-Z0-9 -]//g' | sed 's/  */-/g' | sed 's/-$//' | tr '[:upper:]' '[:lower:]')
+    local goal_number
+    goal_number=$(printf "%03d" "$next_number")
+    local clean_description
+    clean_description=$(echo "$goal_description" | sed 's/[^a-zA-Z0-9 -]//g' | sed 's/  */-/g' | sed 's/-$//' | tr '[:upper:]' '[:lower:]')
     local goal_dir_name="${goal_number}-${clean_description}"
     local goal_dir=".goalkit/goals/$goal_dir_name"
     local full_goal_dir="$project_root/$goal_dir"
@@ -156,7 +162,8 @@ EOF
     write_success "Created goal directory: $goal_dir"
     
     # Get current timestamp
-    local timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
+    local timestamp
+    timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
     
     # Check if template exists, otherwise create default goal.md
     if [ -f "$project_root/.goalkit/templates/goal-template.md" ]; then

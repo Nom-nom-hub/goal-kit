@@ -8,9 +8,9 @@ from datetime import datetime, timedelta
 from io import StringIO
 from unittest.mock import patch
 
-from goalkeeper_cli.commands.milestones import milestones
-from goalkeeper_cli.execution import ExecutionTracker, MilestoneRecord
-from goalkeeper_cli.models import Goal
+from goalkit.commands.milestones import milestones
+from goalkit.execution import ExecutionTracker, MilestoneRecord
+from goalkit.models import Goal
 
 
 class TestMilestonesCommandIntegration:

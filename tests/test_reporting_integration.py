@@ -5,10 +5,10 @@ import json
 from uuid import uuid4
 from datetime import datetime, timedelta
 
-from src.goalkeeper_cli.reporting import ReportGenerator
-from src.goalkeeper_cli.tasks import TaskTracker
-from src.goalkeeper_cli.commands.reporting import report_command, insights_command
-from src.goalkeeper_cli.models import TaskStatus
+from goalkit.reporting import ReportGenerator
+from goalkit.tasks import TaskTracker
+from goalkit.commands.reporting import report_command, insights_command
+from goalkit.models import TaskStatus
 
 
 @pytest.fixture

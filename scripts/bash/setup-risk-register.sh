@@ -9,6 +9,7 @@ create_risk_register_file() {
     local dry_run=false
     local force=false
     local json_mode=false
+    # shellcheck disable=SC2034
     local verbose=false
     
     # Parse remaining arguments
@@ -28,6 +29,7 @@ create_risk_register_file() {
                 shift
                 ;;
             --verbose)
+                # shellcheck disable=SC2034
                 verbose=true
                 shift
                 ;;
@@ -95,8 +97,10 @@ EOF
             write_warning "Failed to copy risk register template, using default content"
         else
             # Replace placeholders in the template
-            local goal_dir_name=$(basename "$goal_directory")
-            local timestamp=$(date -u +'%Y-%m-%d')
+            local goal_dir_name
+            goal_dir_name=$(basename "$goal_directory")
+            local timestamp
+            timestamp=$(date -u +'%Y-%m-%d')
             sed -i.bak "s/\[Goal Name\]/$goal_dir_name/g" "$risk_register_file" || handle_error "Failed to replace placeholders"
             sed -i.bak "s/\[Date\]/$timestamp/g" "$risk_register_file" || handle_error "Failed to replace date"
             sed -i.bak "s/\[Name\]/[Team Member]/g" "$risk_register_file" || true

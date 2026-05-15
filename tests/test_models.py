@@ -3,7 +3,7 @@
 import pytest
 from datetime import datetime
 from pathlib import Path
-from goalkeeper_cli.models import Project, Goal, Milestone, Task, TemplateMetadata
+from goalkit.models import Project, Goal, Milestone, Task, TemplateMetadata
 
 
 class TestProject:

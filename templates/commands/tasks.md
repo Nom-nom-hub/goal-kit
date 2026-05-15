@@ -3,7 +3,7 @@ description: Generate detailed implementation tasks from goals and execution pla
 handoffs:
   - label: Convert Tasks to Issues
     agent: goalkit.taskstoissues
-    prompt: Convert these tasks into GitHub issues
+    prompt: Convert these tasks into GitHub issues (see .goalkit/workflows/taskstoissues.md for the process guide)
     send: true
   - label: Create Checklist
     agent: goalkit.checklist

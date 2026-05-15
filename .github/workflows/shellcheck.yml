@@ -1,0 +1,74 @@
+# ShellCheck — static analysis for bash scripts
+# Runs on every PR that touches .sh files in scripts/ or .github/workflows/scripts/
+
+name: ShellCheck
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/bash/*.sh'
+      - '.github/workflows/scripts/*.sh'
+      - '.github/workflows/shellcheck.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install ShellCheck
+        run: which shellcheck || sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck & generate summary
+        shell: bash
+        run: |
+          any_errors=false
+          summary=""
+
+          check_dir() {
+            local dir="$1" label="$2"
+            echo "::group::$label"
+            for f in "$dir"/*.sh; do
+              [ -f "$f" ] || continue
+              output=$(shellcheck -x -S style "$f" 2>&1)
+              rc=$?
+              if [ $rc -eq 0 ]; then
+                echo "✅ $(basename "$f") — clean"
+                summary+="- ✅ $(basename "$f") — clean\n"
+              else
+                echo "⚠️  $(basename "$f") — issues found (exit $rc)"
+                echo "$output"
+                summary+="- ⚠️ $(basename "$f") — issues found\n"
+                if [ $rc -ge 2 ] || echo "$output" | grep -qE '^[^:]*:[0-9]+:[0-9]+: error:'; then
+                  any_errors=true
+                fi
+              fi
+            done
+            echo "::endgroup::"
+          }
+
+          check_dir "scripts/bash" "Goal Kit Scripts (scripts/bash/)"
+          check_dir ".github/workflows/scripts" "CI Helper Scripts (.github/workflows/scripts/)"
+
+          # Generate step summary
+          {
+            echo "### ShellCheck Summary"
+            echo ""
+            echo -e "$summary"
+            echo ""
+            if [ "$any_errors" = true ]; then
+              echo "> ❌ **One or more scripts have errors that must be fixed.**"
+              exit 1
+            else
+              echo "> 🟢 No shellcheck errors found. Warnings and info notes above are non-blocking."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

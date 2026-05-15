@@ -5,6 +5,9 @@ handoffs:
     agent: goalkit.execute
     prompt: Implement with learning and adaptation
     send: true
+  - label: Cross-Goal Coordination
+    agent: goalkit.cross-goal-coordination
+    prompt: Coordinate this milestone with other active goals (see .goalkit/workflows/cross-goal-coordination.md)
   - label: Create Checklist
     agent: goalkit.checklist
     prompt: Create a checklist for the following domain...

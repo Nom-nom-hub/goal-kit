@@ -1,6 +1,6 @@
 [project]
 name = "goalkit"
-version = "2.3.0"
+version = "2.3.1"
 license = "MIT"
 description = "Goalkit CLI - Goal-Driven Development tool for AI agents"
 requires-python = ">=3.11"

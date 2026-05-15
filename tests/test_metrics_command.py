@@ -7,7 +7,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
-from goalkeeper_cli.commands.metrics import (
+from goalkit.commands.metrics import (
     metrics,
     _output_json,
     _output_formatted,
@@ -15,9 +15,9 @@ from goalkeeper_cli.commands.metrics import (
     _format_score,
     _format_trend,
 )
-from goalkeeper_cli.metrics import MetricsTracker, MetricRecord
-from goalkeeper_cli.analyzer import AnalysisResult
-from goalkeeper_cli.models import Project, Goal
+from goalkit.metrics import MetricsTracker, MetricRecord
+from goalkit.analyzer import AnalysisResult
+from goalkit.models import Project, Goal
 
 
 class TestMetricsCommand:

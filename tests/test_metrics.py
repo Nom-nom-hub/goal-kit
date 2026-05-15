@@ -6,8 +6,8 @@ import json
 from pathlib import Path
 from datetime import datetime, timedelta
 
-from goalkeeper_cli.metrics import MetricsTracker, MetricRecord, MetricStats, HealthScore
-from goalkeeper_cli.models import Goal
+from goalkit.metrics import MetricsTracker, MetricRecord, MetricStats, HealthScore
+from goalkit.models import Goal
 
 
 @pytest.fixture

@@ -1,3 +1,13 @@
+---
+description: Set up automated event notifications and integrations with external systems (Slack, Discord, GitHub, Jira, email) for task completions, goal achievements, deadline alerts, and risk detection.
+handoffs:
+  - label: Manage Webhooks
+    agent: goalkit.webhooks
+    prompt: Manage webhook configuration for the project
+    send: true
+scripts: {}
+---
+
 # Webhooks Command Guide
 
 ## Purpose

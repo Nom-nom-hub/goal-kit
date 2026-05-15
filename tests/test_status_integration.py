@@ -7,8 +7,8 @@ from pathlib import Path
 from datetime import datetime
 from unittest.mock import patch
 
-from goalkeeper_cli.analyzer import ProjectAnalyzer
-from goalkeeper_cli.commands.status import status
+from goalkit.analyzer import ProjectAnalyzer
+from goalkit.commands.status import status
 
 
 class TestStatusIntegration:

@@ -10,8 +10,8 @@ handoffs:
     prompt: Create a goal aligned to this organization vision
     send: true
 scripts:
-  sh: scripts/bash/create-org-vision.sh --json
-  ps: scripts/powershell/create-org-vision.ps1 -Json
+  sh: scripts/bash/create-vision.sh --json
+  ps: scripts/powershell/create-vision.ps1 -Json
 ---
 
 ## User Input

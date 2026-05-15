@@ -9,6 +9,7 @@ create_execution_file() {
     local dry_run=false
     local force=false
     local json_mode=false
+    # shellcheck disable=SC2034
     local verbose=false
     
     # Parse remaining arguments
@@ -28,6 +29,7 @@ create_execution_file() {
                 shift
                 ;;
             --verbose)
+                # shellcheck disable=SC2034
                 verbose=true
                 shift
                 ;;
@@ -56,7 +58,8 @@ create_execution_file() {
             handle_error "Goal directory does not exist: $goal_directory"
         fi
         
-        local goal_dir_name=$(basename "$goal_directory")
+        local goal_dir_name
+        goal_dir_name=$(basename "$goal_directory")
         local execution_file="$goal_directory/execution.md"
         local branch_name="$goal_dir_name"
         
@@ -103,16 +106,20 @@ EOF
         
         if [ "$template_copied" = true ]; then
             # Replace placeholders in the template
-            local goal_dir_name=$(basename "$goal_directory")
-            local timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
+            local goal_dir_name
+            goal_dir_name=$(basename "$goal_directory")
+            local timestamp
+            timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
             sed -i.bak "s/\[GOAL NAME\]/$goal_dir_name/g" "$execution_file" || handle_error "Failed to replace placeholders in execution.md"
             sed -i.bak "s/\[DATE\]/$timestamp/g" "$execution_file" || handle_error "Failed to replace date in execution.md"
             rm -f "$execution_file.bak" 2>/dev/null || true
         fi
     else
         # Fallback to default content if template not found
-        local goal_dir_name=$(basename "$goal_directory")
-        local timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
+        local goal_dir_name
+        goal_dir_name=$(basename "$goal_directory")
+        local timestamp
+        timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u +'%Y-%m-%d %H:%M:%S')
 
         cat > "$execution_file" <<EOF
 # Execution Plan for $goal_dir_name

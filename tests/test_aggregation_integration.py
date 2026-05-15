@@ -9,9 +9,9 @@ from io import StringIO
 
 from typer.testing import CliRunner
 
-from src.goalkeeper_cli.commands.aggregation import app
-from src.goalkeeper_cli.tasks import TaskTracker
-from src.goalkeeper_cli.models import TaskStatus
+from goalkit.commands.aggregation import app
+from goalkit.tasks import TaskTracker
+from goalkit.models import TaskStatus
 
 
 runner = CliRunner()

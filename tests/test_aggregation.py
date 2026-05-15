@@ -4,9 +4,9 @@ import pytest
 from pathlib import Path
 from uuid import uuid4
 
-from src.goalkeeper_cli.aggregation import AggregationEngine, ProjectSummary
-from src.goalkeeper_cli.tasks import TaskTracker
-from src.goalkeeper_cli.models import TaskStatus
+from goalkit.aggregation import AggregationEngine, ProjectSummary
+from goalkit.tasks import TaskTracker
+from goalkit.models import TaskStatus
 
 
 @pytest.fixture

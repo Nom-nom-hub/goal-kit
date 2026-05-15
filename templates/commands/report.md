@@ -1,6 +1,9 @@
 ---
 description: Generate progress and insight reports from project goals and outcomes.
 handoffs:
+  - label: Analytics Report
+    agent: goalkit.analytics-report
+    prompt: Generate a deep-dive analytics report (see .goalkit/workflows/analytics-report.md)
   - label: Deep Dive on Findings
     agent: goalkit.analyze
     prompt: Analyze specific findings from the report. I want to understand...

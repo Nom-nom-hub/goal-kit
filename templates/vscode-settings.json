@@ -1,7 +1,7 @@
 {
     "_comment": "Goal Kit VSCode Settings - Updated 2025-11-26 for improved methodology",
     "goalkit.projectType": "goal-driven",
-    "goalkit.visionFile": ".goalkit/vision.md",
+    "goalkit.visionFile": ".goalkit/org-vision.md",
     "goalkit.goalsDirectory": "goals",
     "goalkit.enableSlashCommands": true,
     "goalkit.slashCommands": [

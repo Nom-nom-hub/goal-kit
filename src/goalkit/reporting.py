@@ -1,4 +1,4 @@
-"""Reporting and insights generation for Goalkeeper projects.
+"""Reporting and insights generation for Goal Kit projects.
 
 This module provides comprehensive reporting capabilities including project
 summaries, trend analysis, velocity metrics, and actionable insights.

@@ -7,8 +7,8 @@ from pathlib import Path
 from datetime import datetime
 from unittest.mock import Mock, patch, MagicMock
 
-from goalkeeper_cli.analyzer import ProjectAnalyzer, AnalysisResult
-from goalkeeper_cli.models import Goal
+from goalkit.analyzer import ProjectAnalyzer, AnalysisResult
+from goalkit.models import Goal
 
 
 class TestProjectAnalyzer:

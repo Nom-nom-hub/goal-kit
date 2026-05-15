@@ -13,9 +13,9 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from goalkeeper_cli.analytics import AnalyticsEngine
-from goalkeeper_cli.commands.analytics import app
-from goalkeeper_cli.models import GoalkitProject, Goal, Task, TaskStatus
+from goalkit.analytics import AnalyticsEngine
+from goalkit.commands.analytics import app
+from goalkit.models import GoalkitProject, Goal, Task, TaskStatus
 
 
 runner = CliRunner()
