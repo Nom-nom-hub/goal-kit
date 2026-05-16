@@ -15,7 +15,7 @@ from typer.testing import CliRunner
 
 from goalkit.analytics import AnalyticsEngine
 from goalkit.commands.analytics import app
-from goalkit.models import GoalkitProject, Goal, Task, TaskStatus
+from goalkit.models import Goal, Task, TaskStatus
 
 
 runner = CliRunner()

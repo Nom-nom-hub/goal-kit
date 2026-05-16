@@ -18,7 +18,7 @@ class TestProjectAnalyzer:
     def temp_project(self):
         """Create a temporary goal-kit project."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            project_path = Path(tmpdir)
+            project_path = Path(tmpdir).resolve()  # resolve() to handle macOS /tmp -> /private/tmp symlink
             goalkit_dir = project_path / ".goalkit"
             goals_dir = goalkit_dir / "goals"
             goalkit_dir.mkdir(parents=True, exist_ok=True)

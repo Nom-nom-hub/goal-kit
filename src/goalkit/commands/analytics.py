@@ -10,7 +10,7 @@ Provides commands for:
 
 import json
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional
 
 import typer
 from rich.console import Console
@@ -18,8 +18,6 @@ from rich.panel import Panel
 from rich.table import Table
 
 from goalkit.analytics import AnalyticsEngine
-from goalkit.models import Project
-from goalkit.prediction import PredictionEngine
 
 app = typer.Typer(help="Analytics, trends, and forecasting")
 console = Console()

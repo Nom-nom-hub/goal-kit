@@ -12,12 +12,10 @@ All data is persisted in .goalkit/analytics_history.json for historical tracking
 """
 
 import json
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Optional
-
-from goalkit.models import Goal, Task, TaskStatus
 
 
 @dataclass
@@ -400,7 +398,7 @@ class AnalyticsEngine:
         # Calculate period boundaries (week-based)
         period_length = max(1, len(points) // periods)
         period_velocities = []
-        period_labels = []
+        period_labels: List[str] = []
 
         for i in range(0, len(points), period_length):
             period_end = min(i + period_length, len(points))
@@ -705,7 +703,7 @@ class AnalyticsEngine:
                 )
             elif trend.direction == "negative":
                 insights.append(
-                    f"⚠️ Negative momentum - may need intervention."
+                    "⚠️ Negative momentum - may need intervention."
                 )
 
         forecast = self.forecast_completion(goal_id)
