@@ -80,6 +80,28 @@ All data stays in markdown files. No external AI APIs required. Works fully offl
 
 ---
 
+## CLI in Action
+
+<div align="center">
+  <img src="docs/screenshots/goalkit-help.svg" alt="goalkit --help" width="700">
+  <br>
+  <em>All 13 CLI commands for managing your Goal-Driven Development workflow</em>
+</div>
+
+<div align="center">
+  <img src="docs/screenshots/goalkit-check.svg" alt="goalkit check" width="700">
+  <br>
+  <em>Check which AI agents and tools are available on your system</em>
+</div>
+
+<div align="center">
+  <img src="docs/screenshots/goalkit-status.svg" alt="goalkit status" width="700">
+  <br>
+  <em>Get a snapshot of project health, completion, and actionable insights</em>
+</div>
+
+---
+
 ## Why Goalkit?
 
 Instead of complex tooling, goalkit gives AI agents:
@@ -174,7 +196,7 @@ my-project/
 ```bash
 goalkit init <project>     # Initialize new project (you run this)
 goalkit status              # Show project status with insights
-goalkit goals               # List all goals
+goalkit check               # Check available AI agents and tools
 goalkit milestones          # Show milestone progress
 ```
 

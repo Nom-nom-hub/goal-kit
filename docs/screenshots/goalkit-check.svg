@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 968" width="820" height="968">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&amp;display=swap');
+      text { font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Courier New', monospace; font-size: 14px; }
+    </style>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="106%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <linearGradient id="title-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#181825"/>
+      <stop offset="100%" stop-color="#2d2d44"/>
+    </linearGradient>
+  </defs>
+  <!-- Terminal window shadow -->
+  <rect x="0" y="0" width="820" height="968" rx="8" ry="8" fill="#1e1e2e" filter="url(#shadow)"/>
+  
+  <!-- Title bar -->
+  <rect x="0" y="0" width="820" height="36" rx="8" ry="8" fill="url(#title-grad)"/>
+  <rect x="0" y="28" width="820" height="8" fill="#2d2d44"/>
+  
+  <!-- Window controls -->
+  <circle cx="22" cy="18" r="6" fill="#f38ba8"/>
+  <circle cx="40" cy="18" r="6" fill="#f9e2af"/>
+  <circle cx="58" cy="18" r="6" fill="#a6e3a1"/>
+  
+  <!-- Title text -->
+  <text x="410.0" y="24" fill="#585b70" font-size="12" text-anchor="middle" font-family="'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Courier New', monospace">goalkit check — terminal</text>
+  
+  <!-- Content area -->
+  <g transform="translate(70, 52)">
+    <text x="0.0" y="31" fill="#cdd6f4" font-weight="400">      ######    #######     ###    ##             ##    ## #### ########</text>
+    <text x="0.0" y="51" fill="#cdd6f4" font-weight="400">      ##    ##  ##     ##   ## ##   ##             ##   ##   ##     ##  </text>
+    <text x="0.0" y="71" fill="#cdd6f4" font-weight="400">      ##        ##     ##  ##   ##  ##             ##  ##    ##     ##  </text>
+    <text x="0.0" y="91" fill="#cdd6f4" font-weight="400">      ##   #### ##     ## ##     ## ##             #####     ##     ##  </text>
+    <text x="0.0" y="111" fill="#cdd6f4" font-weight="400">      ##    ##  ##     ## ######### ##             ##  ##    ##     ##  </text>
+    <text x="0.0" y="131" fill="#cdd6f4" font-weight="400">      ##    ##  ##     ## ##     ## ##             ##   ##   ##     ##  </text>
+    <text x="0.0" y="151" fill="#cdd6f4" font-weight="400">       ######    #######  ##     ## ########       ##    ## ####    ##  </text>
+    <text x="0.0" y="191" fill="#cdd6f4" font-weight="400">             Goal Kit - Goal-Driven Development Toolkit</text>
+    <text x="0.0" y="231" fill="#cdd6f4" font-weight="400">╭─────────────────── Goal Kit Project Detected ────────────────────╮</text>
+    <text x="0.0" y="251" fill="#cdd6f4" font-weight="400">│                                                                  │</text>
+    <text x="0.0" y="271" fill="#cdd6f4" font-weight="400">│  Project: goal-kit                                               │</text>
+    <text x="0.0" y="291" fill="#cdd6f4" font-weight="400">│  Phase: Setup                                                    │</text>
+    <text x="0.0" y="311" fill="#cdd6f4" font-weight="400">│  Health Score: 0.0/100                                           │</text>
+    <text x="0.0" y="331" fill="#cdd6f4" font-weight="400">│  Completion: 0.0%                                                │</text>
+    <text x="0.0" y="351" fill="#cdd6f4" font-weight="400">│                                                                  │</text>
+    <text x="0.0" y="371" fill="#cdd6f4" font-weight="400">│  Goals: 0  |  Milestones: 0/0                                    │</text>
+    <text x="0.0" y="391" fill="#cdd6f4" font-weight="400">│                                                                  │</text>
+    <text x="0.0" y="411" fill="#cdd6f4" font-weight="400">╰──────────────────────────────────────────────────────────────────╯</text>
+    <text x="0.0" y="451" fill="#cdd6f4" font-weight="400">  Checking for installed tools...</text>
+    <text x="0.0" y="491" fill="#cdd6f4" font-weight="400">  ◆ Check Available Tools</text>
+    <text x="0.0" y="511" fill="#cdd6f4" font-weight="400">    ├── ✓ Git version control (available)</text>
+    <text x="0.0" y="531" fill="#cdd6f4" font-weight="400">    ├── ✗ GitHub Copilot (not found)</text>
+    <text x="0.0" y="551" fill="#cdd6f4" font-weight="400">    ├── ✗ Claude Code (not found)</text>
+    <text x="0.0" y="571" fill="#cdd6f4" font-weight="400">    ├── ✗ Gemini CLI (not found)</text>
+    <text x="0.0" y="591" fill="#cdd6f4" font-weight="400">    ├── ✗ Cursor (not found)</text>
+    <text x="0.0" y="611" fill="#cdd6f4" font-weight="400">    ├── ✓ Qwen Code (available)</text>
+    <text x="0.0" y="631" fill="#cdd6f4" font-weight="400">    ├── ✓ opencode (available)</text>
+    <text x="0.0" y="651" fill="#cdd6f4" font-weight="400">    ├── ✗ Codex CLI (not found)</text>
+    <text x="0.0" y="671" fill="#cdd6f4" font-weight="400">    ├── ✗ Windsurf (not found)</text>
+    <text x="0.0" y="691" fill="#cdd6f4" font-weight="400">    ├── ✗ Kilo Code (not found)</text>
+    <text x="0.0" y="711" fill="#cdd6f4" font-weight="400">    ├── ✗ Auggie CLI (not found)</text>
+    <text x="0.0" y="731" fill="#cdd6f4" font-weight="400">    ├── ✗ CodeBuddy (not found)</text>
+    <text x="0.0" y="751" fill="#cdd6f4" font-weight="400">    ├── ✗ Roo Code (not found)</text>
+    <text x="0.0" y="771" fill="#cdd6f4" font-weight="400">    ├── ✗ Amazon Q (not found)</text>
+    <text x="0.0" y="791" fill="#cdd6f4" font-weight="400">    ├── ✗ VS Code (not found)</text>
+    <text x="0.0" y="811" fill="#cdd6f4" font-weight="400">    └── ✗ VS Code Insiders (not found)</text>
+    <text x="0.0" y="851" fill="#cdd6f4" font-weight="400">  ✓ Goalkit CLI is ready to use!</text>
+  </g>
+</svg>
