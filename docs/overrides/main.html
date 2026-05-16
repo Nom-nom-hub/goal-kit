@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  <link rel="icon" href="{{ base_url }}/assets/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#2ea043">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page.title }} — Goal Kit">
+  <meta property="og:description" content="Goal-Driven Development Toolkit for AI Agents">
+  <meta property="og:image" content="{{ config.site_url }}assets/social-preview.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page.title }} — Goal Kit">
+  <meta name="twitter:description" content="Goal-Driven Development Toolkit for AI Agents">
+{% endblock %}
+
+{% block announce %}
+  <div class="gk-announce">
+    🎯 <strong>Goal Kit</strong> — Focus on outcomes, not implementation details.
+    <a href="{{ base_url }}/quickstart/">Get started →</a>
+  </div>
+{% endblock %}

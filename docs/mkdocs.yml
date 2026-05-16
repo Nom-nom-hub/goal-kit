@@ -1,36 +1,64 @@
 site_name: Goal Kit
-site_description: Goal-Driven Development Toolkit for AI Agents
+site_description: Goal-Driven Development Toolkit for AI Agents — Define outcomes, explore strategies, and execute with measurable progress.
 site_author: Nom-nom-hub
+site_url: https://nom-nom-hub.github.io/goal-kit
 repo_url: https://github.com/Nom-nom-hub/goal-kit
 edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2025 Nom-nom-hub
 docs_dir: '.'
 site_dir: '../site'
 
 theme:
   name: material
+  custom_dir: overrides
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
   palette:
-    primary: green
-    accent: green
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
   features:
     - navigation.instant
     - navigation.tracking
     - navigation.top
+    - navigation.indexes
+    - navigation.path
     - search.highlight
+    - search.suggest
     - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.action.edit
+    - header.autohide
 
 nav:
   - Home: index.md
   - Installation: installation.md
   - Quick Start: quickstart.md
-  - Goal-Driven Development: goal-driven.md
-  - Workflow Guide: workflow-guide.md
-  - Program Guide: program-guide.md
-  - Portfolio Management: portfolio-management.md
-  - OKR Guide: okr-guide.md
-  - Alignment Guide: alignment-guide.md
-  - Analytics Guide: analytics-guide.md
-  - Webhooks Guide: webhooks-guide.md
-  - Common Mistakes: common-mistakes.md
+  - Guides:
+    - Goal-Driven Development: goal-driven.md
+    - Workflow Guide: workflow-guide.md
+    - Program Guide: program-guide.md
+    - Portfolio Management: portfolio-management.md
+    - OKR Guide: okr-guide.md
+    - Alignment Guide: alignment-guide.md
+    - Analytics Guide: analytics-guide.md
+    - Webhooks Guide: webhooks-guide.md
+    - Common Mistakes: common-mistakes.md
   - Commands:
     - Execute: execute-command.md
     - Goal: goal-command.md
@@ -47,10 +75,54 @@ nav:
     - Examples: examples.md
     - Troubleshooting: troubleshooting.md
 
+extra_css:
+  - assets/extra.css
+
+extra:
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Nom-nom-hub/goal-kit
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/goalkit/
+
 markdown_extensions:
   - admonition
-  - codehilite
+  - attr_list
+  - md_in_html
+  - footnotes
+  - def_list
+  - tables
+  - abbr
+  - codehilite:
+      guess_lang: false
   - toc:
       permalink: true
+      toc_depth: 3
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
   - pymdownx.superfences
-  - pymdownx.highlight
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.keys
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+plugins:
+  - search

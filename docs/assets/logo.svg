@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a6e3a1"/>
+      <stop offset="100%" stop-color="#7ec47a"/>
+    </linearGradient>
+    <linearGradient id="center-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7ec47a"/>
+      <stop offset="100%" stop-color="#a6e3a1"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer target ring -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="url(#ring-grad)" stroke-width="32"/>
+  
+  <!-- Middle target ring -->
+  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#ring-grad)" stroke-width="24"/>
+  
+  <!-- Inner target ring -->
+  <circle cx="256" cy="256" r="85" fill="url(#center-grad)" opacity="0.15"/>
+  <circle cx="256" cy="256" r="85" fill="none" stroke="url(#ring-grad)" stroke-width="16"/>
+  
+  <!-- Bullseye -->
+  <circle cx="256" cy="256" r="30" fill="url(#center-grad)"/>
+  
+  <!-- Bullseye inner highlight -->
+  <circle cx="240" cy="240" r="10" fill="white" opacity="0.3"/>
+  
+  <!-- Crosshair vertical -->
+  <line x1="256" y1="36" x2="256" y2="476" stroke="url(#ring-grad)" stroke-width="3" opacity="0.6"/>
+  
+  <!-- Crosshair horizontal -->
+  <line x1="36" y1="256" x2="476" y2="256" stroke="url(#ring-grad)" stroke-width="3" opacity="0.6"/>
+  
+  <!-- Crosshair notches -->
+  <line x1="256" y1="36" x2="256" y2="76" stroke="url(#ring-grad)" stroke-width="6" opacity="1"/>
+  <line x1="256" y1="436" x2="256" y2="476" stroke="url(#ring-grad)" stroke-width="6" opacity="1"/>
+  <line x1="36" y1="256" x2="76" y2="256" stroke="url(#ring-grad)" stroke-width="6" opacity="1"/>
+  <line x1="436" y1="256" x2="476" y2="256" stroke="url(#ring-grad)" stroke-width="6" opacity="1"/>
+</svg>

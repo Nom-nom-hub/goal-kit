@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1e2e"/>
+      <stop offset="100%" stop-color="#11111b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a6e3a1"/>
+      <stop offset="100%" stop-color="#7ec47a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Decorative grid lines -->
+  <g stroke="#313244" stroke-width="0.5" opacity="0.5">
+    <line x1="0" y1="100" x2="1200" y2="100"/>
+    <line x1="0" y1="200" x2="1200" y2="200"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/>
+    <line x1="0" y1="400" x2="1200" y2="400"/>
+    <line x1="0" y1="500" x2="1200" y2="500"/>
+    <line x1="200" y1="0" x2="200" y2="630"/>
+    <line x1="400" y1="0" x2="400" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="800" y1="0" x2="800" y2="630"/>
+    <line x1="1000" y1="0" x2="1000" y2="630"/>
+  </g>
+  
+  <!-- Target icon -->
+  <circle cx="250" cy="315" r="130" fill="none" stroke="url(#accent)" stroke-width="8"/>
+  <circle cx="250" cy="315" r="85" fill="none" stroke="url(#accent)" stroke-width="6"/>
+  <circle cx="250" cy="315" r="40" fill="url(#accent)"/>
+  <circle cx="235" cy="300" r="12" fill="white" opacity="0.3"/>
+  
+  <!-- Crosshair -->
+  <line x1="250" y1="150" x2="250" y2="480" stroke="url(#accent)" stroke-width="2" opacity="0.4"/>
+  <line x1="85" y1="315" x2="415" y2="315" stroke="url(#accent)" stroke-width="2" opacity="0.4"/>
+  
+  <!-- Title -->
+  <text x="440" y="280" fill="#cdd6f4" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="800" letter-spacing="-2">Goal Kit</text>
+  
+  <!-- Tagline -->
+  <text x="440" y="340" fill="#a6adc8" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="400">Goal-Driven Development Toolkit</text>
+  
+  <!-- Subtitle -->
+  <text x="440" y="385" fill="#585b70" font-family="system-ui, -apple-system, sans-serif" font-size="20">for AI Agents</text>
+  
+  <!-- Bottom bar -->
+  <rect x="440" y="420" width="60" height="4" rx="2" fill="url(#accent)"/>
+  
+  <!-- Features -->
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#585b70">
+    <text x="440" y="455">🎯 Outcome-Driven  ·  🧭 Strategy Exploration  ·  📊 Measurable Progress</text>
+  </g>
+</svg>
