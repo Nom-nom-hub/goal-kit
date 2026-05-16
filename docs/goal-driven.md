@@ -115,14 +115,14 @@ Goal Kit now includes comprehensive UI/UX design standards to ensure professiona
 ## Quick Installation
 
 ```bash
-uv tool install goalkeeper-cli --from git+https://github.com/Nom-nom-hub/goal-kit.git
+uv tool install goalkit --from git+https://github.com/Nom-nom-hub/goal-kit.git
 ```
 
 Then use the tool directly:
 
 ```bash
-goalkeeper init <PROJECT_NAME>
-goalkeeper check
+goalkit init <PROJECT_NAME>
+goalkit check
 ```
 
 For more detailed information, see the full documentation.

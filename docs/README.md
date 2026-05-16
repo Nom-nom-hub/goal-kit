@@ -39,14 +39,14 @@ Goal-Driven Development emphasizes:
 
 ## Quick Start
 
-1. Install the Goalkeeper CLI:
+1. Install the Goal Kit CLI:
    ```bash
-   uv tool install goalkeeper-cli --from git+https://github.com/Nom-nom-hub/goal-kit.git
+   uv tool install goalkit --from git+https://github.com/Nom-nom-hub/goal-kit.git
    ```
 
 2. Initialize a project:
    ```bash
-   goalkeeper init <PROJECT_NAME>
+   goalkit init <PROJECT_NAME>
    ```
 
 3. Begin with vision setting:

@@ -13,19 +13,19 @@ Get up and running with Goal-Driven Development in 5 minutes.
 
 From GitHub:
 ```bash
-uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper
+uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkit
 ```
 
 From local repo:
 ```bash
 cd /path/to/goal-kit
-uv tool install --from . goalkeeper
+uv tool install --from . goalkit
 ```
 
 ### One-Time Usage
 
 ```bash
-uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper init my-project
+uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkit init my-project
 ```
 
 ### From Source
@@ -42,7 +42,7 @@ After installation, initialize a Goal Kit project:
 
 ```bash
 # Create and initialize project
-goalkeeper init my-awesome-project
+goalkit init my-awesome-project
 cd my-awesome-project
 ```
 
@@ -243,21 +243,27 @@ Weekly reviews prevent you from pursuing failed strategies too long.
 
 Ensure Goal Kit is installed:
 ```bash
-goalkeeper --version
+goalkit --version
 ```
 
 ### Agent Context Not Updating
 
-Manually trigger context update:
+First, ask your agent to refresh:
+
+```
+Please update your context with the latest project status
+```
+
+If that doesn't work, run the update script directly:
 
 **Linux/macOS:**
 ```bash
-bash scripts/bash/common.sh && update-agent-context
+bash .goalkit/scripts/bash/update-agent-context.sh claude
 ```
 
 **Windows:**
 ```powershell
-. scripts/powershell/common.ps1; Update-AgentContext
+powershell -ExecutionPolicy Bypass -File ".goalkit\scripts\powershell\update-agent-context.ps1" -AgentType claude
 ```
 
 ### Goal Directory Issues

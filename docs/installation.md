@@ -33,18 +33,18 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 
 From GitHub (recommended):
 ```bash
-uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper-cli
+uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkit
 ```
 
 Or from local repository:
 ```bash
 cd /path/to/goal-kit
-uv tool install --from . goalkeeper-cli
+uv tool install --from . goalkit
 ```
 
 After installation, verify:
 ```bash
-goalkeeper --version
+goalkit --version
 ```
 
 ### Method 2: Global Installation via pip
@@ -66,7 +66,7 @@ pip install -e .
 
 Verify installation:
 ```bash
-goalkeeper --version
+goalkit --version
 ```
 
 ### Method 3: One-Time Usage (No Installation)
@@ -74,8 +74,8 @@ goalkeeper --version
 Run Goal Kit without installing to your system.
 
 ```bash
-uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper-cli init my-project
-uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper-cli check
+uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkit init my-project
+uv run --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkit check
 ```
 
 This is useful for:
@@ -99,17 +99,17 @@ pip install -e ".[dev]"
 
 ```bash
 # Check version
-goalkeeper --version
+goalkit --version
 
 # Check available agents
-goalkeeper check
+goalkit check
 ```
 
 ### 2. Initialize Your First Project
 
 ```bash
 # Create and initialize a new project
-goalkeeper init my-first-project
+goalkit init my-first-project
 cd my-first-project
 
 # Check project setup
@@ -135,13 +135,13 @@ Goal Kit detects and configures for these agents:
 - Amazon Q
 - And others
 
-Configuration happens automatically on `goalkeeper init`.
+Configuration happens automatically on `goalkit init`.
 
 To manually configure for a specific agent:
 
 ```bash
 # Initialize with specific agent
-goalkeeper init my-project --agent claude
+goalkit init my-project --agent claude
 ```
 
 ## Platform-Specific Instructions
@@ -155,7 +155,7 @@ goalkeeper init my-project --agent claude
 brew install uv
 
 # Then install Goal Kit
-uv tool install --from . goalkeeper-cli
+uv tool install --from . goalkit
 ```
 
 #### Using Native Python
@@ -188,7 +188,7 @@ sudo apt install python3.11 python3.11-venv git
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install Goal Kit
-uv tool install --from . goalkeeper-cli
+uv tool install --from . goalkit
 ```
 
 #### Verify Installation
@@ -196,7 +196,7 @@ uv tool install --from . goalkeeper-cli
 ```bash
 python3 --version
 git --version
-goalkeeper --version
+goalkit --version
 ```
 
 ### Windows
@@ -220,14 +220,14 @@ goalkeeper --version
 #### Install Goal Kit
 
 ```powershell
-uv tool install --from . goalkeeper-cli
+uv tool install --from . goalkit
 ```
 
 #### Verify Installation
 
 Open PowerShell and run:
 ```powershell
-goalkeeper --version
+goalkit --version
 ```
 
 ### Docker
@@ -249,18 +249,18 @@ WORKDIR /workspace
 Build and run:
 ```bash
 docker build -t goal-kit .
-docker run -it -v $(pwd):/workspace goal-kit goalkeeper init my-project
+docker run -it -v $(pwd):/workspace goal-kit goalkit init my-project
 ```
 
 ## Troubleshooting Installation
 
-### "command not found: goalkeeper"
+### "command not found: goalkit"
 
 **Solution 1**: Verify installation path
 ```bash
-# Find where goalkeeper was installed
-which goalkeeper  # macOS/Linux
-where goalkeeper  # Windows
+# Find where goalkit was installed
+which goalkit  # macOS/Linux
+where goalkit  # Windows
 
 # Add to PATH if needed
 export PATH="$HOME/.cargo/bin:$PATH"  # Add to ~/.bashrc or ~/.zshrc
@@ -268,15 +268,15 @@ export PATH="$HOME/.cargo/bin:$PATH"  # Add to ~/.bashrc or ~/.zshrc
 
 **Solution 2**: Use full path
 ```bash
-~/.cargo/bin/goalkeeper --version
+~/.cargo/bin/goalkit --version
 ```
 
 **Solution 3**: Reinstall with uv
 ```bash
-uv tool install --force --from . goalkeeper-cli
+uv tool install --force --from . goalkit
 ```
 
-### "No module named 'goalkeeper_cli'"
+### "No module named 'goalkit'"
 
 **Solution**: Ensure you're in the Goal Kit project directory
 ```bash
@@ -326,14 +326,14 @@ git --version
 pip install --user -e .
 
 # Or use uv (recommended)
-uv tool install --from . goalkeeper-cli
+uv tool install --from . goalkit
 ```
 
 ### Virtual Environment Issues
 
 **Solution**: Use uv which handles environments automatically
 ```bash
-uv tool install --from . goalkeeper-cli
+uv tool install --from . goalkit
 ```
 
 Or manually with venv:
@@ -353,9 +353,9 @@ pip install -e .
 
 After installation, verify everything works:
 
-- [ ] `goalkeeper --version` shows a version number
-- [ ] `goalkeeper check` lists detected agents
-- [ ] `goalkeeper init test-project` creates a project
+- [ ] `goalkit --version` shows a version number
+- [ ] `goalkit check` lists detected agents
+- [ ] `goalkit init test-project` creates a project
 - [ ] `.goalkit/` directory exists in the project
 - [ ] `git init` works in the project directory
 
@@ -364,7 +364,7 @@ After installation, verify everything works:
 ### Using uv
 
 ```bash
-uv tool upgrade goalkeeper
+uv tool upgrade goalkit
 ```
 
 ### Using pip
@@ -386,7 +386,7 @@ pip install --upgrade -e .
 ### Using uv
 
 ```bash
-uv tool uninstall goalkeeper
+uv tool uninstall goalkit
 ```
 
 ### Using pip
@@ -400,7 +400,7 @@ pip uninstall goal-kit
 After successful installation:
 
 1. **Quick Start**: Read [Quick Start Guide](./quickstart.md)
-2. **First Project**: Run `goalkeeper init my-project`
+2. **First Project**: Run `goalkit init my-project`
 3. **Learn Methodology**: Read [Goal-Driven Development](./goal-driven.md)
 4. **See Examples**: Check [Practical Examples](./examples.md)
 

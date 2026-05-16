@@ -216,10 +216,10 @@ Metrics meeting targets?
 
 ```bash
 # 1. Install
-uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkeeper-cli
+uv tool install --from git+https://github.com/Nom-nom-hub/goal-kit.git goalkit
 
 # 2. Initialize
-goalkeeper init my-project
+goalkit init my-project
 cd my-project
 
 # 3. Start with vision

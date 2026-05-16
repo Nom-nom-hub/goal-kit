@@ -9,7 +9,7 @@ Solutions for common Goal Kit issues.
 
 ## Installation Issues
 
-### "command not found: goalkeeper"
+### "command not found: goalkit"
 
 **Symptoms**: Command works after installation, then stops working
 
@@ -22,11 +22,11 @@ Solutions for common Goal Kit issues.
 
 ```bash
 # Check installation location
-which goalkeeper        # macOS/Linux
-where.exe goalkeeper   # Windows
+which goalkit        # macOS/Linux
+where.exe goalkit   # Windows
 
 # Reinstall with uv
-uv tool install --force --from . goalkeeper
+uv tool install --force --from . goalkit
 
 # Or add to PATH manually
 export PATH="$HOME/.local/bin:$PATH"  # Add to ~/.bashrc or ~/.zshrc
@@ -55,7 +55,7 @@ python3.11 -m pip install -e .
 
 ### Module Import Errors
 
-**Symptoms**: "ModuleNotFoundError: No module named 'goalkeeper_cli'"
+**Symptoms**: "ModuleNotFoundError: No module named "No module named 'goalkeeper_cli'"
 
 **Solutions**:
 
@@ -68,14 +68,14 @@ ls -la | grep pyproject.toml
 pip install -e .
 
 # Or use uv
-uv tool install --from . goalkeeper
+uv tool install --from . goalkit
 ```
 
 ## Project Issues
 
 ### "Not in a goal kit project"
 
-**Symptoms**: Error when running goalkeeper commands in project
+**Symptoms**: Error when running goalkit commands in project
 
 **Causes**:
 - Missing `.goalkit/` directory
@@ -89,7 +89,7 @@ uv tool install --from . goalkeeper
 ls -la | grep goalkit
 
 # If missing, initialize project
-goalkeeper init
+goalkit init
 
 # Or manually create structure
 mkdir -p .goalkit/goals
@@ -223,17 +223,19 @@ git config user.email "your@email.com"
 
 ```bash
 # Make scripts executable
-chmod +x scripts/bash/*.sh
-chmod +x scripts/powershell/*.ps1
+chmod +x .goalkit/scripts/bash/*.sh
+chmod +x .goalkit/scripts/powershell/*.ps1
 
 # Verify scripts exist
-ls -la scripts/bash/
-ls -la scripts/powershell/
+ls -la .goalkit/scripts/bash/
+ls -la .goalkit/scripts/powershell/
 
 # Run from project root
-cd /path/to/goal-kit
-bash scripts/bash/create-new-goal.sh "My Goal"
+cd /path/to/your-project
+bash .goalkit/scripts/bash/create-new-goal.sh --json "My Goal"
 ```
+
+> **Tip**: Normally your AI agent runs these scripts for you via `/goalkit.goal`. Only run scripts directly as a fallback.
 
 ### "Permission Denied" on Linux/macOS
 
@@ -243,14 +245,16 @@ bash scripts/bash/create-new-goal.sh "My Goal"
 
 ```bash
 # Make script executable
-chmod +x scripts/bash/create-new-goal.sh
+chmod +x .goalkit/scripts/bash/create-new-goal.sh
 
 # Or run with bash explicitly
-bash scripts/bash/create-new-goal.sh "My Goal"
+bash .goalkit/scripts/bash/create-new-goal.sh --json "My Goal"
 
 # Check permissions
-ls -la scripts/bash/create-new-goal.sh
+ls -la .goalkit/scripts/bash/create-new-goal.sh
 ```
+
+> **Tip**: Normally your agent runs these via `/goalkit.goal`. Only use direct execution as a fallback.
 
 ### PowerShell Execution Policy
 
@@ -262,12 +266,14 @@ ls -la scripts/bash/create-new-goal.sh
 # Check current policy
 Get-ExecutionPolicy
 
-# Allow script execution temporarily
-powershell -ExecutionPolicy Bypass -File scripts/powershell/create-new-goal.ps1 "My Goal"
-
-# Or set policy permanently (admin required)
+# Allow script execution temporarily for your agent
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Or run with bypass for one-off use
+powershell -ExecutionPolicy Bypass -File ".goalkit\scripts\powershell\create-new-goal.ps1" -Json "My Goal"
 ```
+
+> **Tip**: Your AI agent needs scripts to be executable. If `Set-ExecutionPolicy` isn't feasible, use `Bypass` as shown above.
 
 ### PowerShell Script Fails After Init
 
@@ -280,6 +286,14 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 3. **Missing Error Handling**: Scripts don't gracefully handle missing dependencies
 
 **Solutions**:
+
+First, ask your agent to retry from the project root:
+
+```
+Please retry the last command. Make sure you're running from the project root directory.
+```
+
+If that fails, test the script directly:
 
 ```powershell
 # Test script execution from project root
@@ -304,6 +318,9 @@ powershell -ExecutionPolicy Bypass -File ".goalkit\scripts\powershell\update-age
 4. Test with `-DryRun` parameter first when available
 5. Use `-Json` parameter for better error output from agents
 
+> **Tip**: These scripts are called by your agent when you use `/goalkit.*` commands. Direct execution is only needed for debugging.
+
+
 ## Agent Context Issues
 
 ### Agent Context Not Updating
@@ -317,22 +334,26 @@ powershell -ExecutionPolicy Bypass -File ".goalkit\scripts\powershell\update-age
 
 **Solutions**:
 
+First, ask your agent to refresh:
+
+```
+Please update your context with the latest project status
+```
+
+If that doesn't work, run the update script directly:
+
+**Linux/macOS:**
 ```bash
-# Manual update on Linux/macOS
-bash scripts/bash/common.sh
-source scripts/bash/common.sh
-update_agent_context
+bash .goalkit/scripts/bash/update-agent-context.sh claude
+```
 
-# Manual update on Windows
-. scripts/powershell/common.ps1
-Update-AgentContext
+**Windows:**
+```powershell
+powershell -ExecutionPolicy Bypass -File ".goalkit\scripts\powershell\update-agent-context.ps1" -AgentType claude
+```
 
-# Manual update on Linux/macOS
-# Source the script to load helper functions into current shell
-source scripts/bash/common.sh   # or: . scripts/bash/common.sh
-update_agent_context
-
-# Verify context file exists
+Verify context file exists:
+```bash
 cat CLAUDE.md        # For Claude
 cat CURSOR.md        # For Cursor
 cat GEMINI.md        # For Gemini
@@ -350,32 +371,32 @@ cat GEMINI.md        # For Gemini
 
 **Solutions**:
 
+First, ask your agent to retry the command. If the issue persists:
+
 ```bash
 # Make scripts executable
-chmod +x scripts/bash/*.sh
+chmod +x .goalkit/scripts/bash/*.sh
 
 # Test script execution from project root
 cd /path/to/your/project
-bash scripts/bash/create-new-goal.sh --json "test-goal"
+bash .goalkit/scripts/bash/create-new-goal.sh --json "test-goal"
 
 # Verify template directory exists
 test -d ".goalkit/templates"
 
-# Check all required tools
-bash scripts/bash/common.sh -c "source scripts/bash/common.sh; test_prerequisites"
-
 # Manual context update
-bash scripts/bash/update-agent-context.sh claude
+bash .goalkit/scripts/bash/update-agent-context.sh claude
 ```
 
 **Debug Steps**:
 
 1. Ensure you're in the project root directory
 2. Verify `.goalkit/templates` directory contains template files
-3. Check script permissions: `ls -la scripts/bash/`
-4. Test with `--dry-run` parameter first when available
-5. Use `--json` parameter for better error output from agents
-6. Check for missing tools: `git --version`, `which uv`
+3. Check script permissions: `ls -la .goalkit/scripts/bash/`
+4. Run the script directly to isolate the error
+5. Check for missing tools: `git --version`, `which uv`
+
+> **Tip**: These scripts are meant to be called by your AI agent via `/goalkit.*` commands. Only run them directly for debugging.
 
 ### Context File Not Found
 
@@ -416,17 +437,23 @@ ls -la *.md
 
 1. **Update agent context file**:
    ```bash
-   bash scripts/bash/common.sh && update_agent_context
+   bash .goalkit/scripts/bash/update-agent-context.sh claude
    ```
 
-2. **Try command with full path**:
+2. **Ask your agent to reload**:
    ```
-   Use scripts/bash/create-new-goal.sh directly instead of /goalkit.goal
+   Please reload your Goal Kit configuration. Check .goalkit/ for the latest templates.
    ```
 
-3. **Check agent has latest templates**:
-   - Tell agent to: "Load the latest Goal Kit templates"
-   - Have agent check `.goalkit/` directory exists
+3. **Run the script directly as a fallback**:
+   ```bash
+   bash .goalkit/scripts/bash/create-new-goal.sh --json "My goal description"
+   ```
+
+4. **Verify project structure exists**:
+   ```bash
+   ls -la .goalkit/
+   ```
 
 ### Agent Can't Create Files
 
@@ -473,8 +500,8 @@ touch .goalkit/goals/001-test/goal.md
 # Check git status (might be slow with many files)
 git status --short
 
-# Try creating goal directly with script
-bash scripts/bash/create-new-goal.sh "My Goal" --json
+# Try creating goal directly with the script
+bash .goalkit/scripts/bash/create-new-goal.sh --json "My Goal"
 
 # Test git performance
 time git log
@@ -482,6 +509,8 @@ time git log
 # Force stop current operation
 Ctrl+C (or Cmd+C on macOS)
 ```
+
+> **Tip**: If the script works directly but `/goalkit.goal` doesn't, the issue is with your agent, not the scripts. Try restarting your agent session.
 
 ### JSON Output Malformed
 
@@ -496,17 +525,19 @@ Ctrl+C (or Cmd+C on macOS)
 
 ```bash
 # Test script directly
-bash scripts/bash/create-new-goal.sh "Simple Goal" --json
+bash .goalkit/scripts/bash/create-new-goal.sh --json "Simple Goal"
 
 # Check JSON validity
-bash scripts/bash/create-new-goal.sh "My Goal" --json | python3 -m json.tool
+bash .goalkit/scripts/bash/create-new-goal.sh --json "My Goal" | python3 -m json.tool
 
 # Use simpler goal name (alphanumeric only)
-bash scripts/bash/create-new-goal.sh "Goal One" --json
+bash .goalkit/scripts/bash/create-new-goal.sh --json "Goal One"
 
 # On Windows, ensure UTF-8 encoding
 chcp 65001  # Set to UTF-8
 ```
+
+> **Tip**: This is a fallback debugging step. Normally your agent handles JSON parsing automatically via `/goalkit.goal`.
 
 ## File System Issues
 
@@ -525,12 +556,15 @@ chcp 65001  # Set to UTF-8
 # Check what exists
 ls -la .goalkit/goals/001-goal-name/
 
-# Use --force flag to overwrite
-bash scripts/bash/create-new-goal.sh "Goal" --force
+# Ask agent to overwrite
+# Tell your agent: "Force overwrite this goal"
+
+# Or use --force flag directly
+bash .goalkit/scripts/bash/create-new-goal.sh --json "Goal" --force
 
 # Or delete and recreate
 rm -rf .goalkit/goals/001-old-goal/
-bash scripts/bash/create-new-goal.sh "Goal"
+bash .goalkit/scripts/bash/create-new-goal.sh --json "Goal"
 ```
 
 ### Special Characters in Goal Names
@@ -604,12 +638,11 @@ du -sh .git
 # Clean git history (if safe to do)
 git gc
 
-# Use --json flag (faster)
-bash scripts/bash/create-new-goal.sh "Goal" --json
-
 # Check disk speed
 dd if=/dev/zero of=test.img bs=1M count=100
 ```
+
+> **Tip**: The `--json` flag makes scripts faster by skipping rich output. Your agent already uses this internally.
 
 ## Network Issues
 
@@ -645,7 +678,7 @@ git remote set-url origin https://github.com/Nom-nom-hub/goal-kit.git
 
 1. **Check Goal Kit version**:
    ```bash
-   goalkeeper --version
+   goalkit --version
    ```
 
 2. **Verify Python version**:
@@ -665,7 +698,7 @@ git remote set-url origin https://github.com/Nom-nom-hub/goal-kit.git
    ```bash
    mkdir test-project
    cd test-project
-   goalkeeper init
+   goalkit init
    ```
 
 ### Getting Help
@@ -675,7 +708,7 @@ git remote set-url origin https://github.com/Nom-nom-hub/goal-kit.git
 - **Documentation**: [Read docs](./README.md)
 
 When reporting issues, include:
-- Goal Kit version: `goalkeeper --version`
+- Goal Kit version: `goalkit --version`
 - Python version: `python --version`
 - OS: macOS/Linux/Windows
 - Error message (full text)

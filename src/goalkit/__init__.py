@@ -10,14 +10,18 @@
 # ]
 # ///
 """
-Goalkit CLI - Setup tool for Goal-Driven Development
+Goalkit CLI - Setup and monitoring tool for Goal-Driven Development
 
-Usage:
+The main workflow is driven through your AI agent via slash commands:
+    /goalkit.vision    /goalkit.goal    /goalkit.strategies
+    /goalkit.milestones  /goalkit.execute  /goalkit.tasks
+
+This CLI handles setup and monitoring:
     goalkit init <project-name>
     goalkit init .
     goalkit init --here
     goalkit status
-    goalkit goals
+    goalkit check
 """
 
 import os
@@ -196,7 +200,7 @@ class BannerGroup(TyperGroup):
 
 app = typer.Typer(
     name="goalkit",
-    help="Goal-Driven Development tool for AI agents",
+    help="Goal-Driven Development tool for AI agents. Use /goalkit.* commands through your AI agent for the main workflow.",
     add_completion=False,
     invoke_without_command=True,
     cls=BannerGroup,

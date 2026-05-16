@@ -139,19 +139,19 @@ You can also view metrics from the command line:
 
 ```bash
 # View all project metrics and health score
-goalkeeper metrics
+goalkit metrics
 
 # View metrics for a specific goal
-goalkeeper metrics --goal 001-user-authentication
+goalkit metrics --goal 001-user-authentication
 
 # View a specific metric with trends
-goalkeeper metrics --goal 001-user-authentication --metric "registration_success_rate"
+goalkit metrics --goal 001-user-authentication --metric "registration_success_rate"
 
 # View metrics for the last 60 days
-goalkeeper metrics --days 60
+goalkit metrics --days 60
 
 # Output as JSON for integration
-goalkeeper metrics --json
+goalkit metrics --json
 ```
 
 ## Related Commands

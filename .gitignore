@@ -4,6 +4,7 @@ goals/gaol.md
 goals/*/execution.md
 goals/*/temp/
 *.log
+coverage.xml
 
 # Agent specific folders (may contain credentials)
 .claude/
