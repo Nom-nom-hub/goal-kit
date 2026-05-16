@@ -408,7 +408,7 @@ After successful installation:
 
 - **Issues**: Check [GitHub Issues](https://github.com/Nom-nom-hub/goal-kit/issues)
 - **Troubleshooting**: Read [Troubleshooting Guide](./troubleshooting.md)
-- **Documentation**: Visit [Goal Kit Docs](./README.md)
+- **Documentation**: Visit [Goal Kit Docs](./index.md)
 
 ---
 

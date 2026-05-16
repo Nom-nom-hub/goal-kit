@@ -288,7 +288,7 @@ Goal Kit requires git for branch management.
 
 - 📖 Read [Goal-Driven Development Methodology](./goal-driven.md) for deep dive
 - 💡 See [Practical Examples](./examples.md) for real-world scenarios
-- 🔍 Check [Command Reference](./toc.md) for detailed docs
+- 🔍 Check [Quick Reference](./quick-reference.md) for command docs
 - 🤝 Compare with [Traditional Approaches](./comparison.md)
 
 ## Need Help?

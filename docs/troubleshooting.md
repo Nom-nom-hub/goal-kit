@@ -705,7 +705,7 @@ git remote set-url origin https://github.com/Nom-nom-hub/goal-kit.git
 
 - **GitHub Issues**: [Report on GitHub](https://github.com/Nom-nom-hub/goal-kit/issues)
 - **Discussions**: [Ask questions](https://github.com/Nom-nom-hub/goal-kit/discussions)
-- **Documentation**: [Read docs](./README.md)
+- **Documentation**: [Read docs](./index.md)
 
 When reporting issues, include:
 - Goal Kit version: `goalkit --version`

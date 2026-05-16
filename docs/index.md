@@ -1,8 +1,3 @@
----
-layout: default
-title: Goal Kit Documentation
----
-
 # Goal Kit Documentation
 
 Welcome to the Goal Kit documentation. Goal Kit implements Goal-Driven Development, a methodology that focuses on outcomes and learning rather than detailed upfront specifications.
@@ -38,10 +33,6 @@ Goal-Driven Development (GDD) focuses on outcomes over specifications. While tra
 - `/goalkit.strategies` - Explore implementation strategies
 - `/goalkit.milestones` - Create measurable milestones
 - `/goalkit.execute` - Execute with learning and adaptation
-
-### Optional Commands
-
-
 
 ## Supported AI Agents
 

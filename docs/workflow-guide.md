@@ -550,4 +550,4 @@ Use this checklist to ensure you're following the workflow correctly:
 
 ---
 
-*This workflow guide is part of the Goal Kit methodology. For more details, see the [Goal-Driven Development guide](../goal-driven.md).*
+*This workflow guide is part of the Goal Kit methodology. For more details, see the [Goal-Driven Development guide](goal-driven.md).*

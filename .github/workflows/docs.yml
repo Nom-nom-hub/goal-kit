@@ -6,8 +6,8 @@ on:
   push:
     branches: ["main"]
     paths:
-      - '*.md'
       - 'docs/**'
+      - '.github/workflows/docs.yml'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -44,77 +44,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install mkdocs mkdocs-material
 
-      # Remove this step, it's unnecessary and may cause issues:
-      # - name: Copy docs to root for MkDocs build
-      #   run: |
-      #     mkdir -p docs
-      #     cp -r docs/* docs/ 2>/dev/null || true
-
-      - name: Create mkdocs.yml
-        run: |
-          cat > mkdocs.yml << 'EOF'
-          site_name: Goal Kit Documentation
-          site_description: Goal-Driven Development Toolkit
-          site_author: Nom-nom-hub
-          docs_dir: 'docs'
-          site_dir: 'site'
-
-          theme:
-            name: material
-            palette:
-              primary: green
-              accent: green
-
-          nav:
-            - Home: index.md
-            - Goal-Driven Development: goal-driven.md
-            - Comparison: comparison.md
-            - Examples: examples.md
-            - Table of Contents: toc.md
-            - README: README.md
-            - Commands:
-              - Adapt Command: adapt-command.md
-              - Agent Profile Command: agent-profile-command.md
-              - Analytics Command: analytics-command.md
-              - Analyze Command: analyze-command.md
-              - Benchmark Command: benchmark-command.md
-              - Collaborate Command: collaborate-command.md
-              - Config Command: config-command.md
-              - Dependencies Command: dependencies-command.md
-              - Execute Command: execute-command.md
-              - Explore Command: explore-command.md
-              - Goal Command: goal-command.md
-              - Help Command: help-command.md
-              - Insights Command: insights-command.md
-              - Learn Command: learn-command.md
-              - Measure Command: measure-command.md
-              - Methodology Command: methodology-command.md
-              - Milestones Command: milestones-command.md
-              - Onboard Command: onboard-command.md
-              - Plan Command: plan-command.md
-              - Prioritize Command: prioritize-command.md
-              - Reflect Command: reflect-command.md
-              - Report Command: report-command.md
-              - Research Command: research-command.md
-              - Risk Command: risk-command.md
-              - Schedule Command: schedule-command.md
-              - Security Command: security-command.md
-              - Strategies Command: strategies-command.md
-              - Tasks Command: tasks-command.md
-              - Test Command: test-command.md
-              - Track Command: track-command.md
-              - Validate Command: validate-command.md
-              - Vision Command: vision-command.md
-
-          markdown_extensions:
-            - admonition
-            - codehilite
-            - toc:
-                permalink: true
-          EOF
-
       - name: Build with MkDocs
-        run: mkdocs build
+        run: mkdocs build --config-file docs/mkdocs.yml --clean
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

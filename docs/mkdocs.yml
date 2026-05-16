@@ -1,55 +1,51 @@
-site_name: Goal Kit Documentation
-site_description: Goal-Driven Development Toolkit
+site_name: Goal Kit
+site_description: Goal-Driven Development Toolkit for AI Agents
 site_author: Nom-nom-hub
 repo_url: https://github.com/Nom-nom-hub/goal-kit
 edit_uri: edit/main/docs/
+docs_dir: '.'
+site_dir: '../site'
 
 theme:
   name: material
   palette:
     primary: green
     accent: green
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - search.highlight
+    - content.code.copy
 
 nav:
   - Home: index.md
+  - Installation: installation.md
+  - Quick Start: quickstart.md
   - Goal-Driven Development: goal-driven.md
-  - Comparison: comparison.md
-  - Examples: examples.md
-  - Table of Contents: toc.md
-  - README: README.md
+  - Workflow Guide: workflow-guide.md
+  - Program Guide: program-guide.md
+  - Portfolio Management: portfolio-management.md
+  - OKR Guide: okr-guide.md
+  - Alignment Guide: alignment-guide.md
+  - Analytics Guide: analytics-guide.md
+  - Webhooks Guide: webhooks-guide.md
+  - Common Mistakes: common-mistakes.md
   - Commands:
-    - Adapt Command: adapt-command.md
-    - Agent Profile Command: agent-profile-command.md
-    - Analytics Command: analytics-command.md
-    - Analyze Command: analyze-command.md
-    - Benchmark Command: benchmark-command.md
-    - Collaborate Command: collaborate-command.md
-    - Config Command: config-command.md
-    - Dependencies Command: dependencies-command.md
-    - Execute Command: execute-command.md
-    - Explore Command: explore-command.md
-    - Goal Command: goal-command.md
-    - Help Command: help-command.md
-    - Insights Command: insights-command.md
-    - Learn Command: learn-command.md
-    - Measure Command: measure-command.md
-    - Methodology Command: methodology-command.md
-    - Milestones Command: milestones-command.md
-    - Onboard Command: onboard-command.md
-    - Plan Command: plan-command.md
-    - Prioritize Command: prioritize-command.md
-    - Reflect Command: reflect-command.md
-    - Report Command: report-command.md
-    - Research Command: research-command.md
-    - Risk Command: risk-command.md
-    - Schedule Command: schedule-command.md
-    - Security Command: security-command.md
-    - Strategies Command: strategies-command.md
-    - Tasks Command: tasks-command.md
-    - Test Command: test-command.md
-    - Track Command: track-command.md
-    - Validate Command: validate-command.md
-    - Vision Command: vision-command.md
+    - Execute: execute-command.md
+    - Goal: goal-command.md
+    - Help: help-command.md
+    - Methodology: methodology-command.md
+    - Metrics: metrics-command.md
+    - Milestones: milestones-command.md
+    - Reflect: reflect-command.md
+    - Strategies: strategies-command.md
+    - Vision: vision-command.md
+  - Reference:
+    - Quick Reference: quick-reference.md
+    - Comparison: comparison.md
+    - Examples: examples.md
+    - Troubleshooting: troubleshooting.md
 
 markdown_extensions:
   - admonition

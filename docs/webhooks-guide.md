@@ -553,6 +553,6 @@ expected = 'sha256=' + hmac.new(
 
 ## See Also
 
-- [Webhooks Command Reference](../templates/commands/webhooks.md) - All webhook commands
+- [Webhooks Command Reference](https://github.com/Nom-nom-hub/goal-kit/blob/main/templates/commands/webhooks.md) - All webhook commands
 - [Analytics Guide](./analytics-guide.md) - Understanding what triggers high_risk events
-- [Forecast Command](../templates/commands/analytics.md#goalkitforecast) - deadline_approaching trigger
+- [Forecast Command](https://github.com/Nom-nom-hub/goal-kit/blob/main/templates/commands/analytics.md#goalkitforecast) - deadline_approaching trigger

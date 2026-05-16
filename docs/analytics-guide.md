@@ -452,6 +452,6 @@ Wait for next data point: Is velocity sustainable?
 
 ## See Also
 
-- [Analytics Commands](../templates/commands/analytics.md) - Using the commands
-- [Webhooks](../templates/commands/webhooks.md) - Automating actions based on metrics
-- [Forecast Command Details](../templates/commands/analytics.md#goalkitforecast)
+- [Analytics Commands](https://github.com/Nom-nom-hub/goal-kit/blob/main/templates/commands/analytics.md) - Using the commands
+- [Webhooks](https://github.com/Nom-nom-hub/goal-kit/blob/main/templates/commands/webhooks.md) - Automating actions based on metrics
+- [Forecast Command Details](https://github.com/Nom-nom-hub/goal-kit/blob/main/templates/commands/analytics.md#goalkitforecast)
