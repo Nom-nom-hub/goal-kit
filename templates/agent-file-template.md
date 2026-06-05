@@ -1,79 +1,78 @@
-# Goal Kit Guide for [AGENT]
+# 🎯 Goal-Driven Development (GDD) Guide for [AGENT]
 
 **Project**: [PROJECT NAME]
 **Generated**: [DATE]
+**Protocol**: GDD v1.0 (Strict Enforcement)
 
-## Overview
+## 📜 The GDD Constitution
+This project operates under the **Goal-Driven Development Constitution** (found in `memory/constitution.md`). You are required to read and adhere to its principles for every task.
 
-This guide provides project-specific context and instructions for AI agents working on this Goal Kit project. It is automatically created by `goalkit init` and should be updated as the project evolves.
+## 🚦 Strict Workflow Enforcement
+To ensure professional-grade outcomes, you must follow the **One-Command-At-A-Time** protocol. Do not chain commands or proceed to implementation without explicit milestone approval.
 
-## Project Context
+### 1. The Core Sequence
+| Command | Action | Agent Requirement |
+| :--- | :--- | :--- |
+| **`/goalkit.vision`** | Define "North Star" | Create `vision.md` → **STOP** |
+| **`/goalkit.goal`** | Set Outcomes | Define measurable metrics → **STOP** |
+| **`/goalkit.strategies`** | Compare Paths | Compare 3+ approaches → **STOP** |
+| **`/goalkit.milestones`** | Plan Progress | Define measurable steps → **STOP** |
+| **`/goalkit.execute`** | Adaptive Build | Build & Measure → **ITERATE** |
 
-### Active Goals
+### 🛑 CRITICAL RULES
+1.  **NEVER "Vibe-Code"**: Every line of code must be traceable to a specific milestone in a validated strategy.
+2.  **OUTCOMES > FEATURES**: If the user asks for a "feature," translate it into a "goal" (outcome) first.
+3.  **TECH-FREE GOALS**: Goal definitions must not mention specific technologies (e.g., "Use React"). Technologies belong in **Strategies**.
+4.  **MANDATORY PIVOTING**: If metrics are not being met during execution, you MUST stop and propose a strategy pivot.
+
+---
+
+## 📂 Project Context
+
+### 🎯 Active Goals
 [EXTRACTED FROM ALL GOAL.MD FILES]
 
-### Project Structure
+### 🏗️ Project Structure
 [ACTUAL STRUCTURE FROM GOALS]
 
-### Implementation Strategies
+### 💡 Implementation Strategies
 [EXTRACTED FROM STRATEGIES.MD]
 
-### Milestones & Progress
+### 🏁 Milestones & Progress
 [EXTRACTED FROM MILESTONES.MD]
 
-### Execution Status
+### 🚀 Execution Status
 [EXTRACTED FROM EXECUTION.MD]
 
-### Recent Milestones
+### 📈 Recent Milestones
 [LAST 3 COMPLETED MILESTONES AND OUTCOMES]
 
-## Available Commands
+---
+
+## 🛠️ Available Commands
 
 | Command | Purpose |
-|---------|---------|
+| :--- | :--- |
 | `/goalkit.vision` | Establish project foundation and guiding principles |
 | `/goalkit.goal` | Create goals with specific success metrics |
 | `/goalkit.strategies` | Explore 3+ different approaches to achieve goals |
 | `/goalkit.milestones` | Create measurable progress checkpoints |
 | `/goalkit.execute` | Implement with learning loops and measurement |
 | `/goalkit.tasks` | Generate detailed implementation tasks |
-| `/goalkit.tasks.toissues` | Convert tasks to GitHub Issues |
 | `/goalkit.report` | Generate progress reports and insights |
 | `/goalkit.review` | Conduct project reviews and retrospectives |
 
-## Workflow Templates
+---
 
-Specialized process guides are available in `.goalkit/workflows/`:
+## 📋 Workflow Templates
+Specialized process guides are available in `.goalkit/workflows/`. When a handoff mentions a workflow, read the corresponding file and follow its instructions.
 
-- **compliance-checklist** — Regulatory compliance verification
+- **quality-assurance** — QA methodology and testing
 - **security-review** — Security audit and threat modeling
 - **risk-register** — Risk identification and mitigation
-- **quality-assurance** — QA methodology and testing
+- **compliance-checklist** — Regulatory compliance verification
 - **detailed-retrospective** — Post-project learning
-- **async-coordination** — Cross-team async communication
-- **cross-goal-coordination** — Managing dependencies across goals
-- **goal-alignment** — Aligning goals with organizational strategy
-- **okr-mapping** — Converting goals to OKR framework
-- **okrs** — Working with OKRs
-- **org-vision** — Organization-level vision
-- **portfolio** — Multi-project portfolio management
-- **program** — Program-level coordination
-- **taskstoissues** — Converting tasks to GitHub Issues
-- **team-roles** — Team role definition
-- **analytics-report** — Deep-dive analytical reporting
-
-When a handoff mentions a workflow, read the corresponding file in `.goalkit/workflows/` and follow its instructions.
-
-## 🔧 Next Recommended Actions
-
-**Follow the sequential workflow:**
-
-1. `/goalkit.vision` → Create vision → **STOP & WAIT for user**
-2. `/goalkit.goal` → Create goal → **STOP & WAIT for user**
-3. `/goalkit.strategies` → Explore strategies → **STOP & WAIT for user**
-4. `/goalkit.milestones` → Create milestones → **STOP & WAIT for user**
-5. `/goalkit.execute` → Implement → Continue
 
 ---
 
-*This guide is automatically created by goalkit init. It provides essential guidance for agents working on this Goal Kit project.*
+*This guide is automatically created by goalkit init. It provides essential guidance for agents working on this Goal-Driven Development project.*

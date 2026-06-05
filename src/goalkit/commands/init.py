@@ -84,31 +84,7 @@ def create_agent_file(project_path: Path, ai_assistant: str) -> None:
         "No completed milestones yet.",
     )
 
-    # Add strict workflow enforcement
-    workflow_enforcement = """
-
-## 🚨 STRICT WORKFLOW ENFORCEMENT
-
-**🛑 STOP AFTER EACH COMMAND - ONE AT A TIME**
-
-**FORBIDDEN AGENT BEHAVIORS:**
-- ❌ Creating goals automatically after vision
-- ❌ Starting coding after vision creation
-- ❌ Chaining commands without user input
-- ❌ Skipping methodology steps
-
-**ALLOWED SEQUENCE:**
-- `/goalkit.vision` → Create vision → **🛑 STOP**
-- User runs `/goalkit.goal` → Create goal → **🛑 STOP**
-- User runs `/goalkit.strategies` → Explore strategies → **🛑 STOP**
-- User runs `/goalkit.milestones` → Create milestones → **🛑 STOP**
-- User runs `/goalkit.execute` → Implement → Continue
-"""
-    content = content.replace(
-        "*This guide is automatically created by goalkit init. It provides essential guidance for agents working on this Goal Kit project.*",
-        workflow_enforcement
-        + "\n*This guide is automatically created by goalkit init. It provides essential guidance for agents working on this Goal Kit project.*",
-    )
+    # The template already contains strict workflow enforcement and GDD branding
 
     # Define agent-specific file names and locations
     agent_file_locations = {
