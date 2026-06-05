@@ -595,249 +595,34 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
         script_type_name = "Bash"
 
     # Create content for the agent context file
-    context_content = f"""# Goal Kit Project Context
+    # Create content for the agent context file
+    context_content = f"""# 🎯 Goal-Driven Development (GDD) Framework
 
 **Project**: {project_name}
 **Agent**: {ai_assistant}
-**Updated**: {datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')}
+**Protocol**: GDD v1.0 (Strict Enforcement)
 
-## Goal-Driven Development Methodology
+## 📜 The GDD Constitution
+This project operates under the **Goal-Driven Development Constitution** (found in `memory/constitution.md`). You are required to read and adhere to its principles for every task.
 
-**YOU MUST FOLLOW THESE RULES EXACTLY:**
+## 🚦 Strict Workflow Enforcement
+To ensure professional-grade outcomes, you must follow the **One-Command-At-A-Time** protocol. Do not chain commands or proceed to implementation without explicit milestone approval.
 
-### STRICT WORKFLOW ENFORCEMENT - ONE COMMAND AT A TIME
-**STOP AFTER EACH COMMAND - WAIT FOR USER**
+### 1. The Core Sequence
+| Command | Action | Agent Requirement |
+| :--- | :--- | :--- |
+| **`/goalkit.vision`** | Define "North Star" | Run `{script_type_name.upper()}` script → Create `vision.md` → **STOP** |
+| **`/goalkit.goal`** | Set Outcomes | Run `{goal_script}` → Define metrics → **STOP** |
+| **`/goalkit.strategies`** | Compare Paths | Run `{strategies_script}` → Compare 3+ approaches → **STOP** |
+| **`/goalkit.milestones`** | Plan Progress | Run `{milestones_script}` → Define measurable steps → **STOP** |
+| **`/goalkit.execute`** | Adaptive Build | Run `{execute_script}` → Build & Measure → **ITERATE** |
 
-**WHEN YOU RECEIVE A SLASH COMMAND - ALWAYS RUN {script_type_name.upper()} SCRIPT FIRST:**
-
-**`/goalkit.vision`** -> Create vision.md {vision_note} -> **STOP**
-**`/goalkit.goal`** -> Run `{goal_script}` -> Complete goal.md -> **STOP**
-**`/goalkit.strategies`** -> Run `{strategies_script}` -> Complete strategies.md -> **STOP**
-**`/goalkit.milestones`** -> Run `{milestones_script}` -> Complete milestones.md -> **STOP**
-**`/goalkit.execute`** -> Run `{execute_script}` -> Continue with learning
-
-**CRITICAL: Never create files manually - ALWAYS run the {script_type_name} script first (except vision)!**
-
-1. **User runs** `/goalkit.vision` -> Create vision -> **STOP**
-2. **User runs** `/goalkit.goal` -> Create goal -> **STOP**
-3. **User runs** `/goalkit.strategies` -> Explore strategies -> **STOP**
-4. **User runs** `/goalkit.milestones` -> Create milestones -> **STOP**
-5. **User runs** `/goalkit.execute` -> Implement with learning -> **Continue**
-
-### Core Methodology Rules
-1. **OUTCOMES FIRST**: Always focus on measurable user/business outcomes, NOT implementation details
-2. **NO IMPLEMENTATION DETAILS IN GOALS**: Never put languages, frameworks, APIs, or methods in goal definitions
-3. **USE THE 5-CMD WORKFLOW**: Always follow vision → goal → strategies → milestones → execute sequence
-4. **MEASURABLE SUCCESS**: Every goal must have specific, quantifiable metrics (%, $, time, user counts)
-5. **STRATEGY EXPLORATION**: Before implementing, ALWAYS explore multiple approaches using /goalkit.strategies
-6. **ADAPTIVE EXECUTION**: Be ready to pivot based on learning and evidence during /goalkit.execute
-7. **GOAL DIRECTORY STRUCTURE**: All goal-related files are stored in `.goalkit/goals/` directory, NOT in project root
-
-### When to Use Each Command
-- **/goalkit.vision**: Establish project foundation and guiding principles
-- **/goalkit.goal**: Create goals with specific success metrics (no implementation details!)
-- **/goalkit.strategies**: Explore 3+ different approaches to achieve goals
-- **/goalkit.milestones**: Create measurable progress checkpoints
-- **/goalkit.execute**: Implement with learning loops and measurement
-
-### FORBIDDEN AGENT BEHAVIORS
-**STOP: DO NOT chain commands automatically**
-- Running `/goalkit.goal` after `/goalkit.vision` without user input
-- Starting coding or implementation after vision creation
-- Skipping any methodology steps
-- Proceeding without explicit user commands
-- Creating multiple goals at once without completing the workflow
-
-**ALLOWED: Only these specific actions**
-- Creating vision file after `/goalkit.vision` (Wait for user command)
-- Creating goal files after `/goalkit.goal` (Wait for user command)
-- Starting implementation after `/goalkit.execute` - Continue (No automatic stop)
-
-### CRITICAL ANTI-PATTERNS TO AVOID
-- ✗ Implementing features directly without following methodology
-- ✗ Adding implementation details to goal definitions
-- ✗ Skipping strategy exploration phase
-- ✗ Creating goals without measurable success criteria
-- ✗ Treating this as traditional requirement-driven development
-
-## Available Commands & Execution Workflow
-
-### Core Commands with Proper Execution Timing
-- **/goalkit.vision** - Create vision.md {vision_note} - STOP & WAIT
-  - Establish project foundation and guiding principles
-- **/goalkit.goal** - Run `{goal_script}` - Complete goal.md - STOP & WAIT 
-  - Always run {script_type_name} script first, then wait for user
-- **/goalkit.strategies** - Run `{strategies_script}` - Complete strategies.md - STOP & WAIT
-  - Always run {script_type_name} script first, then wait for user
-- **/goalkit.milestones** - Run `{milestones_script}` - Complete milestones.md - STOP & WAIT
-  - Always run {script_type_name} script first, then wait for user
-- **/goalkit.execute** - Run `{execute_script}` - Continue with learning
-  - Execute after setup, no automatic stop
-
-### Execution Methodology (CRITICAL):
-1. **/goalkit.vision** - Vision file - Foundation established - STOP (wait for user to run next command)
-2. **/goalkit.goal** - {script_type_name} script - Goal defined - STOP (wait for user to run next command)
-3. **/goalkit.strategies** - {script_type_name} script - Strategies explored - STOP (wait for user to run next command)
-4. **/goalkit.milestones** - {script_type_name} script - Milestones set - STOP (wait for user to run next command)
-5. **/goalkit.execute** - {script_type_name} script - Implementation begins - Continue (no automatic stop)
-
-### {script_type_name} Script Execution Pattern:
-- **NEVER create files manually** - Always run the corresponding {script_type_name} script first (except vision which is manual)
-- **Each {script_type_name} script**: Uses scripts in `.goalkit/scripts/{('powershell' if is_windows else 'bash')}/`
-- **Each script creates/update appropriate files** in the `.goalkit/` directory structure:
-  - Goals-related: `.goalkit/goals/`
-  - Collaborations: `.goalkit/collaborations/` 
-  - Validation reports: `.goalkit/validation/`
-  - Progress reports: `.goalkit/reports/`
-- **After each script**: **STOP** and wait for user input for the next command
-- Exception: Execute command continues after setup without automatic stop
-- Note: Additional commands beyond the core 5 follow the same STOP & WAIT pattern
-
-## Project Vision
-
-Vision document not yet created
-Note: Vision file will be created in `.goalkit/goals/` directory
-
-## Active Goals
-
-No active goals yet. Use /goalkit.goal to create your first goal.
-Note: All goal files are stored in `.goalkit/goals/` directory
-
-## Development Principles
-
-Remember these core principles:
-1. **Outcome-First**: Prioritize user and business outcomes
-2. **Strategy Flexibility**: Multiple valid approaches exist for any goal
-3. **Measurement-Driven**: Progress must be measured and validated
-4. **Learning Integration**: Treat implementation as hypothesis testing
-5. **Adaptive Planning**: Change course based on evidence
-
-## Directory Structure
-
-CRITICAL FILE LOCATIONS:
-- Goal files: `.goalkit/goals/` (vision.md, goal.md, strategies.md, milestones.md, execution.md)
-- {script_type_name} scripts: `.goalkit/scripts/{('powershell' if is_windows else 'bash')}/` 
-- Agent context files: `.goalkit/agent-context.md` or agent-specific directories (`.claude/`, `.gemini/`, `.qwen/`, etc.)
-- All goal-related files are stored in `.goalkit/` subdirectories - NOT in project root!
-- Workflow templates: `.goalkit/workflows/` — specialized process guides for non-core tasks
-
-## Specialized Workflow Templates
-
-Found in `.goalkit/workflows/` — these are **on-demand guides** for specialized tasks that go beyond the core 5-command workflow. When a command handoff or user request mentions one of these workflows, read the corresponding file and follow its instructions.
-
-| Workflow | Purpose |
-|----------|---------|
-| `analytics-report` | Deep-dive analytical reporting beyond standard reports |
-| `async-coordination` | Managing cross-team async communication |
-| `compliance-checklist` | Regulatory compliance verification |
-| `cross-goal-coordination` | Managing dependencies across multiple active goals |
-| `detailed-retrospective` | In-depth post-project learning and improvement |
-| `goal-alignment` | Verifying and realigning goals with organizational strategy |
-| `okr-mapping` | Converting goals to OKR framework |
-| `okrs` | Working with OKRs in the Goal Kit framework |
-| `org-vision` | Organization-level vision beyond single projects |
-| `portfolio` | Multi-project portfolio management |
-| `program` | Program-level coordination across related projects |
-| `quality-assurance` | QA methodology and testing strategy |
-| `risk-register` | Risk identification, tracking, and mitigation |
-| `security-review` | Security audit and threat modeling |
-| `taskstoissues` | Converting tasks to GitHub Issues |
-| `team-roles` | Team role definition and responsibility mapping |
-
-**How to use:** When a command handoff mentions a workflow (e.g., "see `.goalkit/workflows/security-review.md`"), read that file and follow its step-by-step instructions. These are not slash commands — they are process guides the agent reads and executes sequentially. Each workflow file contains:
-1. **User Input** — parameters the agent needs to gather before starting
-2. **Execution Flow** — step-by-step instructions to follow
-3. **Handoffs** — references to related workflows or commands
-4. **Scripts** — shell scripts to run if the workflow requires automation
-
-## Available Scripts
-
-The following scripts are available in `.goalkit/scripts/bash/` (PowerShell equivalents in `.goalkit/scripts/powershell/`):
-
-| Script | Purpose |
-|--------|---------|
-| `create-new-goal.sh` | Create a new goal branch and initialize goal file |
-| `create-vision.sh` | Initialize vision file structure |
-| `create-tasks.sh` | Generate detailed implementation tasks |
-| `create-report.sh` | Generate progress and insight reports |
-| `create-review.sh` | Conduct project review and retrospective |
-| `setup-strategy.sh` | Explore multiple strategic approaches |
-| `setup-milestones.sh` | Create measurable milestone checkpoints |
-| `setup-execution.sh` | Execute with learning and adaptation |
-| `setup-metrics.sh` | Define and track project metrics |
-| `setup-quality-assurance.sh` | Define quality standards and testing strategy |
-| `setup-security-review.sh` | Conduct security assessment of goal deliverables |
-| `setup-risk-register.sh` | Identify, assess, and track risks |
-| `setup-compliance-checklist.sh` | Regulatory compliance verification |
-| `setup-detailed-retrospective.sh` | Comprehensive retrospective analysis |
-| `update-agent-context.sh` | Update agent-specific context files |
-
-**How to use scripts:** Each script is invoked by its corresponding slash command (`/goalkit.goal` → `create-new-goal.sh`). Workflow scripts (e.g., `setup-quality-assurance.sh`) are used when a workflow guide mentions them — follow the workflow instructions step by step. Do not run scripts manually unless explicitly instructed.
-
-## Next Recommended Actions
-
-SEQUENTIAL WORKFLOW (Follow ONE command at a time):
-1. `/goalkit.vision` - Create vision.md {vision_note} - STOP & WAIT for user
-2. `/goalkit.goal` - Run `{goal_script}` - STOP & WAIT for user  
-3. `/goalkit.strategies` - Run `{strategies_script}` - STOP & WAIT for user
-4. `/goalkit.milestones` - Run `{milestones_script}` - STOP & WAIT for user
-5. `/goalkit.execute` - Run `{execute_script}` - Continue with implementation
-
-CRITICAL: After each command:
-- The corresponding {script_type_name} script executes first (vision is created manually)
-- Files are created/updated in the `.goalkit/` directory structure (NOT in project root!)
-- STOP AND WAIT for explicit user command before proceeding
-- NEVER chain commands automatically
-
-## Agent Development Guidelines
-When working with {script_type_name} scripts and code in this project, AI agents should follow these critical guidelines to avoid common mistakes:
-
-### 1. Verify Before Modifying
-- Always check current repository state: `git status`, `git diff`
-- Validate syntax before making changes
-- Understand file structure before modifying complex elements like heredocs or multi-line strings
-
-### 2. Safe Editing Practices
-- Use targeted `edit` operations when possible instead of overwriting entire files
-- For complex files with heredocs, be especially careful with structure and variable substitution
-- Always verify conditional blocks remain properly balanced
-
-### 3. Thorough Validation After Changes
-- Immediately validate syntax after each change
-- Test functionality before moving on to next tasks
-- Verify all related files have consistent changes
-
-### 4. Systematic Conflict Resolution
-- Resolve merge conflicts one at a time, not all at once
-- Verify each conflict resolution before proceeding
-- Look for special characters or encoding issues introduced during merges
-
-### 5. Cross-Platform Consistency
-- When fixing an issue in {script_type_name} scripts, check for similar patterns in other {script_type_name} scripts
-- Maintain consistent validation logic across implementations
-
-### 6. {script_type_name} Script Specific Guidelines
-- When working with {script_type_name} scripts, use {script_type_name}-specific validation
-- Be aware of {script_type_name}-specific escaping and path handling
-- Remember {script_type_name} syntax and behavior specifics
-- Use proper quoting for paths with spaces or special characters
-
-### 7. Verification Checklist for {script_type_name} Scripts
-- [ ] Script syntax validates in appropriate IDE or validator
-- [ ] All variables are properly defined before use
-- [ ] All conditional blocks are properly closed
-- [ ] String interpolation and variable substitution are correct
-- [ ] No special characters from merge conflicts remain
-
-### 8. Critical Warning Signs
-If you see syntax errors like "unexpected token" or "unexpected EOF", check for:
-- Unbalanced parentheses or brackets
-- Special characters from merge conflicts
-- Broken heredoc structures
-- Missing closing brackets or quotes
-- Incorrect parameter syntax
-
-Following these guidelines will help prevent the syntax errors, merge conflict issues, and validation problems that can occur during development.
+### 🛑 CRITICAL RULES
+1.  **NEVER "Vibe-Code"**: Every line of code must be traceable to a specific milestone in a validated strategy.
+2.  **OUTCOMES > FEATURES**: If the user asks for a "feature," translate it into a "goal" (outcome) first.
+3.  **TECH-FREE GOALS**: Goal definitions must not mention specific technologies (e.g., "Use React"). Technologies belong in **Strategies**.
+4.  **NO MANUAL FILE CREATION**: Always use the provided `{script_type_name}` scripts to maintain project structure.
+5.  **MANDATORY PIVOTING**: If metrics are not being met during execution, you MUST stop and propose a strategy pivot.
 
 ---
 
