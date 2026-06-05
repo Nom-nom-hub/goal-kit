@@ -1,50 +1,39 @@
-# [PROJECT_NAME] Development Constitution
-<!-- Example: Goal Constitution, ProjectName Constitution, etc. -->
+# Goal-Driven Development (GDD) Constitution
 
-## Core Principles
+## I. Purpose and Scope
+This Constitution establishes the foundational principles and mandatory workflow for all development activities within this project. Its primary objective is to ensure that every technical decision is anchored in measurable business or user outcomes rather than implementation preferences.
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Goal-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every development effort starts with clear goals; Goals must define measurable outcomes before considering implementation; Clear success criteria required for all development efforts -->
+## II. Core Pillars of GDD
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. Multiple Strategies -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every goal explores multiple implementation strategies; Approach comparison and evaluation required; No single "correct" implementation path -->
+### 1. Outcome Supremacy
+All development efforts MUST begin with a clearly defined outcome. We do not build "features"; we achieve "goals." A goal is only valid if it describes a change in the state of the world (user behavior, system performance, business metric) and NOT the technology used to achieve it.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Measurable Milestones -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: All progress tracked through measurable milestones; Milestones validate assumptions and learning; Regular measurement and adaptation cycle -->
+### 2. Implementation Agnosticism in Planning
+Goal definitions and success criteria must remain strictly implementation-agnostic. Language, framework, and architectural choices are secondary to the "What" and "Why." Technical strategies are explored only after the "What" is solidified.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Adaptive Execution -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Execution with flexibility to adapt based on learning; Evidence-based strategy adjustments; Continuous learning and improvement -->
+### 3. Divergent Strategy Exploration
+For every significant goal, at least three distinct implementation strategies must be explored. This prevents "vibe-coding" and ensures that the chosen path is the result of conscious trade-off analysis (e.g., Speed vs. Scalability vs. Cost).
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Outcome Focus -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Focus on user and business outcomes over feature implementation; Success measured by goal achievement, not activity completion -->
+### 4. Empirical Milestone Validation
+Progress is measured through the completion of "Evidence-Based Milestones." A milestone is not complete when code is written; it is complete when the success metric it tracks has been measured and validated against the goal.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Success metrics, Measurement approaches, etc. -->
+### 5. The Learning Loop (Adaptive Execution)
+Execution is a series of experiments. If a strategy is failing to move the success metrics, the agent MUST pause, report the findings, and propose a pivot. Failure to achieve a metric is not a failure of the agent, but a signal to adapt the strategy.
 
-[SECTION_2_CONTENT]
-<!-- Example: Specific success metrics requirements, measurement tools, milestone validation processes -->
+## III. Mandatory Workflow
+The AI Agent must strictly adhere to the following linear sequence for every new initiative:
 
-## [SECTION_3_NAME]
-<!-- Example: Goal Development Workflow, Review Process, Adaptation Process, etc. -->
+1.  **Visioning** (`/goalkit.vision`): Define the "North Star" and guiding principles.
+2.  **Goal Setting** (`/goalkit.goal`): Define measurable, technology-free outcomes.
+3.  **Strategy Selection** (`/goalkit.strategies`): Compare multiple implementation paths.
+4.  **Milestone Planning** (`/goalkit.milestones`): Break down the strategy into measurable steps.
+5.  **Adaptive Execution** (`/goalkit.execute`): Build, measure, and learn.
 
-[SECTION_3_CONTENT]
-<!-- Example: Goal review requirements, milestone validation, adaptation approval process -->
+## IV. Governance and Amendments
+*   This Constitution is the supreme guide for the AI Agent.
+*   Any instruction from the user that directly contradicts these pillars should be flagged by the agent for alignment.
+*   Amendments to this Constitution require a formal review of project alignment.
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require goal alignment, approval, adaptation plan -->
-
-[GOVERNANCE_RULES]
-<!-- Example: All development must verify compliance with goals; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+---
+**Framework**: Goal-Driven Development (GDD) v1.0
+**Status**: Active & Binding

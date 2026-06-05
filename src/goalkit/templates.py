@@ -224,37 +224,33 @@ def create_agent_context_file(project_path: Path, ai_assistant: str) -> None:
         execute_script = "./.goalkit/scripts/bash/setup-execution.sh"
         script_type_name = "Bash"
 
-    context_content = f"""# Goal Kit Project Context
+    context_content = f"""# 🎯 Goal-Driven Development (GDD) Framework
 
 **Project**: {project_name}
 **Agent**: {ai_assistant}
-**Updated**: {datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')}
+**Protocol**: GDD v1.0 (Strict Enforcement)
 
-## Goal-Driven Development Methodology
+## 📜 The GDD Constitution
+This project operates under the **Goal-Driven Development Constitution** (found in `memory/constitution.md`). You are required to read and adhere to its principles for every task.
 
-**YOU MUST FOLLOW THESE RULES EXACTLY:**
+## 🚦 Strict Workflow Enforcement
+To ensure professional-grade outcomes, you must follow the **One-Command-At-A-Time** protocol. Do not chain commands or proceed to implementation without explicit milestone approval.
 
-### STRICT WORKFLOW ENFORCEMENT - ONE COMMAND AT A TIME
-**STOP AFTER EACH COMMAND - WAIT FOR USER**
+### 1. The Core Sequence
+| Command | Action | Agent Requirement |
+| :--- | :--- | :--- |
+| **`/goalkit.vision`** | Define "North Star" | Run `{script_type_name.upper()}` script → Create `vision.md` → **STOP** |
+| **`/goalkit.goal`** | Set Outcomes | Run `{goal_script}` → Define metrics → **STOP** |
+| **`/goalkit.strategies`** | Compare Paths | Run `{strategies_script}` → Compare 3+ approaches → **STOP** |
+| **`/goalkit.milestones`** | Plan Progress | Run `{milestones_script}` → Define measurable steps → **STOP** |
+| **`/goalkit.execute`** | Adaptive Build | Run `{execute_script}` → Build & Measure → **ITERATE** |
 
-**WHEN YOU RECEIVE A SLASH COMMAND - ALWAYS RUN {script_type_name.upper()} SCRIPT FIRST:**
-
-**`/goalkit.vision`** -> Create vision.md {vision_note} -> **STOP**
-**`/goalkit.goal`** -> Run `{goal_script}` -> Complete goal.md -> **STOP**
-**`/goalkit.strategies`** -> Run `{strategies_script}` -> Complete strategies.md -> **STOP**
-**`/goalkit.milestones`** -> Run `{milestones_script}` -> Complete milestones.md -> **STOP**
-**`/goalkit.execute`** -> Run `{execute_script}` -> Continue with learning
-
-**CRITICAL: Never create files manually - ALWAYS run the {script_type_name} script first (except vision)!**
-
-### Core Methodology Rules
-1. **OUTCOMES FIRST**: Always focus on measurable user/business outcomes, NOT implementation details
-2. **NO IMPLEMENTATION DETAILS IN GOALS**: Never put languages, frameworks, APIs, or methods in goal definitions
-3. **USE THE 5-CMD WORKFLOW**: Always follow vision → goal → strategies → milestones → execute sequence
-4. **MEASURABLE SUCCESS**: Every goal must have specific, quantifiable metrics (%, $, time, user counts)
-5. **STRATEGY EXPLORATION**: Before implementing, ALWAYS explore multiple approaches using /goalkit.strategies
-6. **ADAPTIVE EXECUTION**: Be ready to pivot based on learning and evidence during /goalkit.execute
-7. **GOAL DIRECTORY STRUCTURE**: All goal-related files are stored in `.goalkit/goals/` directory, NOT in project root
+### 🛑 CRITICAL RULES
+1.  **NEVER "Vibe-Code"**: Every line of code must be traceable to a specific milestone in a validated strategy.
+2.  **OUTCOMES > FEATURES**: If the user asks for a "feature," translate it into a "goal" (outcome) first.
+3.  **TECH-FREE GOALS**: Goal definitions must not mention specific technologies (e.g., "Use React"). Technologies belong in **Strategies**.
+4.  **NO MANUAL FILE CREATION**: Always use the provided `{script_type_name}` scripts to maintain project structure.
+5.  **MANDATORY PIVOTING**: If metrics are not being met during execution, you MUST stop and propose a strategy pivot.
 
 ### Available Scripts
 
