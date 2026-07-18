@@ -404,7 +404,7 @@ class WebhookManager:
             else:
                 # Server error, retry
                 if attempt < max_attempts:
-                    backoff = 2 ** attempt  # Exponential backoff
+                    backoff = min(2 ** attempt, 5)  # Cap backoff at 5 seconds
                     time.sleep(backoff)
                     return self._deliver_webhook(
                         webhook, event, attempt + 1, max_attempts
@@ -428,7 +428,7 @@ class WebhookManager:
         except Exception as e:
             # Connection error, retry with backoff
             if attempt < max_attempts:
-                backoff = 2 ** attempt
+                backoff = min(2 ** attempt, 5)  # Cap backoff at 5 seconds
                 time.sleep(backoff)
                 return self._deliver_webhook(
                     webhook, event, attempt + 1, max_attempts

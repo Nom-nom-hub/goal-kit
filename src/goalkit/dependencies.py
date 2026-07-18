@@ -6,7 +6,6 @@ circular dependencies, and calculating critical paths.
 
 from pathlib import Path
 from typing import List, Dict, Set, Optional
-from collections import defaultdict, deque
 
 from .tasks import TaskTracker
 from .models import Task, TaskStatus
@@ -264,7 +263,6 @@ class DependencyTracker:
         Returns:
             List of tasks in the path.
         """
-        task_map = {t.id: t for t in all_tasks}
         path = [task]
 
         # Find task that depends on this one

@@ -216,6 +216,7 @@ class AnalyticsEngine:
         total: int,
         blocked: int = 0,
         in_progress: int = 0,
+        date: Optional[str] = None,
     ) -> None:
         """Record a snapshot of goal progress.
 
@@ -225,34 +226,25 @@ class AnalyticsEngine:
             total: Total tasks in goal
             blocked: Number of blocked tasks
             in_progress: Number of in-progress tasks
+            date: Date string (YYYY-MM-DD), defaults to today
         """
         history = self._load_history()
 
         if goal_id not in history:
             history[goal_id] = []
 
-        # Create point for today
-        today = datetime.now().strftime("%Y-%m-%d")
+        if date is None:
+            date = datetime.now().strftime("%Y-%m-%d")
 
-        # Check if already recorded today
-        if history[goal_id] and history[goal_id][-1].date == today:
-            history[goal_id][-1] = AnalyticsPoint(
-                date=today,
+        history[goal_id].append(
+            AnalyticsPoint(
+                date=date,
                 completed=completed,
                 total=total,
                 blocked=blocked,
                 in_progress=in_progress,
             )
-        else:
-            history[goal_id].append(
-                AnalyticsPoint(
-                    date=today,
-                    completed=completed,
-                    total=total,
-                    blocked=blocked,
-                    in_progress=in_progress,
-                )
-            )
+        )
 
         self._save_history(history)
 
@@ -299,6 +291,9 @@ class AnalyticsEngine:
         first_total = filtered[0].total
         last_completed = filtered[-1].completed
         num_days = len(filtered)
+
+        if num_days < 2:
+            return None
 
         dates = [p.date for p in filtered]
         actual_remaining = [max(0, p.total - p.completed) for p in filtered]
@@ -533,6 +528,20 @@ class AnalyticsEngine:
         points = sorted(history[goal_id], key=lambda p: p.date)
 
         if len(points) < 2:
+            # If already completed, 1 point is sufficient
+            last_point = points[-1]
+            if last_point.total - last_point.completed <= 0:
+                today = datetime.now().strftime("%Y-%m-%d")
+                return CompletionForecast(
+                    estimated_date=today,
+                    confidence=1.0,
+                    probability=1.0,
+                    low_estimate=today,
+                    high_estimate=today,
+                    days_remaining=0,
+                    tasks_remaining=0,
+                    required_velocity=0,
+                )
             return None
 
         last_point = points[-1]
@@ -716,6 +725,11 @@ class AnalyticsEngine:
                 insights.append(
                     f"⏰ At risk of missing deadline. "
                     f"Need {forecast.required_velocity:.1f} tasks/day."
+                )
+            else:
+                insights.append(
+                    f"📊 Forecast: completion by {forecast.estimated_date} "
+                    f"with {forecast.probability:.0%} confidence."
                 )
 
         bottlenecks = self.get_bottlenecks(goal_id)

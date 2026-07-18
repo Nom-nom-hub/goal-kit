@@ -2,11 +2,9 @@
 
 from pathlib import Path
 from typing import Optional
-import json
 
 from rich.console import Console
 from rich.table import Table
-from rich.panel import Panel
 from rich.tree import Tree
 import typer
 
@@ -153,7 +151,7 @@ def critical_path(
                 
                 for i, task in enumerate(critical_path_tasks):
                     status_icon = "✓" if task.status.value == "completed" else "○"
-                    task_node = tree.add(
+                    tree.add(
                         f"{status_icon} {task.title} ({task.estimated_hours}h)"
                     )
                     if i < len(critical_path_tasks) - 1:

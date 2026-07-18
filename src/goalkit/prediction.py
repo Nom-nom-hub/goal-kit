@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Optional
 
-from goalkit.analytics import AnalyticsEngine, AnalyticsPoint
+from goalkit.analytics import AnalyticsEngine
 
 
 @dataclass
@@ -167,8 +167,8 @@ class PredictionEngine:
             )
         else:
             recommendation = (
-                f"🚨 High risk. Current pace insufficient. "
-                f"Deadline unrealistic without significant changes."
+                "🚨 High risk. Current pace insufficient. "
+                "Deadline unrealistic without significant changes."
             )
 
         return RiskAssessment(
@@ -263,7 +263,6 @@ class PredictionEngine:
         if not base_forecast:
             return None
 
-        base_date = datetime.strptime(base_forecast.estimated_date, "%Y-%m-%d")
         deadline_date = datetime.strptime(deadline, "%Y-%m-%d")
         base_probability = base_forecast.probability
 

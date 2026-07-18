@@ -31,10 +31,9 @@ import zipfile
 import tempfile
 import shutil
 import shlex
-import json
 from pathlib import Path
 from typing import Optional, Tuple
-import datetime
+from datetime import datetime
 
 import typer
 import httpx
@@ -52,11 +51,8 @@ import truststore
 # Import helpers
 from .helpers import (
     StepTracker,
-    get_key,
     select_with_arrows,
-    merge_json_files,
     handle_vscode_settings,
-    is_git_repo,
     init_git_repo,
     check_tool,
     validate_project_name,
@@ -349,7 +345,7 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
 
     zip_path = download_dir / filename
     if verbose:
-        console.print(f"[cyan]Downloading template...[/cyan]")
+        console.print("[cyan]Downloading template...[/cyan]")
 
     try:
         with client.stream(
@@ -401,7 +397,6 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
 
 def create_agent_file(project_path: Path, ai_assistant: str):
     """Create a customized agent file using the agent file template."""
-    import datetime
 
     # Read the agent file template
     template_path = Path(__file__).parent.parent.parent / "templates" / "agent-file-template.md"
@@ -416,7 +411,7 @@ def create_agent_file(project_path: Path, ai_assistant: str):
 
     # Replace placeholders with actual project information
     project_name = project_path.name
-    current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     # Basic replacements
     content = template_content.replace("[PROJECT NAME]", project_name)
@@ -524,7 +519,6 @@ The following scripts are available in `.goalkit/scripts/bash/` and `.goalkit/sc
 
 def create_agent_context_file(project_path: Path, ai_assistant: str):
     """Create agent context files with Goal Kit commands based on the selected AI assistant."""
-    import datetime
     import os
 
     # Define the agent context files patterns based on the selected agent
@@ -580,14 +574,12 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
     # Determine script type based on OS
     is_windows = os.name == "nt"
     if is_windows:
-        vision_note = "(create vision.md manually in `.goalkit/goals/`)"
         goal_script = r".\\.goalkit\\scripts\\powershell\\create-new-goal.ps1"
         strategies_script = r".\\.goalkit\\scripts\\powershell\\setup-strategy.ps1"
         milestones_script = r".\\.goalkit\\scripts\\powershell\\setup-milestones.ps1"
         execute_script = r".\\.goalkit\\scripts\\powershell\\setup-execution.ps1"
         script_type_name = "PowerShell"
     else:
-        vision_note = "(create vision.md manually in `.goalkit/goals/`)"
         goal_script = "./.goalkit/scripts/bash/create-new-goal.sh"
         strategies_script = "./.goalkit/scripts/bash/setup-strategy.sh"
         milestones_script = "./.goalkit/scripts/bash/setup-milestones.sh"
@@ -711,7 +703,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                             tracker.add("flatten", "Flatten nested directory")
                             tracker.complete("flatten")
                         elif verbose:
-                            console.print(f"[cyan]Found nested directory structure[/cyan]")
+                            console.print("[cyan]Found nested directory structure[/cyan]")
 
                     for item in source_dir.iterdir():
                         dest_path = project_path / item.name
@@ -736,7 +728,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                                 console.print(f"[yellow]Overwriting file:[/yellow] {item.name}")
                             shutil.copy2(item, dest_path)
                     if verbose and not tracker:
-                        console.print(f"[cyan]Template files merged into current directory[/cyan]")
+                        console.print("[cyan]Template files merged into current directory[/cyan]")
             else:
                 zip_ref.extractall(project_path)
 
@@ -762,7 +754,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                         tracker.add("flatten", "Flatten nested directory")
                         tracker.complete("flatten")
                     elif verbose:
-                        console.print(f"[cyan]Flattened nested directory structure[/cyan]")
+                        console.print("[cyan]Flattened nested directory structure[/cyan]")
 
         # Create agent context file based on selected AI assistant
         create_agent_context_file(project_path, ai_assistant)
@@ -827,7 +819,7 @@ def copy_scripts_to_goalkit(project_path: Path, selected_script: str, tracker: S
             tracker.add("copy-scripts", "Copy scripts")
             tracker.complete("copy-scripts", f"copied {copied_count} scripts")
         else:
-            console.print(f"[cyan]Copied scripts to .goalkit/scripts/[/cyan]")
+            console.print("[cyan]Copied scripts to .goalkit/scripts/[/cyan]")
 
     except Exception as e:
         if tracker:
@@ -925,13 +917,17 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
                         continue
             except Exception:
                 continue
-            st = script.stat(); mode = st.st_mode
+            st = script.stat()
+            mode = st.st_mode
             if mode & 0o111:
                 continue
             new_mode = mode
-            if mode & 0o400: new_mode |= 0o100
-            if mode & 0o040: new_mode |= 0o010
-            if mode & 0o004: new_mode |= 0o001
+            if mode & 0o400:
+                new_mode |= 0o100
+            if mode & 0o040:
+                new_mode |= 0o010
+            if mode & 0o004:
+                new_mode |= 0o001
             if not (new_mode & 0o100):
                 new_mode |= 0o100
             os.chmod(script, new_mode)
@@ -980,10 +976,6 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
     agent_folder = agent_folder_map.get(selected_ai)
     if not agent_folder:
         return  # Skip if agent is not in the map
-
-    # Check if this agent requires CLI (and thus should get commands folder)
-    agent_config = AGENT_CONFIG.get(selected_ai)
-    requires_cli = agent_config and agent_config.get("requires_cli", False) if agent_config else False
 
     # Path to the agent template directory
     agent_template_path = Path(__file__).parent.parent.parent / "agent_templates" / selected_ai
@@ -1214,6 +1206,22 @@ goalkit init my-project
             "copilot"
         )
 
+    if script_type:
+        if script_type not in SCRIPT_TYPE_CHOICES:
+            console.print(f"[red]Error:[/red] Invalid script type '{script_type}'. Choose from: {', '.join(SCRIPT_TYPE_CHOICES.keys())}")
+            raise typer.Exit(1)
+        selected_script = script_type
+    else:
+        default_script = "ps" if os.name == "nt" else "sh"
+
+        # Always attempt interactive selection, don't rely on isatty() check after previous interaction
+        # This ensures script type selection works even after the AI assistant selection
+        try:
+            selected_script = select_with_arrows(console, SCRIPT_TYPE_CHOICES, "Choose script type (or press Enter)", default_script)
+        except (EOFError, KeyboardInterrupt):
+            # If interactive selection fails, use default
+            selected_script = default_script
+
     if not ignore_agent_tools:
         agent_config = AGENT_CONFIG.get(selected_ai)
         if agent_config and agent_config["requires_cli"]:
@@ -1231,22 +1239,6 @@ goalkit init my-project
                 console.print()
                 console.print(error_panel)
                 raise typer.Exit(1)
-
-    if script_type:
-        if script_type not in SCRIPT_TYPE_CHOICES:
-            console.print(f"[red]Error:[/red] Invalid script type '{script_type}'. Choose from: {', '.join(SCRIPT_TYPE_CHOICES.keys())}")
-            raise typer.Exit(1)
-        selected_script = script_type
-    else:
-        default_script = "ps" if os.name == "nt" else "sh"
-
-        # Always attempt interactive selection, don't rely on isatty() check after previous interaction
-        # This ensures script type selection works even after the AI assistant selection
-        try:
-            selected_script = select_with_arrows(console, SCRIPT_TYPE_CHOICES, "Choose script type (or press Enter)", default_script)
-        except (EOFError, KeyboardInterrupt):
-            # If interactive selection fails, use default
-            selected_script = default_script
 
     console.print(f"[cyan]Selected AI assistant:[/cyan] {selected_ai}")
     console.print(f"[cyan]Selected script type:[/cyan] {selected_script}")
@@ -1430,10 +1422,10 @@ def check():
     
     # Check VS Code variants (not in agent config)
     tracker.add("code", "Visual Studio Code")
-    code_ok = check_tool("code", CLAUDE_LOCAL_PATH, tracker=tracker)
+    check_tool("code", CLAUDE_LOCAL_PATH, tracker=tracker)
     
     tracker.add("code-insiders", "Visual Studio Code Insiders")
-    code_insiders_ok = check_tool("code-insiders", CLAUDE_LOCAL_PATH, tracker=tracker)
+    check_tool("code-insiders", CLAUDE_LOCAL_PATH, tracker=tracker)
 
     console.print(tracker.render())
 

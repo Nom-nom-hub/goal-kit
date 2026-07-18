@@ -6,7 +6,7 @@ status tracking, and aggregated statistics.
 
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict
 import json
 from datetime import datetime
 from uuid import uuid4

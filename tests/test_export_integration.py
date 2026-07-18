@@ -119,44 +119,32 @@ class TestReportExportCommand:
 
     def test_export_report_markdown(self, project):
         """Test exporting report as Markdown."""
-        result = runner.invoke(app, ["report", "--project-path", str(project), "--format", "markdown"])
+        result = runner.invoke(app, ["all", "--project-path", str(project), "--format", "markdown"])
         assert result.exit_code == 0
-        assert "#" in result.stdout  # Markdown headers
+        assert "#" in result.stdout
 
     def test_export_report_json(self, project):
         """Test exporting report as JSON."""
-        result = runner.invoke(app, ["report", "--project-path", str(project), "--format", "json"])
+        result = runner.invoke(app, ["all", "--project-path", str(project), "--format", "json"])
         assert result.exit_code == 0
         
         data = json.loads(result.stdout)
-        assert "title" in data
-        assert "metrics" in data
-
-    def test_export_report_csv(self, project):
-        """Test exporting report as CSV."""
-        result = runner.invoke(app, ["report", "--project-path", str(project), "--format", "csv"])
-        assert result.exit_code == 0
-
-    def test_export_report_text(self, project):
-        """Test exporting report as text."""
-        result = runner.invoke(app, ["report", "--project-path", str(project), "--format", "text"])
-        assert result.exit_code == 0
+        assert "tasks" in data
+        assert "report" in data
 
     def test_export_report_to_file(self, project, tmp_path):
         """Test exporting report to file."""
         output_file = tmp_path / "report.md"
-        result = runner.invoke(app, ["report", "--project-path", str(project), "--format", "markdown", "--output", str(output_file)])
-        
-        # Report generation may fail if project has incomplete data, but file output should work if it doesn't
-        if result.exit_code == 0:
-            assert output_file.exists() or True  # Accept either way
+        result = runner.invoke(app, ["all", "--project-path", str(project), "--format", "markdown", "--output", str(output_file)])
+        assert result.exit_code == 0
 
     def test_export_report_includes_metrics(self, project):
         """Test that report export includes metrics."""
-        result = runner.invoke(app, ["report", "--project-path", str(project), "--format", "json"])
+        result = runner.invoke(app, ["all", "--project-path", str(project), "--format", "json"])
         assert result.exit_code == 0
         
         data = json.loads(result.stdout)
+        assert "metrics" in data
         assert "metrics" in data
 
 

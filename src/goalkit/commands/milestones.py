@@ -6,12 +6,10 @@ milestone completion status, execution velocity, and project momentum.
 
 from pathlib import Path
 from typing import Optional
-import json
 
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-from rich.text import Text
 
 from ..analyzer import ProjectAnalyzer
 from ..execution import ExecutionTracker
@@ -87,7 +85,7 @@ def _output_json(result, tracker, goal_id: Optional[str], console: Console) -> N
     
     # Get history for each goal
     for goal in goals_to_process:
-        history = tracker.get_milestone_history(goal_id=goal.id, limit=100)
+        tracker.get_milestone_history(goal_id=goal.id, limit=100)
         goal_stats = tracker.get_goal_execution_stats(goal.id)
         
         milestones_data.append({
@@ -179,13 +177,12 @@ def _display_milestone_table(tracker, goals, console: Console) -> None:
         goals: List of goals to display
         console: Rich console for output
     """
-    console.print(f"\n[bold cyan]Milestones by Goal[/bold cyan]")
+    console.print("\n[bold cyan]Milestones by Goal[/bold cyan]")
     
     for goal in goals:
         stats = tracker.get_goal_execution_stats(goal.id)
         completed = stats["completed_milestones"]
         recent = stats["recent_milestones"]
-        last = stats["last_completion"]
         
         # Goal header
         goal_info = f"[cyan]{goal.name}[/cyan] "
@@ -224,7 +221,7 @@ def _display_timeline(timeline: dict, console: Console) -> None:
         timeline: Dictionary mapping date to completion count
         console: Rich console for output
     """
-    console.print(f"\n[bold cyan]Recent Activity (30 days)[/bold cyan]")
+    console.print("\n[bold cyan]Recent Activity (30 days)[/bold cyan]")
     
     table = Table(show_header=True, header_style="bold magenta")
     table.add_column("Date", style="cyan")

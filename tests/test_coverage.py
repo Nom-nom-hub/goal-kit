@@ -76,8 +76,10 @@ class TestGithubTokenHandling:
         assert "Authorization" in headers
         assert headers["Authorization"] == "Bearer test_token"
 
-    def test_github_auth_headers_without_token(self):
+    def test_github_auth_headers_without_token(self, monkeypatch):
         """Test _github_auth_headers returns empty dict without token."""
+        monkeypatch.delenv("GH_TOKEN", raising=False)
+        monkeypatch.delenv("GITHUB_TOKEN", raising=False)
         headers = _github_auth_headers(None)
         assert headers == {}
 

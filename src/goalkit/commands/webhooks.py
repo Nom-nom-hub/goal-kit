@@ -14,7 +14,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from goalkit.webhooks import WebhookEvent, WebhookManager
+from goalkit.webhooks import WebhookManager
 
 app = typer.Typer(help="Webhook management and event notifications")
 console = Console()
@@ -123,7 +123,7 @@ def add(
         webhook = manager.register_webhook(event_type, url)
 
         console.print(
-            f"\n[green]✓ Webhook registered[/green]\n"
+            "\n[green]✓ Webhook registered[/green]\n"
         )
         console.print(f"ID:     {webhook.id}")
         console.print(f"Type:   {webhook.event_type}")

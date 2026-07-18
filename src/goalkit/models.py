@@ -62,7 +62,12 @@ class Task:
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
     completed_at: Optional[datetime] = None
-    depends_on: Optional[str] = None  # Optional task ID this task depends on
+    depends_on: Optional[str] = None
+    milestone_id: Optional[str] = None
+    completed: bool = False
+    priority: str = "medium"
+    assigned_to: Optional[str] = None
+    due_date: Optional[datetime] = None
 
 
 @dataclass

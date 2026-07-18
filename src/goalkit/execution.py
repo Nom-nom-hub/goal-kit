@@ -10,7 +10,7 @@ from typing import List, Optional, Dict, Any
 import json
 from datetime import datetime, timedelta
 
-from .models import Project, Goal, Milestone, Task
+from .models import Goal
 
 
 @dataclass

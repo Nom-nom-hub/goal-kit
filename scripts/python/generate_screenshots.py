@@ -105,7 +105,7 @@ def generate_svg(lines: list, filename: str, width: int = 780):
         x_pos = 0
         
         # Check if line is a box-drawing line (contains special characters)
-        has_box = any(c in line for c in '╭╮╰╯├┤│─┌┐└┘')
+        any(c in line for c in '╭╮╰╯├┤│─┌┐└┘')
         
         for span in spans:
             if span[0] == 'span':

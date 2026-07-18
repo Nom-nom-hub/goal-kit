@@ -7,12 +7,11 @@ metrics) into various formats (CSV, JSON, Markdown, plaintext).
 import json
 import csv
 from io import StringIO
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 from abc import ABC, abstractmethod
-from datetime import datetime
 
 from .models import Task, TaskStatus
-from .reporting import Report, Insight
+from .reporting import Report
 
 
 class BaseExporter(ABC):

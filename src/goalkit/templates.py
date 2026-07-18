@@ -18,11 +18,10 @@ from typing import Optional, Tuple
 import httpx
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
-from .app import console, ssl_context, _github_token, _github_auth_headers
+from .app import console, ssl_context, _github_auth_headers
 from .helpers import (
     StepTracker,
     handle_vscode_settings,
-    merge_json_files,
 )
 
 
@@ -132,7 +131,7 @@ def download_template_from_github(
 
     zip_path = download_dir / filename
     if verbose:
-        console.print(f"[cyan]Downloading template...[/cyan]")
+        console.print("[cyan]Downloading template...[/cyan]")
 
     try:
         with client.stream(
@@ -210,14 +209,12 @@ def create_agent_context_file(project_path: Path, ai_assistant: str) -> None:
 
     is_windows = os.name == "nt"
     if is_windows:
-        vision_note = "(create vision.md manually in `.goalkit/goals/`)"
         goal_script = r".\\.goalkit\\scripts\\powershell\\create-new-goal.ps1"
         strategies_script = r".\\.goalkit\\scripts\\powershell\\setup-strategy.ps1"
         milestones_script = r".\\.goalkit\\scripts\\powershell\\setup-milestones.ps1"
         execute_script = r".\\.goalkit\\scripts\\powershell\\setup-execution.ps1"
         script_type_name = "PowerShell"
     else:
-        vision_note = "(create vision.md manually in `.goalkit/goals/`)"
         goal_script = "./.goalkit/scripts/bash/create-new-goal.sh"
         strategies_script = "./.goalkit/scripts/bash/setup-strategy.sh"
         milestones_script = "./.goalkit/scripts/bash/setup-milestones.sh"
@@ -373,7 +370,7 @@ def download_and_extract_template(
                             tracker.add("flatten", "Flatten nested directory")
                             tracker.complete("flatten")
                         elif verbose:
-                            console.print(f"[cyan]Found nested directory structure[/cyan]")
+                            console.print("[cyan]Found nested directory structure[/cyan]")
 
                     for item in source_dir.iterdir():
                         dest_path = project_path / item.name
@@ -397,7 +394,7 @@ def download_and_extract_template(
                                 console.print(f"[yellow]Overwriting file:[/yellow] {item.name}")
                             shutil.copy2(item, dest_path)
                     if verbose and not tracker:
-                        console.print(f"[cyan]Template files merged into current directory[/cyan]")
+                        console.print("[cyan]Template files merged into current directory[/cyan]")
             else:
                 zip_ref.extractall(project_path)
 
@@ -422,7 +419,7 @@ def download_and_extract_template(
                         tracker.add("flatten", "Flatten nested directory")
                         tracker.complete("flatten")
                     elif verbose:
-                        console.print(f"[cyan]Flattened nested directory structure[/cyan]")
+                        console.print("[cyan]Flattened nested directory structure[/cyan]")
 
         # Create agent context file
         create_agent_context_file(project_path, ai_assistant)
@@ -490,7 +487,7 @@ def copy_scripts_to_goalkit(project_path: Path, selected_script: str, tracker: S
             tracker.add("copy-scripts", "Copy scripts")
             tracker.complete("copy-scripts", f"copied {copied_count} scripts")
         else:
-            console.print(f"[cyan]Copied scripts to .goalkit/scripts/[/cyan]")
+            console.print("[cyan]Copied scripts to .goalkit/scripts/[/cyan]")
     except Exception as e:
         if tracker:
             tracker.add("copy-scripts", "Copy scripts")

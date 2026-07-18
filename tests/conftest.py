@@ -25,6 +25,7 @@ def temp_project_dir() -> Generator[Path, None, None]:
 @pytest.fixture
 def git_repo(temp_project_dir: Path) -> Generator[Path, None, None]:
     """Create a temporary git repository for testing."""
+    original_dir = os.getcwd()
     os.chdir(temp_project_dir)
     subprocess.run(["git", "init"], check=True, capture_output=True)
     subprocess.run(
@@ -38,6 +39,7 @@ def git_repo(temp_project_dir: Path) -> Generator[Path, None, None]:
         capture_output=True,
     )
     yield temp_project_dir
+    os.chdir(original_dir)
 
 
 @pytest.fixture

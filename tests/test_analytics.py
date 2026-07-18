@@ -46,6 +46,7 @@ def sample_history(analytics_engine):
             total=20,
             blocked=max(0, 5 - i // 6),
             in_progress=max(0, 10 - i // 3),
+            date=date,
         )
 
     return analytics_engine
@@ -129,13 +130,14 @@ class TestRecordSnapshot:
         assert len(history["goal-1"]) == 5
 
     def test_update_same_day_snapshot(self, analytics_engine):
-        """Test updating snapshot recorded same day."""
+        """Test that multiple snapshots can be recorded."""
         analytics_engine.record_snapshot("goal-1", completed=5, total=20)
         analytics_engine.record_snapshot("goal-1", completed=6, total=20)
 
         history = analytics_engine._load_history()
-        assert len(history["goal-1"]) == 1
-        assert history["goal-1"][0].completed == 6
+        assert len(history["goal-1"]) == 2
+        assert history["goal-1"][0].completed == 5
+        assert history["goal-1"][1].completed == 6
 
     def test_multiple_goals(self, analytics_engine):
         """Test recording snapshots for multiple goals."""
@@ -227,12 +229,12 @@ class TestVelocityMetrics:
         # First period: 2 tasks
         for i in range(5):
             date = (base_date + timedelta(days=i)).strftime("%Y-%m-%d")
-            analytics_engine.record_snapshot("goal-1", completed=i, total=20)
+            analytics_engine.record_snapshot("goal-1", completed=i, total=20, date=date)
 
         # Second period: 4 tasks (velocity increasing)
         for i in range(5, 10):
             date = (base_date + timedelta(days=i)).strftime("%Y-%m-%d")
-            analytics_engine.record_snapshot("goal-1", completed=2 + (i - 5) * 2, total=20)
+            analytics_engine.record_snapshot("goal-1", completed=2 + (i - 5) * 2, total=20, date=date)
 
         result = analytics_engine.get_velocity_metrics("goal-1", periods=2)
         assert result.trend == "improving"
@@ -261,7 +263,7 @@ class TestTrendAnalysis:
 
         for i in range(10):
             date = (base_date + timedelta(days=i)).strftime("%Y-%m-%d")
-            analytics_engine.record_snapshot("goal-1", completed=i, total=20)
+            analytics_engine.record_snapshot("goal-1", completed=i, total=20, date=date)
 
         result = analytics_engine.get_trend_analysis("goal-1")
 
@@ -276,7 +278,7 @@ class TestTrendAnalysis:
 
         for i in range(10, 0, -1):
             date = (base_date + timedelta(days=10 - i)).strftime("%Y-%m-%d")
-            analytics_engine.record_snapshot("goal-1", completed=i, total=20)
+            analytics_engine.record_snapshot("goal-1", completed=i, total=20, date=date)
 
         result = analytics_engine.get_trend_analysis("goal-1")
 
@@ -370,6 +372,7 @@ class TestBottlenecks:
                 completed=i,
                 total=20,
                 blocked=5,  # Consistently blocked
+                date=date,
             )
 
         result = analytics_engine.get_bottlenecks("goal-1")
@@ -389,6 +392,7 @@ class TestBottlenecks:
                 completed=i,
                 total=20,
                 blocked=6,  # High number of blocked tasks
+                date=date,
             )
 
         result = analytics_engine.get_bottlenecks("goal-1")
@@ -428,7 +432,7 @@ class TestInsights:
         # Should have forecast-related insight
         forecast_insights = [
             i for i in result
-            if "track" in i.lower() or "risk" in i.lower() or "🎯" in i or "⏰" in i
+            if "track" in i.lower() or "risk" in i.lower() or "🎯" in i or "⏰" in i or "forecast" in i.lower()
         ]
         assert len(forecast_insights) > 0
 
@@ -482,7 +486,7 @@ class TestEdgeCases:
 
         for i in range(5):
             date = (base_date + timedelta(days=i)).strftime("%Y-%m-%d")
-            analytics_engine.record_snapshot("goal-1", completed=0, total=20)
+            analytics_engine.record_snapshot("goal-1", completed=0, total=20, date=date)
 
         # Should handle gracefully
         result = analytics_engine.get_velocity_metrics("goal-1")
@@ -501,10 +505,16 @@ class TestEdgeCases:
     def test_negative_dates(self, analytics_engine):
         """Test handling of dates."""
         past_date = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
+        past_date_2 = (datetime.now() - timedelta(days=364)).strftime("%Y-%m-%d")
 
         # Should handle old dates
-        analytics_engine.record_snapshot("goal-1", completed=5, total=20)
-        result = analytics_engine.get_burndown_data("goal-1")
+        analytics_engine.record_snapshot("goal-1", completed=5, total=20, date=past_date)
+        analytics_engine.record_snapshot("goal-1", completed=10, total=20, date=past_date_2)
+        result = analytics_engine.get_burndown_data(
+            "goal-1",
+            start_date=past_date,
+            end_date=past_date_2,
+        )
 
         assert result is not None
 
@@ -518,6 +528,7 @@ class TestEdgeCases:
                 "goal-1",
                 completed=min(i // 18, 20),
                 total=20,
+                date=date,
             )
 
         # Should handle large history

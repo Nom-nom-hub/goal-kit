@@ -9,8 +9,6 @@ import datetime
 import shutil
 from pathlib import Path
 
-from .agents import AGENT_CONFIG
-
 
 def create_agent_file(project_path: Path, ai_assistant: str) -> None:
     """Create a customized agent file using the agent file template."""
@@ -162,8 +160,6 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
     agent_folder = agent_folder_map.get(selected_ai)
     if not agent_folder:
         return
-
-    agent_config = AGENT_CONFIG.get(selected_ai)
 
     # Path to agent template directory
     agent_template_path = Path(__file__).parent.parent.parent / "agent_templates" / selected_ai

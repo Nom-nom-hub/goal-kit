@@ -6,12 +6,10 @@ comprehensive information about a Goal Kit project's current state.
 
 from pathlib import Path
 from typing import Optional
-import json
 
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-from rich.text import Text
 
 from ..analyzer import ProjectAnalyzer, AnalysisResult
 

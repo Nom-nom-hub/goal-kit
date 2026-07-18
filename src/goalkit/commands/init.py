@@ -117,7 +117,6 @@ def create_agent_file(project_path: Path, ai_assistant: str) -> None:
 
 def create_agent_config(project_path: Path, selected_ai: str) -> None:
     """Create agent-specific configuration files and directories."""
-    from ..agents import AGENT_CONFIG
 
     # Ensure .goalkit/goals directory exists
     goalkit_dir = project_path / ".goalkit"
@@ -144,10 +143,6 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
     agent_folder = agent_folder_map.get(selected_ai)
     if not agent_folder:
         return
-
-    # Check if agent requires CLI
-    agent_config = AGENT_CONFIG.get(selected_ai)
-    requires_cli = agent_config and agent_config.get("requires_cli", False)
 
     # Path to agent template directory
     agent_template_path = Path(__file__).parent.parent.parent.parent / "agent_templates" / selected_ai
@@ -396,6 +391,23 @@ def init(
         ai_choices = {key: config["name"] for key, config in AGENT_CONFIG.items()}
         selected_ai = select_with_arrows(console, ai_choices, "Choose your AI assistant:", "copilot")
 
+    # Select script type
+    if script_type:
+        if script_type not in SCRIPT_TYPE_CHOICES:
+            console.print(
+                f"[red]Error:[/red] Invalid script type '{script_type}'. Choose from: {', '.join(SCRIPT_TYPE_CHOICES.keys())}"
+            )
+            raise typer.Exit(1)
+        selected_script = script_type
+    else:
+        default_script = "ps" if os.name == "nt" else "sh"
+        try:
+            selected_script = select_with_arrows(
+                console, SCRIPT_TYPE_CHOICES, "Choose script type (or press Enter)", default_script
+            )
+        except (EOFError, KeyboardInterrupt):
+            selected_script = default_script
+
     # Check agent tools
     if not ignore_agent_tools:
         agent_config = AGENT_CONFIG.get(selected_ai)
@@ -414,23 +426,6 @@ def init(
                 console.print()
                 console.print(error_panel)
                 raise typer.Exit(1)
-
-    # Select script type
-    if script_type:
-        if script_type not in SCRIPT_TYPE_CHOICES:
-            console.print(
-                f"[red]Error:[/red] Invalid script type '{script_type}'. Choose from: {', '.join(SCRIPT_TYPE_CHOICES.keys())}"
-            )
-            raise typer.Exit(1)
-        selected_script = script_type
-    else:
-        default_script = "ps" if os.name == "nt" else "sh"
-        try:
-            selected_script = select_with_arrows(
-                console, SCRIPT_TYPE_CHOICES, "Choose script type (or press Enter)", default_script
-            )
-        except (EOFError, KeyboardInterrupt):
-            selected_script = default_script
 
     console.print(f"[cyan]Selected AI assistant:[/cyan] {selected_ai}")
     console.print(f"[cyan]Selected script type:[/cyan] {selected_script}")

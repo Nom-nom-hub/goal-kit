@@ -6,26 +6,19 @@ to improve code organization and maintainability.
 """
 
 import os
-import sys
 import subprocess
 import json
 import shutil
-import zipfile
-import tempfile
 from pathlib import Path
-from typing import Optional, Tuple, Any
+from typing import Optional, Tuple
 
 import typer
-import httpx
 import readchar
-import ssl
-import truststore
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich.tree import Tree
 from rich.live import Live
-from rich.progress import Progress, SpinnerColumn, TextColumn
 
 # ============================================================================
 # UI & Input Helpers
@@ -472,7 +465,7 @@ def check_disk_space(path: Path, min_mb: int = 100) -> Tuple[bool, Optional[str]
             return False, f"Insufficient disk space: {free_mb:.1f}MB available, {min_mb}MB required"
         
         return True, None
-    except Exception as e:
+    except Exception:
         # Don't fail on disk space check - just warn
         return True, None
 

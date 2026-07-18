@@ -141,6 +141,7 @@ class TestTask:
         """Test creating a task."""
         task = Task(
             id="t1",
+            goal_id="g1",
             title="Implement login",
             description="Add user authentication",
             milestone_id="m1",
@@ -157,6 +158,7 @@ class TestTask:
         for priority in ["low", "medium", "high"]:
             task = Task(
                 id="t1",
+                goal_id="g1",
                 title="Test",
                 description="Description",
                 milestone_id="m1",
@@ -169,6 +171,7 @@ class TestTask:
         """Test task assigned to someone."""
         task = Task(
             id="t1",
+            goal_id="g1",
             title="Test",
             description="Description",
             milestone_id="m1",
@@ -182,6 +185,7 @@ class TestTask:
         due = datetime(2025, 12, 25)
         task = Task(
             id="t1",
+            goal_id="g1",
             title="Test",
             description="Description",
             milestone_id="m1",

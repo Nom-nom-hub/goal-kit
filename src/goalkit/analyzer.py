@@ -10,7 +10,7 @@ from typing import List, Optional, Dict, Any
 import json
 from datetime import datetime
 
-from .models import Project, Goal, Milestone, Task
+from .models import Project, Goal, Milestone
 
 
 @dataclass
@@ -130,7 +130,7 @@ class ProjectAnalyzer:
             return []
 
         goals = []
-        for goal_file in self.goals_dir.glob("*.md"):
+        for goal_file in sorted(self.goals_dir.glob("*.md")):
             try:
                 goal = self._parse_goal_file(goal_file)
                 if goal:
@@ -331,7 +331,6 @@ class ProjectAnalyzer:
 
         # Determine phase based on goal states
         phases = [g.phase for g in goals]
-        phase_counts = {phase: phases.count(phase) for phase in set(phases)}
 
         if completion >= 90:
             return "complete"

@@ -41,10 +41,10 @@ def check() -> None:
 
     # Check VS Code variants
     tracker.add("code", "Visual Studio Code")
-    code_ok = check_tool("code", CLAUDE_LOCAL_PATH, tracker=tracker)
+    check_tool("code", CLAUDE_LOCAL_PATH, tracker=tracker)
 
     tracker.add("code-insiders", "Visual Studio Code Insiders")
-    code_insiders_ok = check_tool("code-insiders", CLAUDE_LOCAL_PATH, tracker=tracker)
+    check_tool("code-insiders", CLAUDE_LOCAL_PATH, tracker=tracker)
 
     console.print(tracker.render())
 

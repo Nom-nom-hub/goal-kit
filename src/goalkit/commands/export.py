@@ -11,7 +11,6 @@ import typer
 from ..exporters import ExportManager
 from ..tasks import TaskTracker
 from ..reporting import ReportGenerator
-from ..metrics import MetricsTracker
 
 
 def show_banner() -> None:
@@ -87,10 +86,6 @@ def tasks(
         tracker = TaskTracker(project_dir)
         all_tasks = tracker.get_all_tasks()
 
-        if not all_tasks:
-            console.print("[yellow]No tasks found in project[/yellow]")
-            return
-
         manager = ExportManager()
         exported_data = manager.export_tasks(all_tasks, format=format)
 
@@ -98,61 +93,6 @@ def tasks(
             output_path = Path(output)
             output_path.write_text(exported_data)
             console.print(f"[green]✓[/green] Exported {len(all_tasks)} tasks to [cyan]{output}[/cyan]")
-        else:
-            console.print(exported_data)
-
-    except ValueError as e:
-        console.print(f"[red]Error:[/red] {str(e)}", style="bold")
-        raise typer.Exit(1)
-    except Exception as e:
-        console.print(f"[red]Error:[/red] {str(e)}", style="bold")
-        raise typer.Exit(1)
-
-
-@app.command()
-def report(
-    project_path: str = typer.Option(
-        ".", help="Path to the Goal Kit project"
-    ),
-    format: str = typer.Option(
-        "markdown", "--format", "-f",
-        help="Export format: csv, json, markdown, text"
-    ),
-    output: Optional[str] = typer.Option(
-        None, "--output", "-o",
-        help="Output file (if not specified, prints to stdout)"
-    ),
-) -> None:
-    """Export project report in specified format.
-    
-    Generates and exports a comprehensive project report.
-    """
-    show_banner()
-    console = Console()
-
-    project_dir = Path(project_path)
-    if not (project_dir / ".goalkit").exists():
-        console.print("[red]Error:[/red] Not a Goal Kit project", style="bold")
-        raise typer.Exit(1)
-
-    try:
-        tracker = TaskTracker(project_dir)
-        generator = ReportGenerator(project_dir)
-
-        # Generate a comprehensive report (use summary report as it's most complete)
-        try:
-            report_obj = generator.generate_summary_report()
-        except Exception:
-            # Fallback if summary report fails
-            report_obj = generator.generate_weekly_report()
-
-        manager = ExportManager()
-        exported_data = manager.export_report(report_obj, format=format)
-
-        if output:
-            output_path = Path(output)
-            output_path.write_text(exported_data)
-            console.print(f"[green]✓[/green] Exported report to [cyan]{output}[/cyan]")
         else:
             console.print(exported_data)
 

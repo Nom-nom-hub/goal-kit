@@ -6,12 +6,10 @@ custom metrics, health scores, and metric trends.
 
 from pathlib import Path
 from typing import Optional
-import json
 
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-from rich.text import Text
 
 from ..analyzer import ProjectAnalyzer
 from ..metrics import MetricsTracker
@@ -185,7 +183,7 @@ def _display_metrics_table(tracker, goals, metric_name_filter: Optional[str], co
         metric_name_filter: Optional metric name filter
         console: Rich console for output
     """
-    console.print(f"\n[bold cyan]Metrics by Goal[/bold cyan]")
+    console.print("\n[bold cyan]Metrics by Goal[/bold cyan]")
     
     for goal in goals:
         goal_metrics = tracker.get_metrics_for_goal(goal.id)
