@@ -330,6 +330,15 @@ def insights(
 
     # Get insights
     analytics = AnalyticsEngine(goalkit_path)
+
+    # Validate the goal has analytics history before generating insights
+    history = analytics._load_history()
+    if goal_id not in history or not history[goal_id]:
+        console.print(
+            f"[red]Error: No analytics data found for goal '{goal_id}'[/red]"
+        )
+        raise typer.Exit(1)
+
     insights_list = analytics.generate_insights(goal_id)
 
     if output == "json":

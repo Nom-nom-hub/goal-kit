@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-09-27
+
+### 🔮 Predictive Analytics: `goalkit predict`
+
+This release exposes the previously unwired `PredictionEngine` as a first-class CLI command group, turning recorded velocity history into forward-looking answers: when will this goal finish, will it miss its deadline, and what levers can pull it back on track.
+
+#### ✨ New Command Group
+
+- **`goalkit predict completion`** — Estimated completion date with configurable confidence level
+- **`goalkit predict risk --deadline`** — Deadline risk assessment with risk score and recommendation
+- **`goalkit predict velocity --deadline`** — Required tasks/day to meet a deadline, with feasibility and contingency buffer
+- **`goalkit predict scenarios --deadline`** — Side-by-side what-if comparison (increase velocity, reduce scope, parallel work, extend deadline)
+- All commands support `--output json` for scripting and agent integration, and auto-select the first goal when no ID is given
+
+#### 🔧 Analytics Engine Improvements
+
+- **`record_snapshot` accepts `date`**: Progress can now be recorded for any specific day, enabling backfilling of historical data and correct multi-day time series
+- **Same-day snapshots still dedupe**: Recording twice on one day updates that day's point instead of creating duplicates
+- **Fixed ZeroDivisionError**: `get_burndown_data` no longer crashes on a single day of history
+- **Completed goals forecast correctly**: `forecast_completion` now recognizes a fully completed goal even with only one recorded snapshot
+- **Insights gap closed**: `generate_insights` now emits a projected-completion insight for goals in the neutral probability band instead of nothing
+- **Deterministic status output**: `ProjectAnalyzer` sorts goals by ID so `goalkit status` ordering is stable across machines and runs
+- **`analytics insights` validates goals**: Exits with an error for goals without analytics data instead of printing empty output
+
+#### 🧪 Test Suite Repairs
+
+- Fixed ~30 pre-existing test failures and hangs caused by fixtures relying on a date-parameter API that the engine had lost, plus stale `Task` model tests written against an older dataclass
+- Restored intended coverage for velocity trends, trend direction, bottlenecks, insights, forecasting, and burndown edge cases
+- Added 32 new tests covering the prediction engine and the `predict` CLI commands
+
+---
+
 ## [2.3.1] - 2026-05-15
 
 ### 🎯 ShellCheck Quality & Script Expansion

@@ -3,7 +3,7 @@
 import pytest
 from datetime import datetime
 from pathlib import Path
-from goalkit.models import Project, Goal, Milestone, Task, TemplateMetadata
+from goalkit.models import Project, Goal, Milestone, Task, TaskStatus, TemplateMetadata
 
 
 class TestProject:
@@ -141,54 +141,51 @@ class TestTask:
         """Test creating a task."""
         task = Task(
             id="t1",
+            goal_id="g1",
             title="Implement login",
             description="Add user authentication",
-            milestone_id="m1",
-            completed=False,
         )
         assert task.id == "t1"
         assert task.title == "Implement login"
         assert task.description == "Add user authentication"
-        assert task.milestone_id == "m1"
-        assert task.completed is False
+        assert task.goal_id == "g1"
+        assert task.status == TaskStatus.TODO
 
-    def test_task_with_priority(self):
-        """Test task with priority."""
-        for priority in ["low", "medium", "high"]:
-            task = Task(
-                id="t1",
-                title="Test",
-                description="Description",
-                milestone_id="m1",
-                completed=False,
-                priority=priority,
-            )
-            assert task.priority == priority
-
-    def test_task_with_assignment(self):
-        """Test task assigned to someone."""
+    def test_task_with_estimated_hours(self):
+        """Test task with effort estimate."""
         task = Task(
             id="t1",
+            goal_id="g1",
             title="Test",
             description="Description",
-            milestone_id="m1",
-            completed=False,
-            assigned_to="alice",
+            estimated_hours=3.5,
         )
-        assert task.assigned_to == "alice"
+        assert task.estimated_hours == 3.5
 
-    def test_task_with_due_date(self):
-        """Test task with due date."""
-        due = datetime(2025, 12, 25)
+    def test_task_with_dependency(self):
+        """Test task depending on another task."""
+        task = Task(
+            id="t2",
+            goal_id="g1",
+            title="Test",
+            description="Description",
+            depends_on="t1",
+        )
+        assert task.depends_on == "t1"
+
+    def test_task_with_completed_status(self):
+        """Test completed task with completion timestamp."""
+        done = datetime(2025, 12, 25)
         task = Task(
             id="t1",
+            goal_id="g1",
             title="Test",
             description="Description",
-            milestone_id="m1",
-            completed=False,
-            due_date=due,
+            status=TaskStatus.COMPLETED,
+            completed_at=done,
         )
-        assert task.due_date == due
+        assert task.status == TaskStatus.COMPLETED
+        assert task.completed_at == done
 
 
 class TestTemplateMetadata:

@@ -86,6 +86,21 @@ That's it. Your AI agent handles the rest — creating goals, exploring strategi
 
 ---
 
+## Predictive Analytics
+
+Goal Kit can forecast your goals, not just track them. The `goalkit predict` command group uses your recorded velocity history to answer the questions that matter:
+
+```bash
+goalkit predict completion                      # When will this goal be done?
+goalkit predict risk --deadline 2026-10-15      # Will we miss the deadline?
+goalkit predict velocity --deadline 2026-10-15  # What pace do we need?
+goalkit predict scenarios --deadline 2026-10-15 # What if we add resources or cut scope?
+```
+
+Every command supports `--output json` for scripting and agent integration. See the [Analytics Guide](analytics-guide.md) for interpretation tips.
+
+---
+
 ## How It Works
 
 Goal Kit implements a structured workflow that guides you from vision to execution:

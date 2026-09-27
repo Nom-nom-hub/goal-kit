@@ -139,6 +139,9 @@ class ProjectAnalyzer:
                 # Skip files that can't be parsed
                 continue
 
+        # Sort by goal ID for deterministic, reproducible output
+        goals.sort(key=lambda g: g.id)
+
         return goals
 
     def _parse_goal_file(self, goal_file: Path) -> Optional[Goal]:

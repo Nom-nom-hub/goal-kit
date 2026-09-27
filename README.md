@@ -100,6 +100,13 @@ flowchart LR
 *   `goalkit check`: Verify available AI agents and system prerequisites.
 *   `goalkit milestones`: Track progress across all active goal branches.
 *   `goalkit report`: Generate professional progress reports for stakeholders.
+*   `goalkit predict`: Forecast completion dates, deadline risk, and required velocity — with what-if scenarios.
+
+```bash
+goalkit predict completion                      # When will this goal be done?
+goalkit predict risk --deadline 2026-10-15      # Will we miss the deadline?
+goalkit predict scenarios --deadline 2026-10-15 # What if we add resources or cut scope?
+```
 
 ---
 

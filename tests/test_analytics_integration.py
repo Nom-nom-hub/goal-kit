@@ -63,6 +63,7 @@ def goalkit_project(tmp_path):
             total=20,
             blocked=max(0, 3 - i // 5),
             in_progress=max(0, 5 - i // 3),
+            date=date,
         )
 
     return tmp_path
@@ -109,11 +110,11 @@ class TestBurndownCommand:
 
         assert result.exit_code == 1
 
-    def test_burndown_no_data(self, cli_runner, monkeypatch):
+    def test_burndown_no_data(self, tmp_path, monkeypatch):
         """Test burndown with no analytics data."""
-        monkeypatch.chdir(cli_runner.env.get("CWD", "."))
+        monkeypatch.chdir(tmp_path)
 
-        result = cli_runner.invoke(
+        result = runner.invoke(
             app, ["burndown", "goal-1", "--output", "text"]
         )
 

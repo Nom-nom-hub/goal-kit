@@ -162,6 +162,7 @@ def _wire_commands():
     from .commands.export import app as export_app
     from .commands.analytics import app as analytics_app
     from .commands.webhooks import app as webhooks_app
+    from .commands.prediction import app as prediction_app
 
     # Register top-level commands
     app.command()(init)
@@ -262,6 +263,7 @@ def _wire_commands():
     app.add_typer(export_app, name="export", help="Export project data in multiple formats")
     app.add_typer(analytics_app, name="analytics", help="Analytics, trends, and forecasting")
     app.add_typer(webhooks_app, name="webhooks", help="Webhook management and event notifications")
+    app.add_typer(prediction_app, name="predict", help="Forecasting, deadline risk, and what-if scenarios")
 
 
 _wire_commands()
