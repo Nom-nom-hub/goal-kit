@@ -76,18 +76,25 @@ from .commands.aggregation import app as aggregation_app
 from .commands.export import app as export_app
 from .commands.analytics import app as analytics_app
 from .commands.webhooks import app as webhooks_app
+from .commands.prediction import app as prediction_app
+from .commands.doctor import doctor as doctor_command
 
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client = httpx.Client(verify=ssl_context)
 
+
 def _github_token(cli_token: str | None = None) -> str | None:
     """Return sanitized GitHub token (cli arg takes precedence) or None."""
-    return ((cli_token or os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN") or "").strip()) or None
+    return (
+        (cli_token or os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN") or "").strip()
+    ) or None
+
 
 def _github_auth_headers(cli_token: str | None = None) -> dict:
     """Return Authorization header dict only when a non-empty token exists."""
     token = _github_token(cli_token)
     return {"Authorization": f"Bearer {token}"} if token else {}
+
 
 # Agent configuration with name, folder, install URL, and CLI tool requirement
 AGENT_CONFIG = {
@@ -171,7 +178,10 @@ AGENT_CONFIG = {
     },
 }
 
-SCRIPT_TYPE_CHOICES = {"sh": "POSIX Shell (bash/zsh) - downloads shell-based templates", "ps": "PowerShell - downloads PowerShell-based templates"}
+SCRIPT_TYPE_CHOICES = {
+    "sh": "POSIX Shell (bash/zsh) - downloads shell-based templates",
+    "ps": "PowerShell - downloads PowerShell-based templates",
+}
 
 CLAUDE_LOCAL_PATH = Path.home() / ".claude" / "local" / "claude"
 
@@ -188,6 +198,7 @@ BANNER = """
 TAGLINE = "Goal Kit - Goal-Driven Development Toolkit"
 
 console = Console()
+
 
 class BannerGroup(TyperGroup):
     """Custom group that shows banner before help."""
@@ -207,15 +218,34 @@ app = typer.Typer(
 )
 
 # Wire in sub-command apps
-app.add_typer(dependencies_app, name="dependencies", help="Manage task dependencies and critical paths")
-app.add_typer(aggregation_app, name="projects", help="Manage multiple projects in a workspace")
+app.add_typer(
+    dependencies_app,
+    name="dependencies",
+    help="Manage task dependencies and critical paths",
+)
+app.add_typer(
+    aggregation_app, name="projects", help="Manage multiple projects in a workspace"
+)
 app.add_typer(export_app, name="export", help="Export project data in multiple formats")
-app.add_typer(analytics_app, name="analytics", help="Analytics, trends, and forecasting")
-app.add_typer(webhooks_app, name="webhooks", help="Webhook management and event notifications")
+app.add_typer(
+    analytics_app, name="analytics", help="Analytics, trends, and forecasting"
+)
+app.add_typer(
+    webhooks_app, name="webhooks", help="Webhook management and event notifications"
+)
+app.add_typer(
+    prediction_app,
+    name="predict",
+    help="Forecasting, deadline risk, and what-if scenarios",
+)
+app.command(name="doctor", help="Diagnose project health and suggest fixes")(
+    doctor_command
+)
+
 
 def show_banner():
     """Display the ASCII art banner."""
-    banner_lines = BANNER.strip().split('\n')
+    banner_lines = BANNER.strip().split("\n")
     colors = ["bright_blue", "blue", "cyan", "bright_cyan", "white", "bright_white"]
 
     styled_banner = Text()
@@ -229,19 +259,30 @@ def show_banner():
     # Also display project context if in a Goal Kit project
     display_project_context()
 
+
 @app.callback()
 def callback(ctx: typer.Context):
     """Show banner when no subcommand is provided."""
     if ctx.invoked_subcommand is None and "--help" not in sys.argv and "-h" in sys.argv:
         show_banner()
-        console.print(Align.center("[dim]Run 'goalkit --help' for usage information[/dim]"))
+        console.print(
+            Align.center("[dim]Run 'goalkit --help' for usage information[/dim]")
+        )
         console.print()
 
-def run_command(cmd: list[str], check_return: bool = True, capture: bool = False, shell: bool = False) -> Optional[str]:
+
+def run_command(
+    cmd: list[str],
+    check_return: bool = True,
+    capture: bool = False,
+    shell: bool = False,
+) -> Optional[str]:
     """Run a shell command and optionally capture output."""
     try:
         if capture:
-            result = subprocess.run(cmd, check=check_return, capture_output=True, text=True, shell=shell)
+            result = subprocess.run(
+                cmd, check=check_return, capture_output=True, text=True, shell=shell
+            )
             return result.stdout.strip()
         else:
             subprocess.run(cmd, check=check_return, shell=shell)
@@ -250,7 +291,7 @@ def run_command(cmd: list[str], check_return: bool = True, capture: bool = False
         if check_return:
             console.print(f"[red]Error running command:[/red] {' '.join(cmd)}")
             console.print(f"[red]Exit code:[/red] {e.returncode}")
-            if hasattr(e, 'stderr') and e.stderr:
+            if hasattr(e, "stderr") and e.stderr:
                 console.print(f"[red]Error output:[/red] {e.stderr}")
             raise
         return None
@@ -269,19 +310,36 @@ def display_project_context():
 
 [bold]Goals:[/bold] {context['total_goals']} | [bold]Milestones:[/bold] {context['completed_milestones']}/{context['total_milestones']}
 """
-        console.print(Panel(status_text, title="[green]Goal Kit Project Detected[/green]", border_style="green"))
+        console.print(
+            Panel(
+                status_text,
+                title="[green]Goal Kit Project Detected[/green]",
+                border_style="green",
+            )
+        )
 
         # List goals if available
-        if context['goals']:
-            console.print(f"\n[bold cyan]Active Goals ({len(context['goals'])}):[/bold cyan]")
-            for goal in context['goals']:
-                console.print(f"  • [cyan]{goal['name']}[/cyan] - {goal['phase']} ({goal['completion_percent']}%)")
+        if context["goals"]:
+            console.print(
+                f"\n[bold cyan]Active Goals ({len(context['goals'])}):[/bold cyan]"
+            )
+            for goal in context["goals"]:
+                console.print(
+                    f"  • [cyan]{goal['name']}[/cyan] - {goal['phase']} ({goal['completion_percent']}%)"
+                )
 
 
-
-
-
-def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: Optional[httpx.Client] = None, debug: bool = False, github_token: Optional[str] = None) -> Tuple[Path, dict]:
+def download_template_from_github(
+    ai_assistant: str,
+    download_dir: Path,
+    *,
+    script_type: str = "sh",
+    verbose: bool = True,
+    show_progress: bool = True,
+    client: Optional[httpx.Client] = None,
+    debug: bool = False,
+    github_token: Optional[str] = None,
+) -> Tuple[Path, dict]:
     repo_owner = "Nom-nom-hub"
     repo_name = "goal-kit"
     if client is None:
@@ -307,7 +365,9 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
         try:
             release_data = response.json()
         except ValueError as je:
-            raise RuntimeError(f"Failed to parse release JSON: {je}\nRaw (truncated 400): {response.text[:400]}")
+            raise RuntimeError(
+                f"Failed to parse release JSON: {je}\nRaw (truncated 400): {response.text[:400]}"
+            )
     except Exception as e:
         # Re-raise as RuntimeError to be caught by the caller
         # Don't call typer.Exit here - let the caller handle display and exit
@@ -316,7 +376,8 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
     assets = release_data.get("assets", [])
     pattern = f"goal-kit-template-{ai_assistant}-{script_type}"
     matching_assets = [
-        asset for asset in assets
+        asset
+        for asset in assets
         if pattern in asset["name"] and asset["name"].endswith(".zip")
     ]
 
@@ -326,15 +387,19 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
         # Try fallback to any available template for agents without specific templates
         # Look for any goal-kit-template-*.zip file
         fallback_assets = [
-            asset for asset in assets
-            if asset["name"].startswith("goal-kit-template-") and asset["name"].endswith(".zip")
+            asset
+            for asset in assets
+            if asset["name"].startswith("goal-kit-template-")
+            and asset["name"].endswith(".zip")
         ]
         if fallback_assets:
             asset = fallback_assets[0]  # Use the first available template
             if verbose:
-                console.print(f"[yellow]No specific template for {ai_assistant}, using fallback template: {asset['name']}[/yellow]")
+                console.print(
+                    f"[yellow]No specific template for {ai_assistant}, using fallback template: {asset['name']}[/yellow]"
+                )
         else:
-            asset_names = [a.get('name', '?') for a in assets]
+            asset_names = [a.get("name", "?") for a in assets]
             msg = f"No matching release asset found for {ai_assistant} (expected pattern: {pattern})\nAvailable: {', '.join(asset_names)}"
             raise RuntimeError(msg)
 
@@ -361,9 +426,11 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
         ) as response:
             if response.status_code != 200:
                 body_sample = response.text[:400]
-                raise RuntimeError(f"Download failed with {response.status_code}\nHeaders: {response.headers}\nBody (truncated): {body_sample}")
-            total_size = int(response.headers.get('content-length', 0))
-            with open(zip_path, 'wb') as f:
+                raise RuntimeError(
+                    f"Download failed with {response.status_code}\nHeaders: {response.headers}\nBody (truncated): {body_sample}"
+                )
+            total_size = int(response.headers.get("content-length", 0))
+            with open(zip_path, "wb") as f:
                 if total_size == 0:
                     for chunk in response.iter_bytes(chunk_size=8192):
                         f.write(chunk)
@@ -395,28 +462,31 @@ def download_template_from_github(ai_assistant: str, download_dir: Path, *, scri
         "filename": filename,
         "size": file_size,
         "release": release_data["tag_name"],
-        "asset_url": download_url
+        "asset_url": download_url,
     }
     return zip_path, metadata
+
 
 def create_agent_file(project_path: Path, ai_assistant: str):
     """Create a customized agent file using the agent file template."""
     import datetime
 
     # Read the agent file template
-    template_path = Path(__file__).parent.parent.parent / "templates" / "agent-file-template.md"
+    template_path = (
+        Path(__file__).parent.parent.parent / "templates" / "agent-file-template.md"
+    )
     if not template_path.exists():
         return  # Skip if template doesn't exist
 
     try:
-        with open(template_path, 'r', encoding='utf-8') as f:
+        with open(template_path, "r", encoding="utf-8") as f:
             template_content = f.read()
     except Exception:
         return  # Skip if can't read template
 
     # Replace placeholders with actual project information
     project_name = project_path.name
-    current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    current_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Basic replacements
     content = template_content.replace("[PROJECT NAME]", project_name)
@@ -425,12 +495,29 @@ def create_agent_file(project_path: Path, ai_assistant: str):
 
     # For now, set placeholder content for dynamic sections
     # These would be populated by the update_agent_context.py script later
-    content = content.replace("[EXTRACTED FROM ALL GOAL.MD FILES]", "No goals created yet. Use /goalkit.goal to create your first goal.")
-    content = content.replace("[ACTUAL STRUCTURE FROM GOALS]", "Project structure will be populated as goals are created.")
-    content = content.replace("[EXTRACTED FROM STRATEGIES.MD]", "No strategies defined yet. Use /goalkit.strategies after creating goals.")
-    content = content.replace("[EXTRACTED FROM MILESTONES.MD]", "No milestones defined yet. Use /goalkit.milestones after defining strategies.")
-    content = content.replace("[EXTRACTED FROM EXECUTION.MD]", "No execution plans yet. Use /goalkit.execute after creating milestones.")
-    content = content.replace("[LAST 3 COMPLETED MILESTONES AND OUTCOMES]", "No completed milestones yet.")
+    content = content.replace(
+        "[EXTRACTED FROM ALL GOAL.MD FILES]",
+        "No goals created yet. Use /goalkit.goal to create your first goal.",
+    )
+    content = content.replace(
+        "[ACTUAL STRUCTURE FROM GOALS]",
+        "Project structure will be populated as goals are created.",
+    )
+    content = content.replace(
+        "[EXTRACTED FROM STRATEGIES.MD]",
+        "No strategies defined yet. Use /goalkit.strategies after creating goals.",
+    )
+    content = content.replace(
+        "[EXTRACTED FROM MILESTONES.MD]",
+        "No milestones defined yet. Use /goalkit.milestones after defining strategies.",
+    )
+    content = content.replace(
+        "[EXTRACTED FROM EXECUTION.MD]",
+        "No execution plans yet. Use /goalkit.execute after creating milestones.",
+    )
+    content = content.replace(
+        "[LAST 3 COMPLETED MILESTONES AND OUTCOMES]", "No completed milestones yet."
+    )
 
     # Add available scripts section
     scripts_section = """
@@ -462,7 +549,10 @@ The following scripts are available in `.goalkit/scripts/bash/` and `.goalkit/sc
 
 **Note:** PowerShell equivalents exist with `.ps1` extension in `.goalkit/scripts/powershell/`.
 """
-    content = content.replace("## 🔧 Next Recommended Actions", scripts_section + "\n## 🔧 Next Recommended Actions")
+    content = content.replace(
+        "## 🔧 Next Recommended Actions",
+        scripts_section + "\n## 🔧 Next Recommended Actions",
+    )
 
     # Add strict workflow enforcement to agent files
     # Insert after the "## 🔧 Next Recommended Actions" section
@@ -486,8 +576,11 @@ The following scripts are available in `.goalkit/scripts/bash/` and `.goalkit/sc
 - User runs `/goalkit.execute` → Implement → Continue
 """
     # Insert the workflow enforcement before the end of the file
-    content = content.replace("*This guide is automatically created by goalkit init. It provides essential guidance for agents working on this Goal Kit project.*",
-                             workflow_enforcement + "\n*This guide is automatically created by goalkit init. It provides essential guidance for agents working on this Goal Kit project.*")
+    content = content.replace(
+        "*This guide is automatically created by goalkit init. It provides essential guidance for agents working on this Goal Kit project.*",
+        workflow_enforcement
+        + "\n*This guide is automatically created by goalkit init. It provides essential guidance for agents working on this Goal Kit project.*",
+    )
 
     # Define agent-specific file names and locations
     agent_file_locations = {
@@ -502,10 +595,12 @@ The following scripts are available in `.goalkit/scripts/bash/` and `.goalkit/sc
         "roo": [".roo/goal-kit-guide.md"],
         "codex": [".codex/goal-kit-guide.md"],
         "opencode": ["goal-kit-guide.md"],  # Root level for opencode
-        "q": [".amazonq/goal-kit-guide.md"]
+        "q": [".amazonq/goal-kit-guide.md"],
     }
 
-    file_locations = agent_file_locations.get(ai_assistant, [f"{ai_assistant.upper()}.md"])
+    file_locations = agent_file_locations.get(
+        ai_assistant, [f"{ai_assistant.upper()}.md"]
+    )
 
     # Create all appropriate agent files for the selected agent
     for file_location in file_locations:
@@ -515,7 +610,7 @@ The following scripts are available in `.goalkit/scripts/bash/` and `.goalkit/sc
             file_path.parent.mkdir(parents=True, exist_ok=True)
 
             # Write the agent file
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
         except Exception:
             # If we can't create a specific file, continue - it's not critical for initialization
@@ -530,46 +625,19 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
     # Define the agent context files patterns based on the selected agent
     # Following the same patterns as in update-agent-context.sh and update-agent-context.py
     agent_context_files = {
-        "claude": [
-            "CLAUDE.md",
-            ".claude/context.md"
-        ],
-        "gemini": [
-            "GEMINI.md",
-            ".gemini/context.md"
-        ],
-        "cursor": [
-            "CURSOR.md",
-            ".cursor/context.md"
-        ],
-        "copilot": [
-            ".vscode/context.md"  # VSCode specific location
-        ],
-        "qwen": [
-            "QWEN.md",
-            ".qwen/context.md"
-        ],
-        "windsurf": [
-            "WINDSURF.md",
-            ".windsurf/context.md"
-        ],
-        "kilocode": [
-            "KILOCODE.md",
-            ".kilocode/context.md"
-        ],
+        "claude": ["CLAUDE.md", ".claude/context.md"],
+        "gemini": ["GEMINI.md", ".gemini/context.md"],
+        "cursor": ["CURSOR.md", ".cursor/context.md"],
+        "copilot": [".vscode/context.md"],  # VSCode specific location
+        "qwen": ["QWEN.md", ".qwen/context.md"],
+        "windsurf": ["WINDSURF.md", ".windsurf/context.md"],
+        "kilocode": ["KILOCODE.md", ".kilocode/context.md"],
         "auggie": [
             ".augment/context.md"  # Based on the pattern from create-release-packages.sh
         ],
-        "roo": [
-            "ROO.md",
-            ".roo/context.md"
-        ],
-        "codex": [
-            ".codex/context.md"
-        ],
-        "opencode": [
-            "OPENCODE.md"
-        ]
+        "roo": ["ROO.md", ".roo/context.md"],
+        "codex": [".codex/context.md"],
+        "opencode": ["OPENCODE.md"],
     }
 
     # Get the appropriate context file names for the selected agent
@@ -637,13 +705,25 @@ To ensure professional-grade outcomes, you must follow the **One-Command-At-A-Ti
             context_file_path.parent.mkdir(parents=True, exist_ok=True)
 
             # Write the context file
-            with open(context_file_path, 'w', encoding='utf-8') as f:
+            with open(context_file_path, "w", encoding="utf-8") as f:
                 f.write(context_content)
         except Exception:
             # If we can't create a specific file, continue - it's not critical for initialization
             continue
 
-def download_and_extract_template(project_path: Path, ai_assistant: str, script_type: str, is_current_dir: bool = False, *, verbose: bool = True, tracker: Optional[StepTracker] = None, client: Optional[httpx.Client] = None, debug: bool = False, github_token: Optional[str] = None) -> Path:
+
+def download_and_extract_template(
+    project_path: Path,
+    ai_assistant: str,
+    script_type: str,
+    is_current_dir: bool = False,
+    *,
+    verbose: bool = True,
+    tracker: Optional[StepTracker] = None,
+    client: Optional[httpx.Client] = None,
+    debug: bool = False,
+    github_token: Optional[str] = None,
+) -> Path:
     """Download the latest release and extract it to create a new project.
     Returns project_path. Uses tracker if provided (with keys: fetch, download, extract, cleanup)
     """
@@ -660,12 +740,14 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
             show_progress=(tracker is None),
             client=client,
             debug=debug,
-            github_token=github_token
+            github_token=github_token,
         )
         if tracker:
-            tracker.complete("fetch", f"release {meta['release']} ({meta['size']:,} bytes)")
+            tracker.complete(
+                "fetch", f"release {meta['release']} ({meta['size']:,} bytes)"
+            )
             tracker.add("download", "Download template")
-            tracker.complete("download", meta['filename'])
+            tracker.complete("download", meta["filename"])
     except Exception as e:
         if tracker:
             tracker.error("fetch", str(e))
@@ -684,7 +766,7 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
         if not is_current_dir:
             project_path.mkdir(parents=True)
 
-        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        with zipfile.ZipFile(zip_path, "r") as zip_ref:
             zip_contents = zip_ref.namelist()
             if tracker:
                 tracker.start("zip-list")
@@ -700,9 +782,13 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                     extracted_items = list(temp_path.iterdir())
                     if tracker:
                         tracker.start("extracted-summary")
-                        tracker.complete("extracted-summary", f"temp {len(extracted_items)} items")
+                        tracker.complete(
+                            "extracted-summary", f"temp {len(extracted_items)} items"
+                        )
                     elif verbose:
-                        console.print(f"[cyan]Extracted {len(extracted_items)} items to temp location[/cyan]")
+                        console.print(
+                            f"[cyan]Extracted {len(extracted_items)} items to temp location[/cyan]"
+                        )
 
                     source_dir = temp_path
                     if len(extracted_items) == 1 and extracted_items[0].is_dir():
@@ -711,43 +797,69 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                             tracker.add("flatten", "Flatten nested directory")
                             tracker.complete("flatten")
                         elif verbose:
-                            console.print(f"[cyan]Found nested directory structure[/cyan]")
+                            console.print(
+                                f"[cyan]Found nested directory structure[/cyan]"
+                            )
 
                     for item in source_dir.iterdir():
                         dest_path = project_path / item.name
                         if item.is_dir():
                             if dest_path.exists():
                                 if verbose and not tracker:
-                                    console.print(f"[yellow]Merging directory:[/yellow] {item.name}")
-                                for sub_item in item.rglob('*'):
+                                    console.print(
+                                        f"[yellow]Merging directory:[/yellow] {item.name}"
+                                    )
+                                for sub_item in item.rglob("*"):
                                     if sub_item.is_file():
                                         rel_path = sub_item.relative_to(item)
                                         dest_file = dest_path / rel_path
-                                        dest_file.parent.mkdir(parents=True, exist_ok=True)
+                                        dest_file.parent.mkdir(
+                                            parents=True, exist_ok=True
+                                        )
                                         # Special handling for .vscode/settings.json - merge instead of overwrite
-                                        if dest_file.name == "settings.json" and dest_file.parent.name == ".vscode":
-                                            handle_vscode_settings(console, sub_item, dest_file, rel_path, verbose, tracker)
+                                        if (
+                                            dest_file.name == "settings.json"
+                                            and dest_file.parent.name == ".vscode"
+                                        ):
+                                            handle_vscode_settings(
+                                                console,
+                                                sub_item,
+                                                dest_file,
+                                                rel_path,
+                                                verbose,
+                                                tracker,
+                                            )
                                         else:
                                             shutil.copy2(sub_item, dest_file)
                             else:
                                 shutil.copytree(item, dest_path)
                         else:
                             if dest_path.exists() and verbose and not tracker:
-                                console.print(f"[yellow]Overwriting file:[/yellow] {item.name}")
+                                console.print(
+                                    f"[yellow]Overwriting file:[/yellow] {item.name}"
+                                )
                             shutil.copy2(item, dest_path)
                     if verbose and not tracker:
-                        console.print(f"[cyan]Template files merged into current directory[/cyan]")
+                        console.print(
+                            f"[cyan]Template files merged into current directory[/cyan]"
+                        )
             else:
                 zip_ref.extractall(project_path)
 
                 extracted_items = list(project_path.iterdir())
                 if tracker:
                     tracker.start("extracted-summary")
-                    tracker.complete("extracted-summary", f"{len(extracted_items)} top-level items")
+                    tracker.complete(
+                        "extracted-summary", f"{len(extracted_items)} top-level items"
+                    )
                 elif verbose:
-                    console.print(f"[cyan]Extracted {len(extracted_items)} items to {project_path}:[/cyan]")
+                    console.print(
+                        f"[cyan]Extracted {len(extracted_items)} items to {project_path}:[/cyan]"
+                    )
                     for item in extracted_items:
-                        console.print(f"  - {item.name} ({'dir' if item.is_dir() else 'file'})")
+                        console.print(
+                            f"  - {item.name} ({'dir' if item.is_dir() else 'file'})"
+                        )
 
                 if len(extracted_items) == 1 and extracted_items[0].is_dir():
                     nested_dir = extracted_items[0]
@@ -762,7 +874,9 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                         tracker.add("flatten", "Flatten nested directory")
                         tracker.complete("flatten")
                     elif verbose:
-                        console.print(f"[cyan]Flattened nested directory structure[/cyan]")
+                        console.print(
+                            f"[cyan]Flattened nested directory structure[/cyan]"
+                        )
 
         # Create agent context file based on selected AI assistant
         create_agent_context_file(project_path, ai_assistant)
@@ -774,7 +888,9 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
             if verbose:
                 console.print(f"[red]Error extracting template:[/red] {e}")
                 if debug:
-                    console.print(Panel(str(e), title="Extraction Error", border_style="red"))
+                    console.print(
+                        Panel(str(e), title="Extraction Error", border_style="red")
+                    )
 
         if not is_current_dir and project_path.exists():
             shutil.rmtree(project_path)
@@ -795,10 +911,15 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
 
     return project_path
 
-def copy_scripts_to_goalkit(project_path: Path, selected_script: str, tracker: StepTracker | None = None) -> None:
+
+def copy_scripts_to_goalkit(
+    project_path: Path, selected_script: str, tracker: StepTracker | None = None
+) -> None:
     """Copy script files from the source location to .goalkit/scripts/ based on selected script type"""
     # During init, we need to copy from the CLI source location, not the project
-    cli_source_dir = Path(__file__).parent.parent.parent  # project root (goal-kit/goal-kit)
+    cli_source_dir = Path(
+        __file__
+    ).parent.parent.parent  # project root (goal-kit/goal-kit)
     scripts_source = cli_source_dir / "scripts"
     scripts_dest = project_path / ".goalkit" / "scripts"
 
@@ -820,8 +941,11 @@ def copy_scripts_to_goalkit(project_path: Path, selected_script: str, tracker: S
                 if dest_sub_dir.exists():
                     shutil.rmtree(dest_sub_dir)  # Remove existing to ensure clean copy
                 shutil.copytree(sub_dir, dest_sub_dir)
-                if sub_dir.name in ['bash', 'powershell']:  # Count only the specific script types
-                    copied_count += len(list(sub_dir.glob('*')))
+                if sub_dir.name in [
+                    "bash",
+                    "powershell",
+                ]:  # Count only the specific script types
+                    copied_count += len(list(sub_dir.glob("*")))
 
         if tracker:
             tracker.add("copy-scripts", "Copy scripts")
@@ -837,10 +961,14 @@ def copy_scripts_to_goalkit(project_path: Path, selected_script: str, tracker: S
             console.print(f"[red]Error copying scripts: {e}[/red]")
 
 
-def copy_templates_to_goalkit(project_path: Path, tracker: StepTracker | None = None) -> None:
+def copy_templates_to_goalkit(
+    project_path: Path, tracker: StepTracker | None = None
+) -> None:
     """Copy template files from the source location to .goalkit/templates/"""
     # During init, we need to copy from the CLI source location, not the project
-    cli_source_dir = Path(__file__).parent.parent.parent  # project root (goal-kit/goal-kit)
+    cli_source_dir = Path(
+        __file__
+    ).parent.parent.parent  # project root (goal-kit/goal-kit)
     templates_source = cli_source_dir / "templates"
     templates_dest = project_path / ".goalkit" / "templates"
 
@@ -857,7 +985,11 @@ def copy_templates_to_goalkit(project_path: Path, tracker: StepTracker | None = 
         # Copy all template files (but not the commands subdirectory which is handled separately)
         copied_count = 0
         for template_file in templates_source.iterdir():
-            if template_file.is_file() and template_file.suffix == ".md" and template_file.name != "agent-file-template.md":
+            if (
+                template_file.is_file()
+                and template_file.suffix == ".md"
+                and template_file.name != "agent-file-template.md"
+            ):
                 dest_file = templates_dest / template_file.name
                 shutil.copy2(template_file, dest_file)
                 copied_count += 1
@@ -866,7 +998,9 @@ def copy_templates_to_goalkit(project_path: Path, tracker: StepTracker | None = 
             tracker.add("copy-templates", "Copy templates")
             tracker.complete("copy-templates", f"copied {copied_count} templates")
         else:
-            console.print(f"[cyan]Copied {copied_count} templates to .goalkit/templates/[/cyan]")
+            console.print(
+                f"[cyan]Copied {copied_count} templates to .goalkit/templates/[/cyan]"
+            )
 
     except Exception as e:
         if tracker:
@@ -876,9 +1010,13 @@ def copy_templates_to_goalkit(project_path: Path, tracker: StepTracker | None = 
             console.print(f"[red]Error copying templates: {e}[/red]")
 
 
-def copy_workflows_to_goalkit(project_path: Path, tracker: StepTracker | None = None) -> None:
+def copy_workflows_to_goalkit(
+    project_path: Path, tracker: StepTracker | None = None
+) -> None:
     """Copy workflow template files from the source location to .goalkit/workflows/"""
-    cli_source_dir = Path(__file__).parent.parent.parent  # project root (goal-kit/goal-kit)
+    cli_source_dir = Path(
+        __file__
+    ).parent.parent.parent  # project root (goal-kit/goal-kit)
     workflows_source = cli_source_dir / "templates" / "workflows"
     workflows_dest = project_path / ".goalkit" / "workflows"
 
@@ -906,7 +1044,9 @@ def copy_workflows_to_goalkit(project_path: Path, tracker: StepTracker | None = 
             tracker.error("copy-workflows", str(e))
 
 
-def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = None) -> None:
+def ensure_executable_scripts(
+    project_path: Path, tracker: StepTracker | None = None
+) -> None:
     """Ensure POSIX .sh scripts under .goalkit/scripts (recursively) have execute bits (no-op on Windows)."""
     if os.name == "nt":
         return  # Windows: skip silently
@@ -925,13 +1065,17 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
                         continue
             except Exception:
                 continue
-            st = script.stat(); mode = st.st_mode
+            st = script.stat()
+            mode = st.st_mode
             if mode & 0o111:
                 continue
             new_mode = mode
-            if mode & 0o400: new_mode |= 0o100
-            if mode & 0o040: new_mode |= 0o010
-            if mode & 0o004: new_mode |= 0o001
+            if mode & 0o400:
+                new_mode |= 0o100
+            if mode & 0o040:
+                new_mode |= 0o010
+            if mode & 0o004:
+                new_mode |= 0o001
             if not (new_mode & 0o100):
                 new_mode |= 0o100
             os.chmod(script, new_mode)
@@ -939,16 +1083,21 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
         except Exception as e:
             failures.append(f"{script.relative_to(scripts_root)}: {e}")
     if tracker:
-        detail = f"{updated} updated" + (f", {len(failures)} failed" if failures else "")
+        detail = f"{updated} updated" + (
+            f", {len(failures)} failed" if failures else ""
+        )
         tracker.add("chmod", "Set script permissions recursively")
         (tracker.error if failures else tracker.complete)("chmod", detail)
     else:
         if updated:
-            console.print(f"[cyan]Updated execute permissions on {updated} script(s) recursively[/cyan]")
+            console.print(
+                f"[cyan]Updated execute permissions on {updated} script(s) recursively[/cyan]"
+            )
         if failures:
             console.print("[yellow]Some scripts could not be updated:[/yellow]")
             for f in failures:
                 console.print(f"  - {f}")
+
 
 def create_agent_config(project_path: Path, selected_ai: str) -> None:
     """Create agent-specific configuration files and directories."""
@@ -973,7 +1122,7 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
         "auggie": ".augment/",
         "copilot": ".github/",
         "roo": ".roo/",
-        "q": ".amazonq/"
+        "q": ".amazonq/",
     }
 
     # Get the agent folder name
@@ -983,10 +1132,16 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
 
     # Check if this agent requires CLI (and thus should get commands folder)
     agent_config = AGENT_CONFIG.get(selected_ai)
-    requires_cli = agent_config and agent_config.get("requires_cli", False) if agent_config else False
+    requires_cli = (
+        agent_config and agent_config.get("requires_cli", False)
+        if agent_config
+        else False
+    )
 
     # Path to the agent template directory
-    agent_template_path = Path(__file__).parent.parent.parent / "agent_templates" / selected_ai
+    agent_template_path = (
+        Path(__file__).parent.parent.parent / "agent_templates" / selected_ai
+    )
 
     # Create agent configuration directory
     agent_config_dir = project_path / agent_folder.strip("/")  # Remove trailing slash
@@ -1017,7 +1172,7 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
         "roo": "commands",
         "codebuddy": "commands",
         "copilot": "prompts",
-        "q": "prompts"
+        "q": "prompts",
     }
 
     # Get the correct folder name for this agent
@@ -1027,7 +1182,9 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
 
     # Copy templates - ensure all agents get appropriate templates
     # First, look for agent-specific templates if they exist
-    agent_specific_template_dir = Path(__file__).parent.parent.parent / "templates" / selected_ai / folder_name
+    agent_specific_template_dir = (
+        Path(__file__).parent.parent.parent / "templates" / selected_ai / folder_name
+    )
     if agent_specific_template_dir.exists():
         # Use agent-specific templates for this folder type
         for template_file in agent_specific_template_dir.iterdir():
@@ -1038,7 +1195,9 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
         # Use the commands templates as a fallback for ALL agent types
         # This ensures that even agents expecting "workflows" or "prompts"
         # still get the core command templates if no specific templates exist
-        commands_source_dir = Path(__file__).parent.parent.parent / "templates" / "commands"
+        commands_source_dir = (
+            Path(__file__).parent.parent.parent / "templates" / "commands"
+        )
         if commands_source_dir.exists():
             for command_file in commands_source_dir.iterdir():
                 if command_file.is_file() and command_file.suffix == ".md":
@@ -1047,7 +1206,11 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
 
         # Special handling for VS Code settings for Copilot
         if selected_ai == "copilot":
-            vscode_settings_source = Path(__file__).parent.parent.parent / "templates" / "vscode-settings.json"
+            vscode_settings_source = (
+                Path(__file__).parent.parent.parent
+                / "templates"
+                / "vscode-settings.json"
+            )
             if vscode_settings_source.exists():
                 vscode_dir = project_path / ".vscode"
                 vscode_dir.mkdir(parents=True, exist_ok=True)
@@ -1057,51 +1220,85 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
     # Create the main agent file with project-specific guidance
     create_agent_file(project_path, selected_ai)
 
+
 @app.command()
 def init(
-    project_name: Optional[str] = typer.Argument(None, help="Name for your new project directory (optional if using --here, or use '.' for current directory)"),
-    ai_assistant: Optional[str] = typer.Option(None, "--ai", help="AI assistant to use: claude, gemini, copilot, cursor, qwen, opencode, codex, windsurf, kilocode, auggie or q"),
-    script_type: Optional[str] = typer.Option(None, "--script", help="Script type to use: sh or ps"),
-    ignore_agent_tools: bool = typer.Option(False, "--ignore-agent-tools", help="Skip checks for AI agent tools like Claude Code"),
-    no_git: bool = typer.Option(False, "--no-git", help="Skip git repository initialization"),
-    here: bool = typer.Option(False, "--here", help="Initialize project in the current directory instead of creating a new one"),
-    force: bool = typer.Option(False, "--force", help="Force merge/overwrite when using --here (skip confirmation)"),
-    skip_tls: bool = typer.Option(False, "--skip-tls", help="Skip SSL/TLS verification (not recommended)"),
-    debug: bool = typer.Option(False, "--debug", help="Show verbose diagnostic output for network and extraction failures"),
-    github_token: Optional[str] = typer.Option(None, "--github-token", help="GitHub token to use for API requests (or set GH_TOKEN or GITHUB_TOKEN environment variable)"),
+    project_name: Optional[str] = typer.Argument(
+        None,
+        help="Name for your new project directory (optional if using --here, or use '.' for current directory)",
+    ),
+    ai_assistant: Optional[str] = typer.Option(
+        None,
+        "--ai",
+        help="AI assistant to use: claude, gemini, copilot, cursor, qwen, opencode, codex, windsurf, kilocode, auggie or q",
+    ),
+    script_type: Optional[str] = typer.Option(
+        None, "--script", help="Script type to use: sh or ps"
+    ),
+    ignore_agent_tools: bool = typer.Option(
+        False,
+        "--ignore-agent-tools",
+        help="Skip checks for AI agent tools like Claude Code",
+    ),
+    no_git: bool = typer.Option(
+        False, "--no-git", help="Skip git repository initialization"
+    ),
+    here: bool = typer.Option(
+        False,
+        "--here",
+        help="Initialize project in the current directory instead of creating a new one",
+    ),
+    force: bool = typer.Option(
+        False,
+        "--force",
+        help="Force merge/overwrite when using --here (skip confirmation)",
+    ),
+    skip_tls: bool = typer.Option(
+        False, "--skip-tls", help="Skip SSL/TLS verification (not recommended)"
+    ),
+    debug: bool = typer.Option(
+        False,
+        "--debug",
+        help="Show verbose diagnostic output for network and extraction failures",
+    ),
+    github_token: Optional[str] = typer.Option(
+        None,
+        "--github-token",
+        help="GitHub token to use for API requests (or set GH_TOKEN or GITHUB_TOKEN environment variable)",
+    ),
 ):
     """Initialize a new Goalkit project from the latest template.
 
-    This command will:
-    1. Check that required tools are installed (git is optional)
-    2. Let you choose your AI assistant
-    3. Download the appropriate template from GitHub
-    4. Extract the template to a new project directory or current directory
-    5. Initialize a fresh git repository (if not --no-git and no existing repo)
-    6. Optionally set up AI assistant commands
+        This command will:
+        1. Check that required tools are installed (git is optional)
+        2. Let you choose your AI assistant
+        3. Download the appropriate template from GitHub
+        4. Extract the template to a new project directory or current directory
+        5. Initialize a fresh git repository (if not --no-git and no existing repo)
+        6. Optionally set up AI assistant commands
 
-    Examples:
-goalkit init my-project
+        Examples:
+    goalkit init my-project
 
-        goalkit init my-project --ai claude
+            goalkit init my-project --ai claude
 
-        goalkit init my-project --ai copilot --no-git
+            goalkit init my-project --ai copilot --no-git
 
-        goalkit init --ignore-agent-tools my-project
+            goalkit init --ignore-agent-tools my-project
 
-        goalkit init . --ai claude         # Initialize in current directory
+            goalkit init . --ai claude         # Initialize in current directory
 
-        goalkit init .                     # Initialize in current directory (interactive AI selection)
+            goalkit init .                     # Initialize in current directory (interactive AI selection)
 
-        goalkit init --here --ai claude    # Alternative syntax for current directory
+            goalkit init --here --ai claude    # Alternative syntax for current directory
 
-        goalkit init --here --ai codex
+            goalkit init --here --ai codex
 
-        goalkit init --here --ai codebuddy
+            goalkit init --here --ai codebuddy
 
-        goalkit init --here
+            goalkit init --here
 
-        goalkit init --here --force  # Skip confirmation when current directory not empty
+            goalkit init --here --force  # Skip confirmation when current directory not empty
     """
 
     show_banner()
@@ -1111,11 +1308,15 @@ goalkit init my-project
         project_name = None  # Clear project_name to use existing validation logic
 
     if here and project_name:
-        console.print("[red]Error:[/red] Cannot specify both project name and --here flag")
+        console.print(
+            "[red]Error:[/red] Cannot specify both project name and --here flag"
+        )
         raise typer.Exit(1)
 
     if not here and not project_name:
-        console.print("[red]Error:[/red] Must specify either a project name, use '.' for current directory, or use --here flag")
+        console.print(
+            "[red]Error:[/red] Must specify either a project name, use '.' for current directory, or use --here flag"
+        )
         raise typer.Exit(1)
 
     # Validate project name before proceeding
@@ -1126,7 +1327,7 @@ goalkit init my-project
                 f"Invalid project name: {error_msg}",
                 title="[red]Invalid Project Name[/red]",
                 border_style="red",
-                padding=(1, 2)
+                padding=(1, 2),
             )
             console.print()
             console.print(error_panel)
@@ -1138,10 +1339,16 @@ goalkit init my-project
 
         existing_items = list(project_path.iterdir())
         if existing_items:
-            console.print(f"[yellow]Warning:[/yellow] Current directory is not empty ({len(existing_items)} items)")
-            console.print("[yellow]Template files will be merged with existing content and may overwrite existing files[/yellow]")
+            console.print(
+                f"[yellow]Warning:[/yellow] Current directory is not empty ({len(existing_items)} items)"
+            )
+            console.print(
+                "[yellow]Template files will be merged with existing content and may overwrite existing files[/yellow]"
+            )
             if force:
-                console.print("[cyan]--force supplied: skipping confirmation and proceeding with merge[/cyan]")
+                console.print(
+                    "[cyan]--force supplied: skipping confirmation and proceeding with merge[/cyan]"
+                )
             else:
                 response = typer.confirm("Do you want to continue?")
                 if not response:
@@ -1155,7 +1362,7 @@ goalkit init my-project
                 "Please choose a different project name or remove the existing directory.",
                 title="[red]Directory Conflict[/red]",
                 border_style="red",
-                padding=(1, 2)
+                padding=(1, 2),
             )
             console.print()
             console.print(error_panel)
@@ -1169,13 +1376,15 @@ goalkit init my-project
         console.print(f"[yellow]Warning:[/yellow] {space_msg}")
 
     # Check path writeability
-    is_writable, write_msg = check_path_writable(project_path if here else project_path.parent)
+    is_writable, write_msg = check_path_writable(
+        project_path if here else project_path.parent
+    )
     if not is_writable:
         error_panel = Panel(
             write_msg,
             title="[red]Permission Error[/red]",
             border_style="red",
-            padding=(1, 2)
+            padding=(1, 2),
         )
         console.print()
         console.print(error_panel)
@@ -1197,21 +1406,22 @@ goalkit init my-project
     if not no_git:
         should_init_git = check_tool("git", CLAUDE_LOCAL_PATH)
         if not should_init_git:
-            console.print("[yellow]Git not found - will skip repository initialization[/yellow]")
+            console.print(
+                "[yellow]Git not found - will skip repository initialization[/yellow]"
+            )
 
     if ai_assistant:
         if ai_assistant not in AGENT_CONFIG:
-            console.print(f"[red]Error:[/red] Invalid AI assistant '{ai_assistant}'. Choose from: {', '.join(AGENT_CONFIG.keys())}")
+            console.print(
+                f"[red]Error:[/red] Invalid AI assistant '{ai_assistant}'. Choose from: {', '.join(AGENT_CONFIG.keys())}"
+            )
             raise typer.Exit(1)
         selected_ai = ai_assistant
     else:
         # Create options dict for selection (agent_key: display_name)
         ai_choices = {key: config["name"] for key, config in AGENT_CONFIG.items()}
         selected_ai = select_with_arrows(
-            console,
-            ai_choices, 
-            "Choose your AI assistant:", 
-            "copilot"
+            console, ai_choices, "Choose your AI assistant:", "copilot"
         )
 
     if not ignore_agent_tools:
@@ -1226,7 +1436,7 @@ goalkit init my-project
                     "Tip: Use [cyan]--ignore-agent-tools[/cyan] to skip this check",
                     title="[red]Agent Detection Error[/red]",
                     border_style="red",
-                    padding=(1, 2)
+                    padding=(1, 2),
                 )
                 console.print()
                 console.print(error_panel)
@@ -1234,7 +1444,9 @@ goalkit init my-project
 
     if script_type:
         if script_type not in SCRIPT_TYPE_CHOICES:
-            console.print(f"[red]Error:[/red] Invalid script type '{script_type}'. Choose from: {', '.join(SCRIPT_TYPE_CHOICES.keys())}")
+            console.print(
+                f"[red]Error:[/red] Invalid script type '{script_type}'. Choose from: {', '.join(SCRIPT_TYPE_CHOICES.keys())}"
+            )
             raise typer.Exit(1)
         selected_script = script_type
     else:
@@ -1243,7 +1455,12 @@ goalkit init my-project
         # Always attempt interactive selection, don't rely on isatty() check after previous interaction
         # This ensures script type selection works even after the AI assistant selection
         try:
-            selected_script = select_with_arrows(console, SCRIPT_TYPE_CHOICES, "Choose script type (or press Enter)", default_script)
+            selected_script = select_with_arrows(
+                console,
+                SCRIPT_TYPE_CHOICES,
+                "Choose script type (or press Enter)",
+                default_script,
+            )
         except (EOFError, KeyboardInterrupt):
             # If interactive selection fails, use default
             selected_script = default_script
@@ -1274,21 +1491,33 @@ goalkit init my-project
         ("copy-workflows", "Copy workflow templates"),
         ("cleanup", "Cleanup"),
         ("git", "Initialize git repository"),
-        ("final", "Finalize")
+        ("final", "Finalize"),
     ]:
         tracker.add(key, label)
 
     # Track git error message outside Live context so it persists
     git_error_message = None
 
-    with Live(tracker.render(), console=console, refresh_per_second=8, transient=True) as live:
+    with Live(
+        tracker.render(), console=console, refresh_per_second=8, transient=True
+    ) as live:
         tracker.attach_refresh(lambda: live.update(tracker.render()))
         try:
             verify = not skip_tls
             local_ssl_context = ssl_context if verify else False
             local_client = httpx.Client(verify=local_ssl_context)
 
-            download_and_extract_template(project_path, selected_ai, selected_script, here, verbose=False, tracker=tracker, client=local_client, debug=debug, github_token=github_token)
+            download_and_extract_template(
+                project_path,
+                selected_ai,
+                selected_script,
+                here,
+                verbose=False,
+                tracker=tracker,
+                client=local_client,
+                debug=debug,
+                github_token=github_token,
+            )
 
             # Create agent-specific configuration and commands folders
             create_agent_config(project_path, selected_ai)
@@ -1310,7 +1539,9 @@ goalkit init my-project
             if not no_git:
                 tracker.start("git")
                 if should_init_git:
-                    success, error_msg = init_git_repo(console, project_path, quiet=True)
+                    success, error_msg = init_git_repo(
+                        console, project_path, quiet=True
+                    )
                     if success:
                         tracker.complete("git", "initialized")
                     else:
@@ -1324,7 +1555,11 @@ goalkit init my-project
             tracker.complete("final", "project ready")
         except Exception as e:
             tracker.error("final", str(e))
-            console.print(Panel(f"Initialization failed: {e}", title="Failure", border_style="red"))
+            console.print(
+                Panel(
+                    f"Initialization failed: {e}", title="Failure", border_style="red"
+                )
+            )
             if debug:
                 _env_pairs = [
                     ("Python", sys.version.split()[0]),
@@ -1332,8 +1567,17 @@ goalkit init my-project
                     ("CWD", str(Path.cwd())),
                 ]
                 _label_width = max(len(k) for k, _ in _env_pairs)
-                env_lines = [f"{k.ljust(_label_width)} → [bright_black]{v}[/bright_black]" for k, v in _env_pairs]
-                console.print(Panel("\n".join(env_lines), title="Debug Environment", border_style="magenta"))
+                env_lines = [
+                    f"{k.ljust(_label_width)} → [bright_black]{v}[/bright_black]"
+                    for k, v in _env_pairs
+                ]
+                console.print(
+                    Panel(
+                        "\n".join(env_lines),
+                        title="Debug Environment",
+                        border_style="magenta",
+                    )
+                )
             if not here and project_path.exists():
                 shutil.rmtree(project_path)
             raise typer.Exit(1)
@@ -1342,7 +1586,7 @@ goalkit init my-project
 
     console.print(tracker.render())
     console.print("\n[bold green]Project ready.[/bold green]")
-    
+
     # Show git error details if initialization failed
     if git_error_message:
         console.print()
@@ -1353,10 +1597,10 @@ goalkit init my-project
             f"[cyan]cd {project_path if not here else '.'}[/cyan]\n"
             f"[cyan]git init[/cyan]\n"
             f"[cyan]git add .[/cyan]\n"
-            f"[cyan]git commit -m \"Initial commit\"[/cyan]",
+            f'[cyan]git commit -m "Initial commit"[/cyan]',
             title="[red]Git Initialization Failed[/red]",
             border_style="red",
-            padding=(1, 2)
+            padding=(1, 2),
         )
         console.print(git_error_panel)
 
@@ -1369,14 +1613,16 @@ goalkit init my-project
             f"Consider adding [cyan]{agent_folder}[/cyan] (or parts of it) to [cyan].gitignore[/cyan] to prevent accidental credential leakage.",
             title="[yellow]Agent Folder Security[/yellow]",
             border_style="yellow",
-            padding=(1, 2)
+            padding=(1, 2),
         )
         console.print()
         console.print(security_notice)
 
     steps_lines = []
     if not here:
-        steps_lines.append(f"1. Go to the project folder: [cyan]cd {project_name}[/cyan]")
+        steps_lines.append(
+            f"1. Go to the project folder: [cyan]cd {project_name}[/cyan]"
+        )
         step_num = 2
     else:
         steps_lines.append("1. You're already in the project directory!")
@@ -1390,25 +1636,44 @@ goalkit init my-project
             cmd = f"setx CODEX_HOME {quoted_path}"
         else:  # Unix-like systems
             cmd = f"export CODEX_HOME={quoted_path}"
-        
-        steps_lines.append(f"{step_num}. Set [cyan]CODEX_HOME[/cyan] environment variable before running Codex: [cyan]{cmd}[/cyan]")
+
+        steps_lines.append(
+            f"{step_num}. Set [cyan]CODEX_HOME[/cyan] environment variable before running Codex: [cyan]{cmd}[/cyan]"
+        )
         step_num += 1
 
     steps_lines.append(f"{step_num}. Start using slash commands with your AI agent:")
 
-    steps_lines.append("   [cyan]/goalkit.vision[/] - Establish project vision and principles")
+    steps_lines.append(
+        "   [cyan]/goalkit.vision[/] - Establish project vision and principles"
+    )
     steps_lines.append("   [cyan]/goalkit.goal[/] - Define goals and success criteria")
-    steps_lines.append("   [cyan]/goalkit.strategies[/] - Explore implementation strategies")
+    steps_lines.append(
+        "   [cyan]/goalkit.strategies[/] - Explore implementation strategies"
+    )
     steps_lines.append("   [cyan]/goalkit.milestones[/] - Create measurable milestones")
-    steps_lines.append("   [cyan]/goalkit.execute[/] - Execute with learning and adaptation")
-    steps_lines.append("   [cyan]/goalkit.tasks[/] - Generate detailed implementation tasks")
-    steps_lines.append("   [cyan]/goalkit.taskstoissues[/] - Convert tasks to GitHub issues (see .goalkit/workflows/taskstoissues.md)")
-    steps_lines.append("   [cyan]/goalkit.report[/] - Generate progress reports and insights")
-    steps_lines.append("   [cyan]/goalkit.review[/] - Conduct project reviews and retrospectives")
+    steps_lines.append(
+        "   [cyan]/goalkit.execute[/] - Execute with learning and adaptation"
+    )
+    steps_lines.append(
+        "   [cyan]/goalkit.tasks[/] - Generate detailed implementation tasks"
+    )
+    steps_lines.append(
+        "   [cyan]/goalkit.taskstoissues[/] - Convert tasks to GitHub issues (see .goalkit/workflows/taskstoissues.md)"
+    )
+    steps_lines.append(
+        "   [cyan]/goalkit.report[/] - Generate progress reports and insights"
+    )
+    steps_lines.append(
+        "   [cyan]/goalkit.review[/] - Conduct project reviews and retrospectives"
+    )
 
-    steps_panel = Panel("\n".join(steps_lines), title="Next Steps", border_style="cyan", padding=(1,2))
+    steps_panel = Panel(
+        "\n".join(steps_lines), title="Next Steps", border_style="cyan", padding=(1, 2)
+    )
     console.print()
     console.print(steps_panel)
+
 
 @app.command()
 def check():
@@ -1420,18 +1685,20 @@ def check():
 
     tracker.add("git", "Git version control")
     git_ok = check_tool("git", CLAUDE_LOCAL_PATH, tracker=tracker)
-    
+
     agent_results = {}
     for agent_key, agent_config in AGENT_CONFIG.items():
         agent_name = agent_config["name"]
-        
+
         tracker.add(agent_key, agent_name)
-        agent_results[agent_key] = check_tool(agent_key, CLAUDE_LOCAL_PATH, tracker=tracker)
-    
+        agent_results[agent_key] = check_tool(
+            agent_key, CLAUDE_LOCAL_PATH, tracker=tracker
+        )
+
     # Check VS Code variants (not in agent config)
     tracker.add("code", "Visual Studio Code")
     code_ok = check_tool("code", CLAUDE_LOCAL_PATH, tracker=tracker)
-    
+
     tracker.add("code-insiders", "Visual Studio Code Insiders")
     code_insiders_ok = check_tool("code-insiders", CLAUDE_LOCAL_PATH, tracker=tracker)
 
@@ -1445,23 +1712,32 @@ def check():
     if not any(agent_results.values()):
         console.print("[dim]Tip: Install an AI assistant for the best experience[/dim]")
 
+
 @app.command()
 def status(
     project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed analysis"),
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Show detailed analysis"
+    ),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display project status and health information."""
     show_banner()
     project_path_obj = Path(project_path) if project_path else None
-    status_command(project_path=project_path_obj, verbose=verbose, json_output=json_output)
+    status_command(
+        project_path=project_path_obj, verbose=verbose, json_output=json_output
+    )
 
 
 @app.command()
 def milestones(
     project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
-    goal_id: Optional[str] = typer.Option(None, "--goal", "-g", help="Filter by goal ID"),
-    completed_only: bool = typer.Option(False, "--completed", "-c", help="Show only completed milestones"),
+    goal_id: Optional[str] = typer.Option(
+        None, "--goal", "-g", help="Filter by goal ID"
+    ),
+    completed_only: bool = typer.Option(
+        False, "--completed", "-c", help="Show only completed milestones"
+    ),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display milestone progress and execution history."""
@@ -1478,9 +1754,15 @@ def milestones(
 @app.command()
 def metrics(
     project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
-    goal_id: Optional[str] = typer.Option(None, "--goal", "-g", help="Filter by goal ID"),
-    metric_name: Optional[str] = typer.Option(None, "--metric", "-m", help="Filter by metric name"),
-    days: int = typer.Option(30, "--days", "-d", help="Number of days for trend analysis"),
+    goal_id: Optional[str] = typer.Option(
+        None, "--goal", "-g", help="Filter by goal ID"
+    ),
+    metric_name: Optional[str] = typer.Option(
+        None, "--metric", "-m", help="Filter by metric name"
+    ),
+    days: int = typer.Option(
+        30, "--days", "-d", help="Number of days for trend analysis"
+    ),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display project metrics and health trends."""
@@ -1498,8 +1780,12 @@ def metrics(
 @app.command()
 def tasks(
     project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
-    goal_id: Optional[str] = typer.Option(None, "--goal", "-g", help="Filter by goal ID"),
-    status: Optional[str] = typer.Option(None, "--status", "-s", help="Filter by status (todo, in_progress, completed)"),
+    goal_id: Optional[str] = typer.Option(
+        None, "--goal", "-g", help="Filter by goal ID"
+    ),
+    status: Optional[str] = typer.Option(
+        None, "--status", "-s", help="Filter by status (todo, in_progress, completed)"
+    ),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display and manage project tasks."""
@@ -1515,7 +1801,9 @@ def tasks(
 @app.command()
 def report(
     project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
-    report_type: str = typer.Option("summary", "--type", "-t", help="Report type (summary, weekly, monthly)"),
+    report_type: str = typer.Option(
+        "summary", "--type", "-t", help="Report type (summary, weekly, monthly)"
+    ),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display project reports and metrics."""
@@ -1530,8 +1818,12 @@ def report(
 @app.command()
 def insights(
     project_path: Optional[str] = typer.Argument(None, help="Path to goal-kit project"),
-    report_type: str = typer.Option("summary", "--type", "-t", help="Report type (summary, weekly, monthly)"),
-    severity: Optional[str] = typer.Option(None, "--severity", "-s", help="Filter by severity (info, warning, alert)"),
+    report_type: str = typer.Option(
+        "summary", "--type", "-t", help="Report type (summary, weekly, monthly)"
+    ),
+    severity: Optional[str] = typer.Option(
+        None, "--severity", "-s", help="Filter by severity (info, warning, alert)"
+    ),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display actionable insights based on project data."""
@@ -1543,8 +1835,10 @@ def insights(
         json_output=json_output,
     )
 
+
 def main():
     app()
+
 
 if __name__ == "__main__":
     main()
