@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-10-01
+
+### 🩺 New Command: `goalkit doctor`
+
+Diagnose project health and suggest fixes:
+
+- Validates `.goalkit/` directory structure
+- Checks goals for required sections (Summary, Key Stakeholders, User Stories)
+- Verifies script permissions under `.goalkit/scripts/`
+- Detects template drift vs packaged versions
+- `--fix` auto-resolves safe issues (missing dirs/files, permissions); content drift is reported, never overwritten
+
+### 🔧 Fixes
+
+- **`goalkit predict` is now reachable**: the v2.4.0 `predict` command group was registered only on an orphan module and unreachable via the real CLI entry point. It is now wired into `goalkit:main`.
+- **No more import-time crash**: the shared HTTP client was created at module import, so a broken proxy configuration in the environment crashed the entire CLI before any command ran. The client is now created lazily on first use.
+
+### 🧹 Code Health
+
+- Removed ~1,200 lines of dead code: orphan `src/goalkit/app.py`, dead duplicates `src/goalkit/commands/init.py` (603 lines) and `src/goalkit/commands/check.py`, dead `src/goalkit/templates.py` and its tests. One architecture: all commands flow through `goalkit/__init__.py`.
+
+### 🧪 Tests
+
+- 10 new tests for `goalkit doctor` (`tests/test_doctor.py`), all passing.
+- Full suite: no new failures.
+
+---
+
 ## [2.4.0] - 2026-09-27
 
 ### 🔮 Predictive Analytics: `goalkit predict`
