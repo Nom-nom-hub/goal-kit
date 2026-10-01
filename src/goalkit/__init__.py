@@ -80,7 +80,21 @@ from .commands.prediction import app as prediction_app
 from .commands.doctor import doctor as doctor_command
 
 ssl_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-client = httpx.Client(verify=ssl_context)
+
+_client: httpx.Client | None = None
+
+
+def _http_client() -> httpx.Client:
+    """Lazily create the shared HTTP client.
+
+    Created on first use, not at import time, so a broken proxy
+    configuration in the environment can't crash the whole CLI
+    before any command runs.
+    """
+    global _client
+    if _client is None:
+        _client = httpx.Client(verify=ssl_context)
+    return _client
 
 
 def _github_token(cli_token: str | None = None) -> str | None:
@@ -350,7 +364,7 @@ def download_template_from_github(
     api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
 
     try:
-        response = client.get(
+        response = _http_client().get(
             api_url,
             timeout=30,
             follow_redirects=True,
@@ -417,7 +431,7 @@ def download_template_from_github(
         console.print(f"[cyan]Downloading template...[/cyan]")
 
     try:
-        with client.stream(
+        with _http_client().stream(
             "GET",
             download_url,
             timeout=60,
