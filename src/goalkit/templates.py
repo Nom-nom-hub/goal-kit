@@ -18,7 +18,7 @@ from typing import Optional, Tuple
 import httpx
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
-from .app import console, ssl_context, _github_token, _github_auth_headers
+from goalkit import console, ssl_context, _github_token, _github_auth_headers
 from .helpers import (
     StepTracker,
     handle_vscode_settings,
