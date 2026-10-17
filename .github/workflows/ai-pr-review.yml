@@ -30,8 +30,10 @@ jobs:
         pip install openai
 
     - name: Fetch PR Changes
+      env:
+        PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
       run: |
-        git fetch origin ${{ github.event.pull_request.head.ref }}:pr-changes
+        git fetch origin "$PR_HEAD_REF":pr-changes
         git checkout pr-changes
 
     - name: Invoke Smart Code Review
