@@ -1,0 +1,129 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # The floor is ratcheted upward by the `ratchet` job after it lands on main.
+  COVERAGE_FLOOR_FILE: .github/coverage-floor
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+
+      - name: Install Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --locked --extra dev --python ${{ matrix.python-version }}
+
+      - name: Run tests
+        run: |
+          FLOOR=$(cat "$COVERAGE_FLOOR_FILE")
+          echo "Coverage floor: ${FLOOR}%"
+          uv run --python ${{ matrix.python-version }} pytest \
+            --cov-fail-under="${FLOOR}" \
+            --cov-report=xml:coverage.xml
+
+      - name: Upload coverage report
+        if: always() && matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: |
+            htmlcov/
+            coverage.xml
+          if-no-files-found: warn
+          retention-days: 14
+          overwrite: true
+
+  ratchet:
+    name: Ratchet coverage floor
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Download coverage report
+        uses: actions/download-artifact@v7
+        with:
+          name: coverage-report
+          path: coverage-report
+
+      - name: Raise the floor when coverage improves
+        run: |
+          FLOOR=$(cat "$COVERAGE_FLOOR_FILE")
+          ACTUAL=$(python3 -c "import xml.etree.ElementTree as ET; print(int(float(ET.parse('coverage-report/coverage.xml').getroot().get('line-rate')) * 100))")
+          echo "Floor: ${FLOOR}% | Achieved: ${ACTUAL}%"
+
+          if [ "${ACTUAL}" -le "${FLOOR}" ]; then
+            echo "Coverage did not improve; floor stays at ${FLOOR}%."
+            exit 0
+          fi
+
+          echo "${ACTUAL}" > "$COVERAGE_FLOOR_FILE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$COVERAGE_FLOOR_FILE"
+          git commit -m "chore(ci): ratchet coverage floor to ${ACTUAL}%"
+          git push origin HEAD:main
+
+  lint:
+    name: Lint and type check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+
+      - name: Install Python 3.12
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync --locked --extra dev --python 3.12
+
+      - name: Run ruff
+        run: uv run --python 3.12 ruff check src/ scripts/
+
+      - name: Run mypy
+        run: uv run --python 3.12 mypy src/ scripts/
