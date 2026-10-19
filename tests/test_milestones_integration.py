@@ -25,6 +25,10 @@ class TestMilestonesCommandIntegration:
             goals_dir = goalkit_dir / "goals"
             goalkit_dir.mkdir(parents=True, exist_ok=True)
             goals_dir.mkdir(parents=True, exist_ok=True)
+            for goal_id in ("goal1", "goal2"):
+                goal_dir = goals_dir / goal_id
+                goal_dir.mkdir()
+                (goal_dir / "goal.md").write_text(f"# Goal: {goal_id}\n")
 
             tracker = ExecutionTracker(project_path)
 

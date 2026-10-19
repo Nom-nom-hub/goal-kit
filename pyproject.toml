@@ -15,6 +15,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    # Tests assert on CliRunner stderr, which Click only separates from 8.2.
+    "click>=8.2",
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "black>=23.0",

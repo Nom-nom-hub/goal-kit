@@ -2,6 +2,7 @@
 
 import pytest
 import json
+import typer
 from pathlib import Path
 from uuid import uuid4
 from io import StringIO
@@ -62,11 +63,13 @@ class TestTasksCommandBasic:
         assert "Task" in captured.out or "task" in captured.out
 
     def test_command_missing_project(self, capsys):
-        """Test command with missing project directory."""
-        tasks_command("/nonexistent/path")
+        """Test command with missing project directory fails loudly."""
+        with pytest.raises(typer.Exit) as exc:
+            tasks_command("/nonexistent/path")
         captured = capsys.readouterr()
-        # Should handle gracefully or error out
-        assert len(captured.out) > 0 or len(captured.err) > 0
+        assert exc.value.exit_code == 1
+        assert "Not a goal-kit project" in captured.err
+        assert captured.out == ""
 
 
 class TestTasksCommandFiltering:
@@ -106,12 +109,13 @@ class TestTasksCommandFiltering:
         assert "Task Statistics" in captured.out
 
     def test_filter_by_invalid_status(self, populated_tracker, capsys):
-        """Test filtering by invalid status."""
+        """Test filtering by invalid status exits nonzero."""
         tracker, goal1, goal2 = populated_tracker
-        tasks_command(str(tracker.project_path), status="invalid")
+        with pytest.raises(typer.Exit):
+            tasks_command(str(tracker.project_path), status="invalid")
         captured = capsys.readouterr()
 
-        assert "Invalid status" in captured.out
+        assert "Invalid status" in captured.err
 
     def test_filter_goal_and_status(self, populated_tracker, capsys):
         """Test combining goal and status filters."""

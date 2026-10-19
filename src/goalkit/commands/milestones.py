@@ -7,11 +7,13 @@ milestone completion status, execution velocity, and project momentum.
 from pathlib import Path
 from typing import Optional
 
+import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
 from ..analyzer import ProjectAnalyzer
+from ..errors import fail
 from ..execution import ExecutionTracker
 
 
@@ -34,7 +36,7 @@ def milestones(
         json_output: Output results as JSON instead of formatted text.
         
     Raises:
-        FileNotFoundError: If project_path is not a valid goal-kit project.
+        typer.Exit: If project_path cannot be read as a goal-kit project.
     """
     console = Console()
     
@@ -47,9 +49,8 @@ def milestones(
         analyzer = ProjectAnalyzer(project_path)
         result = analyzer.analyze()
         tracker = ExecutionTracker(project_path)
-    except FileNotFoundError as e:
-        console.print(f"[red]Error: {e}[/red]")
-        return
+    except (OSError, ValueError) as e:
+        fail(str(e))
     
     if json_output:
         _output_json(result, tracker, goal_id, console)
@@ -77,7 +78,7 @@ def _output_json(result, tracker, goal_id: Optional[str], console: Console) -> N
         goal = next((g for g in result.goals if g.id == goal_id), None)
         if not goal:
             console.print_json(data={"error": f"Goal '{goal_id}' not found"})
-            return
+            raise typer.Exit(1)
         
         goals_to_process = [goal]
     else:
@@ -152,8 +153,10 @@ def _output_formatted(result, tracker, goal_id: Optional[str], console: Console)
         # Filter to single goal
         goals_to_display = [g for g in result.goals if g.id == goal_id]
         if not goals_to_display:
-            console.print(f"[red]Goal '{goal_id}' not found[/red]")
-            return
+            fail(
+                f"Goal '{goal_id}' not found",
+                hint="Run 'goalkit status' to list goal ids",
+            )
     else:
         goals_to_display = result.goals
     

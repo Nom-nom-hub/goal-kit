@@ -12,6 +12,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from ..analyzer import ProjectAnalyzer, AnalysisResult
+from ..errors import fail
 
 
 def status(
@@ -30,7 +31,7 @@ def status(
         json_output: Output results as JSON instead of formatted text.
         
     Raises:
-        FileNotFoundError: If project_path is not a valid goal-kit project.
+        typer.Exit: If project_path cannot be read as a goal-kit project.
     """
     console = Console()
     
@@ -42,9 +43,8 @@ def status(
     try:
         analyzer = ProjectAnalyzer(project_path)
         result = analyzer.analyze()
-    except FileNotFoundError as e:
-        console.print(f"[red]Error: {e}[/red]")
-        return
+    except (OSError, ValueError) as e:
+        fail(str(e))
     
     if json_output:
         _output_json(result, console)

@@ -2,6 +2,7 @@
 
 import pytest
 import json
+import typer
 from uuid import uuid4
 
 from goalkit.commands.reporting import (
@@ -53,11 +54,12 @@ class TestReportCommand:
         assert "Summary" in captured.out or "Report" in captured.out.lower()
 
     def test_report_command_missing_project(self, capsys):
-        """Test report command with missing project."""
-        report_command("/nonexistent/path")
+        """Test report command with missing project fails loudly."""
+        with pytest.raises(typer.Exit) as exc:
+            report_command("/nonexistent/path")
         captured = capsys.readouterr()
-        # Should either show error or empty report
-        assert len(captured.out) > 0 or len(captured.err) > 0
+        assert exc.value.exit_code == 1
+        assert "Error" in captured.err
 
     def test_report_command_weekly_type(self, populated_project, capsys):
         """Test report command with weekly type."""
@@ -150,10 +152,12 @@ class TestInsightsCommand:
         )
 
     def test_insights_command_missing_project(self, capsys):
-        """Test insights command with missing project."""
-        insights_command("/nonexistent/path")
+        """Test insights command with missing project fails loudly."""
+        with pytest.raises(typer.Exit) as exc:
+            insights_command("/nonexistent/path")
         captured = capsys.readouterr()
-        assert len(captured.out) > 0 or len(captured.err) > 0
+        assert exc.value.exit_code == 1
+        assert "Error" in captured.err
 
     def test_insights_command_weekly_type(self, populated_project, capsys):
         """Test insights command with weekly type."""
@@ -186,10 +190,11 @@ class TestInsightsCommand:
         assert len(captured.out) > 0
 
     def test_insights_invalid_severity(self, populated_project, capsys):
-        """Test insights command with invalid severity."""
-        insights_command(str(populated_project), severity="invalid")
+        """Test insights command with invalid severity exits nonzero."""
+        with pytest.raises(typer.Exit):
+            insights_command(str(populated_project), severity="invalid")
         captured = capsys.readouterr()
-        assert "Invalid severity" in captured.out
+        assert "Invalid severity" in captured.err
 
 
 class TestInsightsCommandJson:
