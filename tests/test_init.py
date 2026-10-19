@@ -379,7 +379,15 @@ class TestInitErrorCases:
         
         result = runner.invoke(
             app,
-            ["init", "test-project", "--ai", "claude", "--script", "invalid"],
+            [
+                "init",
+                "test-project",
+                "--ai",
+                "claude",
+                "--script",
+                "invalid",
+                "--ignore-agent-tools",
+            ],
         )
         
         assert result.exit_code == 1
