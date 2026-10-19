@@ -2,7 +2,6 @@
 
 from pathlib import Path
 from typing import Optional
-import json
 
 from rich.console import Console
 from rich.table import Table
@@ -129,10 +128,10 @@ def report(
         else:
             # Text output
             lines = [
-                f"[bold]Workspace Aggregation Report[/bold]",
+                "[bold]Workspace Aggregation Report[/bold]",
                 f"Generated: {agg_report.generated_at.strftime('%Y-%m-%d %H:%M:%S')}",
                 "",
-                f"[bold cyan]Summary[/bold cyan]",
+                "[bold cyan]Summary[/bold cyan]",
                 f"  Projects: {agg_report.project_count}",
                 f"  Total Tasks: {agg_report.total_tasks}",
                 f"  Completed: {agg_report.total_completed}",

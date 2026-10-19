@@ -11,7 +11,7 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 
-from ..reporting import ReportGenerator, ReportType, InsightSeverity
+from ..reporting import ReportGenerator, InsightSeverity
 
 
 def report_command(

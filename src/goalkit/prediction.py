@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Optional
 
-from goalkit.analytics import AnalyticsEngine, AnalyticsPoint
+from goalkit.analytics import AnalyticsEngine
 
 
 @dataclass
@@ -147,7 +147,7 @@ class PredictionEngine:
 
         velocity = self.analytics.get_velocity_metrics(goal_id)
         if not velocity:
-            current_velocity = 0
+            current_velocity = 0.0
         else:
             current_velocity = velocity.average_velocity
 
@@ -167,8 +167,8 @@ class PredictionEngine:
             )
         else:
             recommendation = (
-                f"🚨 High risk. Current pace insufficient. "
-                f"Deadline unrealistic without significant changes."
+                "🚨 High risk. Current pace insufficient. "
+                "Deadline unrealistic without significant changes."
             )
 
         return RiskAssessment(
@@ -219,7 +219,7 @@ class PredictionEngine:
         effective_days = days_available - buffer_days
 
         if effective_days <= 0:
-            required_per_day = 999
+            required_per_day = 999.0
         else:
             required_per_day = forecast.tasks_remaining / effective_days
 
@@ -263,7 +263,6 @@ class PredictionEngine:
         if not base_forecast:
             return None
 
-        base_date = datetime.strptime(base_forecast.estimated_date, "%Y-%m-%d")
         deadline_date = datetime.strptime(deadline, "%Y-%m-%d")
         base_probability = base_forecast.probability
 

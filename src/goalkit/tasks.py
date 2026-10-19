@@ -6,7 +6,7 @@ status tracking, and aggregated statistics.
 
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict
 import json
 from datetime import datetime
 from uuid import uuid4
@@ -230,8 +230,8 @@ class TaskTracker:
             t.estimated_hours for t in tasks if t.status == TaskStatus.IN_PROGRESS
         )
 
-        tasks_by_goal = {}
-        tasks_by_status = {}
+        tasks_by_goal: Dict[str, int] = {}
+        tasks_by_status: Dict[str, int] = {}
 
         for task in tasks:
             tasks_by_goal[task.goal_id] = tasks_by_goal.get(task.goal_id, 0) + 1
@@ -286,7 +286,7 @@ class TaskTracker:
             if t.status == TaskStatus.IN_PROGRESS
         )
 
-        tasks_by_status = {}
+        tasks_by_status: Dict[str, int] = {}
         for task in goal_tasks:
             status_key = task.status.value
             tasks_by_status[status_key] = tasks_by_status.get(status_key, 0) + 1

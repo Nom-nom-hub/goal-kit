@@ -20,10 +20,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-try:
-    import httpx
-except ImportError:
-    httpx = None
+import httpx
 
 
 @dataclass
@@ -374,10 +371,6 @@ class WebhookManager:
         Returns:
             True if successful, False if failed after all attempts
         """
-        if httpx is None:
-            # httpx not available, log but don't fail
-            return False
-
         payload = json.dumps(event.to_dict())
         headers = self._create_headers(payload, webhook.secret)
 

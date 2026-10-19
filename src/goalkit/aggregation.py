@@ -5,13 +5,12 @@ within a workspace and aggregating their data for cross-project reporting.
 """
 
 from pathlib import Path
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Any
 from dataclasses import dataclass, field
 from datetime import datetime
 
 from .tasks import TaskTracker
-from .reporting import ReportGenerator, Report
-from .models import Task, TaskStatus
+from .models import TaskStatus
 
 
 @dataclass
@@ -63,7 +62,7 @@ class AggregationEngine:
         Returns:
             List of ProjectSummary objects for each project found.
         """
-        projects = []
+        projects: List[ProjectSummary] = []
 
         if not self.workspace_path.exists():
             return projects
@@ -148,7 +147,7 @@ class AggregationEngine:
 
         return report
 
-    def get_project_comparison(self, projects: Optional[List[ProjectSummary]] = None) -> Dict[str, Dict[str, any]]:
+    def get_project_comparison(self, projects: Optional[List[ProjectSummary]] = None) -> Dict[str, Dict[str, Any]]:
         """Get side-by-side comparison of projects.
 
         Args:
@@ -208,7 +207,7 @@ class AggregationEngine:
 
         return sorted(rankings, key=lambda x: x[1], reverse=True)
 
-    def get_workspace_summary(self) -> Dict[str, any]:
+    def get_workspace_summary(self) -> Dict[str, Any]:
         """Get summary statistics for entire workspace.
 
         Returns:

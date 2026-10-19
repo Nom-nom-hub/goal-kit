@@ -11,7 +11,6 @@ import typer
 from ..exporters import ExportManager
 from ..tasks import TaskTracker
 from ..reporting import ReportGenerator
-from ..metrics import MetricsTracker
 
 
 def show_banner() -> None:
@@ -136,7 +135,6 @@ def report(
         raise typer.Exit(1)
 
     try:
-        tracker = TaskTracker(project_dir)
         generator = ReportGenerator(project_dir)
 
         # Generate a comprehensive report (use summary report as it's most complete)

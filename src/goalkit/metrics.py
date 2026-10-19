@@ -6,7 +6,7 @@ recording, trend analysis, and health score calculation.
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict
 import json
 from datetime import datetime, timedelta
 

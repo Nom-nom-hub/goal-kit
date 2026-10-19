@@ -2,11 +2,9 @@
 
 from pathlib import Path
 from typing import Optional
-import json
 
 from rich.console import Console
 from rich.table import Table
-from rich.panel import Panel
 from rich.tree import Tree
 import typer
 
@@ -147,19 +145,20 @@ def critical_path(
                 console.print("[yellow]No critical path (no dependencies)[/yellow]")
             else:
                 # Create tree visualization
-                tree = Tree("[bold]Critical Path[/bold]")
-                
                 total_hours = sum(t.estimated_hours for t in critical_path_tasks)
-                
+                tree = Tree(
+                    f"[bold]Critical Path[/bold] "
+                    f"[bold blue]Total: {total_hours}h[/bold blue]"
+                )
+
                 for i, task in enumerate(critical_path_tasks):
                     status_icon = "✓" if task.status.value == "completed" else "○"
-                    task_node = tree.add(
+                    tree.add(
                         f"{status_icon} {task.title} ({task.estimated_hours}h)"
                     )
                     if i < len(critical_path_tasks) - 1:
                         tree.add("↓")
 
-                tree.label += f" [bold blue]Total: {total_hours}h[/bold blue]"
                 console.print(tree)
 
     except Exception as e:
@@ -241,13 +240,13 @@ def graph(
                     table.add_column("Depends On", style="green")
 
                     for task_id in tasks_with_deps:
-                        task = task_map.get(task_id)
+                        graph_task = task_map.get(task_id)
                         deps = graph_data[task_id]
                         
-                        if task and deps:
+                        if graph_task and deps:
                             dep_task = task_map.get(deps[0])
                             table.add_row(
-                                task.title,
+                                graph_task.title,
                                 dep_task.title if dep_task else "Unknown",
                             )
 
@@ -288,9 +287,14 @@ def add(
         if result:
             task = tracker.get_task(task_id)
             dep_task = tracker.get_task(depends_on)
-            console.print(
-                f"[green]✓[/green] {task.title} now depends on {dep_task.title}"
-            )
+            if task and dep_task:
+                console.print(
+                    f"[green]✓[/green] {task.title} now depends on {dep_task.title}"
+                )
+            else:
+                console.print(
+                    f"[green]✓[/green] {task_id} now depends on {depends_on}"
+                )
         else:
             console.print(
                 "[red]Error:[/red] Could not add dependency (may create cycle)",
@@ -329,8 +333,7 @@ def remove(
         result = dep_tracker.remove_dependency(task_id)
 
         if result:
-            task = tracker.get_task(task_id)
-            console.print(f"[green]✓[/green] Removed dependency from {task.title}")
+            console.print(f"[green]✓[/green] Removed dependency from {task_id}")
         else:
             console.print(
                 f"[yellow]⚠[/yellow] Task {task_id} not found or had no dependency"

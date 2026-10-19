@@ -6,7 +6,6 @@ Provides task listing, filtering, and status display functionality.
 from pathlib import Path
 from typing import Optional, List
 import json
-from datetime import datetime
 
 from rich.console import Console
 from rich.table import Table
