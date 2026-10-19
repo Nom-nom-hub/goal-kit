@@ -11,17 +11,17 @@
 
 ### Test Commands
 
-- **Run all tests**: `python scripts/python/optimization_tester.py`
-- **Run single test file**: `python scripts/python/optimization_tester.py --single <test_name>`
-- **Run integration tests**: `python scripts/python/optimization_tester.py --integration`
-- **Run performance tests**: `python scripts/python/optimization_tester.py --performance`
+- **Run all tests**: `uv run pytest`
+- **Run single test file**: `uv run pytest tests/test_<name>.py`
+- **Run a single test**: `uv run pytest tests/test_<name>.py::TestClass::test_name`
+- **Run integration tests**: `uv run pytest -k integration`
 
 ### Lint/Format Commands
 
 - **Format code**: `black src/ scripts/`
 - **Lint code**: `ruff check src/ scripts/`
 - **Type check**: `mypy src/ scripts/`
-- **Fix lint issues**: `ruff fix src/ scripts/`
+- **Fix lint issues**: `ruff check --fix src/ scripts/`
 
 ## Architecture & Codebase Structure
 

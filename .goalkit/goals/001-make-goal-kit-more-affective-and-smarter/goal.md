@@ -3,6 +3,18 @@
 **Vision Alignment**: Success Scenario 1 (Smarter Project Insights), Success Scenario 2 (Friction-Free Workflows), Success Scenario 3 (Context-Aware Assistance)
 **Goal Branch**: 001-make-goal-kit-more-affective-and-smarter | **Created**: 2026-05-15T02:00:00Z | **Status**: Draft
 
+## Summary
+
+Goalkit already collects project data, but users still have to interpret raw numbers themselves.
+This goal turns that data into actionable guidance: contextual recommendations, a friction-free CLI,
+and proactive assistance that helps users keep their goals moving without extra bookkeeping.
+
+## Key Stakeholders
+
+- **Creator & Maintainer**: Teck (Nom-nom-hub) - owns the Goal-Driven Development methodology and releases.
+- **Core contributor**: shivam2931120 - methodology and testing.
+- **Users**: developers and AI agents who track goals through the goalkit CLI.
+
 ## User Stories
 
 ### Beneficiary Story 1 - Intelligent Project Insights (Priority: P1)

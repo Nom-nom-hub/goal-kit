@@ -10,7 +10,8 @@ from typing import List, Optional, Dict, Any
 import json
 from datetime import datetime, timedelta
 
-from .models import Project, Goal, Milestone, Task
+from .analyzer import count_goal_milestones
+from .models import Goal
 
 
 @dataclass
@@ -263,9 +264,14 @@ class ExecutionTracker:
         Returns:
             Total milestone count
         """
-        # Each goal has 2 milestones (placeholder)
-        # In full implementation, would parse actual milestone files
-        return max(0, len(goals) * 2)
+        total = 0
+        for goal in goals:
+            parsed = count_goal_milestones(self.goalkit_dir / "goals", goal.id)
+            # Legacy single-file goals have no milestone plan to parse; keep
+            # the historic two-per-goal estimate for them.
+            total += 2 if parsed is None else parsed
+
+        return max(0, total)
 
     def _count_milestones_by_goal(self, goals: List[Goal]) -> Dict[str, int]:
         """Count milestones for each goal.
@@ -276,7 +282,11 @@ class ExecutionTracker:
         Returns:
             Dictionary mapping goal ID to milestone count
         """
-        return {goal.id: 2 for goal in goals}  # Placeholder: 2 per goal
+        counts = {}
+        for goal in goals:
+            parsed = count_goal_milestones(self.goalkit_dir / "goals", goal.id)
+            counts[goal.id] = 2 if parsed is None else parsed
+        return counts
 
     def get_goal_execution_stats(self, goal_id: str) -> Dict[str, Any]:
         """Get execution statistics for a specific goal.
@@ -318,7 +328,7 @@ class ExecutionTracker:
         now = datetime.now()
         cutoff_date = now - timedelta(days=days)
 
-        timeline = {}
+        timeline: Dict[str, int] = {}
         for record in history:
             if record.completed_at >= cutoff_date:
                 date_key = record.completed_at.strftime("%Y-%m-%d")

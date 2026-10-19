@@ -352,3 +352,158 @@ milestones
         assert isinstance(result.phase, str)
         assert isinstance(result.milestone_count, int)
         assert isinstance(result.recent_milestones, list)
+
+
+class TestGoalDirectoryLayout:
+    """Regression tests for goals stored as directories (goals/<id>/goal.md)."""
+
+    @pytest.fixture
+    def nested_project(self):
+        """Create a project whose goal uses the canonical goal-directory layout."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_path = Path(tmpdir).resolve()
+            goal_dir = (
+                project_path
+                / ".goalkit"
+                / "goals"
+                / "001-smarter-insights"
+            )
+            goal_dir.mkdir(parents=True)
+
+            (goal_dir / "goal.md").write_text(
+                """# Goal Statement: Make insights smarter
+
+**Vision Alignment**: Success Scenario 1
+**Status**: Draft
+
+## User Stories
+
+### Beneficiary Story 1 - Intelligent Insights
+
+**Acceptance Scenarios**:
+
+1. **Given** a user views status, **When** trends are poor, **Then** advice appears
+
+### Key Metrics
+
+- **SC-001**: 80% of users report insights are actionable
+
+## Success Criteria
+
+- [ ] Insights appear automatically
+""",
+                encoding="utf-8",
+            )
+            (goal_dir / "execution.md").write_text(
+                "# Implementation Plan\n", encoding="utf-8"
+            )
+            (goal_dir / "milestones.md").write_text(
+                """# Milestone Plan
+
+**Milestone 1: Analysis Engine** (Weeks 1-2)
+- **Deliverable**: Structured insights
+
+**Milestone 2: Recommendations** (Weeks 3-4)
+- **Deliverable**: Contextual advice
+
+**Milestone 3: Validation** (Weeks 5-6)
+- **Deliverable**: Measured outcomes
+
+## Verification Plan
+
+**Milestone 1 Verification**:
+- [x] Tests pass
+""",
+                encoding="utf-8",
+            )
+
+            yield project_path
+
+    def test_iter_goal_files_supports_both_layouts(self, nested_project):
+        from goalkit.analyzer import iter_goal_files
+
+        goals_dir = nested_project / ".goalkit" / "goals"
+        (goals_dir / "002-legacy.md").write_text("# Legacy\n", encoding="utf-8")
+
+        pairs = iter_goal_files(goals_dir)
+
+        assert [goal_id for goal_id, _ in pairs] == [
+            "001-smarter-insights",
+            "002-legacy",
+        ]
+        assert pairs[0][1] == goals_dir / "001-smarter-insights" / "goal.md"
+        assert pairs[1][1] == goals_dir / "002-legacy.md"
+
+    def test_iter_goal_files_missing_directory(self, tmp_path):
+        from goalkit.analyzer import iter_goal_files
+
+        assert iter_goal_files(tmp_path / "missing") == []
+
+    def test_analyze_discovers_goal_directories(self, nested_project):
+        result = ProjectAnalyzer(nested_project).analyze()
+
+        assert len(result.goals) == 1
+        goal = result.goals[0]
+        assert goal.id == "001-smarter-insights"
+        assert goal.phase == "execute"
+        assert goal.metrics_defined is True
+        assert result.phase == "execution"
+        assert result.milestone_count == 3
+        assert result.completed_milestones == 0
+
+    def test_analyze_mixed_layouts(self, nested_project):
+        goals_dir = nested_project / ".goalkit" / "goals"
+        (goals_dir / "002-legacy.md").write_text(
+            "# Legacy Goal\n\n## Completion\n40%\n", encoding="utf-8"
+        )
+
+        result = ProjectAnalyzer(nested_project).analyze()
+
+        assert [goal.id for goal in result.goals] == [
+            "001-smarter-insights",
+            "002-legacy",
+        ]
+        assert result.goals[1].completion_percent == 40
+
+    def test_extract_phase_ignores_prose_mentions(self, tmp_path):
+        analyzer = ProjectAnalyzer(self._empty_project(tmp_path))
+
+        content = (
+            "**Vision Alignment**: Success Scenario 1\n"
+            "# Goal Statement: Smarter insights\n"
+        )
+
+        # "Vision Alignment" is prose, not a phase marker; the goal heading is.
+        assert analyzer._extract_phase(content) == "goal"
+        assert analyzer._extract_phase(
+            "Goals and strategies and milestones are described below."
+        ) == "execute"
+
+    def test_extract_completion_ignores_success_metrics(self, tmp_path):
+        analyzer = ProjectAnalyzer(self._empty_project(tmp_path))
+
+        content = "### Key Metrics\n\n- 80% of users report insights are actionable\n"
+
+        assert analyzer._extract_completion(content) == 0
+
+    def test_extract_completion_reads_completion_section(self, tmp_path):
+        analyzer = ProjectAnalyzer(self._empty_project(tmp_path))
+
+        assert analyzer._extract_completion("## Completion\n50%\n") == 50
+
+    def test_has_metrics_detects_nested_heading(self, tmp_path):
+        analyzer = ProjectAnalyzer(self._empty_project(tmp_path))
+
+        assert analyzer._has_metrics("### Key Metrics\n- SC-001: 80%") is True
+
+    def test_no_metric_strength_without_goals(self, tmp_path):
+        analyzer = ProjectAnalyzer(self._empty_project(tmp_path))
+
+        insights = ProjectAnalyzer.get_insights_from_result(analyzer.analyze())
+
+        assert "Most goals have defined metrics for tracking" not in insights["strengths"]
+
+    @staticmethod
+    def _empty_project(tmp_path: Path) -> Path:
+        (tmp_path / ".goalkit" / "goals").mkdir(parents=True)
+        return tmp_path

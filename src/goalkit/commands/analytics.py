@@ -18,6 +18,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from goalkit.analytics import AnalyticsEngine
+from goalkit.analyzer import iter_goal_files
 
 app = typer.Typer(help="Analytics, trends, and forecasting")
 console = Console()
@@ -59,11 +60,9 @@ def _resolve_goal_id(goal_id: Optional[str]) -> str:
             pass
 
     # Try goals directory as fallback
-    goals_dir = goalkit_path / "goals"
-    if goals_dir.exists():
-        goal_files = sorted(goals_dir.glob("*.md"))
-        if goal_files:
-            return goal_files[0].stem
+    goal_files = iter_goal_files(goalkit_path / "goals")
+    if goal_files:
+        return goal_files[0][0]
 
     console.print("[red]Error: No goals found. Please specify a goal ID.[/red]")
     raise typer.Exit(1)

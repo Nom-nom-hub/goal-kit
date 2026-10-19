@@ -25,6 +25,7 @@ def temp_project_dir() -> Generator[Path, None, None]:
 @pytest.fixture
 def git_repo(temp_project_dir: Path) -> Generator[Path, None, None]:
     """Create a temporary git repository for testing."""
+    previous_cwd = Path.cwd()
     os.chdir(temp_project_dir)
     subprocess.run(["git", "init"], check=True, capture_output=True)
     subprocess.run(
@@ -37,7 +38,12 @@ def git_repo(temp_project_dir: Path) -> Generator[Path, None, None]:
         check=True,
         capture_output=True,
     )
-    yield temp_project_dir
+    try:
+        yield temp_project_dir
+    finally:
+        # The temp directory is removed on teardown; restore the cwd first so
+        # later tests (and monkeypatch.chdir) don't run from a deleted path.
+        os.chdir(previous_cwd)
 
 
 @pytest.fixture

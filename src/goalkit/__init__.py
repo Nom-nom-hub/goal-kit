@@ -31,9 +31,8 @@ import zipfile
 import tempfile
 import shutil
 import shlex
-import json
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple
 import datetime
 
 import typer
@@ -52,11 +51,8 @@ import truststore
 # Import helpers
 from .helpers import (
     StepTracker,
-    get_key,
     select_with_arrows,
-    merge_json_files,
     handle_vscode_settings,
-    is_git_repo,
     init_git_repo,
     check_tool,
     validate_project_name,
@@ -111,7 +107,7 @@ def _github_auth_headers(cli_token: str | None = None) -> dict:
 
 
 # Agent configuration with name, folder, install URL, and CLI tool requirement
-AGENT_CONFIG = {
+AGENT_CONFIG: dict[str, dict[str, Any]] = {
     "copilot": {
         "name": "GitHub Copilot",
         "folder": ".github/",
@@ -428,7 +424,7 @@ def download_template_from_github(
 
     zip_path = download_dir / filename
     if verbose:
-        console.print(f"[cyan]Downloading template...[/cyan]")
+        console.print("[cyan]Downloading template...[/cyan]")
 
     try:
         with _http_client().stream(
@@ -483,7 +479,6 @@ def download_template_from_github(
 
 def create_agent_file(project_path: Path, ai_assistant: str):
     """Create a customized agent file using the agent file template."""
-    import datetime
 
     # Read the agent file template
     template_path = (
@@ -633,7 +628,6 @@ The following scripts are available in `.goalkit/scripts/bash/` and `.goalkit/sc
 
 def create_agent_context_file(project_path: Path, ai_assistant: str):
     """Create agent context files with Goal Kit commands based on the selected AI assistant."""
-    import datetime
     import os
 
     # Define the agent context files patterns based on the selected agent
@@ -662,14 +656,12 @@ def create_agent_context_file(project_path: Path, ai_assistant: str):
     # Determine script type based on OS
     is_windows = os.name == "nt"
     if is_windows:
-        vision_note = "(create vision.md manually in `.goalkit/goals/`)"
         goal_script = r".\\.goalkit\\scripts\\powershell\\create-new-goal.ps1"
         strategies_script = r".\\.goalkit\\scripts\\powershell\\setup-strategy.ps1"
         milestones_script = r".\\.goalkit\\scripts\\powershell\\setup-milestones.ps1"
         execute_script = r".\\.goalkit\\scripts\\powershell\\setup-execution.ps1"
         script_type_name = "PowerShell"
     else:
-        vision_note = "(create vision.md manually in `.goalkit/goals/`)"
         goal_script = "./.goalkit/scripts/bash/create-new-goal.sh"
         strategies_script = "./.goalkit/scripts/bash/setup-strategy.sh"
         milestones_script = "./.goalkit/scripts/bash/setup-milestones.sh"
@@ -812,7 +804,7 @@ def download_and_extract_template(
                             tracker.complete("flatten")
                         elif verbose:
                             console.print(
-                                f"[cyan]Found nested directory structure[/cyan]"
+                                "[cyan]Found nested directory structure[/cyan]"
                             )
 
                     for item in source_dir.iterdir():
@@ -855,7 +847,7 @@ def download_and_extract_template(
                             shutil.copy2(item, dest_path)
                     if verbose and not tracker:
                         console.print(
-                            f"[cyan]Template files merged into current directory[/cyan]"
+                            "[cyan]Template files merged into current directory[/cyan]"
                         )
             else:
                 zip_ref.extractall(project_path)
@@ -889,7 +881,7 @@ def download_and_extract_template(
                         tracker.complete("flatten")
                     elif verbose:
                         console.print(
-                            f"[cyan]Flattened nested directory structure[/cyan]"
+                            "[cyan]Flattened nested directory structure[/cyan]"
                         )
 
         # Create agent context file based on selected AI assistant
@@ -965,7 +957,7 @@ def copy_scripts_to_goalkit(
             tracker.add("copy-scripts", "Copy scripts")
             tracker.complete("copy-scripts", f"copied {copied_count} scripts")
         else:
-            console.print(f"[cyan]Copied scripts to .goalkit/scripts/[/cyan]")
+            console.print("[cyan]Copied scripts to .goalkit/scripts/[/cyan]")
 
     except Exception as e:
         if tracker:
@@ -1109,8 +1101,8 @@ def ensure_executable_scripts(
             )
         if failures:
             console.print("[yellow]Some scripts could not be updated:[/yellow]")
-            for f in failures:
-                console.print(f"  - {f}")
+            for failure in failures:
+                console.print(f"  - {failure}")
 
 
 def create_agent_config(project_path: Path, selected_ai: str) -> None:
@@ -1143,14 +1135,6 @@ def create_agent_config(project_path: Path, selected_ai: str) -> None:
     agent_folder = agent_folder_map.get(selected_ai)
     if not agent_folder:
         return  # Skip if agent is not in the map
-
-    # Check if this agent requires CLI (and thus should get commands folder)
-    agent_config = AGENT_CONFIG.get(selected_ai)
-    requires_cli = (
-        agent_config and agent_config.get("requires_cli", False)
-        if agent_config
-        else False
-    )
 
     # Path to the agent template directory
     agent_template_path = (
@@ -1395,7 +1379,7 @@ def init(
     )
     if not is_writable:
         error_panel = Panel(
-            write_msg,
+            write_msg or "Path is not writable",
             title="[red]Permission Error[/red]",
             border_style="red",
             padding=(1, 2),
@@ -1483,9 +1467,6 @@ def init(
     console.print(f"[cyan]Selected script type:[/cyan] {selected_script}")
 
     tracker = StepTracker("Initialize Goalkit Project")
-
-    global _goalkit_tracker_active
-    _goalkit_tracker_active = True
 
     tracker.add("precheck", "Check required tools")
     tracker.complete("precheck", "ok")
@@ -1711,10 +1692,10 @@ def check():
 
     # Check VS Code variants (not in agent config)
     tracker.add("code", "Visual Studio Code")
-    code_ok = check_tool("code", CLAUDE_LOCAL_PATH, tracker=tracker)
+    check_tool("code", CLAUDE_LOCAL_PATH, tracker=tracker)
 
     tracker.add("code-insiders", "Visual Studio Code Insiders")
-    code_insiders_ok = check_tool("code-insiders", CLAUDE_LOCAL_PATH, tracker=tracker)
+    check_tool("code-insiders", CLAUDE_LOCAL_PATH, tracker=tracker)
 
     console.print(tracker.render())
 
@@ -1736,7 +1717,8 @@ def status(
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display project status and health information."""
-    show_banner()
+    if not json_output:
+        show_banner()
     project_path_obj = Path(project_path) if project_path else None
     status_command(
         project_path=project_path_obj, verbose=verbose, json_output=json_output
@@ -1755,7 +1737,8 @@ def milestones(
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display milestone progress and execution history."""
-    show_banner()
+    if not json_output:
+        show_banner()
     project_path_obj = Path(project_path) if project_path else None
     milestones_command(
         project_path=project_path_obj,
@@ -1780,7 +1763,8 @@ def metrics(
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display project metrics and health trends."""
-    show_banner()
+    if not json_output:
+        show_banner()
     project_path_obj = Path(project_path) if project_path else None
     metrics_command(
         project_path=project_path_obj,
@@ -1803,7 +1787,8 @@ def tasks(
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display and manage project tasks."""
-    show_banner()
+    if not json_output:
+        show_banner()
     tasks_command(
         path=project_path,
         goal_id=goal_id,
@@ -1821,7 +1806,8 @@ def report(
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display project reports and metrics."""
-    show_banner()
+    if not json_output:
+        show_banner()
     report_command(
         path=project_path,
         report_type=report_type,
@@ -1841,7 +1827,8 @@ def insights(
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
     """Display actionable insights based on project data."""
-    show_banner()
+    if not json_output:
+        show_banner()
     insights_command(
         path=project_path,
         report_type=report_type,

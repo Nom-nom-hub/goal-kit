@@ -555,8 +555,11 @@ class TestRetryLogic:
         assert result is True
         assert mock_post.call_count == 3
 
+    @patch("goalkit.webhooks.time.sleep")
     @patch("goalkit.webhooks.httpx.post")
-    def test_delivery_max_retries(self, mock_post, sample_webhook, webhook_manager):
+    def test_delivery_max_retries(
+        self, mock_post, mock_sleep, sample_webhook, webhook_manager
+    ):
         """Test max retry limit."""
         mock_post.side_effect = Exception("Connection error")
 
@@ -572,8 +575,11 @@ class TestRetryLogic:
         # Should attempt initial + max retries
         assert mock_post.call_count == 6  # 1 + 5 retries
 
+    @patch("goalkit.webhooks.time.sleep")
     @patch("goalkit.webhooks.httpx.post")
-    def test_failure_count_incremented(self, mock_post, sample_webhook, webhook_manager):
+    def test_failure_count_incremented(
+        self, mock_post, mock_sleep, sample_webhook, webhook_manager
+    ):
         """Test that failure count is incremented."""
         mock_post.side_effect = Exception("Connection error")
 
@@ -588,9 +594,10 @@ class TestRetryLogic:
         updated = webhook_manager.get_webhook(sample_webhook.id)
         assert updated.failure_count > 0
 
+    @patch("goalkit.webhooks.time.sleep")
     @patch("goalkit.webhooks.httpx.post")
     def test_webhook_disabled_on_too_many_failures(
-        self, mock_post, sample_webhook, webhook_manager
+        self, mock_post, mock_sleep, sample_webhook, webhook_manager
     ):
         """Test webhook is disabled after too many failures."""
         mock_post.side_effect = Exception("Connection error")

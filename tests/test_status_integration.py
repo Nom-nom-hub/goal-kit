@@ -254,3 +254,23 @@ class TestEdgeCases:
             # Should return default project
             assert project.name == project_path.name
             assert project.agent == "unknown"
+
+
+class TestJsonOutput:
+    """The CLI's --json modes must emit machine-readable output only."""
+
+    @pytest.mark.parametrize(
+        "command",
+        ["status", "milestones", "metrics", "tasks", "report", "insights"],
+    )
+    def test_json_commands_emit_valid_json(self, goalkit_project, monkeypatch, command):
+        from typer.testing import CliRunner
+
+        from goalkit import app
+
+        monkeypatch.chdir(goalkit_project)
+
+        result = CliRunner().invoke(app, [command, "--json"])
+
+        assert result.exit_code == 0, result.output
+        json.loads(result.output)

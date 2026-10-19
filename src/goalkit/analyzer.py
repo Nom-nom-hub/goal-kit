@@ -6,11 +6,74 @@ including goal parsing, completion tracking, and health scoring.
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 import json
+import re
 from datetime import datetime
 
-from .models import Project, Goal, Milestone, Task
+from .models import Project, Goal, Milestone
+
+
+def iter_goal_files(goals_dir: Path) -> List[Tuple[str, Path]]:
+    """List every goal file in a ``.goalkit/goals`` directory.
+
+    Goalkit supports two layouts and both must be discovered:
+
+    - ``goals/<goal-id>.md`` - single-file goals.
+    - ``goals/<goal-id>/goal.md`` - goal directories created by the
+      workflow scripts (``create-new-goal.sh`` and friends).
+
+    Args:
+        goals_dir: Path to the ``.goalkit/goals`` directory.
+
+    Returns:
+        Sorted ``(goal_id, goal_file)`` pairs. Empty when the directory
+        is missing.
+    """
+    goals_dir = Path(goals_dir)
+    if not goals_dir.is_dir():
+        return []
+
+    found: Dict[str, Path] = {}
+    for entry in sorted(goals_dir.iterdir()):
+        if entry.is_file() and entry.suffix == ".md":
+            found.setdefault(entry.stem, entry)
+        elif entry.is_dir():
+            goal_md = entry / "goal.md"
+            if goal_md.is_file():
+                found[entry.name] = goal_md
+
+    return sorted(found.items())
+
+
+def count_goal_milestones(goals_dir: Path, goal_id: str) -> Optional[int]:
+    """Count distinct milestones in a goal directory's milestone plan.
+
+    Args:
+        goals_dir: Path to the ``.goalkit/goals`` directory.
+        goal_id: Goal directory name.
+
+    Returns:
+        Number of milestones, or None when the goal has no
+        ``milestones.md`` to read.
+    """
+    milestone_file = Path(goals_dir) / goal_id / "milestones.md"
+    if not milestone_file.is_file():
+        return None
+
+    try:
+        content = milestone_file.read_text(encoding="utf-8")
+    except OSError:
+        return None
+
+    numbers = set(
+        re.findall(
+            r"^\s*(?:#{1,6}\s*|\*\*|[-*]\s+\*\*)?Milestone\s+(\d+)\b",
+            content,
+            re.IGNORECASE | re.MULTILINE,
+        )
+    )
+    return len(numbers)
 
 
 @dataclass
@@ -130,9 +193,9 @@ class ProjectAnalyzer:
             return []
 
         goals = []
-        for goal_file in self.goals_dir.glob("*.md"):
+        for goal_id, goal_file in iter_goal_files(self.goals_dir):
             try:
-                goal = self._parse_goal_file(goal_file)
+                goal = self._parse_goal_file(goal_file, goal_id=goal_id)
                 if goal:
                     goals.append(goal)
             except Exception:
@@ -144,11 +207,15 @@ class ProjectAnalyzer:
 
         return goals
 
-    def _parse_goal_file(self, goal_file: Path) -> Optional[Goal]:
+    def _parse_goal_file(
+        self, goal_file: Path, goal_id: Optional[str] = None
+    ) -> Optional[Goal]:
         """Parse a single goal markdown file.
         
         Args:
             goal_file: Path to goal markdown file
+            goal_id: Optional goal ID (directory name for goal directories).
+                Defaults to the file stem.
             
         Returns:
             Goal instance or None if parsing fails
@@ -158,11 +225,11 @@ class ProjectAnalyzer:
                 content = f.read()
 
             # Extract basic info from filename and content
-            goal_id = goal_file.stem  # Use filename without .md
+            goal_id = goal_id or goal_file.stem  # Use filename without .md
             name = goal_id.replace("-", " ").title()
 
-            # Try to extract phase from content
-            phase = self._extract_phase(content)
+            # Prefer workflow artifacts next to goal.md over free-text hints
+            phase = self._phase_from_layout(goal_file) or self._extract_phase(content)
 
             # Try to extract completion percentage
             completion_percent = self._extract_completion(content)
@@ -182,8 +249,34 @@ class ProjectAnalyzer:
         except Exception:
             return None
 
+    def _phase_from_layout(self, goal_file: Path) -> Optional[str]:
+        """Infer a goal's phase from the workflow files in its directory.
+
+        Goal directories gain one artifact per GDD phase. The most advanced
+        artifact present wins. Returns None for single-file goals, which carry
+        no phase artifacts.
+        """
+        goal_dir = goal_file.parent
+        if goal_dir == self.goals_dir:
+            return None
+
+        artifacts = (
+            ("execution.md", "execute"),
+            ("milestones.md", "milestones"),
+            ("strategies.md", "strategies"),
+        )
+        for filename, phase in artifacts:
+            if (goal_dir / filename).is_file():
+                return phase
+
+        return "goal"
+
     def _extract_phase(self, content: str) -> str:
         """Extract phase from goal content.
+        
+        Only explicit phase markers (headings or ``Phase:`` labels) count, so
+        prose such as "Vision Alignment" is not mistaken for a phase. The most
+        advanced marker wins because later phases imply earlier ones.
         
         Args:
             content: Goal markdown content
@@ -191,11 +284,9 @@ class ProjectAnalyzer:
         Returns:
             Phase string (default 'execute')
         """
-        phases = ["vision", "goal", "strategies", "milestones", "execute", "done"]
-        content_lower = content.lower()
-
-        for phase in phases:
-            if phase in content_lower:
+        for phase in ("done", "execute", "milestones", "strategies", "goal", "vision"):
+            marker = rf"^\s*(?:#+\s*|\*\*)?(?:phase\s*[:\-]\s*)?{phase}\b"
+            if re.search(marker, content, re.IGNORECASE | re.MULTILINE):
                 return phase
 
         return "execute"
@@ -209,21 +300,29 @@ class ProjectAnalyzer:
         Returns:
             Completion percentage (0-100)
         """
-        import re
+        def _clamp(value: str) -> int:
+            return min(100, max(0, int(value)))
 
-        # Look for patterns like "50%" or "completion: 50"
-        # Only match patterns that look like legitimate percentages
-        patterns = [
-            r"(?:completion|progress|completed)\s*:?\s*(\d+)%",
-            r"(\d+)%\s*(?:complete|done|finished)",
-            r"^.*?(\d+)%",
-        ]
-
-        for pattern in patterns:
-            match = re.search(pattern, content, re.IGNORECASE | re.MULTILINE)
+        # Explicit progress statements, e.g. "Completion: 75%"
+        for pattern in (
+            r"(?:completion|progress|completed)\s*[:=]\s*(\d+)\s*%",
+            r"(\d+)\s*%\s*(?:complete|completed|done|finished)",
+        ):
+            match = re.search(pattern, content, re.IGNORECASE)
             if match:
-                percent = int(match.group(1))
-                return min(100, max(0, percent))
+                return _clamp(match.group(1))
+
+        # A bare percentage is only progress when it sits in a completion or
+        # progress section; otherwise success metrics like "80% of users"
+        # would be read as progress.
+        section = re.search(
+            r"(?ims)^#{1,6}\s*(?:completion|progress)\s*$(.*?)(?=^#{1,6}\s|\Z)",
+            content,
+        )
+        if section:
+            match = re.search(r"(\d+)\s*%", section.group(1))
+            if match:
+                return _clamp(match.group(1))
 
         return 0
 
@@ -252,11 +351,18 @@ class ProjectAnalyzer:
         Returns:
             True if metrics section found
         """
-        import re
-        
-        # Look for ## Metrics heading or actual KPI definitions
-        patterns = [r"^##\s+Metrics", r"^##\s+KPI", r"KPI\s*\d+:\s*", r"\bKPI\b"]
-        return any(re.search(pattern, content, re.IGNORECASE | re.MULTILINE) for pattern in patterns)
+        # A metrics/KPI heading (at any depth, e.g. "### Key Metrics") or an
+        # explicit KPI definition counts as metrics being defined.
+        patterns = [
+            r"^#{1,6}\s+.*\bmetrics?\b",
+            r"^#{1,6}\s+.*\bkpis?\b",
+            r"KPI\s*\d+\s*:\s*",
+            r"\bKPI\b",
+        ]
+        return any(
+            re.search(pattern, content, re.IGNORECASE | re.MULTILINE)
+            for pattern in patterns
+        )
 
     def _calculate_completion(self, goals: List[Goal]) -> float:
         """Calculate overall project completion percentage.
@@ -334,7 +440,6 @@ class ProjectAnalyzer:
 
         # Determine phase based on goal states
         phases = [g.phase for g in goals]
-        phase_counts = {phase: phases.count(phase) for phase in set(phases)}
 
         if completion >= 90:
             return "complete"
@@ -354,9 +459,18 @@ class ProjectAnalyzer:
         Returns:
             Total milestone count
         """
-        # For now, return a simple count based on goals
-        # In future, will parse actual milestone files
-        return max(0, len(goals) * 2)
+        total = 0
+        for goal in goals:
+            parsed = self._count_goal_milestones(goal.id)
+            # Legacy single-file goals have no milestone plan to parse; keep
+            # the historic two-per-goal estimate for them.
+            total += 2 if parsed is None else parsed
+
+        return max(0, total)
+
+    def _count_goal_milestones(self, goal_id: str) -> Optional[int]:
+        """Count distinct milestones in a goal directory's milestone plan."""
+        return count_goal_milestones(self.goals_dir, goal_id)
 
     def _count_completed_milestones(self, goals: List[Goal]) -> int:
         """Count completed milestones across all goals.
@@ -473,7 +587,7 @@ class ProjectAnalyzer:
             strengths.append("Over 50% completion shows solid progress")
         
         goals_with_metrics = [g for g in result.goals if g.metrics_defined]
-        if len(goals_with_metrics) >= len(result.goals) * 0.7:
+        if result.goals and len(goals_with_metrics) >= len(result.goals) * 0.7:
             strengths.append("Most goals have defined metrics for tracking")
         
         return strengths
