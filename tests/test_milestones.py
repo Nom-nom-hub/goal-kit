@@ -46,9 +46,10 @@ class TestMilestonesCommand:
             goals_dir = goalkit_dir / "goals"
             goalkit_dir.mkdir(parents=True, exist_ok=True)
             goals_dir.mkdir(parents=True, exist_ok=True)
-            goal_dir = goals_dir / "001-test-goal"
-            goal_dir.mkdir()
-            (goal_dir / "goal.md").write_text("# Goal: Test Goal\n")
+            for goal_id in ("001-test-goal", "002-other-goal"):
+                goal_dir = goals_dir / goal_id
+                goal_dir.mkdir()
+                (goal_dir / "goal.md").write_text(f"# Goal: {goal_id}\n")
 
             tracker = ExecutionTracker(project_path)
 
@@ -107,12 +108,15 @@ class TestMilestonesCommand:
         milestones(project_with_milestones, goal_id="001-test-goal")
         captured = capsys.readouterr()
         assert captured.err == "" or "Error" not in captured.err
+        assert "Test Goal" in captured.out
+        assert "Other Goal" not in captured.out
 
     def test_milestones_with_invalid_goal_id(self, project_with_milestones, capsys):
         """Test milestones command with invalid goal ID exits nonzero."""
-        with pytest.raises(typer.Exit):
+        with pytest.raises(typer.Exit) as exc:
             milestones(project_with_milestones, goal_id="nonexistent", json_output=True)
         captured = capsys.readouterr()
+        assert exc.value.exit_code == 1
         assert "error" in captured.out.lower()
 
 

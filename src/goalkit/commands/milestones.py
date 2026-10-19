@@ -36,7 +36,7 @@ def milestones(
         json_output: Output results as JSON instead of formatted text.
         
     Raises:
-        FileNotFoundError: If project_path is not a valid goal-kit project.
+        typer.Exit: If project_path cannot be read as a goal-kit project.
     """
     console = Console()
     
@@ -49,7 +49,7 @@ def milestones(
         analyzer = ProjectAnalyzer(project_path)
         result = analyzer.analyze()
         tracker = ExecutionTracker(project_path)
-    except FileNotFoundError as e:
+    except (OSError, ValueError) as e:
         fail(str(e))
     
     if json_output:

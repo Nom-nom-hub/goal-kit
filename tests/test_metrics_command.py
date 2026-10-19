@@ -45,9 +45,10 @@ class TestMetricsCommand:
             goals_dir = goalkit_dir / "goals"
             goalkit_dir.mkdir(parents=True, exist_ok=True)
             goals_dir.mkdir(parents=True, exist_ok=True)
-            goal_dir = goals_dir / "001-test-goal"
-            goal_dir.mkdir()
-            (goal_dir / "goal.md").write_text("# Goal: Test Goal\n")
+            for goal_id in ("001-test-goal", "002-other-goal"):
+                goal_dir = goals_dir / goal_id
+                goal_dir.mkdir()
+                (goal_dir / "goal.md").write_text(f"# Goal: {goal_id}\n")
 
             tracker = MetricsTracker(project_path)
 
@@ -89,13 +90,15 @@ class TestMetricsCommand:
         """Test metrics command with goal ID filter."""
         metrics(project_with_metrics, goal_id="001-test-goal")
         captured = capsys.readouterr()
-        assert "Error" not in captured.out or captured.out != ""
+        assert "Test Goal" in captured.out
+        assert "Other Goal" not in captured.out
 
     def test_metrics_with_invalid_goal_id(self, project_with_metrics, capsys):
         """Test metrics command with invalid goal ID exits nonzero."""
-        with pytest.raises(typer.Exit):
+        with pytest.raises(typer.Exit) as exc:
             metrics(project_with_metrics, goal_id="nonexistent", json_output=True)
         captured = capsys.readouterr()
+        assert exc.value.exit_code == 1
         assert "error" in captured.out.lower()
 
 

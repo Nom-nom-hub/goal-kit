@@ -33,7 +33,7 @@ def tasks_command(
     project_path = Path(path or ".")
     console = Console()
 
-    if not (project_path / ".goalkit").exists():
+    if not (project_path / ".goalkit").is_dir():
         fail(
             f"Not a goal-kit project (missing .goalkit): {project_path.resolve()}",
             hint="Run 'goalkit init' to create one",

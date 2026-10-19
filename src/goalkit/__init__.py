@@ -253,8 +253,23 @@ app.command(name="doctor", help="Diagnose project health and suggest fixes")(
 )
 
 
+def _banner_enabled() -> bool:
+    """Return whether decorative output should be printed.
+
+    The banner is shown only on an interactive terminal; when stdout is
+    captured (scripts, CI, agents) it is noise rather than information.
+    Set GOALKIT_NO_BANNER to force it off on a terminal.
+    """
+    if os.environ.get("GOALKIT_NO_BANNER"):
+        return False
+    return sys.stdout.isatty()
+
+
 def show_banner():
     """Display the ASCII art banner."""
+    if not _banner_enabled():
+        return
+
     banner_lines = BANNER.strip().split("\n")
     colors = ["bright_blue", "blue", "cyan", "bright_cyan", "white", "bright_white"]
 

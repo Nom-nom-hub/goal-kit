@@ -37,11 +37,35 @@ def test_command_fails_outside_project(tmp_path, monkeypatch, args):
 
 
 def test_successful_command_exits_zero(goalkit_project):
-    """A readable project still succeeds."""
+    """A readable project succeeds and actually prints its status."""
     result = runner.invoke(app, ["status"])
 
     assert result.exit_code == 0
+    assert "Phase" in result.stdout or "Completion" in result.stdout
     assert "Not a goal-kit project" not in result.stderr
+
+
+def test_failure_does_not_print_a_banner(tmp_path, monkeypatch):
+    """Non-interactive failures must leave stdout untouched."""
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(app, ["status"])
+
+    assert result.exit_code == 1
+    assert result.stdout == ""
+    assert "######" not in result.stdout
+
+
+def test_error_message_with_markup_characters(tmp_path, monkeypatch):
+    """A path containing Rich markup tokens is reported verbatim."""
+    monkeypatch.chdir(tmp_path)
+    weird = tmp_path / "proj[bold]"
+
+    result = runner.invoke(app, ["status", str(weird)])
+
+    assert result.exit_code == 1
+    assert "proj[bold]" in result.stderr
+    assert "Traceback" not in result.stderr
 
 
 def test_json_failure_keeps_stdout_clean(tmp_path, monkeypatch):

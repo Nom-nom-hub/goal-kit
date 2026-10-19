@@ -10,6 +10,7 @@ from typing import NoReturn
 
 import typer
 from rich.console import Console
+from rich.markup import escape
 
 
 def fail(message: str, code: int = 1, *, hint: str | None = None) -> NoReturn:
@@ -24,7 +25,9 @@ def fail(message: str, code: int = 1, *, hint: str | None = None) -> NoReturn:
         typer.Exit: Always, so callers do not continue after reporting a failure.
     """
     console = Console(stderr=True)
-    console.print(f"[red]Error:[/red] {message}")
+    # Messages include user input (paths, filter values); escape it so Rich
+    # cannot parse it as markup or raise MarkupError on a stray bracket.
+    console.print(f"[red]Error:[/red] {escape(message)}")
     if hint:
-        console.print(f"[dim]{hint}[/dim]")
+        console.print(f"[dim]{escape(hint)}[/dim]")
     raise typer.Exit(code)

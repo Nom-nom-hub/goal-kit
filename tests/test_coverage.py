@@ -278,11 +278,21 @@ class TestBannerFunctionality:
         runner = CliRunner()
         
         with patch("goalkit.console") as mock_console:
-            from goalkit import show_banner
-            show_banner()
-            
+            with patch("goalkit._banner_enabled", return_value=True):
+                from goalkit import show_banner
+                show_banner()
+
             # Should call console.print
             assert mock_console.print.called
+
+    def test_banner_hidden_when_output_is_captured(self):
+        """Test the banner is skipped when stdout is not a terminal."""
+        with patch("goalkit.console") as mock_console:
+            with patch("goalkit._banner_enabled", return_value=False):
+                from goalkit import show_banner
+                show_banner()
+
+            assert not mock_console.print.called
 
     def test_banner_in_app_help(self):
         """Test banner appears in app help."""
