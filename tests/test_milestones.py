@@ -3,6 +3,7 @@
 import pytest
 import tempfile
 import json
+import typer
 from pathlib import Path
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch, MagicMock
@@ -45,6 +46,9 @@ class TestMilestonesCommand:
             goals_dir = goalkit_dir / "goals"
             goalkit_dir.mkdir(parents=True, exist_ok=True)
             goals_dir.mkdir(parents=True, exist_ok=True)
+            goal_dir = goals_dir / "001-test-goal"
+            goal_dir.mkdir()
+            (goal_dir / "goal.md").write_text("# Goal: Test Goal\n")
 
             tracker = ExecutionTracker(project_path)
 
@@ -69,10 +73,12 @@ class TestMilestonesCommand:
         assert captured.err == "" or "Error" not in captured.err
 
     def test_milestones_with_invalid_path(self, capsys):
-        """Test milestones command with invalid path."""
-        milestones(Path("/nonexistent/path"))
+        """Test milestones command with invalid path fails loudly."""
+        with pytest.raises(typer.Exit) as exc:
+            milestones(Path("/nonexistent/path"))
         captured = capsys.readouterr()
-        assert "Error" in captured.out
+        assert exc.value.exit_code == 1
+        assert "Error" in captured.err
 
     def test_milestones_with_none_path(self, capsys):
         """Test milestones command with None path (uses cwd)."""
@@ -80,9 +86,10 @@ class TestMilestonesCommand:
             mock_cwd.return_value = Path("/tmp")
             with patch("goalkit.commands.milestones.ProjectAnalyzer") as mock_analyzer:
                 mock_analyzer.side_effect = FileNotFoundError("Not a goal-kit project")
-                milestones(None)
+                with pytest.raises(typer.Exit):
+                    milestones(None)
                 captured = capsys.readouterr()
-                assert "Error" in captured.out
+                assert "Error" in captured.err
 
     def test_milestones_json_output(self, project_with_milestones, capsys):
         """Test milestones command with JSON output."""
@@ -97,16 +104,16 @@ class TestMilestonesCommand:
 
     def test_milestones_with_goal_filter(self, project_with_milestones, capsys):
         """Test milestones command with goal ID filter."""
-        milestones(project_with_milestones, goal_id="goal1")
+        milestones(project_with_milestones, goal_id="001-test-goal")
         captured = capsys.readouterr()
         assert captured.err == "" or "Error" not in captured.err
 
     def test_milestones_with_invalid_goal_id(self, project_with_milestones, capsys):
-        """Test milestones command with invalid goal ID."""
-        milestones(project_with_milestones, goal_id="nonexistent", json_output=True)
+        """Test milestones command with invalid goal ID exits nonzero."""
+        with pytest.raises(typer.Exit):
+            milestones(project_with_milestones, goal_id="nonexistent", json_output=True)
         captured = capsys.readouterr()
-        # Should handle gracefully
-        assert "error" in captured.out.lower() or captured.out != ""
+        assert "error" in captured.out.lower()
 
 
 class TestOutputJSON:
@@ -193,8 +200,9 @@ class TestOutputJSON:
         result, tracker = sample_data
         console = Mock()
         
-        _output_json(result, tracker, "nonexistent", console)
-        
+        with pytest.raises(typer.Exit):
+            _output_json(result, tracker, "nonexistent", console)
+
         console.print_json.assert_called_once()
         call_args = console.print_json.call_args
         data = call_args.kwargs["data"]

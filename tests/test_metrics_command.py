@@ -3,6 +3,7 @@
 import pytest
 import tempfile
 import json
+import typer
 from pathlib import Path
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
@@ -44,6 +45,9 @@ class TestMetricsCommand:
             goals_dir = goalkit_dir / "goals"
             goalkit_dir.mkdir(parents=True, exist_ok=True)
             goals_dir.mkdir(parents=True, exist_ok=True)
+            goal_dir = goals_dir / "001-test-goal"
+            goal_dir.mkdir()
+            (goal_dir / "goal.md").write_text("# Goal: Test Goal\n")
 
             tracker = MetricsTracker(project_path)
 
@@ -63,10 +67,13 @@ class TestMetricsCommand:
         assert "Error" not in captured.out or captured.out != ""
 
     def test_metrics_with_invalid_path(self, capsys):
-        """Test metrics command with invalid path."""
-        metrics(Path("/nonexistent/path"))
+        """Test metrics command with invalid path fails loudly."""
+        with pytest.raises(typer.Exit) as exc:
+            metrics(Path("/nonexistent/path"))
         captured = capsys.readouterr()
-        assert "Error" in captured.out
+        assert exc.value.exit_code == 1
+        assert "Error" in captured.err
+        assert captured.out == ""
 
     def test_metrics_json_output(self, project_with_metrics, capsys):
         """Test metrics command with JSON output."""
@@ -80,15 +87,16 @@ class TestMetricsCommand:
 
     def test_metrics_with_goal_filter(self, project_with_metrics, capsys):
         """Test metrics command with goal ID filter."""
-        metrics(project_with_metrics, goal_id="goal1")
+        metrics(project_with_metrics, goal_id="001-test-goal")
         captured = capsys.readouterr()
         assert "Error" not in captured.out or captured.out != ""
 
     def test_metrics_with_invalid_goal_id(self, project_with_metrics, capsys):
-        """Test metrics command with invalid goal ID."""
-        metrics(project_with_metrics, goal_id="nonexistent", json_output=True)
+        """Test metrics command with invalid goal ID exits nonzero."""
+        with pytest.raises(typer.Exit):
+            metrics(project_with_metrics, goal_id="nonexistent", json_output=True)
         captured = capsys.readouterr()
-        assert "error" in captured.out.lower() or captured.out != ""
+        assert "error" in captured.out.lower()
 
 
 class TestOutputJSON:
@@ -165,8 +173,9 @@ class TestOutputJSON:
         result, tracker = sample_data
         console = Mock()
         
-        _output_json(result, tracker, "nonexistent", None, 30, console)
-        
+        with pytest.raises(typer.Exit):
+            _output_json(result, tracker, "nonexistent", None, 30, console)
+
         console.print_json.assert_called_once()
 
 

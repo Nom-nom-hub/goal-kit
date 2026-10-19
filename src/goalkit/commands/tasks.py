@@ -11,8 +11,9 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 
-from ..tasks import TaskTracker, TaskStats
+from ..errors import fail
 from ..models import TaskStatus
+from ..tasks import TaskTracker, TaskStats
 
 
 def tasks_command(
@@ -32,11 +33,16 @@ def tasks_command(
     project_path = Path(path or ".")
     console = Console()
 
+    if not (project_path / ".goalkit").exists():
+        fail(
+            f"Not a goal-kit project (missing .goalkit): {project_path.resolve()}",
+            hint="Run 'goalkit init' to create one",
+        )
+
     try:
         tracker = TaskTracker(project_path)
     except Exception as e:
-        console.print(f"[red]Error loading tasks: {e}[/red]")
-        return
+        fail(f"Could not load tasks: {e}")
 
     tasks = tracker.get_all_tasks()
 
@@ -49,10 +55,10 @@ def tasks_command(
             status_enum = TaskStatus(status)
             tasks = [t for t in tasks if t.status == status_enum]
         except ValueError:
-            console.print(
-                f"[red]Invalid status: {status}. Use: todo, in_progress, completed[/red]"
+            fail(
+                f"Invalid status: {status}",
+                hint="Use: todo, in_progress, completed",
             )
-            return
 
     # Get statistics
     if goal_id:

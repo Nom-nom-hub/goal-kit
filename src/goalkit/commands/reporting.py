@@ -11,6 +11,7 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 
+from ..errors import fail
 from ..reporting import ReportGenerator, InsightSeverity
 
 
@@ -32,8 +33,7 @@ def report_command(
     try:
         generator = ReportGenerator(project_path)
     except Exception as e:
-        console.print(f"[red]Error loading project: {e}[/red]")
-        return
+        fail(f"Could not load project: {e}")
 
     # Generate appropriate report
     try:
@@ -44,8 +44,7 @@ def report_command(
         else:
             report = generator.generate_summary_report()
     except Exception as e:
-        console.print(f"[red]Error generating report: {e}[/red]")
-        return
+        fail(f"Could not generate report: {e}")
 
     if json_output:
         _output_report_json(report, console)
@@ -73,8 +72,7 @@ def insights_command(
     try:
         generator = ReportGenerator(project_path)
     except Exception as e:
-        console.print(f"[red]Error loading project: {e}[/red]")
-        return
+        fail(f"Could not load project: {e}")
 
     # Generate appropriate report
     try:
@@ -85,8 +83,7 @@ def insights_command(
         else:
             report = generator.generate_summary_report()
     except Exception as e:
-        console.print(f"[red]Error generating report: {e}[/red]")
-        return
+        fail(f"Could not generate report: {e}")
 
     # Filter insights by severity if specified
     insights = report.insights
@@ -95,10 +92,10 @@ def insights_command(
             severity_enum = InsightSeverity(severity)
             insights = [i for i in insights if i.severity == severity_enum]
         except ValueError:
-            console.print(
-                f"[red]Invalid severity: {severity}. Use: info, warning, alert[/red]"
+            fail(
+                f"Invalid severity: {severity}",
+                hint="Use: info, warning, alert",
             )
-            return
 
     if json_output:
         _output_insights_json(insights, console)

@@ -12,6 +12,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from ..analyzer import ProjectAnalyzer, AnalysisResult
+from ..errors import fail
 
 
 def status(
@@ -43,8 +44,7 @@ def status(
         analyzer = ProjectAnalyzer(project_path)
         result = analyzer.analyze()
     except FileNotFoundError as e:
-        console.print(f"[red]Error: {e}[/red]")
-        return
+        fail(str(e))
     
     if json_output:
         _output_json(result, console)

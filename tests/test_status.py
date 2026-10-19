@@ -3,6 +3,7 @@
 import pytest
 import tempfile
 import json
+import typer
 from pathlib import Path
 from datetime import datetime
 from unittest.mock import Mock, patch, MagicMock
@@ -46,10 +47,13 @@ class TestStatusCommand:
         assert captured.err == "" or "Error" not in captured.err
 
     def test_status_with_invalid_path(self, capsys):
-        """Test status command with invalid path."""
-        status(Path("/nonexistent/path"))
+        """Test status command with invalid path fails loudly."""
+        with pytest.raises(typer.Exit) as exc:
+            status(Path("/nonexistent/path"))
         captured = capsys.readouterr()
-        assert "Error" in captured.out
+        assert exc.value.exit_code == 1
+        assert "Error" in captured.err
+        assert captured.out == ""
 
     def test_status_with_none_path(self, capsys):
         """Test status command with None path (uses cwd)."""
@@ -57,9 +61,10 @@ class TestStatusCommand:
             mock_cwd.return_value = Path("/tmp")
             with patch("goalkit.commands.status.ProjectAnalyzer") as mock_analyzer:
                 mock_analyzer.side_effect = FileNotFoundError("Not a goal-kit project")
-                status(None)
+                with pytest.raises(typer.Exit):
+                    status(None)
                 captured = capsys.readouterr()
-                assert "Error" in captured.out
+                assert "Error" in captured.err
 
     def test_status_verbose_flag(self, temp_project, capsys):
         """Test status command with verbose flag."""
