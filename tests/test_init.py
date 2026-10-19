@@ -373,25 +373,29 @@ class TestInitErrorCases:
         assert "already exists" in result.stdout
 
     def test_init_script_type_validation(self, tmp_path):
-        """Test that init validates script type parameter."""
+        """Test that init validates script type before probing agent tools."""
         os.chdir(tmp_path)
         runner = CliRunner()
-        
-        result = runner.invoke(
-            app,
-            [
-                "init",
-                "test-project",
-                "--ai",
-                "claude",
-                "--script",
-                "invalid",
-                "--ignore-agent-tools",
-            ],
-        )
-        
+
+        # Simulate a machine without the agent CLI: invalid input must be
+        # rejected before the tool probe, so the result cannot depend on
+        # whether Claude Code happens to be installed.
+        with patch("goalkit.check_tool", return_value=False):
+            result = runner.invoke(
+                app,
+                [
+                    "init",
+                    "test-project",
+                    "--ai",
+                    "claude",
+                    "--script",
+                    "invalid",
+                ],
+            )
+
         assert result.exit_code == 1
         assert "Invalid script type" in result.stdout
+        assert "Agent Detection Error" not in result.stdout
 
     def test_init_with_valid_script_types(self, tmp_path):
         """Test that init accepts valid script types."""

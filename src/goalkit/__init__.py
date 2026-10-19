@@ -1331,6 +1331,23 @@ def init(
             console.print(error_panel)
             raise typer.Exit(1)
 
+    # Validate static options before probing the environment (git, agent CLIs,
+    # filesystem). Bad arguments should fail fast and behave identically on
+    # every machine, whether or not agent tools happen to be installed.
+    if ai_assistant and ai_assistant not in AGENT_CONFIG:
+        console.print(
+            f"[red]Error:[/red] Invalid AI assistant '{ai_assistant}'. "
+            f"Choose from: {', '.join(AGENT_CONFIG.keys())}"
+        )
+        raise typer.Exit(1)
+
+    if script_type and script_type not in SCRIPT_TYPE_CHOICES:
+        console.print(
+            f"[red]Error:[/red] Invalid script type '{script_type}'. "
+            f"Choose from: {', '.join(SCRIPT_TYPE_CHOICES.keys())}"
+        )
+        raise typer.Exit(1)
+
     if here:
         project_name = Path.cwd().name
         project_path = Path.cwd()
@@ -1409,11 +1426,6 @@ def init(
             )
 
     if ai_assistant:
-        if ai_assistant not in AGENT_CONFIG:
-            console.print(
-                f"[red]Error:[/red] Invalid AI assistant '{ai_assistant}'. Choose from: {', '.join(AGENT_CONFIG.keys())}"
-            )
-            raise typer.Exit(1)
         selected_ai = ai_assistant
     else:
         # Create options dict for selection (agent_key: display_name)
@@ -1441,11 +1453,6 @@ def init(
                 raise typer.Exit(1)
 
     if script_type:
-        if script_type not in SCRIPT_TYPE_CHOICES:
-            console.print(
-                f"[red]Error:[/red] Invalid script type '{script_type}'. Choose from: {', '.join(SCRIPT_TYPE_CHOICES.keys())}"
-            )
-            raise typer.Exit(1)
         selected_script = script_type
     else:
         default_script = "ps" if os.name == "nt" else "sh"
